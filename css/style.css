@@ -1,0 +1,23 @@
+div.div_horizontal{
+    clear:both;
+}
+div#div_image{
+    float:left;
+    width:75%;
+    height:75%;
+    background-color:blue;
+}
+div#div_toolbox{
+    background-color:red;
+    height:75%;
+}
+div#div_current_state{
+    float:left;
+    width:50%;
+    background-color:yellow;
+}
+div#div_load_state{
+    width:50%;
+    background-color:green;
+    float:left;
+}
