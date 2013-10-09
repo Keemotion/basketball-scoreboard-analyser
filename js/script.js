@@ -1,3 +1,4 @@
+alert("test");
 /**
  *
  * objects = array of {name, digit_amount, digits = array of 4 coordinates {x,y} }
@@ -17,7 +18,9 @@ function addObject(label_name, digit_amount){
     for(var i = 0; i < digit_amount; ++i){
         o.digits[i].coordinates = new Array(4);
         for(var j = 0; j < 4; ++j){
-            o.digits[i].coordinates[j] = {null, null};
+            o.digits[i].coordinates[j] = new Array(2);
+		   	o.digits[i][0]=null;
+			o.digits[i][1]=null;
         }
     }
     objects.push(o);
