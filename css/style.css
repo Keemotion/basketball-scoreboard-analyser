@@ -1,12 +1,19 @@
+html, body{
+	height:100%;
+}
 div.div_horizontal{
-    clear:both;
+	overflow:hidden;
+	width:100%;	
 }
 div.div_horizontal#div_main_container{
 	height:75%;
 }
+
 div#div_image{
+	display:block;
     float:left;
     width:75%;
+	height:100%;
     background-color:blue;
 }
 div#div_image canvas#canvas_image{
@@ -16,6 +23,9 @@ div#div_image canvas#canvas_image{
 }
 div#div_toolbox{
     background-color:red;
+	float:left;
+	display:block;
+	width:25%;
 }
 div#div_current_state{
     float:left;
