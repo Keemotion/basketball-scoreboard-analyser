@@ -1,8 +1,16 @@
 alert("test");
 /**
  *
- * objects = array of {name, digit_amount, digits = array of 4 coordinates {x,y} }
- *
+ * objects = array of LabelObject = {
+ * 	name
+ * 	digit_amount
+ * 	digits : array[4] of Digit = {
+ * 		corners : array of Coordinate = {
+ * 			x
+ * 			y
+ * 		}
+ * 	}
+ * } *
  */
 var objects = new Array();
 
@@ -10,20 +18,26 @@ function loadObjects(){
     objects = new Array();    
     addObject("team1_naam1", 3);
 }
+function Coordinate(){
+	this.x = null;
+	this.y = null;
+}
+function Digit(){
+	this.corners = new Array();
+	for(var i = 0; i < 4; ++i){
+		this.corners.push(new Coordinate());
+	}
+}
+function LabelObject(name, digit_amount){
+	this.name = name;
+	this.digit_amount = digit_amount;
+	this.digits = new Array();
+	for(var i = 0; i < digit_amount; ++i){
+		this.digits.push(new Digit());
+	}
+}
 function addObject(label_name, digit_amount){
-    var o = new Object();
-    o.name = label_name;
-    o.digit_amount = digit_amount;
-    o.digits = new Array(digit_amount);
-    for(var i = 0; i < digit_amount; ++i){
-        o.digits[i].coordinates = new Array(4);
-        for(var j = 0; j < 4; ++j){
-            o.digits[i].coordinates[j] = new Array(2);
-		   	o.digits[i][0]=null;
-			o.digits[i][1]=null;
-        }
-    }
-    objects.push(o);
+	objects.push(new LabelObject(label_name, digit_amount));
 }
 var canvas;
 var context;
