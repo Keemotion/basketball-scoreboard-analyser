@@ -8,6 +8,9 @@ div.div_horizontal{
 div.div_horizontal#div_main_container{
 	height:75%;
 }
+div.div_horizontal#div_state_container{
+	height:25%;
+}
 
 div#div_image{
 	display:block;
@@ -27,16 +30,22 @@ div#div_toolbox{
 	display:block;
 	width:25%;
 }
+div.horizontal#div_state_container div.div_state{
+	height:100%;
+}
 div#div_current_state{
     float:left;
     width:50%;
     background-color:yellow;
+	height:100%;
 }
 div#div_load_state{
     width:50%;
     background-color:green;
     float:left;
+	height:100%;
 }
 textarea.txt_state{
-	width:100%;
+	width:98%;
+	height:80%;
 }

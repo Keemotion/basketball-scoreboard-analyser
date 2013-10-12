@@ -1,4 +1,3 @@
-alert("test");
 /**
  *
  * objects = array of LabelObject = {
@@ -16,7 +15,8 @@ var objects = new Array();
 
 function loadObjects(){
     objects = new Array();    
-    addObject("team1_naam1", 3);
+    addObject("team1_naam1", 3, false);
+	stateChanged();
 }
 function Coordinate(){
 	this.x = null;
@@ -36,8 +36,14 @@ function LabelObject(name, digit_amount){
 		this.digits.push(new Digit());
 	}
 }
-function addObject(label_name, digit_amount){
+function addObject(label_name, digit_amount, single_event = true){
 	objects.push(new LabelObject(label_name, digit_amount));
+	if(single_event){
+		stateChanged();
+	}
+}
+function stateChanged(){
+	$('textarea#txt_current_state').val(JSON.stringify(objects));
 }
 var canvas;
 var context;
@@ -59,6 +65,7 @@ function init(){
 		drawCanvas();
 	}
 	image.src = "./testdata/scoreboard-images/chalon.png";
+	loadObjects();
 }
 $(document).ready(function(){
 	init();
