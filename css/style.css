@@ -46,6 +46,10 @@ div#div_load_state{
 	height:100%;
 }
 textarea.txt_state{
-	width:98%;
+	width:80%;
 	height:80%;
+	float:left;
+}
+div.div_state div.div_state_buttons{
+	float:left;
 }

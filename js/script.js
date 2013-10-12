@@ -57,9 +57,24 @@ function State(){
 	}
 	this.addChangedListener = function(listener){
 		this.stateChangedListeners.push(listener);
-	}
+	};
+	this.parseJSON = function(json){
+		this.objects.length = 0;
+		try{
+			var data = JSON.parse(json);
+			this.objects = data.objects;
+			this.stateChanged();
+			return true;
+		}catch(err){
+			this.stateChanged();
+			return false;
+		}
+	};
 }
 var current_state;
+function loadState(json){
+	current_state.parseJSON(json);
+}
 function currentStateChanged(){
 	$('textarea#txt_current_state').val(current_state.stringify());
 }
@@ -90,4 +105,7 @@ function init(){
 $(document).ready(function(){
 	init();
 	window.addEventListener('resize', drawCanvas);
+	$('#btn_load_state').click(function(){
+		loadState($('#txt_load_state').val());
+	});
 });
