@@ -61,6 +61,9 @@ div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li{
 div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.collapsed > ul{
 	display:none;
 }
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li .command{
+	float:left;
+}
 div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.collapsed > .expand_command{
 	display:inline;
 }
@@ -73,3 +76,21 @@ div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.expanded > .expand_
 div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.expanded > .collapse_command{
 	display:inline;
 }
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li>span.span_li_title{
+	display:block;
+	overflow:hidden;
+}
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li>span.span_li_title:hover{
+	background-color:blue;
+	cursor:pointer;
+}
+
+
+div#div_toolbox_objects_details div#div_details ul.ul_corners{
+	list-style-type:none;
+	margin:0px;
+}
+div#div_toolbox_objects_details div#div_details ul.ul_corners input{
+	width:40px;
+}
+
