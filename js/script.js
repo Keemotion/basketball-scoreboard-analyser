@@ -75,8 +75,35 @@ var current_state;
 function loadState(json){
 	current_state.parseJSON(json);
 }
+function buildTree(){
+	$('ul#list_toolbox_objects_tree').html('');
+	for(var i = 0; i < current_state.objects.length; ++i){
+		var label_li = $('<li></li>').addClass('expanded').append('<span class="expand_command">&gt; </span><span class="collapse_command">v </span>').append(current_state.objects[i].name);
+		var digits_ul = $('<ul></ul>');
+		for(var j = 0; j < current_state.objects[i].digits.length; ++j){
+			var digit_li = $('<li></li>').addClass('expanded').append('<span class="expand_command">&gt; </span><span class="collapse_command">v </span>').append('Digit '+(j+1));
+			var digit_ul = $('<ul></ul>');
+			for(var k = 0; k < 4; ++k){
+				var corner_li = $('<li></li>').text('x: '+current_state.objects[i].digits[j].corners[k].x+'; y: '+current_state.objects[i].digits[j].corners[k].y).appendTo(digit_ul);	
+			}
+			$(digit_ul).appendTo(digit_li);
+			$(digit_li).appendTo(digits_ul);
+		}
+		$(digits_ul).appendTo(label_li);
+		$(label_li).appendTo('ul#list_toolbox_objects_tree');
+	}
+	$(window).ready(function(){
+		$('ul#list_toolbox_objects_tree li .expand_command').unbind('click').click(function(e){
+			$(this).parent().removeClass('collapsed').addClass('expanded');
+		});
+		$('ul#list_toolbox_objects_tree li .collapse_command').unbind('click').click(function(e){
+			$(this).parent().removeClass('expanded').addClass('collapsed');
+		});
+	});
+}
 function currentStateChanged(){
 	$('textarea#txt_current_state').val(current_state.stringify());
+	buildTree();
 }
 var canvas;
 var context;

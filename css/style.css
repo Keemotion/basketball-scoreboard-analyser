@@ -53,3 +53,23 @@ textarea.txt_state{
 div.div_state div.div_state_buttons{
 	float:left;
 }
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree ul{
+	list-style-type: none;
+}
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li{
+}
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.collapsed > ul{
+	display:none;
+}
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.collapsed > .expand_command{
+	display:inline;
+}
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.collapsed > .collapse_command{
+	display:none;
+}
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.expanded > .expand_command{
+	display:none;
+}
+div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.expanded > .collapse_command{
+	display:inline;
+}
