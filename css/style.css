@@ -37,3 +37,6 @@ div#div_load_state{
     background-color:green;
     float:left;
 }
+textarea.txt_state{
+	width:100%;
+}
