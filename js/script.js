@@ -11,23 +11,18 @@
  * 	}
  * } *
  */
-var objects = new Array();
-
-function loadObjects(){
-    objects = new Array();    
-    addObject("team1_naam1", 3, false);
-	stateChanged();
-}
 function Coordinate(){
 	this.x = null;
 	this.y = null;
 }
+
 function Digit(){
 	this.corners = new Array();
 	for(var i = 0; i < 4; ++i){
 		this.corners.push(new Coordinate());
 	}
 }
+
 function LabelObject(name, digit_amount){
 	this.name = name;
 	this.digit_amount = digit_amount;
@@ -36,14 +31,37 @@ function LabelObject(name, digit_amount){
 		this.digits.push(new Digit());
 	}
 }
-function addObject(label_name, digit_amount, single_event = true){
-	objects.push(new LabelObject(label_name, digit_amount));
-	if(single_event){
-		stateChanged();
+
+function State(){
+	this.objects = new Array();
+	this.loadObjects = function(){
+		this.objects.length = 0;
+		this.addObject("team1_naam1", 3, false);
+		this.stateChanged();
+	};
+	this.addObject = function(label_name, digit_amount, single_event = true){
+		this.objects.push(new LabelObject(label_name, digit_amount));
+		if(single_event){
+			this.stateChanged();
+		}
+	};
+	this.stateChangedListeners = new Array();
+	this.stateChanged = function(){
+		for(var i = 0; i < this.stateChangedListeners.length; ++i){
+			this.stateChangedListeners[i]();
+		}
+	};
+	this.stringify = function(){
+		var data = {objects: this.objects};
+		return JSON.stringify(data);
+	}
+	this.addChangedListener = function(listener){
+		this.stateChangedListeners.push(listener);
 	}
 }
-function stateChanged(){
-	$('textarea#txt_current_state').val(JSON.stringify(objects));
+var current_state;
+function currentStateChanged(){
+	$('textarea#txt_current_state').val(current_state.stringify());
 }
 var canvas;
 var context;
@@ -65,7 +83,9 @@ function init(){
 		drawCanvas();
 	}
 	image.src = "./testdata/scoreboard-images/chalon.png";
-	loadObjects();
+	current_state = new State();
+	current_state.addChangedListener(currentStateChanged);
+	current_state.loadObjects();
 }
 $(document).ready(function(){
 	init();
