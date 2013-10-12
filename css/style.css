@@ -1,11 +1,16 @@
 html, body{
 	height:100%;
 }
+div.div_vertical#div_main_container{
+	width:75%;
+	height:100%;
+	float:left;
+}
 div.div_horizontal{
 	overflow:hidden;
 	width:100%;	
 }
-div.div_horizontal#div_main_container{
+div.div_horizontal#div_image{
 	height:75%;
 }
 div.div_horizontal#div_state_container{
@@ -15,7 +20,6 @@ div.div_horizontal#div_state_container{
 div#div_image{
 	display:block;
     float:left;
-    width:75%;
 	height:100%;
     background-color:blue;
 }

@@ -5,37 +5,37 @@
 	<link rel="stylesheet" href="./css/style.css"> 
 </head>
 <body>
-	<div class="div_horizontal" id="div_main_container">
-		<div id="div_image">
+	<div class="div_vertical" id="div_main_container">
+		<div class="div_horizontal" id="div_image">
 			<canvas id="canvas_image" width="1024px" height="768px"></canvas>
 		</div>
-
-		<div id="div_toolbox">
-			<div id="div_toolbox_objects_tree">
-				toolbox tree
-				<ul id="list_toolbox_objects_tree">
-				</ul>
+		<div class="div_horizontal" id="div_state_container">
+			<div class="div_state" id="div_current_state">current_state<br>
+				<textarea id="txt_current_state" class="txt_state"></textarea>
 			</div>
-			<hr>
-			<div id="div_toolbox_objects_details">
-				<span id="span_toolbox_objects_details_title">toolbox details</span>
-				<div id="div_details">
+			<div class="div_state" id="div_load_state">load_state<br>
+				<textarea id="txt_load_state" class="txt_state"></textarea>
+				<div id="div_load_state_buttons" class="div_state_buttons">
+					<button id="btn_load_state">Load state</button>
 				</div>
 			</div>
 		</div>
-
+	</div>
+	<div class="div_vertical" id="div_toolbox">
+		<div id="div_toolbox_objects_tree">
+			toolbox tree
+			<ul id="list_toolbox_objects_tree">
+			</ul>
 		</div>
-		<div class="div_horizontal" id="div_state_container">
-		<div class="div_state" id="div_current_state">current_state<br>
-			<textarea id="txt_current_state" class="txt_state"></textarea>
-		</div>
-		<div class="div_state" id="div_load_state">load_state<br>
-			<textarea id="txt_load_state" class="txt_state"></textarea>
-			<div id="div_load_state_buttons" class="div_state_buttons">
-				<button id="btn_load_state">Load state</button>
+		<hr>
+		<div id="div_toolbox_objects_details">
+			<span id="span_toolbox_objects_details_title">toolbox details</span>
+			<div id="div_details">
 			</div>
 		</div>
 	</div>
+
+
 	<script src="./js/jquery-1.10.2.min.js"></script>
 	<script src="./js/script.js"></script>
 </body>
