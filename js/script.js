@@ -9,7 +9,7 @@
  * 			y
  * 		}
  * 	}
- * } *
+ * } 
  */
 function Coordinate(){
 	this.x = null;
@@ -89,4 +89,5 @@ function init(){
 }
 $(document).ready(function(){
 	init();
+	window.addEventListener('resize', drawCanvas);
 });
