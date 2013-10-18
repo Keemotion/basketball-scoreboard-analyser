@@ -5,7 +5,7 @@ function loadState(json){
 function buildTree(){
 	$('ul#list_toolbox_objects_tree').html('');
 	for(var i = 0; i < current_state.objects.length; ++i){
-		var label_li = $('<li></li>').addClass('collapsed');
+		var label_li = $('<li></li>').addClass('collapsed').addClass('li_label');
 		var label_expand_command = $('<span></span>').addClass('command').addClass('expand_command').html('&gt;&nbsp;');
 		var label_collapse_command = $('<span></span>').addClass('command').addClass('collapse_command').html('v&nbsp;');
 		var label_title = $('<span></span>').addClass('span_li_title').addClass('span_label_li_title').text(current_state.objects[i].name);
@@ -41,7 +41,9 @@ function buildTree(){
 				var ind = $(this).parent().parent().children('li').index($(this).parent());
 				loadLabelDetails(current_state.objects[ind]);
 			}else if($(this).hasClass('span_digit_li_title')){
-				loadDigitDetails();
+				var label_ind = $(this).closest('.li_label').parent().children().index($(this).closest('.li_label'));
+				var digit_ind = $(this).closest('.li_digit').parent().children().index($(this).closest('.li_digit'));
+				loadDigitDetails(current_state.objects[label_ind].digits[digit_ind]);
 			}else if($(this).hasClass('span_corner_li_title')){
 				loadCornerDetails();
 			}
@@ -77,20 +79,7 @@ function loadLabelDetails(label){
 	$(table).append($('<tr></tr>').append($('<td></td>').append($('<label></label>').attr('for', 'txt_name').text('Name: '))).append($('<td></td>').append(name_input)))
 		.append($('<tr></tr>').append($('<td></td>').append($('<label></label>').attr('for', 'txt_digit_amount').text('Amount of digits:'))).append($('<td></td>').append(digit_amount_input)));
 	for(var i = 0; i < label.digit_amount; ++i){
-		var digit_td = $('<td></td>');
-		var ul = $('<ul></ul>').addClass('ul_corners');
-		var dir = new Array(4);
-		dir[0]='TL';
-		dir[1]='TR';
-		dir[2]='BR';
-		dir[3]='BL';
-		for(var j = 0; j < 4; ++j){
-			$(ul).append($('<li></li>').text(dir[j]+': ')
-					.append($('<input />').attr('name', 'txt_digit_'+i+'_corner_'+j+'_x').attr('type','text').attr('value',label.digits[i].corners[j].x))
-					.append($('<input />').attr('name', 'txt_digit_'+i+'_corner_'+j+'_y').attr('type','text').attr('value',label.digits[i].corners[j].y)));
-		}
-		$(digit_td).append(ul);
-		$(table).append($('<tr></tr>').append($('<td></td>').append($('<label></label>').text('Digit '+(i+1)))).append(digit_td));
+				$(table).append($('<tr></tr>').append($('<td></td>').append($('<label></label>').text('Digit '+(i+1)))).append($('<td></td>').append(createDigitDetailUL(label.digits[i]))));
 	}
 	var btnApply = $('<button></button>').attr('type', 'submit').text('Apply');
 	$(table).append($('<tr></tr>').append($('<td></td>').attr('colspan','2').append(btnApply)));
@@ -105,8 +94,8 @@ function loadLabelDetails(label){
 			d.corners = new Array(4);
 			for(var j = 0; j < 4; ++j){
 				d.corners[j]=new Object();
-				d.corners[j].x = $(form).find('input[name="txt_digit_'+i+'_corner_'+j+'_x"]').val();
-				d.corners[j].y = $(form).find('input[name="txt_digit_'+i+'_corner_'+j+'_y"]').val();
+				d.corners[j].x = $(form).find('input[name="txt_label_'+label.index+'_digit_'+i+'_corner_'+j+'_x"]').val();
+				d.corners[j].y = $(form).find('input[name="txt_label_'+label.index+'_digit_'+i+'_corner_'+j+'_y"]').val();
 			}
 			data.digits[i] = d;
 		}
@@ -115,10 +104,46 @@ function loadLabelDetails(label){
 	});
 	$('div#div_toolbox_objects_details div#div_details').append(div);
 }
-function loadDigitDetails(){
+function createDigitDetailUL(digit){
+	var ul = $('<ul></ul>').addClass('ul_corners');
+	var dir = new Array(4);
+	dir[0]='TL';
+	dir[1]='TR';
+	dir[2]='BR';
+	dir[3]='BL';
+	for(var j = 0; j < 4; ++j){
+		$(ul).append($('<li></li>').text(dir[j]+': ')
+				.append($('<input />').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+j+'_x').attr('type','text').attr('value',digit.corners[j].x))
+				.append($('<input />').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+j+'_y').attr('type','text').attr('value',digit.corners[j].y)));
+	}
+	return ul;
+}
+
+function loadDigitDetails(digit){
 	clearDetails();
+	var div = $('<div></div>');
+	var form = $('<form></form>');
+	$(form).append(createDigitDetailUL(digit));
+	var btnApply = $('<button></button>').attr('type', 'submit').text('Apply');
+	$(form).append('<br>').append(btnApply).appendTo(div).submit(function(e){
+		e.preventDefault();
+		var d = new Object();
+		d.corners = new Array(4);
+		for(var i = 0; i < 4; ++i){
+			d.corners[i] = new Object();
+			d.corners[i].x = $(form).find('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+i+'_x"]').val();
+			d.corners[i].y = $(form).find('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+i+'_y"]').val();
+		}
+		digit.load(d);
+		return false;
+	});
+	$(div).append(form);
+	$('div#div_toolbox_objects_details div#div_details').append(div);
 }
 function loadCornerDetails(){
+	clearDetails();
+	var div = $('<div>corner details</div>');
+	$('div#div_toolbox_objects_details div#div_details').append(div);
 }
 var canvas;
 var context;
