@@ -98,3 +98,10 @@ div#div_toolbox_objects_details div#div_details ul.ul_corners input{
 	width:40px;
 }
 
+div#div_toolbox_objects_details div#div_details input.input_coordinate{
+	width: 40px;
+}
+div#div_toolbox_objects_details div#div_details span.span_details_title{
+	font-weight:bold;
+	font-size: 20px;
+}

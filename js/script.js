@@ -75,6 +75,7 @@ function clearDetails(){
 function loadLabelDetails(label){
 	clearDetails();
 	var div = $('<div></div>').attr('id', 'div_label_details');
+	$(div).append($('<span></span>').addClass('span_details_title').text('Label details'));
 	var form = $('<form></form>');
 	var table = $('<table></table>');
 	var name_input = $('<input />').attr('name', 'txt_name').attr('value', label.name);
@@ -116,15 +117,23 @@ function createDigitDetailUL(digit){
 	dir[3]='BL';
 	for(var j = 0; j < 4; ++j){
 		$(ul).append($('<li></li>').text(dir[j]+': ')
-				.append($('<input />').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+j+'_x').attr('type','text').attr('value',digit.corners[j].x))
-				.append($('<input />').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+j+'_y').attr('type','text').attr('value',digit.corners[j].y)));
+			.append(createCornerInputs(digit, j)));
 	}
 	return ul;
+}
+function createCornerInputs(digit, corner_index){
+	var el = $('<span></span>');
+	$(el).append($('<label></label>').text('x: '));
+	$(el).append($('<input />').addClass('input_coordinate').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_x').attr('type', 'text').attr('value', digit.corners[corner_index].x));
+	$(el).append($('<label></label>').text('y: '));
+	$(el).append($('<input />').addClass('input_coordinate').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_y').attr('type', 'text').attr('value', digit.corners[corner_index].y));
+	return el;
 }
 
 function loadDigitDetails(digit){
 	clearDetails();
-	var div = $('<div></div>');
+	var div = $('<div></div>').attr('id', 'div_label_details');
+	$(div).append($('<span></span>').addClass('span_details_title').text('Digit details (label: '+digit.parent_label.name+', digit: '+digit.index+')'));
 	var form = $('<form></form>');
 	$(form).append(createDigitDetailUL(digit));
 	var btnApply = $('<button></button>').attr('type', 'submit').text('Apply');
@@ -145,10 +154,10 @@ function loadDigitDetails(digit){
 }
 function loadCornerDetails(digit, corner_index){
 	clearDetails();
-	var div = $('<div>corner details</div>');
+	var div = $('<div></div>').attr('id', 'div_label_details');
+	$(div).append($('<span></span>').addClass('span_details_title').text('Corner details (label: '+digit.parent_label.name+', digit: '+digit.index+', corner: '+corner_index+')'));
 	var form = $('<form></form>');
-	$(form).append($('<input></input>').attr('type', 'text').attr('name','txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_x').val(digit.corners[corner_index].x))
-		.append($('<input></input>').attr('type', 'text').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_y').val(digit.corners[corner_index].y))
+	$(form).append(createCornerInputs(digit, corner_index))
 		.append('<br>')
 		.append($('<button></button>').attr('type', 'submit').text('Apply'))
 		.submit(function(e){
