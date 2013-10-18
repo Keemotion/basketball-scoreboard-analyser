@@ -1,102 +1,3 @@
-/**
- *
- * objects = array of LabelObject = {
- * 	name
- * 	digit_amount
- * 	digits : array[4] of Digit = {
- * 		corners : array of Coordinate = {
- * 			x
- * 			y
- * 		}
- * 	}
- * } 
- */
-function Coordinate(){
-	this.x = "";
-	this.y = "";
-}
-
-function Digit(){
-	this.corners = new Array();
-	for(var i = 0; i < 4; ++i){
-		this.corners.push(new Coordinate());
-	}
-}
-
-function LabelObject(name, digit_amount, parent_state){
-	this.parent_state = parent_state;
-	this.name = name;
-	this.digit_amount = digit_amount;
-	this.digits = new Array();
-	for(var i = 0; i < digit_amount; ++i){
-		this.digits.push(new Digit());
-	}
-	this.load = function(data){
-		this.name = data.name;
-		this.digit_amount = digit_amount;
-		this.digits = data.digits;
-		this.parent_state.labelChanged(this);
-	};
-	this.getStringifyData = function(){
-		var d = new Object();
-		d.name = this.name;
-		d.digit_amount = this.digit_amount;
-		d.digits = this.digits;
-		return d;
-	}
-}
-
-function State(){
-	this.objects = new Array();
-	this.loadObjects = function(){
-		this.objects.length = 0;
-		this.addObject("team1_naam1", 3, false);
-		this.addObject("team1_naam2", 2, false);
-		this.addObject("team2_naam1", 3, false);
-		this.addObject("team2_naam2", 2, false);
-		this.stateChanged();
-	};
-	this.addObject = function(label_name, digit_amount, single_event = true){
-		this.objects.push(new LabelObject(label_name, digit_amount, this));
-		if(single_event){
-			this.stateChanged();
-		}
-	};
-	this.stateChangedListeners = new Array();
-	this.stateChanged = function(){
-		for(var i = 0; i < this.stateChangedListeners.length; ++i){
-			this.stateChangedListeners[i]();
-		}
-	};
-	this.labelChanged = function(label){
-		//TODO: only update changed elements
-		this.stateChanged();
-	};
-	this.stringify = function(){
-		var objects_data = new Array();
-		for(var i = 0; i < this.objects.length; ++i){
-			objects_data.push(this.objects[i].getStringifyData());
-		}
-		var data = {objects: objects_data};
-		return JSON.stringify(data);
-	}
-	this.addChangedListener = function(listener){
-		this.stateChangedListeners.push(listener);
-	};
-	this.parseJSON = function(json){
-		this.objects.length = 0;
-		try{
-			var data = JSON.parse(json);
-			this.objects = data.objects;
-			this.stateChanged();
-			return true;
-		}catch(err){
-			this.stateChanged();
-			return false;
-		}
-	};
-	
-}
 var current_state;
 function loadState(json){
 	current_state.parseJSON(json);
@@ -111,7 +12,7 @@ function buildTree(){
 		$(label_li).append(label_expand_command).append(label_collapse_command).append(label_title);
 		var digits_ul = $('<ul></ul>');
 		for(var j = 0; j < current_state.objects[i].digits.length; ++j){
-			var digit_li = $('<li></li>').addClass('collapsed');
+			var digit_li = $('<li></li>').addClass('collapsed').addClass('li_digit');
 			var digit_expand_command = $('<span></span>').addClass('command').addClass('expand_command').html('&gt;&nbsp');
 			var digit_collapse_command = $('<span></span>').addClass('command').addClass('collapse_command').html('v&nbsp;');
 			var digit_title = $('<span></span>').addClass('span_li_title').addClass('span_digit_li_title').text('Digit '+(j+1));
@@ -151,6 +52,18 @@ function currentStateChanged(){
 	$('textarea#txt_current_state').val(current_state.stringify());
 	buildTree();
 }
+function loadLabelTreeData(labelLi, label){
+	$(labelLi).children('.span_label_li_title').text(label.name);
+	for(var i = 0; i < label.digit_amount; ++i){
+		var digit_li = $(labelLi).children('ul').find('li.li_digit').get(i);
+		for(var j = 0; j < 4; ++j){
+			$($(digit_li).find('ul > li').get(j)).children('span.span_corner_li_title').text('x: '+label.digits[i].corners[j].x+', y: '+label.digits[i].corners[j].y);
+		}
+	}
+}
+function labelChanged(label_index){
+	loadLabelTreeData($('ul#list_toolbox_objects_tree > li').get(label_index), current_state.objects[label_index]);
+}
 function clearDetails(){
 	$('div#div_details').html("");
 }
@@ -182,6 +95,7 @@ function loadLabelDetails(label){
 	var btnApply = $('<button></button>').attr('type', 'submit').text('Apply');
 	$(table).append($('<tr></tr>').append($('<td></td>').attr('colspan','2').append(btnApply)));
 	$(form).append(table).appendTo(div).submit(function(e){
+		e.preventDefault();
 		var data = new Object();
 		data.name = $(form).find('input[name="txt_name"]').val();
 		data.digit_amount = $(form).find('input[name="txt_digit_amount"]').val();
@@ -197,7 +111,7 @@ function loadLabelDetails(label){
 			data.digits[i] = d;
 		}
 		label.load(data);
-		e.preventDefault();
+		return false;
 	});
 	$('div#div_toolbox_objects_details div#div_details').append(div);
 }
@@ -227,7 +141,7 @@ function init(){
 	}
 	image.src = "./testdata/scoreboard-images/chalon.png";
 	current_state = new State();
-	current_state.addChangedListener(currentStateChanged);
+	current_state.addChangedListener(new StateChangedListener(currentStateChanged, labelChanged));
 	current_state.loadObjects();
 }
 $(document).ready(function(){
