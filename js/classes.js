@@ -47,7 +47,7 @@ function LabelObject(name, digit_amount, parent_state, index){
 	}
 	this.load = function(data){
 		this.name = data.name;
-		this.digit_amount = digit_amount;
+		this.digit_amount = data.digit_amount;
 		this.digits = new Array();
 		for(var i = 0; i < data.digits.length; ++i){
 			var d = new Digit(this, i);
@@ -111,7 +111,12 @@ function State(){
 		this.objects.length = 0;
 		try{
 			var data = JSON.parse(json);
-			this.objects = data.objects;
+			//this.objects = data.objects;
+			this.objects = new Array();
+			for(var i = 0; i < data.objects.length; ++i){
+				this.objects.push(new LabelObject(data.objects[i].name, data.objects[i].digit_amount, this, i));
+				this.objects[i].load(data.objects[i]);
+			}
 			this.stateChanged();
 			return true;
 		}catch(err){
