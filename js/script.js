@@ -19,7 +19,7 @@ function buildTree(){
 			$(digit_li).append(digit_expand_command).append(digit_collapse_command).append(digit_title);
 			var digit_ul = $('<ul></ul>');
 			for(var k = 0; k < 4; ++k){
-				var corner_li = $('<li></li>');	
+				var corner_li = $('<li></li>').addClass('li_corner');	
 				var corner_title = $('<span></span>').addClass('span_li_title').addClass('span_corner_li_title').text('x: '+current_state.objects[i].digits[j].corners[k].x+'; y: '+current_state.objects[i].digits[j].corners[k].y).appendTo(corner_li);
 				$(digit_ul).append(corner_li);
 			}
@@ -45,7 +45,10 @@ function buildTree(){
 				var digit_ind = $(this).closest('.li_digit').parent().children().index($(this).closest('.li_digit'));
 				loadDigitDetails(current_state.objects[label_ind].digits[digit_ind]);
 			}else if($(this).hasClass('span_corner_li_title')){
-				loadCornerDetails();
+				var label_ind = $(this).closest('.li_label').parent().children().index($(this).closest('.li_label'));
+				var digit_ind = $(this).closest('.li_digit').parent().children().index($(this).closest('.li_digit'));
+				var corner_ind = $(this).closest('.li_corner').parent().children().index($(this).closest('.li_corner'));
+				loadCornerDetails(current_state.objects[label_ind].digits[digit_ind], corner_ind);
 			}
 		});
 	});
@@ -140,9 +143,22 @@ function loadDigitDetails(digit){
 	$(div).append(form);
 	$('div#div_toolbox_objects_details div#div_details').append(div);
 }
-function loadCornerDetails(){
+function loadCornerDetails(digit, corner_index){
 	clearDetails();
 	var div = $('<div>corner details</div>');
+	var form = $('<form></form>');
+	$(form).append($('<input></input>').attr('type', 'text').attr('name','txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_x').val(digit.corners[corner_index].x))
+		.append($('<input></input>').attr('type', 'text').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_y').val(digit.corners[corner_index].y))
+		.append('<br>')
+		.append($('<button></button>').attr('type', 'submit').text('Apply'))
+		.submit(function(e){
+			e.preventDefault();
+			var x = $(form).find('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_x"]').val();			
+			var y = $(form).find('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_y"]').val();
+			digit.changeCorner(corner_index, x, y);
+			return false;
+		});
+	$(div).append(form);
 	$('div#div_toolbox_objects_details div#div_details').append(div);
 }
 var canvas;

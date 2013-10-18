@@ -33,7 +33,14 @@ function Digit(parent_label, index){
 		if(warnListeners){
 			this.parent_label.parent_state.labelChanged(this.parent_label);
 		}
-	}
+	};
+	this.changeCorner = function(corner_index, x, y, warnListeners = true){
+		this.corners[corner_index].x = x;
+		this.corners[corner_index].y = y;
+		if(warnListeners){
+			this.parent_label.parent_state.labelChanged(this.parent_label);
+		}
+	};
 }
 
 function LabelObject(name, digit_amount, parent_state, index){
