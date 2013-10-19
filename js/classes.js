@@ -11,9 +11,9 @@
  * 	}
  * } 
  */
-function Coordinate(){
-	this.x = "";
-	this.y = "";
+function Coordinate(x="", y=""){
+	this.x = x; 
+	this.y = y;
 }
 
 function Digit(parent_label, index){
@@ -118,7 +118,6 @@ function State(){
 		this.objects.length = 0;
 		try{
 			var data = JSON.parse(json);
-			//this.objects = data.objects;
 			this.objects = new Array();
 			for(var i = 0; i < data.objects.length; ++i){
 				this.objects.push(new LabelObject(data.objects[i].name, data.objects[i].digit_amount, this, i));

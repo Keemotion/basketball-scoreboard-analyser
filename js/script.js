@@ -128,6 +128,17 @@ function createCornerInputs(digit, corner_index){
 	$(el).append($('<input />').addClass('input_coordinate').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_x').attr('type', 'text').attr('value', digit.corners[corner_index].x));
 	$(el).append($('<label></label>').text('y: '));
 	$(el).append($('<input />').addClass('input_coordinate').attr('name', 'txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_y').attr('type', 'text').attr('value', digit.corners[corner_index].y));
+	$(el).append($('<button></button>').attr('id', 'button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index).addClass('button_corner_coordinate_click').text('click').click(function(e){
+		$(this).addClass('active');
+		canvas.setCoordinateClickListener(function(x, y){
+			$('button#button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index).removeClass('active');
+			$('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_x"]').val(x);
+			$('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_y"]').val(y);
+			$(el).closest('form').submit();
+			canvas.resetCoordinateClickListener();
+		});
+	}));
+
 	return el;
 }
 
@@ -172,32 +183,16 @@ function loadCornerDetails(digit, corner_index){
 	$('div#div_toolbox_objects_details div#div_details').append(div);
 }
 var canvas;
-var context;
-var image;
-function drawCanvas(){
-	canvas.height = $(canvas).parent().height();
-	canvas.width = $(canvas).parent().width();
-	
-	var ratio = Math.min(canvas.width/image.width, canvas.height/image.height);
-	var res_width = image.width*ratio;
-	var res_height = image.height*ratio;
-	context.drawImage(image, (canvas.width-res_width)/2, (canvas.height-res_height)/2, res_width, res_height);
-}
+
 function init(){
-	canvas = $('canvas#canvas_image')[0];
-	context = canvas.getContext('2d');
-	image = new Image();
-	image.onload = function(){
-		drawCanvas();
-	}
-	image.src = "./testdata/scoreboard-images/chalon.png";
+	canvas = new Canvas($('canvas#canvas_image')[0]);
 	current_state = new State();
 	current_state.addChangedListener(new StateChangedListener(currentStateChanged, labelChanged));
 	current_state.loadObjects();
 }
 $(document).ready(function(){
 	init();
-	window.addEventListener('resize', drawCanvas);
+	window.addEventListener('resize', function(){canvas.canvasResized();});
 	$('#btn_load_state').click(function(){
 		loadState($('#txt_load_state').val());
 	});
