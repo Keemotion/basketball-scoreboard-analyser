@@ -68,6 +68,7 @@ function loadLabelTreeData(labelLi, label){
 }
 function labelChanged(label_index){
 	loadLabelTreeData($('ul#list_toolbox_objects_tree > li').get(label_index), current_state.objects[label_index]);
+	$('textarea#txt_current_state').val(current_state.stringify());
 }
 function clearDetails(){
 	$('div#div_details').html("");
