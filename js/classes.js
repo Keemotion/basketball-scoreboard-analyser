@@ -67,7 +67,6 @@ function LabelObject(name, digit_amount, parent_state, index){
 		var d = new Object();
 		d.name = this.name;
 		d.digit_amount = this.digit_amount;
-		//d.digits = this.digits;
 		d.digits = new Array();
 		for(var i = 0; i < this.digits.length; ++i){
 			d.digits.push(this.digits[i].getStringifyData());
