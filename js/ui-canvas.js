@@ -3,12 +3,32 @@ function Canvas(canvas_element){
 	this.context = this.canvas_element.getContext('2d');
 
 	this.drawCanvas = function(){
-		var displayScale = this.getDisplayScale();
-		var swidth = this.image.width/this.scale;
-		var sheight = this.image.height/this.scale;
-		var sx = this.imagePointOnCenter.x-swidth/2;
-		var sy = this.imagePointOnCenter.y-sheight/2;
-		this.context.drawImage(this.image, sx, sy, swidth, sheight, (this.canvas_element.width-displayScale*swidth)/2, (this.canvas_element.height-displayScale*sheight)/2, swidth * displayScale, sheight * displayScale);
+		this.context.clearRect(0,0,this.canvas_element.width, this.canvas_element.height);
+		var canvas_topleft_coordinate = this.transformImageCoordinateToCanvasCoordinate(new Coordinate(0,0));
+		var image_topleft_coordinate = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(0,0));
+		if(canvas_topleft_coordinate.x<0){
+			canvas_topleft_coordinate.x = this.transformImageCoordinateToCanvasCoordinate(new Coordinate(image_topleft_coordinate.x, 0)).x;	
+		}else{
+			image_topleft_coordinate.x = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(canvas_topleft_coordinate.x, 0)).x;
+		}
+		if(canvas_topleft_coordinate.y<0){
+			canvas_topleft_coordinate.y = this.transformImageCoordinateToCanvasCoordinate(new Coordinate(0, image_topleft_coordinate.y)).y;
+		}else{
+			image_topleft_coordinate.y = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(0, canvas_topleft_coordinate.y)).y;
+		}
+		var canvas_bottomright_coordinate = this.transformImageCoordinateToCanvasCoordinate(new Coordinate(this.image.width-1, this.image.height-1));
+		var image_bottomright_coordinate = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(this.canvas_element.width-1, this.canvas_element.height-1));
+		if(canvas_bottomright_coordinate.x > this.canvas_element.width-1){
+			canvas_bottomright_coordinate.x = this.transformImageCoordinateToCanvasCoordinate(new Coordinate(image_bottomright_coordinate.x, 0)).x;
+		}else{
+			image_bottomright_coordinate.x = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(canvas_bottomright_coordinate.x, 0)).x;
+		}
+		if(canvas_bottomright_coordinate.y > this.canvas_element.height-1){
+			canvas_bottomright_coordinate.y = this.transformImageCoordinateToCanvasCoordinate(new Coordinate(0, image_bottomright_coordinate.y)).y;
+		}else{
+			image_bottomright_coordinate.y = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(0, canvas_bottomright_coordinate.y)).y;
+		}
+		this.context.drawImage(this.image, image_topleft_coordinate.x, image_topleft_coordinate.y, image_bottomright_coordinate.x-image_topleft_coordinate.x, image_bottomright_coordinate.y-image_topleft_coordinate.y, canvas_topleft_coordinate.x, canvas_topleft_coordinate.y, canvas_bottomright_coordinate.x-canvas_topleft_coordinate.x, canvas_bottomright_coordinate.y-canvas_topleft_coordinate.y);
 	};
 	var canvas = this;
 	this.setCoordinateClickListener = function(l){
@@ -19,6 +39,7 @@ function Canvas(canvas_element){
 		});
 	};
 	$(this.canvas_element).click(function(e){
+		e.preventDefault();
 		var c = new Coordinate(e.pageX-this.offsetLeft, e.pageY-this.offsetTop);
 		c = canvas.transformCanvasCoordinateToImageCoordinate(c);
 		c.x = Math.floor(c.x);
@@ -26,7 +47,23 @@ function Canvas(canvas_element){
 		if(c.x>=0&&c.y>=0&&c.x<canvas.image.width&&c.y<canvas.image.height){
 			canvas.coordinateClickListener(c.x, c.y);
 		}
+		return false;
 	});
+	var handleScroll = function(evt){
+		var delta = evt.wheelDelta?evt.wheelDelta/40:evt.detail?-evt.detail : 0;
+		var factor = 0;
+		if(delta > 0){
+			factor = 9/10;
+		}else{
+			factor = 10/9;
+		}
+		canvas.scale *= factor;
+		canvas.scale = Math.min(canvas.scale, 1);
+		canvas.drawCanvas();
+		return evt.preventDefault() && false;
+	};
+	this.canvas_element.addEventListener('DOMMouseScroll', handleScroll, false);
+	this.canvas_element.addEventListener('mousewheel', handleScroll, false);
 	this.resetCoordinateClickListener();
 
 	this.scale = 1;
