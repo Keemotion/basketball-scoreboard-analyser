@@ -47,7 +47,6 @@ function Canvas(canvas_element){
 		});
 	};
 	$(this.canvas_element).click(function(e){
-		e.preventDefault();
 		var c = new Coordinate(e.pageX-this.offsetLeft, e.pageY-this.offsetTop);
 		c = canvas.transformCanvasCoordinateToImageCoordinate(c);
 		c.x = Math.floor(c.x);
@@ -55,8 +54,33 @@ function Canvas(canvas_element){
 		if(c.x>=0&&c.y>=0&&c.x<canvas.image.width&&c.y<canvas.image.height){
 			canvas.coordinateClickListener(c.x, c.y);
 		}
-		return false;
 	});
+	this.dragging = false;
+	this.dragStartCoordinate = new Coordinate(undefined, undefined);
+	$(this.canvas_element).mousemove(function(e2){
+		if(canvas.dragging){
+			console.log("e: "+e2.pageX+" "+e2.pageY);
+			console.log("dragged: "+(e2.pageX-canvas.dragStartCoordinate.x)+", "+(e2.pageY-canvas.dragStartCoordinate.y));
+			canvas.imagePointOnCenter = canvas.transformCanvasCoordinateToImageCoordinate(new Coordinate(canvas.canvas_element.width/2-(e2.pageX-canvas.dragStartCoordinate.x), canvas.canvas_element.height/2-(e2.pageY-canvas.dragStartCoordinate.y)));	
+			canvas.dragStartCoordinate = new Coordinate(e2.pageX, e2.pageY);
+			canvas.drawCanvas();
+		}
+		return true;
+	});	
+	$(this.canvas_element).mousedown(function(e){
+		console.log("down");
+		canvas.dragging = true;
+		canvas.dragStartCoordinate = new Coordinate(e.pageX, e.pageY);
+		console.log("started dragging at: "+JSON.stringify(canvas.dragStartCoordinate));
+	});
+	$(this.canvas_element).mouseup(function(e){
+		canvas.dragging = false;
+		$(this.canvas_element).mousemove(function(){});
+	});
+	$(this.canvas_element).focusout(function(e){
+		$(this).mouseup();
+	});
+	
 	var handleScroll = function(evt){
 		var delta = evt.wheelDelta?evt.wheelDelta/40:evt.detail?-evt.detail : 0;
 		var factor = 0;
