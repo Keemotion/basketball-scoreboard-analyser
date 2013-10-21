@@ -37,8 +37,57 @@ function Canvas(canvas_element){
 		image_bottomright_coordinate.x = Math.min(image_bottomright_coordinate.x, this.image.width);
 		image_bottomright_coordinate.y = Math.min(image_bottomright_coordinate.y, this.image.height);
 		this.context.drawImage(this.image, image_topleft_coordinate.x, image_topleft_coordinate.y, image_bottomright_coordinate.x-image_topleft_coordinate.x, image_bottomright_coordinate.y-image_topleft_coordinate.y, canvas_topleft_coordinate.x, canvas_topleft_coordinate.y, canvas_bottomright_coordinate.x-canvas_topleft_coordinate.x, canvas_bottomright_coordinate.y-canvas_topleft_coordinate.y);
+		for(var i = 0; i < this.highlights.length; ++i){
+			this.drawHighlight(this.highlights[i]);
+		}
 	};
 	var canvas = this;
+	this.highlights = new Array();
+	this.drawCoordinate = function(coordinate){
+		this.context.beginPath();
+		var canvas_coordinate = this.transformImageCoordinateToCanvasCoordinate(coordinate);
+		this.context.arc(canvas_coordinate.x, canvas_coordinate.y, 20, 0, 2*Math.PI);
+		this.context.stroke();
+	}
+	this.drawDigit = function(digit){
+		for(var i = 0; i < highlight.coordinates.length; ++i){
+			this.drawCoordinate(hightlight.coordinates[i]);
+		}
+	};
+	this.drawLabel = function(label){
+		for(var i = 0; i < label.digit_amount; ++i){
+			this.drawDigit(label.digits[i]);
+		}
+	};
+	this.drawHighlight = function(highlight){
+		switch(highlight.type){
+			case "label":
+				this.drawLabel(highlight);
+				break;
+			case "digit":
+				this.drawDigit(highlight);
+				break;
+			case "coordinate":
+				this.drawCoordinate(highlight);
+				break;
+		}
+	}
+	this.addHighlight = function(highlight){
+		console.log(JSON.stringify(highlight));
+		this.highlights.push(highlight);
+		this.drawCanvas();
+		//depending on type of highlight, do something
+		//coordinate:
+		//	just display with circle around
+		//digit:
+		//	display four coordinates and connect them (if possible dotted line)
+		//label:
+		//	display four digits, each digit on its own is connected (same colour)
+	};
+	this.clearHighlights = function(){
+		this.highlights.length = 0;
+		this.drawCanvas();
+	}
 	this.setCoordinateClickListener = function(l){
 		this.coordinateClickListener = l;
 	};
@@ -136,4 +185,5 @@ function Canvas(canvas_element){
 		canvas.canvasResized();
 	};
 	this.image.src = "./testdata/scoreboard-images/chalon.png";
+
 }

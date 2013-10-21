@@ -12,11 +12,13 @@
  * } 
  */
 function Coordinate(x="", y=""){
+	this.type = "coordinate";
 	this.x = x; 
 	this.y = y;
 }
 
 function Digit(parent_label, index){
+	this.type = "digit";
 	this.parent_label = parent_label;
 	this.index = index;
 	this.corners = new Array();
@@ -25,11 +27,20 @@ function Digit(parent_label, index){
 	}
 	this.getStringifyData = function(){
 		var d = new Object();
-		d.corners = this.corners;
+		d.corners = new Array();
+		for(var i = 0; i < this.corners.length; ++i){
+			var c = new Object();
+			c.x = this.corners[i].x;
+			c.y = this.corners[i].y;
+			d.corners.push(c);
+		}
 		return d;
 	};
 	this.load = function(data, warnListeners=true){
-		this.corners = data.corners;
+		this.corners.length = 0;
+		for(var i = 0; i < data.corners.length; ++i){
+			this.corners.push(new Coordinate(data.corners[i].x, data.corners[i].y));
+		}
 		if(warnListeners){
 			this.parent_label.parent_state.labelChanged(this.parent_label);
 		}
@@ -44,6 +55,7 @@ function Digit(parent_label, index){
 }
 
 function LabelObject(name, digit_amount, parent_state, index){
+	this.type = "label";
 	this.parent_state = parent_state;
 	this.name = name;
 	this.digit_amount = digit_amount;
