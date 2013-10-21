@@ -16,8 +16,8 @@ function Canvas(canvas_element){
 		}else{
 			image_topleft_coordinate.y = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(0, canvas_topleft_coordinate.y)).y;
 		}
-		var canvas_bottomright_coordinate = this.transformImageCoordinateToCanvasCoordinate(new Coordinate(this.image.width-1, this.image.height-1));
-		var image_bottomright_coordinate = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(this.canvas_element.width-1, this.canvas_element.height-1));
+		var canvas_bottomright_coordinate = this.transformImageCoordinateToCanvasCoordinate(new Coordinate(this.image.width, this.image.height));
+		var image_bottomright_coordinate = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(this.canvas_element.width, this.canvas_element.height));
 		if(canvas_bottomright_coordinate.x > this.canvas_element.width-1){
 			canvas_bottomright_coordinate.x = this.transformImageCoordinateToCanvasCoordinate(new Coordinate(image_bottomright_coordinate.x, 0)).x;
 		}else{
@@ -28,6 +28,14 @@ function Canvas(canvas_element){
 		}else{
 			image_bottomright_coordinate.y = this.transformCanvasCoordinateToImageCoordinate(new Coordinate(0, canvas_bottomright_coordinate.y)).y;
 		}
+		canvas_topleft_coordinate.x = Math.max(0, canvas_topleft_coordinate.x);
+		canvas_topleft_coordinate.y = Math.max(0, canvas_topleft_coordinate.y);
+		canvas_bottomright_coordinate.x = Math.min(canvas_bottomright_coordinate.x, this.canvas_element.width);
+		canvas_bottomright_coordinate.y = Math.min(canvas_bottomright_coordinate.y, this.canvas_element.height);
+		image_topleft_coordinate.x = Math.max(0, image_topleft_coordinate.x);
+		image_topleft_coordinate.y = Math.max(0, image_topleft_coordinate.y);
+		image_bottomright_coordinate.x = Math.min(image_bottomright_coordinate.x, this.image.width);
+		image_bottomright_coordinate.y = Math.min(image_bottomright_coordinate.y, this.image.height);
 		this.context.drawImage(this.image, image_topleft_coordinate.x, image_topleft_coordinate.y, image_bottomright_coordinate.x-image_topleft_coordinate.x, image_bottomright_coordinate.y-image_topleft_coordinate.y, canvas_topleft_coordinate.x, canvas_topleft_coordinate.y, canvas_bottomright_coordinate.x-canvas_topleft_coordinate.x, canvas_bottomright_coordinate.y-canvas_topleft_coordinate.y);
 	};
 	var canvas = this;
