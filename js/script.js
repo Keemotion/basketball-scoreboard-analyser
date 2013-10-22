@@ -79,6 +79,35 @@ function createHighlightButton(highlight){
 		canvas.addHighlight(highlight);
 	});
 }
+function createDigitClickButton(digit){
+	var btn = $('<button></button>').addClass('button_digit_click').text('click').click(function(e){
+		e.preventDefault();
+		var listener = new CoordinateClickListener();
+		listener.click = function(x, y){
+			if(this.corner_index){
+				++this.corner_index;
+			}else{
+				this.corner_index = 1;
+			}
+
+			console.log("amount = "+this.corner_index);
+			console.log('id = '+'button#button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+(this.corner_index-1));
+			$('button#button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+(this.corner_index-1)).removeClass('active');
+			$('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+(this.corner_index-1)+'_x"]').val(x);
+			$('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+(this.corner_index-1)+'_y"]').val(y);
+			$('button#button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+(this.corner_index-1)).closest('form').submit();
+			if(this.corner_index < 4){
+				$('button#button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+this.corner_index).addClass('active');
+			}else{
+				canvas.resetCoordinateClickListener();
+			}
+		};
+		$('button#button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_0').addClass('active');
+		canvas.setCoordinateClickListener(listener);
+		return false;
+	});
+	return btn;
+}
 function loadLabelDetails(label){
 	clearDetails();
 	var div = $('<div></div>').attr('id', 'div_label_details');
@@ -94,7 +123,9 @@ function loadLabelDetails(label){
 		$(table).append($('<tr></tr>')
 				.append($('<td></td>')
 					.append($('<label></label>').text('Digit '+(i+1)))
-					.append(createHighlightButton(label.digits[i])))
+					.append(createHighlightButton(label.digits[i]))
+					.append(createDigitClickButton(label.digits[i]))
+					)
 				.append($('<td></td>').append(createDigitDetailUL(label.digits[i]))));
 	}
 	var btnApply = $('<button></button>').attr('type', 'submit').text('Apply');
@@ -144,21 +175,18 @@ function createCornerInputs(digit, corner_index){
 	$(el).append($('<button></button>').attr('id', 'button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index).addClass('button_corner_coordinate_click').text('click').click(function(e){
 		e.preventDefault();
 		$(this).addClass('active');
-		canvas.setCoordinateClickListener(function(x, y){
+		var listener = new CoordinateClickListener();
+		listener.click = function(x, y){
 			$('button#button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index).removeClass('active');
 			$('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_x"]').val(x);
 			$('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_y"]').val(y);
 			$(el).closest('form').submit();
 			canvas.resetCoordinateClickListener();
-		});
+		};
+		canvas.setCoordinateClickListener(listener);
 		return false;
 	}));
-//	$(el).append($('<button></button>').attr('id', 'button_coordinate_highlight_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index).addClass('button_coordinate_highlight').text('highlight').click(function(e){
-//		canvas.clearHighlights();
-//		canvas.addHighlight(digit.corners[corner_index]);
-//	}));
 	$(el).append(createHighlightButton(digit.corners[corner_index]));
-
 	return el;
 }
 

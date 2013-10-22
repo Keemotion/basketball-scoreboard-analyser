@@ -101,8 +101,7 @@ function Canvas(canvas_element){
 		this.coordinateClickListener = l;
 	};
 	this.resetCoordinateClickListener = function(){
-		this.setCoordinateClickListener(function(x, y){
-		});
+		this.setCoordinateClickListener(new CoordinateClickListener());
 	};
 	$(this.canvas_element).click(function(e){
 		var c = new Coordinate(e.pageX-this.offsetLeft, e.pageY-this.offsetTop);
@@ -110,7 +109,7 @@ function Canvas(canvas_element){
 		c.x = Math.floor(c.x);
 		c.y = Math.floor(c.y);
 		if(c.x>=0&&c.y>=0&&c.x<canvas.image.width&&c.y<canvas.image.height){
-			canvas.coordinateClickListener(c.x, c.y);
+			canvas.coordinateClickListener.click(c.x, c.y);
 		}
 	});
 	this.dragging = false;
@@ -191,4 +190,7 @@ function Canvas(canvas_element){
 	};
 	this.image.src = "./testdata/scoreboard-images/chalon.png";
 
+}
+function CoordinateClickListener(){
+	this.click = function(x, y){}
 }
