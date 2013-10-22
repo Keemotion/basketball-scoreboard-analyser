@@ -73,10 +73,17 @@ function labelChanged(label_index){
 function clearDetails(){
 	$('div#div_details').html("");
 }
+function createHighlightButton(highlight){
+	return $('<button></button>').addClass('button_highlight').text('highlight').click(function(e){
+		canvas.clearHighlights();
+		canvas.addHighlight(highlight);
+	});
+}
 function loadLabelDetails(label){
 	clearDetails();
 	var div = $('<div></div>').attr('id', 'div_label_details');
 	$(div).append($('<span></span>').addClass('span_details_title').text('Label details'));
+	$(div).append(createHighlightButton(label));
 	var form = $('<form></form>');
 	var table = $('<table></table>');
 	var name_input = $('<input />').attr('name', 'txt_name').attr('value', label.name);
@@ -84,7 +91,19 @@ function loadLabelDetails(label){
 	$(table).append($('<tr></tr>').append($('<td></td>').append($('<label></label>').attr('for', 'txt_name').text('Name: '))).append($('<td></td>').append(name_input)))
 		.append($('<tr></tr>').append($('<td></td>').append($('<label></label>').attr('for', 'txt_digit_amount').text('Amount of digits:'))).append($('<td></td>').append(digit_amount_input)));
 	for(var i = 0; i < label.digit_amount; ++i){
-				$(table).append($('<tr></tr>').append($('<td></td>').append($('<label></label>').text('Digit '+(i+1)))).append($('<td></td>').append(createDigitDetailUL(label.digits[i]))));
+		$(table).append($('<tr></tr>')
+				.append($('<td></td>')
+					.append($('<label></label>').text('Digit '+(i+1)))
+					.append(createHighlightButton(label.digits[i]))
+					/*.append($('<button></button>').attr('id', 'button_digit_highlight_label_'+label.index+'_digit_'+i).addClass('button_digit_highlight').text('highlight').click(function(e){
+						canvas.clearHighlights();
+						var dig = label.digits[i];
+						(function(){alert("test");})();
+						console.log("want to add digit "+i);
+						console.log("digit = "+label.digits[i]);
+						canvas.addHighlight(label.digits[i]);
+					}))*/)
+				.append($('<td></td>').append(createDigitDetailUL(label.digits[i]))));
 	}
 	var btnApply = $('<button></button>').attr('type', 'submit').text('Apply');
 	$(table).append($('<tr></tr>').append($('<td></td>').attr('colspan','2').append(btnApply)));
@@ -105,7 +124,6 @@ function loadLabelDetails(label){
 			data.digits[i] = d;
 		}
 		label.load(data);
-		//alert(JSON.stringify(label.getStringifyData()));
 		loadLabelDetails(label);
 		canvas.drawCanvas();
 		return false;
@@ -143,10 +161,11 @@ function createCornerInputs(digit, corner_index){
 		});
 		return false;
 	}));
-	$(el).append($('<button></button>').attr('id', 'button_coordinate_highlight_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index).addClass('button_coordinate_highlight').text('highlight').click(function(e){
-		canvas.clearHighlights();
-		canvas.addHighlight(digit.corners[corner_index]);
-	}));
+//	$(el).append($('<button></button>').attr('id', 'button_coordinate_highlight_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index).addClass('button_coordinate_highlight').text('highlight').click(function(e){
+//		canvas.clearHighlights();
+//		canvas.addHighlight(digit.corners[corner_index]);
+//	}));
+	$(el).append(createHighlightButton(digit.corners[corner_index]));
 
 	return el;
 }
@@ -155,6 +174,7 @@ function loadDigitDetails(digit){
 	clearDetails();
 	var div = $('<div></div>').attr('id', 'div_label_details');
 	$(div).append($('<span></span>').addClass('span_details_title').text('Digit details (label: '+digit.parent_label.name+', digit: '+digit.index+')'));
+	$(div).append(createHighlightButton(digit));
 	var form = $('<form></form>');
 	$(form).append(createDigitDetailUL(digit));
 	var btnApply = $('<button></button>').attr('type', 'submit').text('Apply');
@@ -176,7 +196,6 @@ function loadDigitDetails(digit){
 	$('div#div_toolbox_objects_details div#div_details').append(div);
 }
 function loadCornerDetails(digit, corner_index){
-	//alert("loadCornerDetails with digit = "+JSON.stringify(digit.getStringifyData()));
 	clearDetails();
 	var div = $('<div></div>').attr('id', 'div_label_details');
 	$(div).append($('<span></span>').addClass('span_details_title').text('Corner details (label: '+digit.parent_label.name+', digit: '+digit.index+', corner: '+corner_index+')'));

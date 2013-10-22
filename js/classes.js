@@ -81,12 +81,6 @@ function LabelObject(name, digit_amount, parent_state, index){
 			d.load(data.digits[i], false);
 			this.digits.push(d);
 		}
-		/*this.digits = new Array();
-		for(var i = 0; i < data.digits.length; ++i){
-			var d = new Digit(this, i);
-			d.load(data.digits[i], false);
-			this.digits.push(d);
-		}*/
 		this.parent_state.labelChanged(this);
 	};
 	this.getStringifyData = function(){

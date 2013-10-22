@@ -46,12 +46,15 @@ function Canvas(canvas_element){
 	this.drawCoordinate = function(coordinate){
 		this.context.beginPath();
 		var canvas_coordinate = this.transformImageCoordinateToCanvasCoordinate(coordinate);
-		this.context.arc(canvas_coordinate.x, canvas_coordinate.y, 20, 0, 2*Math.PI);
+		this.context.strokeStyle="#0000FF";
+		this.context.lineWidth=3;
+		this.context.arc(canvas_coordinate.x, canvas_coordinate.y, 5, 0, 2*Math.PI);
 		this.context.stroke();
 	}
 	this.drawDigit = function(digit){
-		for(var i = 0; i < highlight.coordinates.length; ++i){
-			this.drawCoordinate(hightlight.coordinates[i]);
+		for(var i = 0; i < digit.corners.length; ++i){
+			this.drawCoordinate(digit.corners[i]);
+
 		}
 	};
 	this.drawLabel = function(label){
@@ -73,9 +76,9 @@ function Canvas(canvas_element){
 		}
 	}
 	this.addHighlight = function(highlight){
-		console.log(JSON.stringify(highlight));
 		this.highlights.push(highlight);
 		this.drawCanvas();
+		
 		//depending on type of highlight, do something
 		//coordinate:
 		//	just display with circle around
