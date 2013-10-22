@@ -94,7 +94,7 @@ function loadLabelDetails(label){
 		$(table).append($('<tr></tr>')
 				.append($('<td></td>')
 					.append($('<label></label>').text('Digit '+(i+1)))
-					.append(createHighlightButton(label.digits[i]))
+					.append(createHighlightButton(label.digits[i])))
 				.append($('<td></td>').append(createDigitDetailUL(label.digits[i]))));
 	}
 	var btnApply = $('<button></button>').attr('type', 'submit').text('Apply');
