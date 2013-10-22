@@ -95,14 +95,6 @@ function loadLabelDetails(label){
 				.append($('<td></td>')
 					.append($('<label></label>').text('Digit '+(i+1)))
 					.append(createHighlightButton(label.digits[i]))
-					/*.append($('<button></button>').attr('id', 'button_digit_highlight_label_'+label.index+'_digit_'+i).addClass('button_digit_highlight').text('highlight').click(function(e){
-						canvas.clearHighlights();
-						var dig = label.digits[i];
-						(function(){alert("test");})();
-						console.log("want to add digit "+i);
-						console.log("digit = "+label.digits[i]);
-						canvas.addHighlight(label.digits[i]);
-					}))*/)
 				.append($('<td></td>').append(createDigitDetailUL(label.digits[i]))));
 	}
 	var btnApply = $('<button></button>').attr('type', 'submit').text('Apply');

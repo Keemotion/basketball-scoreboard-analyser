@@ -54,7 +54,13 @@ function Canvas(canvas_element){
 	this.drawDigit = function(digit){
 		for(var i = 0; i < digit.corners.length; ++i){
 			this.drawCoordinate(digit.corners[i]);
-
+			this.context.lineWidth = 2;
+			this.context.beginPath();
+			var c1 = this.transformImageCoordinateToCanvasCoordinate(digit.corners[i]);
+			var c2 = this.transformImageCoordinateToCanvasCoordinate(digit.corners[(i+1)%digit.corners.length]);
+			this.context.moveTo(c1.x, c1.y);
+			this.context.lineTo(c2.x, c2.y);
+			this.context.stroke();
 		}
 	};
 	this.drawLabel = function(label){
@@ -111,8 +117,6 @@ function Canvas(canvas_element){
 	this.dragStartCoordinate = new Coordinate(undefined, undefined);
 	$(this.canvas_element).mousemove(function(e2){
 		if(canvas.dragging){
-			console.log("e: "+e2.pageX+" "+e2.pageY);
-			console.log("dragged: "+(e2.pageX-canvas.dragStartCoordinate.x)+", "+(e2.pageY-canvas.dragStartCoordinate.y));
 			canvas.imagePointOnCenter = canvas.transformCanvasCoordinateToImageCoordinate(new Coordinate(canvas.canvas_element.width/2-(e2.pageX-canvas.dragStartCoordinate.x), canvas.canvas_element.height/2-(e2.pageY-canvas.dragStartCoordinate.y)));	
 			canvas.dragStartCoordinate = new Coordinate(e2.pageX, e2.pageY);
 			canvas.drawCanvas();
@@ -120,10 +124,8 @@ function Canvas(canvas_element){
 		return true;
 	});	
 	$(this.canvas_element).mousedown(function(e){
-		console.log("down");
 		canvas.dragging = true;
 		canvas.dragStartCoordinate = new Coordinate(e.pageX, e.pageY);
-		console.log("started dragging at: "+JSON.stringify(canvas.dragStartCoordinate));
 	});
 	$(this.canvas_element).mouseup(function(e){
 		canvas.dragging = false;

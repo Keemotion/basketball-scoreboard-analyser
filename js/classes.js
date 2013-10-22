@@ -39,7 +39,6 @@ function Digit(parent_label, index){
 	this.load = function(data, warnListeners=true){
 		this.corners.length = Math.min(data.corners.length, this.corners.length);
 		for(var i = 0; i < this.corners.length; ++i){
-			//this.corners.push(new Coordinate(data.corners[i].x, data.corners[i].y));
 			this.corners[i].x = data.corners[i].x;
 			this.corners[i].y = data.corners[i].y;
 		}
