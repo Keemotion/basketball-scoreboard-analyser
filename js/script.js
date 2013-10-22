@@ -107,6 +107,7 @@ function loadLabelDetails(label){
 		label.load(data);
 		//alert(JSON.stringify(label.getStringifyData()));
 		loadLabelDetails(label);
+		canvas.drawCanvas();
 		return false;
 	});
 	$('div#div_toolbox_objects_details div#div_details').append(div);
@@ -145,7 +146,6 @@ function createCornerInputs(digit, corner_index){
 	$(el).append($('<button></button>').attr('id', 'button_coordinate_highlight_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index).addClass('button_coordinate_highlight').text('highlight').click(function(e){
 		canvas.clearHighlights();
 		canvas.addHighlight(digit.corners[corner_index]);
-//		alert("corner: "+JSON.stringify(digit.corners[corner_index]));
 	}));
 
 	return el;
@@ -169,6 +169,7 @@ function loadDigitDetails(digit){
 		}
 		digit.load(d);
 		loadDigitDetails(digit);
+		canvas.drawCanvas();
 		return false;
 	});
 	$(div).append(form);
@@ -189,6 +190,7 @@ function loadCornerDetails(digit, corner_index){
 			var y = $(form).find('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+corner_index+'_y"]').val();
 			digit.changeCorner(corner_index, x, y);
 			loadCornerDetails(digit, corner_index);
+			canvas.drawCanvas();
 			return false;
 		});
 	$(div).append(form);

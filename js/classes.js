@@ -37,8 +37,13 @@ function Digit(parent_label, index){
 		return d;
 	};
 	this.load = function(data, warnListeners=true){
-		this.corners.length = 0;
-		for(var i = 0; i < data.corners.length; ++i){
+		this.corners.length = Math.min(data.corners.length, this.corners.length);
+		for(var i = 0; i < this.corners.length; ++i){
+			//this.corners.push(new Coordinate(data.corners[i].x, data.corners[i].y));
+			this.corners[i].x = data.corners[i].x;
+			this.corners[i].y = data.corners[i].y;
+		}
+		for(var i = this.corners.length; i < data.corners.length; ++i){
 			this.corners.push(new Coordinate(data.corners[i].x, data.corners[i].y));
 		}
 		if(warnListeners){
@@ -67,12 +72,21 @@ function LabelObject(name, digit_amount, parent_state, index){
 	this.load = function(data){
 		this.name = data.name;
 		this.digit_amount = data.digit_amount;
-		this.digits = new Array();
-		for(var i = 0; i < data.digits.length; ++i){
+		this.digits.length = Math.min(this.digits.length, data.digits.length);
+		for(var i = 0; i < this.digits.length; ++i){
+			this.digits[i].load(data.digits[i], false);
+		}
+		for(var i = this.digits.length; i < data.digits.length; ++i){
 			var d = new Digit(this, i);
 			d.load(data.digits[i], false);
 			this.digits.push(d);
 		}
+		/*this.digits = new Array();
+		for(var i = 0; i < data.digits.length; ++i){
+			var d = new Digit(this, i);
+			d.load(data.digits[i], false);
+			this.digits.push(d);
+		}*/
 		this.parent_state.labelChanged(this);
 	};
 	this.getStringifyData = function(){
