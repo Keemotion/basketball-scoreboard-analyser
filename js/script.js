@@ -2,40 +2,60 @@ var current_state;
 function loadState(json){
 	current_state.parseJSON(json);
 }
+function buildTreeDigit(label, digit_index){
+	var digit_li = $('<li></li>').addClass('collapsed').addClass('li_digit');
+	//var digit_expand_command = $('<span></span>').addClass('command').addClass('expand_command').html('&gt;&nbsp');
+	//var digit_collapse_command = $('<span></span>').addClass('command').addClass('collapse_command').html('v&nbsp;');
+	var digit_title = $('<span></span>').addClass('span_li_title').addClass('span_digit_li_title').text('Digit '+(digit_index+1));
+	$(digit_li).append(createExpandCommand()).append(createCollapseCommand()).append(digit_title);
+	var digit_ul = $('<ul></ul>');
+	for(var k = 0; k < 4; ++k){
+		var corner_li = $('<li></li>').addClass('li_corner');	
+		var corner_title = $('<span></span>').addClass('span_li_title').addClass('span_corner_li_title').text('x: '+label.digits[digit_index].corners[k].x+'; y: '+label.digits[digit_index].corners[k].y).appendTo(corner_li);
+		$(digit_ul).append(corner_li);
+	}
+	$(digit_ul).appendTo(digit_li);
+	return digit_li;
+}
+function createExpandCommand(){
+	var label_expand_command = $('<span></span>').addClass('command').addClass('expand_command').html('&gt;&nbsp;');
+	$(label_expand_command).unbind('click').click(function(e){
+		$(this).parent().removeClass('collapsed').addClass('expanded');
+	});
+	return label_expand_command;
+}
+function createCollapseCommand(){
+	var label_collapse_command = $('<span></span>').addClass('command').addClass('collapse_command').html('&gt;&nbsp;');
+	$(label_collapse_command).unbind('click').click(function(e){
+		$(this).parent().removeClass('expanded').addClass('collapsed');
+	});
+	return label_collapse_command;
+}
+function buildTreeLabel(index){
+	var label_li = $('<li></li>').addClass('collapsed').addClass('li_label');
+	var label_title = $('<span></span>').addClass('span_li_title').addClass('span_label_li_title').text(current_state.objects[index].name);
+	$(label_li).append(createExpandCommand());
+	$(label_li).append(createCollapseCommand());
+	$(label_li).append(label_title);
+	var digits_ul = $('<ul></ul>');
+	for(var j = 0; j < current_state.objects[index].digits.length; ++j){
+		$(buildTreeDigit(current_state.objects[index], j)).appendTo(digits_ul);
+	}
+	$(digits_ul).appendTo(label_li);
+	return label_li;
+}
 function buildTree(){
 	$('ul#list_toolbox_objects_tree').html('');
 	for(var i = 0; i < current_state.objects.length; ++i){
-		var label_li = $('<li></li>').addClass('collapsed').addClass('li_label');
-		var label_expand_command = $('<span></span>').addClass('command').addClass('expand_command').html('&gt;&nbsp;');
-		var label_collapse_command = $('<span></span>').addClass('command').addClass('collapse_command').html('v&nbsp;');
-		var label_title = $('<span></span>').addClass('span_li_title').addClass('span_label_li_title').text(current_state.objects[i].name);
-		$(label_li).append(label_expand_command).append(label_collapse_command).append(label_title);
-		var digits_ul = $('<ul></ul>');
-		for(var j = 0; j < current_state.objects[i].digits.length; ++j){
-			var digit_li = $('<li></li>').addClass('collapsed').addClass('li_digit');
-			var digit_expand_command = $('<span></span>').addClass('command').addClass('expand_command').html('&gt;&nbsp');
-			var digit_collapse_command = $('<span></span>').addClass('command').addClass('collapse_command').html('v&nbsp;');
-			var digit_title = $('<span></span>').addClass('span_li_title').addClass('span_digit_li_title').text('Digit '+(j+1));
-			$(digit_li).append(digit_expand_command).append(digit_collapse_command).append(digit_title);
-			var digit_ul = $('<ul></ul>');
-			for(var k = 0; k < 4; ++k){
-				var corner_li = $('<li></li>').addClass('li_corner');	
-				var corner_title = $('<span></span>').addClass('span_li_title').addClass('span_corner_li_title').text('x: '+current_state.objects[i].digits[j].corners[k].x+'; y: '+current_state.objects[i].digits[j].corners[k].y).appendTo(corner_li);
-				$(digit_ul).append(corner_li);
-			}
-			$(digit_ul).appendTo(digit_li);
-			$(digit_li).appendTo(digits_ul);
-		}
-		$(digits_ul).appendTo(label_li);
-		$(label_li).appendTo('ul#list_toolbox_objects_tree');
+		$(buildTreeLabel(i)).appendTo('ul#list_toolbox_objects_tree');
 	}
 	$(window).ready(function(){
-		$('ul#list_toolbox_objects_tree li .expand_command').unbind('click').click(function(e){
+	/*	$('ul#list_toolbox_objects_tree li .expand_command').unbind('click').click(function(e){
 			$(this).parent().removeClass('collapsed').addClass('expanded');
 		});
 		$('ul#list_toolbox_objects_tree li .collapse_command').unbind('click').click(function(e){
 			$(this).parent().removeClass('expanded').addClass('collapsed');
-		});
+		});*/
 		$('ul#list_toolbox_objects_tree li>span.span_li_title').unbind('click').click(function(e){
 			if($(this).hasClass('span_label_li_title')){
 				var ind = $(this).parent().parent().children('li').index($(this).parent());
@@ -59,16 +79,21 @@ function currentStateChanged(){
 }
 function loadLabelTreeData(labelLi, label){
 	$(labelLi).children('.span_label_li_title').text(label.name);
-	for(var i = 0; i < label.digit_amount; ++i){
-		var digit_li = $(labelLi).children('ul').find('li.li_digit').get(i);
-		for(var j = 0; j < 4; ++j){
-			$($(digit_li).find('ul > li').get(j)).children('span.span_corner_li_title').text('x: '+label.digits[i].corners[j].x+', y: '+label.digits[i].corners[j].y);
+	if(label.digit_amount != $(labelLi).children('ul').find('li.li_digit').length){
+		$(labelLi).replaceWith(buildTreeLabel(label.index));
+	}else{	
+		for(var i = 0; i < label.digit_amount; ++i){
+			var digit_li = $(labelLi).children('ul').find('li.li_digit').get(i);
+			for(var j = 0; j < 4; ++j){
+				$($(digit_li).find('ul > li').get(j)).children('span.span_corner_li_title').text('x: '+label.digits[i].corners[j].x+', y: '+label.digits[i].corners[j].y);
+			}
 		}
 	}
 }
 function labelChanged(label_index){
 	loadLabelTreeData($('ul#list_toolbox_objects_tree > li').get(label_index), current_state.objects[label_index]);
 	$('textarea#txt_current_state').val(current_state.stringify());
+	canvas.drawCanvas();
 }
 function clearDetails(){
 	$('div#div_details').html("");
@@ -108,11 +133,27 @@ function createDigitClickButton(digit){
 	});
 	return btn;
 }
+function createDigitRemoveButton(digit){
+	var btn = $('<button></button>').addClass('button_digit_remove').text('remove').click(function(e){
+		e.preventDefault();
+		digit.parent_label.removeDigit(digit.index);
+		loadLabelDetails(digit.parent_label);
+	});
+	return btn;
+}
+function createAddDigitButton(label){
+	var btn = $('<button></button>').addClass('button_digit_add').text('add digit').click(function(e){
+		label.addDigit();
+		loadLabelDetails(label);
+	});
+	return btn;
+}
 function loadLabelDetails(label){
 	clearDetails();
 	var div = $('<div></div>').attr('id', 'div_label_details');
 	$(div).append($('<span></span>').addClass('span_details_title').text('Label details'));
 	$(div).append(createHighlightButton(label));
+	$(div).append(createAddDigitButton(label));
 	var form = $('<form></form>');
 	var table = $('<table></table>');
 	var name_input = $('<input />').attr('name', 'txt_name').attr('value', label.name);
@@ -125,6 +166,7 @@ function loadLabelDetails(label){
 					.append($('<label></label>').text('Digit '+(i+1)))
 					.append(createHighlightButton(label.digits[i]))
 					.append(createDigitClickButton(label.digits[i]))
+					.append(createDigitRemoveButton(label.digits[i]))
 					)
 				.append($('<td></td>').append(createDigitDetailUL(label.digits[i]))));
 	}

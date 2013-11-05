@@ -91,7 +91,20 @@ function LabelObject(name, digit_amount, parent_state, index){
 			d.digits.push(this.digits[i].getStringifyData());
 		}
 		return d;
-	}
+	};
+	this.removeDigit = function(index){
+		for(var i = index+1; i < this.digit_amount; ++i){
+			this.digits[i-1]=this.digits[i];
+		}
+		--this.digit_amount;
+		this.digits.length -= 1;
+		this.parent_state.labelChanged(this);
+	};
+	this.addDigit = function(){
+		this.digits.push(new Digit(this, this.digit_amount));
+		this.digit_amount++;
+		this.parent_state.labelChanged(this);
+	};
 }
 
 function State(){
