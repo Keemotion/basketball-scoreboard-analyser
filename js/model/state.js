@@ -11,7 +11,7 @@ define(["./labelobject"], function(LabelObject){
         this.addObject("team2_label2", 2, false);
     };
     State.prototype.addObject = function(label_name, digit_amount, single_event=true){
-        this.objects.push(new LabelObject(label_name, digit_amount, this, this.objects.length));
+        this.objects.push(new LabelObject(label_name, digit_amount, this, this.objects.length, this.messaging_system));
         if(single_event){
             this.messaging_system.fire(this.messaging_system.events.StateChanged, this);
         }

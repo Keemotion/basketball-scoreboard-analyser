@@ -4,7 +4,10 @@ define([],function(){
 	MessagingSystem.prototype.events = new Object({
 		LoadState:'LoadState',
         LabelChanged:'LabelChanged',
-        StateChanged:'StateChanged'
+        StateChanged:'StateChanged',
+        LoadImage:'LoadImage',
+        WindowResized:'WindowResized',
+        ImageDisplayChanged:'ImageDisplayChanged'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

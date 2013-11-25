@@ -1,11 +1,11 @@
 define(["./coordinate"],function(Coordinate){
     var Digit = function(parent_label, index, messaging_system){
         this.parent_label = parent_label;
-        this.messaging_system = messaging_sytem;
+        this.messaging_system = messaging_system;
         this.index = index;
-        this.corner = new Array();
+        this.corners = new Array();
         for(var i = 0; i < 4; ++i){
-            this.corners.push(new Coordinate());
+            this.corners.push(new Coordinate("", ""));
         }
     };
     Digit.prototype.getStringifyData = function(){

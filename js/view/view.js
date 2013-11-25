@@ -1,14 +1,14 @@
 define(['./canvas/canvas', './stateview/loadstatecomponent'], function(MyCanvas, LoadStateComponent){
-    var View = function(target_view, messaging_system){
+    var View = function(controller, target_view, messaging_system){
     	this.messaging_system = messaging_system;
 		this.element = target_view;
         this.element.html('');
-        var canvas_div = $('<div>');
+        //var canvas_div = $('<div>');
         var canvas_container_div = $('<div>').attr({
         		class: 'div_horizontal',
         		id: 'div_image'
         		})
-        	.append(canvas_div);
+        	/*.append(canvas_div)*/;
         var current_state_div = $('<div>').attr({
         		class:'div_state',
         		id: 'div_current_state'
@@ -45,8 +45,11 @@ define(['./canvas/canvas', './stateview/loadstatecomponent'], function(MyCanvas,
         this.element.append(left_container_div)
         	.append(right_container_div);
         
-        this.canvas = new MyCanvas(canvas_div, messaging_system);
+        this.canvas = new MyCanvas(canvas_container_div, messaging_system);
         this.loadStateComponent = new LoadStateComponent(load_state_div, messaging_system);
+        window.addEventListener('resize', function(){
+            messaging_system.fire(messaging_system.events.WindowResized, null);
+        });
     };
     return View;
 });
