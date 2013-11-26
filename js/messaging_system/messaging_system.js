@@ -8,6 +8,7 @@ define([],function(){
         LoadImage:'LoadImage',
         WindowResized:'WindowResized',
         ImageDisplayChanged:'ImageDisplayChanged',
+        LabelObjectClicked: 'LabelObjectClicked'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

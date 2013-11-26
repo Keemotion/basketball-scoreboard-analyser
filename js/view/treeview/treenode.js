@@ -6,6 +6,7 @@ define([], function(){
             .html('&gt;&nbsp;')
             .click(function(e){
                 $(this).closest('li').removeClass('collapsed').addClass('expanded');
+                return false;
             });
         return element;
     };
@@ -16,6 +17,7 @@ define([], function(){
             .html('v&nbsp;')
             .click(function(e){
                 $(this).closest('li').removeClass('expanded').addClass('collapsed');
+                return false;
             });
         return element;
     };
@@ -41,7 +43,12 @@ define([], function(){
             })
             .append(this.tree_controls_element)
             .append(this.title_element)
-            .append(this.sub_nodes_element);
+            .append(this.sub_nodes_element)
+            .click(function(){
+                var data = new Object();
+                data.data_proxy = data_proxy;
+                messaging_system.fire(messaging_system.events.LabelObjectClicked, data);
+            });
         this.lock_depth = 0;
         target_view.append(this.node_element);
         this.loadData();

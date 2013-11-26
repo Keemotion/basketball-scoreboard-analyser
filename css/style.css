@@ -59,6 +59,7 @@ div.div_state div.div_state_buttons{
 }
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree{
 	list-style-type: none;
+    padding-left:2px;
 }
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree ul{
 	list-style-type: none;
