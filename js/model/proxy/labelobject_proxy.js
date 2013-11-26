@@ -1,4 +1,4 @@
-define([],function(){
+define(["../../messaging_system/messaging_system"],function(MessagingSystem){
     var LabelObjectProxy = function(label_object){
         this.label_object = label_object;
     };
@@ -11,5 +11,8 @@ define([],function(){
     LabelObjectProxy.prototype.getId = function(){
         return this.label_object.getId();
     };
+	LabelObjectProxy.prototype.getUpdateEvents = function(){
+		return [MessagingSystem.prototype.events.LabelChanged];
+	};
     return LabelObjectProxy;
 });

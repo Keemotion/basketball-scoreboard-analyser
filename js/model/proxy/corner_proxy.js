@@ -11,5 +11,17 @@ define([],function(){
     CornerProxy.prototype.getSubNodes = function(){
         return new Array();
     };
+	CornerProxy.prototype.getX = function(){
+		return this.getCoordinate().getX();
+	};
+	CornerProxy.prototype.getY = function(){
+		return this.getCoordinate().getY();
+	};
+	CornerProxy.prototype.getCoordinate = function(){
+		return this.corner.getCoordinate();
+	};
+	CornerProxy.prototype.getUpdateEvents = function(){
+		return [];
+	};
     return CornerProxy;
 });

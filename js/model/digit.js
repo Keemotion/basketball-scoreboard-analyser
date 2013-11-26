@@ -20,15 +20,15 @@ define(["./corner", "./proxy/digit_proxy", './coordinate'],function(Corner, Digi
         d.corners = new Array();
         for(var i = 0; i < this.corners.length; ++i){
             var c = new Object();
-            c.x = this.corners[i].getCoordinate().x;
-            c.y = this.corners[i].getCoordinate().y;
+            c.x = this.corners[i].getCoordinate().getX();
+            c.y = this.corners[i].getCoordinate().getY();
             d.corners.push(c);
         }
         return d;
     };
     Digit.prototype.setCorners = function(corners_data, warn_listeners){
         for(var i = 0; i < 4; ++i){
-            this.corners[i].setCoordinate(new Coordinate(corners_data[i].x, corners_data[i].y));
+			this.corners[i].load(corners_data[i], false);
         }
         if(warn_listeners){
             this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label);
@@ -40,6 +40,12 @@ define(["./corner", "./proxy/digit_proxy", './coordinate'],function(Corner, Digi
             this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label); 
         }
     };
+	Digit.prototype.update = function(data, warn_listeners = true){
+		this.setCorners(data.corners, false);
+		if(warn_listeners){
+			this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label); 
+		}
+	};
     Digit.prototype.changeCorner = function(corner_index, x, y, warnListeners = true){
         this.corners[corner_index].x = x;
         this.corners[corner_index].y = y;

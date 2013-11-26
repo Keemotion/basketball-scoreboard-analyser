@@ -1,4 +1,4 @@
-define(["./digit", "./proxy/labelobject_proxy"],function(Digit, LabelObjectProxy){
+define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_listener"],function(Digit, LabelObjectProxy, EventListener){
     var LabelObject = function(name, digits, parent_state, id, messaging_system){
         this.messaging_system = messaging_system;
         this.parent_state = parent_state;
@@ -8,6 +8,7 @@ define(["./digit", "./proxy/labelobject_proxy"],function(Digit, LabelObjectProxy
         this.id = id;
         this.proxy = new LabelObjectProxy(this);
         this.setDigits(digits);
+		this.messaging_system.addEventListener(this.messaging_system.events.SubmitLabelObjectDetails, new EventListener(this, this.submitLabelObjectDetails));
     };
     LabelObject.prototype.type = "label";
     LabelObject.prototype.setDigits = function(digits){
@@ -17,28 +18,34 @@ define(["./digit", "./proxy/labelobject_proxy"],function(Digit, LabelObjectProxy
             this.addDigit(digits[i]);
         }
     };
+	LabelObject.prototype.submitLabelObjectDetails = function(signal, data){
+		this.update(data);	
+	};
+	LabelObject.prototype.update = function(data){
+		this.name = data.name;
+		this.id = data.id;
+		this.digits.length = data.digits.length;
+		for(var i = 0; i < this.digits.length; ++i){
+			this.digits[i].update(data.digits[i], false);
+		}
+		this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.id);
+	};
     LabelObject.prototype.addDigit = function(digit_data){
         this.digits.push(new Digit(this, this.digits.length, digit_data, this.messaging_system));
         this.sub_nodes_proxies.push(this.digits[this.digits.length-1].getProxy());
     };
     LabelObject.prototype.load = function(data){
         this.name = data.name;
-        this.digit_amount = data.digit_amount;
-        this.digits_length = Math.min(this.digits.length, data.digits_length);
-        for(var i = 0; i < this.digits.length; ++i){
-            this.digits[i].load(data.digits[i], false);
-        }
-        for(var i = this.digits.length; i < data.digits.length; ++i){
-            var d = new Digit(this, i);
-            d.load(data.digits[i], false);
-            this.digits.push(d);
-        }
-        this.messaging_system.fire(this.messaging_system.events.LabelChanged, this);
+		this.id = data.id;
+		this.digits.length = 0;
+		for(var i = 0; i < data.digits.length; ++i){
+			this.digits.push(new Digit(this, i, data.digits, this.messaging_system));
+		}
+        this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.id);
     };
     LabelObject.prototype.getStringifyData = function(){
         var d = new Object();
         d.name = this.name;
-        d.digit_amount = this.digit_amount;
         d.digits = new Array();
         for(var i = 0; i < this.digits.length; ++i){
             d.digits.push(this.digits[i].getStringifyData());
@@ -46,10 +53,9 @@ define(["./digit", "./proxy/labelobject_proxy"],function(Digit, LabelObjectProxy
         return d;
     };     
     LabelObject.prototype.removeDigit = function(index){
-        for(var i = index+1; i < this.digit_amount; ++i){
+        for(var i = index+1; i < this.digits.length; ++i){
             this.digits[i-1] = this.digits[i];
         }
-        --this.digit_amount;
         --this.digits.length;
         this.messaging_system.fire(this.messaging_system.events.LabelChanged, this);
     };
@@ -64,6 +70,6 @@ define(["./digit", "./proxy/labelobject_proxy"],function(Digit, LabelObjectProxy
     };
     LabelObject.prototype.getId = function(){
         return "labelobject_"+this.id;
-    }
+    };
     return LabelObject;
 });

@@ -1,4 +1,4 @@
-define([], function(){
+define(['../../messaging_system/event_listener'], function(EventListener){
     var ExpandCommand = function(){
         var element = $('<span>').attr({
             'class':'command expand_command'
@@ -39,7 +39,7 @@ define([], function(){
             .append(new CollapseCommand());
         this.node_element = $('<li>')
             .attr({
-                'class':'expanded'
+                'class':'collapsed'
             })
             .append(this.tree_controls_element)
             .append(this.title_element)
@@ -52,10 +52,27 @@ define([], function(){
         this.lock_depth = 0;
         target_view.append(this.node_element);
         this.loadData();
+		this.setUpdateListeners(this.data_proxy.getUpdateEvents());
     };
+	TreeNode.prototype.setUpdateListeners = function(events){
+		for(var i = 0; i < events.length; ++i){
+			this.messaging_system.addEventListener(events[i],new EventListener(this, this.updated));
+		}
+	};
+	TreeNode.prototype.update = function(data){
+		this.setTitle(this.data_proxy.getTitle());
+		this.setId(this.data_proxy.getId());
+		for(var i = 0; i < this.sub_nodes.length; ++i){
+			this.sub_nodes[i].update();
+		}
+	};
+	TreeNode.prototype.updated = function(signal, data){
+		//this.loadData();
+		this.update(data);//TODO: add extra field to data, to limit nodes to update (send field of data to update containing information that's now in data)	
+	};
     TreeNode.prototype.addSubNode = function(data){
-        this.subNodesChanged();
         this.sub_nodes.push(new TreeNode(this.sub_nodes_element, data, this.messaging_system));
+        this.subNodesChanged();
     };
     TreeNode.prototype.setTitle = function(title){
         this.title = title;
@@ -70,6 +87,7 @@ define([], function(){
             return;
         }
         this.sub_nodes.length = 0;
+		this.sub_nodes_element.empty();
         for(var i = 0; i < sub_nodes.length; ++i){
             this.addSubNode(sub_nodes[i]);
         }

@@ -21,5 +21,12 @@ define(['./coordinate','./proxy/corner_proxy'], function(Coordinate, CornerProxy
     Corner.prototype.getProxy = function(){
         return this.proxy;
     };
+	Corner.prototype.load = function(corner_data, warn_listeners=true){
+		this.id = corner_data.id;
+		this.setCoordinate(corner_data.coordinate);
+		if(warn_listeners){
+			this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_digit.parent_label);
+		}
+	};
     return Corner;
 });

@@ -11,5 +11,8 @@ define([],function(){
     DigitProxy.prototype.getSubNodes = function(){
         return this.digit.getSubNodesProxies();
     };
+	DigitProxy.prototype.getUpdateEvents = function(){
+		return [];
+	};
     return DigitProxy;
 });
