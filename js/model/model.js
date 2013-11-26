@@ -8,6 +8,9 @@ define(["./state"], function(State){
         this.image = url;
         this.messaging_system.fire(this.messaging_system.events.LoadImage, url);
     };
+    Model.prototype.getState = function(){
+        return this.current_state;
+    };
     return Model;
 });
 

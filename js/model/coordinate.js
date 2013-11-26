@@ -4,6 +4,6 @@ define([],function(){
         this.x = x;
         this.y = y;
     };
-    Coordinate.prototype.type = "coordinate";
+    //Coordinate.prototype.type = "coordinate";
     return Coordinate;
 });

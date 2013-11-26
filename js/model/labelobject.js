@@ -1,16 +1,26 @@
-define(["./digit"],function(Digit){
-    var LabelObject = function(name, digit_amount, parent_state, index, messaging_system){
+define(["./digit", "./proxy/labelobject_proxy"],function(Digit, LabelObjectProxy){
+    var LabelObject = function(name, digits, parent_state, id, messaging_system){
         this.messaging_system = messaging_system;
         this.parent_state = parent_state;
+        this.sub_nodes_proxies = new Array();
         this.name = name;
-        this.digit_amount = digit_amount;
         this.digits = new Array();
-        this.index = index;
-        for(var i = 0; i < digit_amount; ++i){
-            this.digits.push(new Digit(this, i, this.messaging_system));
-        }
+        this.id = id;
+        this.proxy = new LabelObjectProxy(this);
+        this.setDigits(digits);
     };
     LabelObject.prototype.type = "label";
+    LabelObject.prototype.setDigits = function(digits){
+        this.digits.length = 0;
+        this.sub_nodes_proxies.length = 0;
+        for(var i = 0; i < digits.length; ++i){
+            this.addDigit(digits[i]);
+        }
+    };
+    LabelObject.prototype.addDigit = function(digit_data){
+        this.digits.push(new Digit(this, this.digits.length, digit_data, this.messaging_system));
+        this.sub_nodes_proxies.push(this.digits[this.digits.length-1].getProxy());
+    };
     LabelObject.prototype.load = function(data){
         this.name = data.name;
         this.digit_amount = data.digit_amount;
@@ -43,5 +53,17 @@ define(["./digit"],function(Digit){
         --this.digits.length;
         this.messaging_system.fire(this.messaging_system.events.LabelChanged, this);
     };
+    LabelObject.prototype.getProxy = function(){
+        return this.proxy;
+    };
+    LabelObject.prototype.getSubNodesProxies = function(){
+        return this.sub_nodes_proxies;
+    };
+    LabelObject.prototype.getTitle = function(){
+        return this.name;
+    };
+    LabelObject.prototype.getId = function(){
+        return "labelobject_"+this.id;
+    }
     return LabelObject;
 });

@@ -7,7 +7,7 @@ define([],function(){
         StateChanged:'StateChanged',
         LoadImage:'LoadImage',
         WindowResized:'WindowResized',
-        ImageDisplayChanged:'ImageDisplayChanged'
+        ImageDisplayChanged:'ImageDisplayChanged',
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

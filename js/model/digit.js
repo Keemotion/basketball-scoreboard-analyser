@@ -1,11 +1,18 @@
-define(["./coordinate"],function(Coordinate){
-    var Digit = function(parent_label, index, messaging_system){
+define(["./corner", "./proxy/digit_proxy", './coordinate'],function(Corner, DigitProxy, Coordinate){
+    var Digit = function(parent_label, id, data, messaging_system){
         this.parent_label = parent_label;
         this.messaging_system = messaging_system;
-        this.index = index;
+        this.id = id;
         this.corners = new Array();
+        this.sub_nodes_proxies = new Array();
+        this.resetCorners();
+        this.proxy = new DigitProxy(this);
+    };
+    Digit.prototype.resetCorners = function(){
+        this.corners.length = 0;
         for(var i = 0; i < 4; ++i){
-            this.corners.push(new Coordinate("", ""));
+            this.corners.push(new Corner(this, new Coordinate(2, 1), i, this.messaging_system));
+            this.sub_nodes_proxies.push(this.corners[i].getProxy());
         }
     };
     Digit.prototype.getStringifyData = function(){
@@ -13,22 +20,23 @@ define(["./coordinate"],function(Coordinate){
         d.corners = new Array();
         for(var i = 0; i < this.corners.length; ++i){
             var c = new Object();
-            c.x = this.corners[i].x;
-            c.y = this.corners[i].y;
+            c.x = this.corners[i].getCoordinate().x;
+            c.y = this.corners[i].getCoordinate().y;
             d.corners.push(c);
         }
         return d;
     };
-    Digit.prototype.load = function(data, warnListeners = true){
-        this.corners.length = Math.min(data.corners.length, this.corners.length);
-        for(var i = 0; i < this.corners.length; ++i){
-            this.corners[i].x = data.corners[i].x;
-            this.corners[i].y = data.corners[i].y;
+    Digit.prototype.setCorners = function(corners_data, warn_listeners){
+        for(var i = 0; i < 4; ++i){
+            this.corners[i].setCoordinate(new Coordinate(corners_data[i].x, corners_data[i].y));
         }
-        for(var i = this.corners.length; i < data.corners.length; ++i){
-            this.corners.push(new Coordinate(data.corners[i].x, data.corners[i].y));
+        if(warn_listeners){
+            this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label);
         }
-        if(warnListeners){
+    };
+    Digit.prototype.load = function(data, warn_listeners = true){
+        this.setCorners(data.corners, false);
+        if(warn_listeners){
             this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label); 
         }
     };
@@ -38,6 +46,18 @@ define(["./coordinate"],function(Coordinate){
         if(warnListeners){
             this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label);
         }
+    };
+    Digit.prototype.getSubNodesProxies = function(){
+        return this.sub_nodes_proxies;
+    };
+    Digit.prototype.getProxy = function(){
+        return this.proxy;
+    };
+    Digit.prototype.getTitle = function(){
+        return "digit";
+    };
+    Digit.prototype.getId = function(){
+        return this.id;
     };
     Digit.prototype.type = "digit";
     return Digit;

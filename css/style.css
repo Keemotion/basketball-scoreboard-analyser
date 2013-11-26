@@ -23,7 +23,7 @@ div#div_image{
 	height:100%;
     background-color:blue;
 }
-div#div_image canvas#canvas_image{
+div#div_image canvas.canvas_image{
 	background-color:pink;
 	width:100%;
 	height:100%;
@@ -57,34 +57,37 @@ textarea.txt_state{
 div.div_state div.div_state_buttons{
 	float:left;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree ul{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree{
 	list-style-type: none;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree ul{
+	list-style-type: none;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.collapsed > ul{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li{
+}
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.collapsed > ul{
 	display:none;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li .command{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li .command{
 	float:left;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.collapsed > .expand_command{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.collapsed > div.tree_controls_container > .expand_command{
 	display:inline;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.collapsed > .collapse_command{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.collapsed > div.tree_controls_container > .collapse_command{
 	display:none;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.expanded > .expand_command{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.expanded > div.tree_controls_container > .expand_command{
 	display:none;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li.expanded > .collapse_command{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.expanded > div.tree_controls_container > .collapse_command{
 	display:inline;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li>span.span_li_title{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li>span.span_li_title{
 	display:block;
 	overflow:hidden;
 }
-div#div_toolbox_objects_tree ul#list_toolbox_objects_tree li>span.span_li_title:hover{
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li>span.span_li_title:hover{
 	background-color:blue;
 	cursor:pointer;
 }
