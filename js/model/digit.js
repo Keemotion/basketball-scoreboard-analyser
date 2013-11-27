@@ -4,7 +4,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         this.parent_label = parent_label;
         this.messaging_system = messaging_system;
         this.id = id;
-		this.name = "test";
+		this.name = "digit";
         this.corners = new Array();
 		this.setProxy(new DigitProxy(this));
         this.resetCorners();
@@ -45,7 +45,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
   		}      
     };
 	Digit.prototype.update = function(data, warn_listeners = true){
-		this.name+='1';
+		this.name = data.name;
 		this.setCorners(data.corners, false);
 		if(warn_listeners){
 			this.notifyLabelChanged();
@@ -53,8 +53,6 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 	};
     Digit.prototype.changeCorner = function(corner_index, x, y, warnListeners = true){
 		this.corners[corner_index].setCoordinate(new Coordinate(x, y));
-        //this.corners[corner_index].setX(x);
-        //this.corners[corner_index].setY(y);
         if(warnListeners){
 			this.notifyLabelChanged();
         }

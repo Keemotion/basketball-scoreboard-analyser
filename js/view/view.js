@@ -1,4 +1,19 @@
-define(['./canvas/canvas', './stateview/loadstatecomponent', './treeview/treeview', './detailsview/labelobject_detailsview', '../messaging_system/event_listener'], function(MyCanvas, LoadStateComponent, TreeView, LabelObjectDetailsView, EventListener){
+define([
+		'./canvas/canvas', 
+		'./stateview/loadstatecomponent', 
+		'./treeview/treeview', 
+		'./detailsview/labelobject_detailsview', 
+		'../messaging_system/event_listener',
+		'./canvas/display_tree'
+		]
+	, function(
+		MyCanvas, 
+		LoadStateComponent, 
+		TreeView, 
+		LabelObjectDetailsView, 
+		EventListener,
+		DisplayTree
+		){
     var View = function(controller, target_view, messaging_system){
     	this.messaging_system = messaging_system;
         this.controller = controller;
@@ -45,6 +60,7 @@ define(['./canvas/canvas', './stateview/loadstatecomponent', './treeview/treevie
         	.append(this.right_container_div);
         
         this.canvas = new MyCanvas(this.canvas_container_div, this.messaging_system);
+		this.canvas.addDisplayObject(new DisplayTree(this.controller.getModel().getState().getProxy()));
         this.loadStateComponent = new LoadStateComponent(this.load_state_div, this.messaging_system);
         this.treeView = new TreeView(this.toolbox_tree_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
         this.messaging_system.addEventListener(this.messaging_system.events.LabelObjectClicked, new EventListener(this,this.labelObjectClicked));
@@ -53,7 +69,9 @@ define(['./canvas/canvas', './stateview/loadstatecomponent', './treeview/treevie
         });
     };
     View.prototype.labelObjectClicked = function(signal, data){
-        this.loadLabelObjectDetails(data.data_proxy);
+		if(data.data_proxy.getType() == "label"){
+	        this.loadLabelObjectDetails(data.data_proxy);
+		}
     };
     View.prototype.loadLabelObjectDetails = function(data_proxy){
         this.toolbox_details_div.empty();

@@ -38,7 +38,6 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
 	};
     LabelObject.prototype.addDigit = function(digit_data){
         this.digits.push(new Digit(this, this.digits.length, digit_data, this.messaging_system));
-		this.digits[this.digits.length-1].name = "modified";
         this.sub_nodes_proxies.push(this.digits[this.digits.length-1].getProxy());
     };
     LabelObject.prototype.load = function(data){
