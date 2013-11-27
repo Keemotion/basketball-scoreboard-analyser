@@ -1,4 +1,4 @@
-define(["./digit_details_content_view", "../../messaging_system/event_listener"], function(DigitDetailsContentView, EventListener){
+define(["./digit_details_content_view", "../../messaging_system/event_listener", "../../messaging_system/events/submit_label_object_details_event"], function(DigitDetailsContentView, EventListener, SubmitLabelObjectDetailsEvent){
 	var HighlightButton = function(data_proxy, messaging_system){
 		var element = $('<button>').text('highlight');
 		return element;
@@ -16,8 +16,11 @@ define(["./digit_details_content_view", "../../messaging_system/event_listener"]
 		this.form = $('<form>')
 			.submit(function(e){
 				e.preventDefault();
-				messaging_system.fire(messaging_system.events.SubmitLabelObjectDetails, self.collectFormData());
-				//return false;
+				var d = new Object();
+				d.data = self.collectFormData();
+				d.target = new Object();
+				d.target[self.data_proxy.getType()]=self.data_proxy.getId();
+				messaging_system.fire(messaging_system.events.SubmitLabelObjectDetails, new SubmitLabelObjectDetailsEvent(d.target, d.data));
 			});
 		this.element = $('<div>')
 			.attr({
@@ -57,7 +60,7 @@ define(["./digit_details_content_view", "../../messaging_system/event_listener"]
 	};
 	LabelObjectDetailsView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();
-		this.content_element.empty();
+		this.content_element.empty().text(this.data_proxy.getTitle());
 		this.content_elements.length = 0;
 		for(var i = 0; i < subnodes.length; ++i){
 			var el = new DigitDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
@@ -65,7 +68,7 @@ define(["./digit_details_content_view", "../../messaging_system/event_listener"]
 		}
 	};
 	LabelObjectDetailsView.prototype.labelChanged = function(signal, data){
-		if(data == this.data_proxy.getId()){
+		if(data.getLabelId() == this.data_proxy.getId()){
 			this.loadContent();
 		}
 	};

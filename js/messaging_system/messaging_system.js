@@ -14,7 +14,6 @@ define([],function(){
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){
 		if(!(signal in this.eventListeners)){
-			console.log("fired signal: "+signal+", but no listeners");
 			return;
 		}
 		for(var i = 0; i < this.eventListeners[signal].length; ++i){

@@ -1,16 +1,9 @@
-define([],function(){
+define(['./proxy_base_class', '../../messaging_system/messaging_system'],function(ProxyBaseClass, MessagingSystem){
     var CornerProxy = function(corner){
-        this.corner = corner;
+		this.setObj(corner);
     };
-    CornerProxy.prototype.getTitle = function(){
-        return this.corner.getTitle();
-    };
-    CornerProxy.prototype.getId = function(){
-        return this.corner.getId();
-    };
-    CornerProxy.prototype.getSubNodes = function(){
-        return new Array();
-    };
+	ProxyBaseClass.applyMethods(CornerProxy.prototype);
+	CornerProxy.prototype.update_events = [];
 	CornerProxy.prototype.getX = function(){
 		return this.getCoordinate().getX();
 	};
@@ -18,10 +11,7 @@ define([],function(){
 		return this.getCoordinate().getY();
 	};
 	CornerProxy.prototype.getCoordinate = function(){
-		return this.corner.getCoordinate();
-	};
-	CornerProxy.prototype.getUpdateEvents = function(){
-		return [];
+		return this.obj.getCoordinate();
 	};
     return CornerProxy;
 });

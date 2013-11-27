@@ -25,6 +25,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
         this.messaging_system = messaging_system;
         this.data_proxy = data_proxy;
         this.sub_nodes = new Array();
+		this.title = "";
         this.title_element = $('<span>').attr({
             'class':'span_li_title'
         });
@@ -59,7 +60,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 			this.messaging_system.addEventListener(events[i],new EventListener(this, this.updated));
 		}
 	};
-	TreeNode.prototype.update = function(data){
+	TreeNode.prototype.update = function(){
 		this.setTitle(this.data_proxy.getTitle());
 		this.setId(this.data_proxy.getId());
 		for(var i = 0; i < this.sub_nodes.length; ++i){
@@ -67,10 +68,13 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 		}
 	};
 	TreeNode.prototype.updated = function(signal, data){
-		//this.loadData();
-		this.update(data);//TODO: add extra field to data, to limit nodes to update (send field of data to update containing information that's now in data)	
+		var identification = new Object();
+		identification['label'] = data.getLabelId();
+		if(this.data_proxy.isPossiblyAboutThis(identification)){	
+			this.update(data.getLabelId());
+		}
 	};
-    TreeNode.prototype.addSubNode = function(data){
+	TreeNode.prototype.addSubNode = function(data){
         this.sub_nodes.push(new TreeNode(this.sub_nodes_element, data, this.messaging_system));
         this.subNodesChanged();
     };

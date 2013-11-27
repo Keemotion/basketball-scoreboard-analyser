@@ -1,15 +1,16 @@
-define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_listener"],function(Digit, LabelObjectProxy, EventListener){
+define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_listener", "./data_base_class", '../messaging_system/events/label_changed_event'],function(Digit, LabelObjectProxy, EventListener, DataBaseClass, LabelChangedEvent){
     var LabelObject = function(name, digits, parent_state, id, messaging_system){
+		this.init();
         this.messaging_system = messaging_system;
         this.parent_state = parent_state;
-        this.sub_nodes_proxies = new Array();
         this.name = name;
         this.digits = new Array();
         this.id = id;
-        this.proxy = new LabelObjectProxy(this);
+        this.setProxy(new LabelObjectProxy(this));
         this.setDigits(digits);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitLabelObjectDetails, new EventListener(this, this.submitLabelObjectDetails));
     };
+	DataBaseClass.applyMethods(LabelObject.prototype);
     LabelObject.prototype.type = "label";
     LabelObject.prototype.setDigits = function(digits){
         this.digits.length = 0;
@@ -19,7 +20,9 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
         }
     };
 	LabelObject.prototype.submitLabelObjectDetails = function(signal, data){
-		this.update(data);	
+		if(this.isPossiblyAboutThis(data.getTarget())){
+			this.update(data.getData());	
+		}
 	};
 	LabelObject.prototype.update = function(data){
 		this.name = data.name;
@@ -28,20 +31,21 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
 		for(var i = 0; i < this.digits.length; ++i){
 			this.digits[i].update(data.digits[i], false);
 		}
-		this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.id);
+		this.notifyLabelChanged();
+	};
+	LabelObject.prototype.notifyLabelChanged = function(){
+		this.messaging_system.fire(this.messaging_system.events.LabelChanged, new LabelChangedEvent(this.getId()));
 	};
     LabelObject.prototype.addDigit = function(digit_data){
         this.digits.push(new Digit(this, this.digits.length, digit_data, this.messaging_system));
+		this.digits[this.digits.length-1].name = "modified";
         this.sub_nodes_proxies.push(this.digits[this.digits.length-1].getProxy());
     };
     LabelObject.prototype.load = function(data){
         this.name = data.name;
 		this.id = data.id;
-		this.digits.length = 0;
-		for(var i = 0; i < data.digits.length; ++i){
-			this.digits.push(new Digit(this, i, data.digits, this.messaging_system));
-		}
-        this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.id);
+		this.setDigits(data.digits);
+		this.notifyLabelChanged();
     };
     LabelObject.prototype.getStringifyData = function(){
         var d = new Object();
@@ -57,19 +61,7 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
             this.digits[i-1] = this.digits[i];
         }
         --this.digits.length;
-        this.messaging_system.fire(this.messaging_system.events.LabelChanged, this);
-    };
-    LabelObject.prototype.getProxy = function(){
-        return this.proxy;
-    };
-    LabelObject.prototype.getSubNodesProxies = function(){
-        return this.sub_nodes_proxies;
-    };
-    LabelObject.prototype.getTitle = function(){
-        return this.name;
-    };
-    LabelObject.prototype.getId = function(){
-        return "labelobject_"+this.id;
+		this.notifyLabelChanged();
     };
     return LabelObject;
 });

@@ -1,12 +1,13 @@
-define([], function(){
+define(['./proxy_base_class'], function(ProxyBaseClass){
     var StateProxy = function(state){
-        this.state = state;
+		this.setObj(state);
     };
+	ProxyBaseClass.applyMethods(StateProxy.prototype);	
     StateProxy.prototype.getTitle = function(){
         return "State";
     };
-    StateProxy.prototype.getSubNodes = function(){
-        return this.state.getSubNodesProxies();
-    };
+	StateProxy.prototype.getParent = function(){
+		return undefined;
+	};
     return StateProxy;
 });

@@ -1,15 +1,19 @@
-define(["./corner", "./proxy/digit_proxy", './coordinate'],function(Corner, DigitProxy, Coordinate){
+define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'], function(Corner, DigitProxy, Coordinate, DataBaseClass){
     var Digit = function(parent_label, id, data, messaging_system){
+		this.init();
         this.parent_label = parent_label;
         this.messaging_system = messaging_system;
         this.id = id;
+		this.name = "test";
         this.corners = new Array();
-        this.sub_nodes_proxies = new Array();
+		this.setProxy(new DigitProxy(this));
         this.resetCorners();
-        this.proxy = new DigitProxy(this);
     };
+	DataBaseClass.applyMethods(Digit.prototype);
+	Digit.prototype.type = "digit";
     Digit.prototype.resetCorners = function(){
         this.corners.length = 0;
+		this.sub_nodes_proxies.length = 0;
         for(var i = 0; i < 4; ++i){
             this.corners.push(new Corner(this, new Coordinate(2, 1), i, this.messaging_system));
             this.sub_nodes_proxies.push(this.corners[i].getProxy());
@@ -28,43 +32,32 @@ define(["./corner", "./proxy/digit_proxy", './coordinate'],function(Corner, Digi
     };
     Digit.prototype.setCorners = function(corners_data, warn_listeners){
         for(var i = 0; i < 4; ++i){
-			this.corners[i].load(corners_data[i], false);
+			this.changeCorner(i, corners_data[i].coordinate.x, corners_data[i].coordinate.y, false);
         }
         if(warn_listeners){
-            this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label);
-        }
-    };
+			this.notifyLabelChanged();
+		}      
+    }
     Digit.prototype.load = function(data, warn_listeners = true){
         this.setCorners(data.corners, false);
         if(warn_listeners){
-            this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label); 
-        }
+			this.notifyLabelChanged();
+  		}      
     };
 	Digit.prototype.update = function(data, warn_listeners = true){
+		this.name+='1';
 		this.setCorners(data.corners, false);
 		if(warn_listeners){
-			this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label); 
+			this.notifyLabelChanged();
 		}
 	};
     Digit.prototype.changeCorner = function(corner_index, x, y, warnListeners = true){
-        this.corners[corner_index].x = x;
-        this.corners[corner_index].y = y;
+		this.corners[corner_index].setCoordinate(new Coordinate(x, y));
+        //this.corners[corner_index].setX(x);
+        //this.corners[corner_index].setY(y);
         if(warnListeners){
-            this.messaging_system.fire(this.messaging_system.events.LabelChanged, this.parent_label);
+			this.notifyLabelChanged();
         }
     };
-    Digit.prototype.getSubNodesProxies = function(){
-        return this.sub_nodes_proxies;
-    };
-    Digit.prototype.getProxy = function(){
-        return this.proxy;
-    };
-    Digit.prototype.getTitle = function(){
-        return "digit";
-    };
-    Digit.prototype.getId = function(){
-        return this.id;
-    };
-    Digit.prototype.type = "digit";
     return Digit;
 });

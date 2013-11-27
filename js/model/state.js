@@ -1,10 +1,12 @@
-define(["./labelobject", "./proxy/state_proxy"], function(LabelObject, StateProxy){
+define(["./labelobject", "./proxy/state_proxy", './data_base_class'], function(LabelObject, StateProxy, DataBaseClass){
     var State = function(messaging_system){
+		this.init();
         this.objects = new Array();
         this.messaging_system = messaging_system;
-        this.sub_nodes_proxies = new Array();
-        this.proxy = new StateProxy(this);
+		this.setProxy(new StateProxy(this));
     };
+	DataBaseClass.applyMethods(State.prototype);
+	State.prototype.type = "state";
     State.prototype.loadObjects = function(){
         this.objects.length = 0;
         var digits = new Array();
@@ -50,12 +52,6 @@ define(["./labelobject", "./proxy/state_proxy"], function(LabelObject, StateProx
         }catch(err){
             this.messaging_system.fire(this.messaging_system.events.StateChanged, this);
         }
-    };
-    State.prototype.getSubNodesProxies = function(){
-        return this.sub_nodes_proxies;
-    };
-    State.prototype.getProxy = function(){
-        return this.proxy;
     };
     return State;
 });
