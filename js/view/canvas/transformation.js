@@ -48,7 +48,6 @@ define(["../../model/coordinate"], function(Coordinate){
 		return c;
 	};
 	Transformation.prototype.transformCanvasCoordinateToImageCoordinate = function(coordinate){
-		console.log("coordinate: "+JSON.stringify(coordinate));
 		var c = new Coordinate(coordinate.x, coordinate.y);
 		c.x -= this.canvas_width/2;
 		c.y -= this.canvas_height/2;

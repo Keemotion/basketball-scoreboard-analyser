@@ -33,14 +33,10 @@ define([
 			var mv = new Coordinate(
 					this.transformation.getCanvasWidth()/2 - (ev.pageX-this.dragStartCoordinate.x), 
 					this.transformation.getCanvasHeight()/2- (ev.pageY-this.dragStartCoordinate.y));
-			console.log("mv = "+JSON.stringify(mv));
 			var transformed = this.transformation.transformCanvasCoordinateToImageCoordinate(mv);
-			console.log("transformed = "+JSON.stringify(transformed));
 			this.transformation.setImagePointOnCenter(transformed.x, transformed.y);
 			this.dragStartCoordinate = new Coordinate(ev.pageX, ev.pageY);
 			this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
-			console.log("canvasheight = "+this.transformation.getCanvasHeight()+" pageY = "+ev.pageY+" dragstart y "+this.dragStartCoordinate.y);
-			console.log("new image point on center: "+JSON.stringify(this.transformation.getImagePointOnCenter()));
 		}
 		return true;
 	};

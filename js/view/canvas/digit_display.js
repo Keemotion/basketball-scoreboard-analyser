@@ -8,7 +8,7 @@ define(['./base_display', './corner_display'], function(BaseDisplay, CornerDispl
 	};
 	BaseDisplay.applyMethods(DigitDisplay.prototype);
 	DigitDisplay.prototype.drawMyself = function(context, transformation){
-		console.log("TODO: digitdisplay has overridden this drawMyself method, but still needs some proper implementation");
+		//console.log("TODO: digitdisplay has overridden this drawMyself method, but still needs some proper implementation");
 	};
 	DigitDisplay.prototype.loadSubComponents = function(){
 		var sub_proxies = this.getProxy().getSubNodes();

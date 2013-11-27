@@ -8,7 +8,7 @@ define(['./base_display', './label_display'], function(BaseDisplay, LabelDisplay
 	};
 	BaseDisplay.applyMethods(DisplayTree.prototype);
 	DisplayTree.prototype.drawMyself = function(context, transformation){
-		console.log("drawing tree, nothing particular to be drawn in this drawMyself");
+		//console.log("drawing tree, nothing particular to be drawn in this drawMyself");
 	};
 	DisplayTree.prototype.loadSubComponents = function(){
 		var sub_proxies = this.getProxy().getSubNodes();

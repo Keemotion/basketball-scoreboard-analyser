@@ -1,4 +1,4 @@
-define([],function(){
+define(['../../messaging_system/events/load_state_event'],function(LoadStateEvent){
 	return function LoadStateComponent(view_target, messaging_system){
 		this.containerElement = view_target;
 		var text_area = this.textArea = $('<textarea>')
@@ -13,8 +13,7 @@ define([],function(){
 			.text('apply')
 			.click(function(){
 				var t = text_area.val();
-				var data = JSON.parse(t);
-				messaging_system.fire(messaging_system.events.LoadState, data);
+				messaging_system.fire(messaging_system.events.LoadState, new LoadStateEvent(t));
 			});
         btn_div.append(this.btnApply);
 		this.containerElement.append(this.textArea)

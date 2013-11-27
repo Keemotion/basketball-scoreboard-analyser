@@ -20,7 +20,7 @@ define([], function(){
 			this.drawMyself(context, transformation);
 		};
 		type.drawMyself = function(context, transformation){
-			console.log("TODO: implement drawMyself");
+//			console.log("TODO: implement drawMyself");
 		};
 		type.getProxy = function(){
 			return this.proxy;

@@ -9,5 +9,8 @@ define(['./proxy_base_class'], function(ProxyBaseClass){
 	StateProxy.prototype.getParent = function(){
 		return undefined;
 	};
+	StateProxy.prototype.getStateString = function(){
+		return this.obj.stringify();
+	};
     return StateProxy;
 });
