@@ -1,4 +1,62 @@
-define(["../../messaging_system/event_listener", "../../model/coordinate", "./transformation"], function(EventListener, Coordinate, Transformation){
+define([
+		"../../messaging_system/event_listener", 
+		"../../model/coordinate", 
+		"./transformation",
+		"../../messaging_system/events/canvas_scrolled_event",
+		"../../messaging_system/events/canvas_mouse_move_event",
+		"../../messaging_system/events/canvas_mouse_up_event",
+		"../../messaging_system/events/canvas_mouse_down_event",
+		"../../messaging_system/events/canvas_focus_out_event"
+		], 
+	function(
+		EventListener, 
+		Coordinate, 
+		Transformation,
+		CanvasScrolledEvent,
+		CanvasMouseMoveEvent,
+		CanvasMouseUpEvent,
+		CanvasMouseDownEvent,
+		CanvasFocusOutEvent
+		){
+	var CanvasDragHandler = function(transformation, messaging_system){
+		this.dragging = false;
+		this.messaging_system = messaging_system;
+		this.transformation = transformation;
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseMove, new EventListener(this, this.canvasMouseMove));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseDown, new EventListener(this, this.canvasMouseDown));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.canvasMouseUp));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.canvasFocusOut));
+	};
+	CanvasDragHandler.prototype.canvasMouseMove = function(signal, data){
+		var ev = data.event_data;
+		if(this.dragging){
+			var mv = new Coordinate(
+					this.transformation.getCanvasWidth()/2 - (ev.pageX-this.dragStartCoordinate.x), 
+					this.transformation.getCanvasHeight()/2- (ev.pageY-this.dragStartCoordinate.y));
+			console.log("mv = "+JSON.stringify(mv));
+			var transformed = this.transformation.transformCanvasCoordinateToImageCoordinate(mv);
+			console.log("transformed = "+JSON.stringify(transformed));
+			this.transformation.setImagePointOnCenter(transformed.x, transformed.y);
+			this.dragStartCoordinate = new Coordinate(ev.pageX, ev.pageY);
+			this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+			console.log("canvasheight = "+this.transformation.getCanvasHeight()+" pageY = "+ev.pageY+" dragstart y "+this.dragStartCoordinate.y);
+			console.log("new image point on center: "+JSON.stringify(this.transformation.getImagePointOnCenter()));
+		}
+		return true;
+	};
+	CanvasDragHandler.prototype.canvasMouseDown = function(signal, data){
+		var ev = data.event_data;
+		this.dragging = true;
+		this.dragStartCoordinate = new Coordinate(ev.pageX, ev.pageY);
+	};
+	CanvasDragHandler.prototype.canvasMouseUp = function(signal, data){
+		var ev = data.event_data;
+		this.dragging = false;
+	};
+	CanvasDragHandler.prototype.canvasFocusOut = function(signal, data){		
+		var ev = data.event_data;
+		this.canvasMouseUp(signal, data);
+	};
 	var MyCanvas = function(target_view, messaging_system){
 		this.messaging_system = messaging_system;
 		this.canvas_element = $('<canvas>').attr({
@@ -9,14 +67,46 @@ define(["../../messaging_system/event_listener", "../../model/coordinate", "./tr
 		this.canvas_element = this.canvas_element[0];
 		this.context = this.canvas_element.getContext('2d');
 		this.container_element = target_view;
-		this.transformation = new Transformation(new Coordinate(0,0, this.messaging_system), 1);
+		this.transformation = new Transformation(new Coordinate(0,0), 1,1,1, 1);
+		this.dragHandler = new CanvasDragHandler(this.transformation, this.messaging_system);
 		this.display_objects = new Array();
 		$(this.container_element).append(this.canvas_element);
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadImage, new EventListener(this, this.loadImage));
 		this.messaging_system.addEventListener(this.messaging_system.events.WindowResized, new EventListener(this, this.windowResized));
 		this.messaging_system.addEventListener(this.messaging_system.events.ImageDisplayChanged, new EventListener(this, this.updateCanvas));
 		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, new EventListener(this, this.updateCanvas));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
 		this.windowResized(null, null);
+		var scrollF = function(e){
+			messaging_system.fire(messaging_system.events.CanvasScrolled, new CanvasScrolledEvent(e));
+		};
+		this.canvas_element.addEventListener('DOMMouseScroll', scrollF, false);
+		this.canvas_element.addEventListener('mousewheel', scrollF, false);
+		$(this.canvas_element).mousemove(function(e){
+			messaging_system.fire(messaging_system.events.CanvasMouseMove, new CanvasMouseMoveEvent(e));
+		});
+		$(this.canvas_element).mousedown(function(e){
+			messaging_system.fire(messaging_system.events.CanvasMouseDown, new CanvasMouseDownEvent(e));
+		});
+		$(this.canvas_element).mouseup(function(e){
+			messaging_system.fire(messaging_system.events.CanvasMouseUp, new CanvasMouseUpEvent(e));
+		});
+		$(this.canvas_element).focusout(function(e){
+			messaging_system.fire(messaging_system.events.CanvasFocusOut, new CanvasFocusOutEvent(e));
+		});
+	};
+	MyCanvas.prototype.canvasScrolled = function(signal, data){
+		var evt = data.event_data;
+		var delta = evt.wheelDelta?evt.wheelDelta/40:evt.detail?-evt.detail : 0;
+		var factor = 0;
+		if(delta > 0){
+			factor = 9/10;
+		}else{
+			factor = 10/9;
+		}
+		this.transformation.setScale(this.transformation.getScale()*factor);
+		this.drawCanvas();
+		return data.event_data.preventDefault() && false;
 	};
 	MyCanvas.prototype.windowResized = function(signal, data){
 		this.canvas_element.height = $(this.canvas_element).parent().height();

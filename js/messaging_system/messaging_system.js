@@ -9,7 +9,12 @@ define([],function(){
         WindowResized:'WindowResized',
         ImageDisplayChanged:'ImageDisplayChanged',
         LabelObjectClicked: 'LabelObjectClicked',
-		SubmitLabelObjectDetails: 'SubmitLabelObjectDetails'
+		SubmitLabelObjectDetails: 'SubmitLabelObjectDetails',
+		CanvasScrolled:'CanvasScrolled',
+		CanvasMouseMove: 'CanvasMouseMove',
+		CanvasMouseUp: 'CanvasMouseUp',
+		CanvasMouseDown: 'CanvasMouseDown',
+		CanvasFocusOut:'CanvasFocusOut'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){
