@@ -7,6 +7,8 @@ define(["./base_display"], function(BaseDisplay){
 	};
 	BaseDisplay.applyMethods(CornerDisplay.prototype);
 	CornerDisplay.prototype.drawMyself = function(context, transformation){
+		if(!this.getProxy().getCoordinate().isValid())
+			return;
 		var c = transformation.transformImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
 		context.beginPath();
 		context.strokeStyle = "#0000FF";

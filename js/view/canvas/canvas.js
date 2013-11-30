@@ -7,7 +7,8 @@ define([
 		"../../messaging_system/events/canvas_mouse_up_event",
 		"../../messaging_system/events/canvas_mouse_down_event",
 		"../../messaging_system/events/canvas_focus_out_event",
-		"./display_tree"
+		"./display_tree",
+		"../../messaging_system/events/canvas_image_click_event"
 		], 
 	function(
 		EventListener, 
@@ -18,7 +19,8 @@ define([
 		CanvasMouseUpEvent,
 		CanvasMouseDownEvent,
 		CanvasFocusOutEvent,
-		DisplayTree
+		DisplayTree,
+		CanvasImageClickEvent
 		){
 	var CanvasDragHandler = function(transformation, messaging_system){
 		this.dragging = false;
@@ -56,6 +58,7 @@ define([
 		this.canvasMouseUp(signal, data);
 	};
 	var MyCanvas = function(target_view, proxy, messaging_system){
+		var self = this;
 		this.messaging_system = messaging_system;
 		this.canvas_element = $('<canvas>').attr({
 			class:'canvas_image',
@@ -91,6 +94,11 @@ define([
 		});
 		$(this.canvas_element).focusout(function(e){
 			messaging_system.fire(messaging_system.events.CanvasFocusOut, new CanvasFocusOutEvent(e));
+		});
+		$(this.canvas_element).click(function(e){
+			var c = self.transformation.transformCanvasCoordinateToImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
+
+			messaging_system.fire(messaging_system.events.CanvasImageClick, new CanvasImageClickEvent(c.x, c.y));
 		});
 		this.setProxy(proxy);
 	};

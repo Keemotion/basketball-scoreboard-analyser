@@ -16,7 +16,7 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
         this.coordinate = coordinate;
     };
     Corner.prototype.getTitle = function(){
-        return "x: "+this.getCoordinate().x+" y: "+this.getCoordinate().y;
+        return "x: "+(this.getCoordinate().x + "").substr(0, 10)+" y: "+(this.getCoordinate().y+"").substr(0, 10);
     };
 	Corner.prototype.load = function(corner_data, warn_listeners=true){
 		this.id = corner_data.id;

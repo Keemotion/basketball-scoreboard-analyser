@@ -112,3 +112,6 @@ div#div_toolbox_objects_details div#div_details span.span_details_title{
 div#div_toolbox_objects_details button.button_corner_coordinate_click.active{
 	background-color:green;
 }
+div#div_toolbox_objects_details button.button_digit_coordinate_click.active{
+	background-color:green;
+}

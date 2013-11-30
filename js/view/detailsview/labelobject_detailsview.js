@@ -60,16 +60,23 @@ define(["./digit_details_content_view", "../../messaging_system/event_listener",
 	};
 	LabelObjectDetailsView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();
-		this.content_element.empty().text(this.data_proxy.getTitle());
+		this.content_element.empty();
+		this.title_element.text(this.data_proxy.getTitle());
 		this.content_elements.length = 0;
 		for(var i = 0; i < subnodes.length; ++i){
 			var el = new DigitDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
 			this.content_elements.push(el);
 		}
 	};
+	LabelObjectDetailsView.prototype.update = function(){
+		this.title_element.text(this.data_proxy.getTitle());
+		for(var i = 0; i < this.content_elements.length; ++i){
+			this.content_elements[i].update();
+		}
+	};
 	LabelObjectDetailsView.prototype.labelChanged = function(signal, data){
 		if(data.getLabelId() == this.data_proxy.getId()){
-			this.loadContent();
+			this.update();
 		}
 	};
 

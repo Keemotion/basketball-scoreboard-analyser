@@ -15,7 +15,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         this.corners.length = 0;
 		this.sub_nodes_proxies.length = 0;
         for(var i = 0; i < 4; ++i){
-            this.corners.push(new Corner(this, new Coordinate(0, 0), i, this.messaging_system));
+            this.corners.push(new Corner(this, new Coordinate("", ""), i, this.messaging_system));
             this.sub_nodes_proxies.push(this.corners[i].getProxy());
         }
     };
@@ -33,12 +33,18 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         }
         return d;
     };
+	Digit.prototype.updateCorners = function(corners_data, warn_listeners = true){
+		for(var i = 0; i < 4; ++i){
+			this.changeCorner(i, corners_data[i].coordinate.x, corners_data[i].coordinate.y, false);
+		}
+        if(warn_listeners){
+			this.notifyLabelChanged();
+		}      
+	};
     Digit.prototype.setCorners = function(corners_data, warn_listeners){
 		this.resetCorners();
 		if(corners_data){
-			for(var i = 0; i < 4; ++i){
-				this.changeCorner(i, corners_data[i].coordinate.x, corners_data[i].coordinate.y, false);
-			}
+			this.updateCorners(corners_data, false);	
 		}
         if(warn_listeners){
 			this.notifyLabelChanged();
@@ -52,7 +58,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
     };
 	Digit.prototype.update = function(data, warn_listeners = true){
 		this.name = data.name;
-		this.setCorners(data.corners, false);
+		this.updateCorners(data.corners, false);
 		if(warn_listeners){
 			this.notifyLabelChanged();
 		}

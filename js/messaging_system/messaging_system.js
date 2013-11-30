@@ -14,7 +14,8 @@ define([],function(){
 		CanvasMouseMove: 'CanvasMouseMove',
 		CanvasMouseUp: 'CanvasMouseUp',
 		CanvasMouseDown: 'CanvasMouseDown',
-		CanvasFocusOut:'CanvasFocusOut'
+		CanvasFocusOut:'CanvasFocusOut',
+		CanvasImageClick:'CanvasClick'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){
@@ -30,6 +31,17 @@ define([],function(){
 			this.eventListeners[signal] = new Array();
 		}
 		this.eventListeners[signal].push(listener);
+	};
+	MessagingSystem.prototype.removeEventListener = function(signal, listener){
+		if(!(signal in this.eventListeners))
+			return;
+		for(var i = 0; i < this.eventListeners[signal].length-1; ++i){
+			if(this.eventListeners[signal][i] == listener){
+				this.eventListeners[signal][i] = this.eventListeners[signal][this.eventListeners[signal].length-1];
+				this.eventListeners[signal].length--;
+				break;
+			}
+		}
 	};
 	return MessagingSystem;
 });
