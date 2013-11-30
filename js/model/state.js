@@ -66,8 +66,10 @@ define([
     State.prototype.parseJSON = function(json){
 		this.reset();
         try{
+			console.log("json = "+json);
             var data = JSON.parse(json);
 			for(var i = 0; i < data.objects.length; ++i){
+				
 				this.addObject(data.objects[i].name, data.objects[i].digits, false);
 			}
            	this.stateChanged();

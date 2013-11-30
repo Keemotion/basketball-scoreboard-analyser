@@ -6,7 +6,8 @@ define([
 		"../../messaging_system/events/canvas_mouse_move_event",
 		"../../messaging_system/events/canvas_mouse_up_event",
 		"../../messaging_system/events/canvas_mouse_down_event",
-		"../../messaging_system/events/canvas_focus_out_event"
+		"../../messaging_system/events/canvas_focus_out_event",
+		"./display_tree"
 		], 
 	function(
 		EventListener, 
@@ -16,7 +17,8 @@ define([
 		CanvasMouseMoveEvent,
 		CanvasMouseUpEvent,
 		CanvasMouseDownEvent,
-		CanvasFocusOutEvent
+		CanvasFocusOutEvent,
+		DisplayTree
 		){
 	var CanvasDragHandler = function(transformation, messaging_system){
 		this.dragging = false;
@@ -53,7 +55,7 @@ define([
 		var ev = data.event_data;
 		this.canvasMouseUp(signal, data);
 	};
-	var MyCanvas = function(target_view, messaging_system){
+	var MyCanvas = function(target_view, proxy, messaging_system){
 		this.messaging_system = messaging_system;
 		this.canvas_element = $('<canvas>').attr({
 			class:'canvas_image',
@@ -90,6 +92,7 @@ define([
 		$(this.canvas_element).focusout(function(e){
 			messaging_system.fire(messaging_system.events.CanvasFocusOut, new CanvasFocusOutEvent(e));
 		});
+		this.setProxy(proxy);
 	};
 	MyCanvas.prototype.canvasScrolled = function(signal, data){
 		var evt = data.event_data;
@@ -120,8 +123,18 @@ define([
 	MyCanvas.prototype.getDisplayObjects = function(){
 		return this.display_objects;
 	};
+	MyCanvas.prototype.setProxy = function(proxy){
+		if(this.state_display_object)
+			this.removeDisplayObject(this.state_display_object);
+		this.proxy = proxy;
+		this.addDisplayObject(new DisplayTree(this.proxy));
+	};
 	MyCanvas.prototype.addDisplayObject = function(display_object){
 		this.display_objects.push(display_object);
+	};
+	MyCanvas.prototype.resetDisplayObjects = function(){
+		this.display_objects.length = 0;
+		this.drawCanvas();
 	};
 	MyCanvas.prototype.removeDisplayObject = function(display_object){
 		for(var i = 0; i < this.display_objects.length-1; ++i){

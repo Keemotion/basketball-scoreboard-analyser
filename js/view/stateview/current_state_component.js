@@ -17,5 +17,9 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 	CurrentStateComponent.prototype.loadComponent = function(){
 		this.text_area.text(this.state_proxy.getStateString());	
 	};
+	CurrentStateComponent.prototype.setProxy = function(proxy){
+		this.state_proxy = proxy;
+		this.loadComponent();
+	};
 	return CurrentStateComponent;
 });
