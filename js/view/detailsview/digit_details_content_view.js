@@ -1,11 +1,11 @@
 define(["./corner_details_content_view", "../../messaging_system/event_listener"],function(CornerDetailsContentView, EventListener){
-	var CanvasClickListener = function(parentView){
+	var CanvasClickListener = function(parentView, messaging_system){
 		this.parentView = parentView;
 		this.listening = false;
-	};
-	CanvasClickListener.prototype.start = function(){
-		this.listening = true;
 		this.index = 0;
+		this.messaging_system = messaging_system;
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, new EventListener(this ,this.clickReceived));
+		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerStarted, new EventListener(this, this.stopListening));
 	};
 	CanvasClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
@@ -15,10 +15,19 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 			++this.index;
 			if(this.index== 4){
 				console.log("digit was 4");
-				this.listening = false;
-				this.parentView.click_button.removeClass('active');
+				this.stopListening();
 			}
 		}
+	};
+	CanvasClickListener.prototype.startListening = function(){
+		this.messaging_system.fire(this.messaging_system.events.CoordinateClickListenerStarted, null);
+		this.listening = true;
+		this.index = 0;
+		this.parentView.startedListening();
+	};
+	CanvasClickListener.prototype.stopListening = function(){
+		this.listening = false;
+		this.parentView.stoppedListening();
 	};
 	var DigitDetailsContentView = function(target_view, data_proxy, messaging_system){
 		var self = this;
@@ -30,8 +39,8 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 			.append($('<span>').text('test'));
 		this.title_span = $('<span>')
 			.text('');
-		this.canvasClickListener = new CanvasClickListener(this);
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, new EventListener(self.canvasClickListener,self.canvasClickListener.clickReceived));
+		this.canvasClickListener = null;
+		this.canvasClickListener = new CanvasClickListener(this, this.messaging_system);
 		this.click_button = $('<button>')
 			.text('click to set digit')
 			.attr({
@@ -39,8 +48,8 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 			})
 			.click(function(e){
 				e.preventDefault();
-				self.click_button.addClass('active');
-				self.canvasClickListener.start();
+				//self.click_button.addClass('active');
+				self.canvasClickListener.startListening();
 			});
 		this.target_view
 			.append(this.content_element);
@@ -57,6 +66,12 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 			var el = new CornerDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
 			this.content_elements.push(el);
 		}
+	};
+	DigitDetailsContentView.prototype.stoppedListening = function(){
+		this.click_button.removeClass('active');
+	};
+	DigitDetailsContentView.prototype.startedListening = function(){
+		this.click_button.addClass('active');
 	};
 	DigitDetailsContentView.prototype.update = function(){
 		this.title_span.text(this.data_proxy.getTitle());

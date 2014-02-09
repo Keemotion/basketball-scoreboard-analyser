@@ -15,7 +15,8 @@ define([],function(){
 		CanvasMouseUp: 'CanvasMouseUp',
 		CanvasMouseDown: 'CanvasMouseDown',
 		CanvasFocusOut:'CanvasFocusOut',
-		CanvasImageClick:'CanvasClick'
+		CanvasImageClick:'CanvasClick',
+		CoordinateClickListenerStarted:'CoordinateClickListenerStarted'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){
@@ -35,10 +36,10 @@ define([],function(){
 	MessagingSystem.prototype.removeEventListener = function(signal, listener){
 		if(!(signal in this.eventListeners))
 			return;
-		for(var i = 0; i < this.eventListeners[signal].length-1; ++i){
+		for(var i = 0; i < this.eventListeners[signal].length; ++i){
 			if(this.eventListeners[signal][i] == listener){
 				this.eventListeners[signal][i] = this.eventListeners[signal][this.eventListeners[signal].length-1];
-				this.eventListeners[signal].length--;
+				this.eventListeners[signal].pop();
 				break;
 			}
 		}

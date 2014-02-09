@@ -97,7 +97,6 @@ define([
 		});
 		$(this.canvas_element).click(function(e){
 			var c = self.transformation.transformCanvasCoordinateToImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
-
 			messaging_system.fire(messaging_system.events.CanvasImageClick, new CanvasImageClickEvent(c.x, c.y));
 		});
 		this.setProxy(proxy);
