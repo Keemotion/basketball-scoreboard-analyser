@@ -1,7 +1,7 @@
 define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_listener", "./data_base_class", '../messaging_system/events/label_changed_event'],function(Digit, LabelObjectProxy, EventListener, DataBaseClass, LabelChangedEvent){
     var LabelObject = function(name, digits, parent_state, id, messaging_system){
-		this.init();
         this.messaging_system = messaging_system;
+		this.init();
         this.parent_state = parent_state;
         this.name = name;
         this.digits = new Array();
@@ -62,5 +62,19 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
         --this.digits.length;
 		this.notifyLabelChanged();
     };
+    LabelObject.prototype.setDrawing = function(drawing, send_notification){
+    	console.log("set drawing: "+drawing);
+		this.drawing = drawing;
+		if(send_notification == null){
+			send_notification = true;
+		}
+		for(var i = 0; i < this.digits.length; ++i){
+			this.digits[i].setDrawing(drawing, false);
+		}
+		if(send_notification){
+			console.log("displayobjectschanged event sent");
+			this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
+		}
+	};
     return LabelObject;
 });

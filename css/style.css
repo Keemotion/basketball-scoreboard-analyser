@@ -93,7 +93,6 @@ div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li>span.span_li_title:
 	cursor:pointer;
 }
 
-
 div#div_toolbox_objects_details div#div_details ul.ul_corners{
 	list-style-type:none;
 	margin:0px;
@@ -114,4 +113,7 @@ div#div_toolbox_objects_details button.button_corner_coordinate_click.active{
 }
 div#div_toolbox_objects_details button.button_digit_coordinate_click.active{
 	background-color:green;
+}
+div#div_toolbox_objects_details button.btn-highlight.active{
+	background-color:blue;
 }

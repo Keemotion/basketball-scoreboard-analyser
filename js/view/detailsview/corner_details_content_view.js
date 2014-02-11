@@ -3,8 +3,10 @@ define(["../../model/coordinate", '../../messaging_system/event_listener'], func
 		this.parentView = parentView;
 		this.listening = false;
 		this.messaging_system = messaging_system;
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, new EventListener(this ,this.clickReceived));
-		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerStarted, new EventListener(this, this.stopListening));
+		this.clickListener = new EventListener(this ,this.clickReceived);
+		this.otherListenerStartedListener = new EventListener(this, this.stopListening);
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
+		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
 	};
 	CanvasClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
@@ -22,13 +24,17 @@ define(["../../model/coordinate", '../../messaging_system/event_listener'], func
 		this.listening = false;
 		this.parentView.stoppedListening();
 	};
+	CanvasClickListener.prototype.cleanUp = function(){
+		this.messaging_system.removeEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
+		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
+	};
 	var CornerDetailsContentView = function(target_view, data_proxy, messaging_system){
 		var self = this;
 		this.target_view = target_view;
 		this.data_proxy = data_proxy;
 		this.messaging_system = messaging_system;
 		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerAdded, new EventListener(self, self.stopListening));
-		this.canvasClickedEventListener = new CanvasClickListener(this, this.messaging_system);
+		this.canvasClickListener = new CanvasClickListener(this, this.messaging_system);
 		this.x_text = $('<input>')
 			.val('');
 		this.y_text = $('<input>')
@@ -42,8 +48,7 @@ define(["../../model/coordinate", '../../messaging_system/event_listener'], func
 			})
 			.click(function(e){
 				e.preventDefault();
-				self.canvasClickedEventListener.startListening();
-				//self.click_button.addClass('active');
+				self.canvasClickListener.startListening();
 			});
 		this.content_element = $('<div>')
 			.append(this.x_label)
@@ -64,12 +69,7 @@ define(["../../model/coordinate", '../../messaging_system/event_listener'], func
 	};
 	CornerDetailsContentView.prototype.startedListening = function(){
 		this.click_button.addClass('active');
-	}
-	/*CornerDetailsContentView.prototype.canvasClickedToSetCoordinate = function(signal, data){	
-		console.log("canvas clicked to set coordinate!");
-		this.setCoordinate(data.imageX, data.imageY);
-		this.stopListening();
-	};*/
+	};
 	CornerDetailsContentView.prototype.update = function(){
 		this.x_text.val(this.data_proxy.getX());
 		this.y_text.val(this.data_proxy.getY());
@@ -83,6 +83,9 @@ define(["../../model/coordinate", '../../messaging_system/event_listener'], func
 		d.name = this.data_proxy.getTitle();
 		d.coordinate = new Coordinate(this.x_text.val(), this.y_text.val());
 		return d;
+	};
+	CornerDetailsContentView.prototype.cleanUp = function(){
+		this.canvasClickListener.cleanUp();
 	};
 	return CornerDetailsContentView;
 });

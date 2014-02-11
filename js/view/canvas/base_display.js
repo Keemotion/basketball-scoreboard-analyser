@@ -17,13 +17,18 @@ define([], function(){
 			for(var i = 0; i < this.sub_components.length; ++i){
 				this.sub_components[i].draw(context, transformation);
 			}
-			this.drawMyself(context, transformation);
+			if(this.getProxy().getDrawing()){
+				this.drawMyself(context, transformation);
+			}
 		};
 		type.drawMyself = function(context, transformation){
 //			console.log("TODO: implement drawMyself");
 		};
 		type.getProxy = function(){
 			return this.proxy;
+		};
+		type.getDrawing = function(){
+			return this.drawing;
 		};
 		type.setProxy = function(proxy){
 			this.proxy = proxy;

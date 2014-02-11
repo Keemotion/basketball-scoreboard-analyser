@@ -4,8 +4,10 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 		this.listening = false;
 		this.index = 0;
 		this.messaging_system = messaging_system;
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, new EventListener(this ,this.clickReceived));
-		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerStarted, new EventListener(this, this.stopListening));
+		this.clickListener = new EventListener(this ,this.clickReceived);
+		this.otherListenerStartedListener = new EventListener(this, this.stopListening);
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
+		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
 	};
 	CanvasClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
@@ -29,6 +31,10 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 		this.listening = false;
 		this.parentView.stoppedListening();
 	};
+	CanvasClickListener.prototype.cleanUp = function(){
+		this.messaging_system.removeEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
+		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
+	};
 	var DigitDetailsContentView = function(target_view, data_proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
@@ -48,7 +54,6 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 			})
 			.click(function(e){
 				e.preventDefault();
-				//self.click_button.addClass('active');
 				self.canvasClickListener.startListening();
 			});
 		this.target_view
@@ -88,6 +93,12 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 			d.corners.push(this.content_elements[i].collectFormData());
 		}
 		return d;
+	};
+	DigitDetailsContentView.prototype.cleanUp = function(){
+		for(var i = 0; i < this.content_elements.length; ++i){
+			this.content_elements[i].cleanUp();
+		}
+		this.canvasClickListener.cleanUp();
 	};
 	return DigitDetailsContentView;
 });

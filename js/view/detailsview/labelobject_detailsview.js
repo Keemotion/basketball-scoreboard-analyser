@@ -1,7 +1,37 @@
-define(["./digit_details_content_view", "../../messaging_system/event_listener", "../../messaging_system/events/submit_label_object_details_event"], function(DigitDetailsContentView, EventListener, SubmitLabelObjectDetailsEvent){
+define([
+	"./digit_details_content_view", 
+	"../../messaging_system/event_listener", 
+	"../../messaging_system/events/submit_label_object_details_event",
+	"../../messaging_system/events/toggle_display_object_event"], 
+	function(
+		DigitDetailsContentView, 
+		EventListener, 
+		SubmitLabelObjectDetailsEvent,
+		ToggleDisplayObjectEvent){
 	var HighlightButton = function(data_proxy, messaging_system){
-		var element = $('<button>').text('highlight');
-		return element;
+		var self = this;
+		this.displaying = false;
+		this.element = $('<button>')
+			.text('highlight')
+			.addClass('btn-highlight')
+			.click(function(){
+				console.log("clicked on highlight button!");
+				console.log("displaying = "+self.displaying);
+				self.displaying = !self.displaying;
+				console.log("displaying 2 = "+self.displaying);
+
+				if(self.displaying){
+					self.element.addClass('active');
+				}else{
+					self.element.removeClass('active');
+				}
+				//messaging_system.fire(messaging_system.events.DisplayObjectsChanged, new CanvasObjectsDisplayChangedEvent(data_proxy.getType(), data_proxy.getId(), self.displaying));
+				var target = new Object();
+				target.type = data_proxy.getType();
+				target.id = data_proxy.getId();
+				messaging_system.fire(messaging_system.events.ToggleDisplayObject, new ToggleDisplayObjectEvent(target, self.displaying));
+			});
+		return this.element;
 	};
 	var AddDigitButton = function(data_proxy, messaging_system){
 		var element = $('<button>').text('add digit');
@@ -79,6 +109,10 @@ define(["./digit_details_content_view", "../../messaging_system/event_listener",
 			this.update();
 		}
 	};
-
+	LabelObjectDetailsView.prototype.cleanUp = function(){
+		for(var i = 0; i < this.content_elements.length; ++i){
+			this.content_elements[i].cleanUp();
+		}
+	};
 	return LabelObjectDetailsView;
 });

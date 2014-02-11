@@ -77,6 +77,9 @@ define([
 		}
     };
 	View.prototype.clearLabelObjectDetails = function(){
+		if(this.toolbox_details_content){
+			this.toolbox_details_content.cleanUp();
+		}
 		this.toolbox_details_div.empty();
 	};
     View.prototype.loadLabelObjectDetails = function(data_proxy){

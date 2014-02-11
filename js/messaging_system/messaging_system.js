@@ -16,7 +16,9 @@ define([],function(){
 		CanvasMouseDown: 'CanvasMouseDown',
 		CanvasFocusOut:'CanvasFocusOut',
 		CanvasImageClick:'CanvasClick',
-		CoordinateClickListenerStarted:'CoordinateClickListenerStarted'
+		CoordinateClickListenerStarted:'CoordinateClickListenerStarted',
+		DisplayObjectsChanged:'DisplayObjectsChanged',
+		ToggleDisplayObject:'ToggleDisplayObject'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

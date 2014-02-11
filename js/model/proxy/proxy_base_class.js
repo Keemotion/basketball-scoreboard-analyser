@@ -26,6 +26,9 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 		type.isPossiblyAboutThis = function(d){
 			return this.obj.isPossiblyAboutThis(d);
 		};
+		type.getDrawing = function(){
+			return this.obj.getDrawing();
+		};
 	};
 	return BaseProxy;
 });

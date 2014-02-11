@@ -6,9 +6,9 @@ define([
 		'../messaging_system/event_listener'
 		], function(LabelObject, StateProxy, DataBaseClass, StateChangedEvent, EventListener){
     var State = function(messaging_system){
+        this.messaging_system = messaging_system;
 		this.init();
         this.objects = new Array();
-        this.messaging_system = messaging_system;
 		this.setProxy(new StateProxy(this));
 		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, new EventListener(this, this.labelChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadState, new EventListener(this, this.loadState));

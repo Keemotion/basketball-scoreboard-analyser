@@ -99,7 +99,14 @@ define([
 			var c = self.transformation.transformCanvasCoordinateToImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
 			messaging_system.fire(messaging_system.events.CanvasImageClick, new CanvasImageClickEvent(c.x, c.y));
 		});
+		this.displayObjectsChangedListener = new EventListener(this, this.displayObjectsChanged);
+		this.messaging_system.addEventListener(this.messaging_system.events.DisplayObjectsChanged, this.displayObjectsChangedListener);
 		this.setProxy(proxy);
+	};
+	MyCanvas.prototype.displayObjectsChanged = function(signal, data){
+		//TODO:update all children display objects
+		console.log("listening!");
+		this.updateCanvas();
 	};
 	MyCanvas.prototype.canvasScrolled = function(signal, data){
 		var evt = data.event_data;
