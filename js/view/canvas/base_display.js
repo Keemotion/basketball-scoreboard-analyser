@@ -17,7 +17,7 @@ define([], function(){
 			for(var i = 0; i < this.sub_components.length; ++i){
 				this.sub_components[i].draw(context, transformation);
 			}
-			if(this.getProxy().getDrawing()){
+			if(this.getProxy().getDisplaying()){
 				this.drawMyself(context, transformation);
 			}
 		};
@@ -26,9 +26,6 @@ define([], function(){
 		};
 		type.getProxy = function(){
 			return this.proxy;
-		};
-		type.getDrawing = function(){
-			return this.drawing;
 		};
 		type.setProxy = function(proxy){
 			this.proxy = proxy;

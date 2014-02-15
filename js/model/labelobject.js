@@ -12,6 +12,9 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
     };
 	DataBaseClass.applyMethods(LabelObject.prototype);
     LabelObject.prototype.type = "label";
+    LabelObject.prototype.getSubNodes = function(){
+		return this.digits;
+	};
     LabelObject.prototype.setDigits = function(digits){
         this.digits.length = 0;
         this.sub_nodes_proxies.length = 0;
@@ -34,7 +37,7 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
 		this.notifyLabelChanged();
 	};
 	LabelObject.prototype.notifyLabelChanged = function(){
-		this.messaging_system.fire(this.messaging_system.events.LabelChanged, new LabelChangedEvent(this.getId()));
+		this.messaging_system.fire(this.messaging_system.events.LabelChanged, new LabelChangedEvent(/*this.getId()*/this.getIdentification()));
 	};
     LabelObject.prototype.addDigit = function(digit_data){
         this.digits.push(new Digit(this, this.digits.length, digit_data, this.messaging_system));
@@ -62,19 +65,5 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
         --this.digits.length;
 		this.notifyLabelChanged();
     };
-    LabelObject.prototype.setDrawing = function(drawing, send_notification){
-    	console.log("set drawing: "+drawing);
-		this.drawing = drawing;
-		if(send_notification == null){
-			send_notification = true;
-		}
-		for(var i = 0; i < this.digits.length; ++i){
-			this.digits[i].setDrawing(drawing, false);
-		}
-		if(send_notification){
-			console.log("displayobjectschanged event sent");
-			this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
-		}
-	};
     return LabelObject;
 });

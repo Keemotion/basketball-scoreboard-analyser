@@ -68,8 +68,9 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 		}
 	};
 	TreeNode.prototype.updated = function(signal, data){
-		var identification = new Object();
-		identification['label'] = data.getLabelId();
+		//var identification = new Object();
+		//identification['label'] = data.getLabelId();
+		var identification = data.getTarget();
 		if(this.data_proxy.isPossiblyAboutThis(identification)){	
 			this.update(data.getLabelId());
 		}

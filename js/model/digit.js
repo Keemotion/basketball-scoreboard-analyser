@@ -11,6 +11,9 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
     };
 	DataBaseClass.applyMethods(Digit.prototype);
 	Digit.prototype.type = "digit";
+	Digit.prototype.getSubNodes = function(){
+		return this.corners;
+	};
     Digit.prototype.resetCorners = function(){
         this.corners.length = 0;
 		this.sub_nodes_proxies.length = 0;
@@ -69,7 +72,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			this.notifyLabelChanged();
         }
     };
-    Digit.setDrawing = function(drawing, send_notification){
+    /*Digit.setDrawing = function(drawing, send_notification){
 		this.drawing = drawing;
 		if(send_notification == null){
 			send_notification = true;
@@ -80,6 +83,6 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 		if(send_notification){
 			this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
 		}
-	};
+	};*/
     return Digit;
 });

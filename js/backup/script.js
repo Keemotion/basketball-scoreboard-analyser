@@ -114,9 +114,6 @@ function createDigitClickButton(digit){
 			}else{
 				this.corner_index = 1;
 			}
-
-			console.log("amount = "+this.corner_index);
-			console.log('id = '+'button#button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+(this.corner_index-1));
 			$('button#button_coordinate_click_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+(this.corner_index-1)).removeClass('active');
 			$('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+(this.corner_index-1)+'_x"]').val(x);
 			$('input[name="txt_label_'+digit.parent_label.index+'_digit_'+digit.index+'_corner_'+(this.corner_index-1)+'_y"]').val(y);

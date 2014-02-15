@@ -10,26 +10,23 @@ define([
 		ToggleDisplayObjectEvent){
 	var HighlightButton = function(data_proxy, messaging_system){
 		var self = this;
-		this.displaying = false;
+		this.displaying = data_proxy.getDisplaying();
 		this.element = $('<button>')
 			.text('highlight')
-			.addClass('btn-highlight')
+			.addClass('btn-highlight'+(data_proxy.getDisplaying()?' active':''))
 			.click(function(){
-				console.log("clicked on highlight button!");
-				console.log("displaying = "+self.displaying);
 				self.displaying = !self.displaying;
-				console.log("displaying 2 = "+self.displaying);
-
 				if(self.displaying){
 					self.element.addClass('active');
 				}else{
 					self.element.removeClass('active');
 				}
 				//messaging_system.fire(messaging_system.events.DisplayObjectsChanged, new CanvasObjectsDisplayChangedEvent(data_proxy.getType(), data_proxy.getId(), self.displaying));
-				var target = new Object();
-				target.type = data_proxy.getType();
-				target.id = data_proxy.getId();
-				messaging_system.fire(messaging_system.events.ToggleDisplayObject, new ToggleDisplayObjectEvent(target, self.displaying));
+				var target_identification = data_proxy.getIdentification();
+				//var target = new Object();
+				//target.type = data_proxy.getType();
+				//target.id = data_proxy.getId();
+				messaging_system.fire(messaging_system.events.ToggleDisplayObject, new ToggleDisplayObjectEvent(target_identification, self.displaying));
 			});
 		return this.element;
 	};
@@ -48,8 +45,7 @@ define([
 				e.preventDefault();
 				var d = new Object();
 				d.data = self.collectFormData();
-				d.target = new Object();
-				d.target[self.data_proxy.getType()]=self.data_proxy.getId();
+				d.target = self.data_proxy.getIdentification();
 				messaging_system.fire(messaging_system.events.SubmitLabelObjectDetails, new SubmitLabelObjectDetailsEvent(d.target, d.data));
 			});
 		this.element = $('<div>')

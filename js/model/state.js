@@ -6,6 +6,7 @@ define([
 		'../messaging_system/event_listener'
 		], function(LabelObject, StateProxy, DataBaseClass, StateChangedEvent, EventListener){
     var State = function(messaging_system){
+    	this.id = 0;
         this.messaging_system = messaging_system;
 		this.init();
         this.objects = new Array();
@@ -15,6 +16,9 @@ define([
     };
 	DataBaseClass.applyMethods(State.prototype);
 	State.prototype.type = "state";
+	State.prototype.getSubNodes = function(){
+		return this.objects;
+	};
     State.prototype.loadObjects = function(){
         this.objects.length = 0;
         var digits = new Array();

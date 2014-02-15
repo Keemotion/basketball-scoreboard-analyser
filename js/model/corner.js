@@ -9,6 +9,9 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
     };
 	DataBaseClass.applyMethods(Corner.prototype);
 	Corner.prototype.type = "corner";
+	Corner.prototype.getSubNodes = function(){
+		return new Array();
+	};
     Corner.prototype.getCoordinate = function(){
         return this.coordinate;
     };

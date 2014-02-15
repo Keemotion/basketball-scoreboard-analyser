@@ -11,12 +11,9 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 	};
 	CanvasClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
-			console.log("setting: "+data.imageX+", "+data.imageY);
-			console.log("index = "+this.index);
 			this.parentView.content_elements[this.index].setCoordinate(data.imageX, data.imageY);
 			++this.index;
 			if(this.index== 4){
-				console.log("digit was 4");
 				this.stopListening();
 			}
 		}

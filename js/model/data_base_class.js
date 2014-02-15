@@ -3,14 +3,13 @@ define(["../messaging_system/event_listener"],function(EventListener){
 	BaseDataClass.applyMethods = function(type){
 		type.init = function(){
 			this.sub_nodes_proxies = new Array();
-			this.drawing = false;
+			this.displaying = false;
 			this.toggleDisplayObjectListener = new EventListener(this, this.toggleDisplay);
 			this.messaging_system.addEventListener(this.messaging_system.events.ToggleDisplayObject, this.toggleDisplayObjectListener);
 		};
 		type.toggleDisplay = function(signal, data){
-			console.log("toggle display: "+signal+ ", "+JSON.stringify(data));
-			if(this.isPossiblyAboutThis(data.target)){
-				this.setDrawing(data.displaying);
+			if(this.isPossiblyAboutThis(data.target_identification)){
+				this.setDisplaying(data.displaying);
 			}
 		};
 		type.getProxy = function(){
@@ -37,32 +36,51 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		type.notifyLabelChanged = function(){
 			this.getParent().notifyLabelChanged();
 		};
-		type.isPossiblyAboutThis = function(target){
-			if(this.getType() in target){
-				if(this.getId() != target[this.getType()]){
-					return false;
+		type.isPossiblyAboutThis = function(target, index){
+			if(target.length == 0)
+				return false;
+			if(typeof(index) == 'undefined')
+				index = target.length-1;
+			if(index < 0)
+				return true;
+			var current_identification = target[index];
+			if(current_identification['type']==this.getType() && current_identification['id']==this.getId()){
+				if(index == 0)
+					return true;
+				if(this.getParent()){
+					return this.getParent().isPossiblyAboutThis(target, index-1);
 				}
-			}	
-			if(this.getParent() && this.getParent().isPossiblyAboutThis){
-				return this.getParent().isPossiblyAboutThis(target);
 			}
-			return true;
+			return false;
 		};
-		type.getDrawing = function(){
-			return this.drawing;
+		type.getDisplaying = function(){
+			return this.displaying;
 		};
-		type.setDrawing = function(drawing, send_notification){
-			this.drawing = drawing;
-			/*if(send_notification == null){
+		type.setDisplaying = function(displaying, send_notification){
+			this.displaying = displaying;
+			if(send_notification == null){
 				send_notification = true;
 			}
-			var sub_nodes_proxies = this.getSubNodesProxies();
-			for(var i = 0; i < sub_nodes_proxies.length; ++i){
-				sub_nodes_proxies[i].setDrawing(drawing, false);
+			var sub_nodes = this.getSubNodes();
+			for(var i = 0; i < sub_nodes.length; ++i){
+				sub_nodes[i].setDisplaying(displaying, false);
 			}
 			if(send_notification){
 				this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
-			}*/
+			}
+		};
+		type.getIdentification = function(){
+			var identification;
+			if(this.getParent()){
+				identification = this.getParent().getIdentification();
+			}else{
+				identification = new Array();
+			}
+			identification.push({'type':this.getType(), 'id':this.getId()});
+			return identification;
+		};
+		type.getSubNodes = function(){
+			throw "getSubNodes must be implemented";
 		};
 	};
 	return BaseDataClass;
