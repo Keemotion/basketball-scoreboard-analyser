@@ -33,38 +33,5 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.getIdentification = function(){
 		return this.obj.getIdentification();
 	};
-	/*BaseProxy.applyMethods = function(type){
-		type.update_events = new Array();	
-		type.setObj = function(o){
-			this.obj = o;
-		};
-		type.getTitle = function(){
-			return this.obj.getTitle();
-		};
-		type.getSubNodes = function(){
-			return this.obj.getSubNodesProxies();
-		};
-		type.getId = function(){
-			return this.obj.getId();
-		};
-		type.getUpdateEvents = function(){
-			return this.update_events;
-		};
-		type.getParent = function(){
-			return this.obj.getParent().getProxy();
-		};
-		type.getType = function(){
-			return this.obj.getType();
-		};
-		type.isPossiblyAboutThis = function(d){
-			return this.obj.isPossiblyAboutThis(d);
-		};
-		type.getDisplaying = function(){
-			return this.obj.getDisplaying();
-		};
-		type.getIdentification = function(){
-			return this.obj.getIdentification();
-		};
-	};*/
 	return BaseProxy;
 });
