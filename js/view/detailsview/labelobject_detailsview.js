@@ -12,6 +12,7 @@ define([
 		var self = this;
 		this.displaying = data_proxy.getDisplaying();
 		this.element = $('<button>')
+			.attr('type', 'button')
 			.text('highlight')
 			.addClass('btn-highlight'+(data_proxy.getDisplaying()?' active':''))
 			.click(function(){
