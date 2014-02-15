@@ -24,7 +24,7 @@ div#div_image{
     background-color:blue;
 }
 div#div_image canvas.canvas_image{
-	background-color:pink;
+	background-color:orange;
 	width:100%;
 	height:100%;
 }

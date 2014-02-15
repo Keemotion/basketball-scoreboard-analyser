@@ -41,7 +41,9 @@ define([
 	};
 	State.prototype.labelChanged = function(signal, data){
 	};
-    State.prototype.addObject = function(label_name, digits, single_event=true){
+    State.prototype.addObject = function(label_name, digits, single_event){
+    	if(single_event==null)
+    		single_event = true;
         this.objects.push(new LabelObject(label_name, digits, this, this.objects.length, this.messaging_system));
         this.sub_nodes_proxies.push(this.objects[this.objects.length-1].getProxy());
         if(single_event){
