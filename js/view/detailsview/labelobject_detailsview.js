@@ -21,11 +21,7 @@ define([
 				}else{
 					self.element.removeClass('active');
 				}
-				//messaging_system.fire(messaging_system.events.DisplayObjectsChanged, new CanvasObjectsDisplayChangedEvent(data_proxy.getType(), data_proxy.getId(), self.displaying));
 				var target_identification = data_proxy.getIdentification();
-				//var target = new Object();
-				//target.type = data_proxy.getType();
-				//target.id = data_proxy.getId();
 				messaging_system.fire(messaging_system.events.ToggleDisplayObject, new ToggleDisplayObjectEvent(target_identification, self.displaying));
 			});
 		return this.element;
@@ -72,7 +68,8 @@ define([
 		this.form.append(this.element);
 		this.target_view.append(this.form);
 		this.loadContent();
-		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, new EventListener(this, this.labelChanged));
+		this.labelChangedListener = new EventListener(this, this.labelChanged);
+		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, this.labelChangedListener);
 	};
 	LabelObjectDetailsView.prototype.collectFormData = function(){
 		var d = new Object();
@@ -106,6 +103,7 @@ define([
 		}
 	};
 	LabelObjectDetailsView.prototype.cleanUp = function(){
+		this.messaging_system.removeEventListener(this.messaging_system.events.LabelChanged, this.labelChangedListener);
 		for(var i = 0; i < this.content_elements.length; ++i){
 			this.content_elements[i].cleanUp();
 		}

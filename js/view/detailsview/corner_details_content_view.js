@@ -10,7 +10,6 @@ define(["../../model/coordinate", '../../messaging_system/event_listener'], func
 	};
 	CanvasClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
-			console.log("setting: "+data.imageX+", "+data.imageY);
 			this.stopListening();
 			this.parentView.setCoordinate(data.imageX, data.imageY);
 		}
@@ -86,6 +85,7 @@ define(["../../model/coordinate", '../../messaging_system/event_listener'], func
 	};
 	CornerDetailsContentView.prototype.cleanUp = function(){
 		this.canvasClickListener.cleanUp();
+		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerAdded, new EventListener(self, self.stopListening));
 	};
 	return CornerDetailsContentView;
 });

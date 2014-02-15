@@ -105,7 +105,6 @@ define([
 	};
 	MyCanvas.prototype.displayObjectsChanged = function(signal, data){
 		//TODO:update all children display objects
-		console.log("listening!");
 		this.updateCanvas();
 	};
 	MyCanvas.prototype.canvasScrolled = function(signal, data){
