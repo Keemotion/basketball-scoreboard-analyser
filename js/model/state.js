@@ -14,7 +14,8 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, new EventListener(this, this.labelChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadState, new EventListener(this, this.loadState));
     };
-	DataBaseClass.applyMethods(State.prototype);
+	//DataBaseClass.applyMethods(State.prototype);
+	State.prototype = new DataBaseClass();
 	State.prototype.type = "state";
 	State.prototype.getSubNodes = function(){
 		return this.objects;

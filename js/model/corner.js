@@ -7,7 +7,8 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
         this.parent_digit = parent_digit;
         this.proxy = new CornerProxy(this);
     };
-	DataBaseClass.applyMethods(Corner.prototype);
+	//DataBaseClass.applyMethods(Corner.prototype);
+	Corner.prototype = new DataBaseClass();
 	Corner.prototype.type = "corner";
 	Corner.prototype.getSubNodes = function(){
 		return new Array();

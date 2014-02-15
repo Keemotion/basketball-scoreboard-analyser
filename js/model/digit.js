@@ -9,7 +9,8 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 		this.setProxy(new DigitProxy(this));
         this.setCorners((data?data.corners:null), false);
     };
-	DataBaseClass.applyMethods(Digit.prototype);
+	//DataBaseClass.applyMethods(Digit.prototype);
+	Digit.prototype = new DataBaseClass();
 	Digit.prototype.type = "digit";
 	Digit.prototype.getSubNodes = function(){
 		return this.corners;

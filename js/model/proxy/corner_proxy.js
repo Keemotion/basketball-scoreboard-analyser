@@ -2,7 +2,7 @@ define(['./proxy_base_class', '../../messaging_system/messaging_system'],functio
     var CornerProxy = function(corner){
 		this.setObj(corner);
     };
-	ProxyBaseClass.applyMethods(CornerProxy.prototype);
+	CornerProxy.prototype = new ProxyBaseClass();
 	CornerProxy.prototype.update_events = [];
 	CornerProxy.prototype.getX = function(){
 		return this.getCoordinate().getX();

@@ -10,7 +10,7 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
         this.setDigits(digits);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitLabelObjectDetails, new EventListener(this, this.submitLabelObjectDetails));
     };
-	DataBaseClass.applyMethods(LabelObject.prototype);
+	LabelObject.prototype = new DataBaseClass();
     LabelObject.prototype.type = "label";
     LabelObject.prototype.getSubNodes = function(){
 		return this.digits;
