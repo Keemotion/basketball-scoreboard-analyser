@@ -36,7 +36,9 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         }
         return d;
     };
-	Digit.prototype.updateCorners = function(corners_data, warn_listeners = true){
+	Digit.prototype.updateCorners = function(corners_data, warn_listeners){
+        if(warn_listeners == null)
+            warn_listeners = true;
 		for(var i = 0; i < 4; ++i){
 			this.changeCorner(i, corners_data[i].coordinate.x, corners_data[i].coordinate.y, false);
 		}
@@ -53,36 +55,30 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			this.notifyLabelChanged();
 		}      
     };
-    Digit.prototype.load = function(data, warn_listeners = true){
+    Digit.prototype.load = function(data, warn_listeners){
+        if(warn_listeners == null)
+            warn_listeners = true;
         this.setCorners(data.corners, false);
         if(warn_listeners){
 			this.notifyLabelChanged();
   		}      
     };
-	Digit.prototype.update = function(data, warn_listeners = true){
+	Digit.prototype.update = function(data, warn_listeners){
+        if(warn_listeners == null)
+            warn_listeners = true;
 		this.name = data.name;
 		this.updateCorners(data.corners, false);
 		if(warn_listeners){
 			this.notifyLabelChanged();
 		}
 	};
-    Digit.prototype.changeCorner = function(corner_index, x, y, warnListeners = true){
+    Digit.prototype.changeCorner = function(corner_index, x, y, warn_listeners){
+        if(warn_listeners == null)
+            warn_listeners = true;
 		this.corners[corner_index].setCoordinate(new Coordinate(x, y));
-        if(warnListeners){
+        if(warn_listeners){
 			this.notifyLabelChanged();
         }
     };
-    /*Digit.setDrawing = function(drawing, send_notification){
-		this.drawing = drawing;
-		if(send_notification == null){
-			send_notification = true;
-		}
-		for(var i = 0; i < this.corners.length; ++i){
-			this.corners[i].setDrawing(drawing, false);
-		}
-		if(send_notification){
-			this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
-		}
-	};*/
     return Digit;
 });
