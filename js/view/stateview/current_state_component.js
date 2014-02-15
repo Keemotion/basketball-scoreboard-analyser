@@ -10,6 +10,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 		this.target_view.append(this.text_area);
 		this.loadComponent();
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
+		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, new EventListener(this, this.stateChanged));
 	};
 	CurrentStateComponent.prototype.stateChanged = function(signal, data){
 		this.loadComponent();

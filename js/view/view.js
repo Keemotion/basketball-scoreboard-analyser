@@ -1,6 +1,6 @@
 define([
 		'./canvas/canvas', 
-		'./stateview/loadstatecomponent', 
+		'./stateview/load_state_component', 
 		'./treeview/treeview', 
 		'./detailsview/labelobject_detailsview', 
 		'../messaging_system/event_listener',
