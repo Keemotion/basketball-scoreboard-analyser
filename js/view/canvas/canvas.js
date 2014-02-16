@@ -67,6 +67,7 @@ define([
 		});
 		this.canvas_element = this.canvas_element[0];
 		this.context = this.canvas_element.getContext('2d');
+		this.context.mozImageSmoothingEnabled = false;;
 		this.container_element = target_view;
 		this.transformation = new Transformation(new Coordinate(0,0), 1,1,1, 1);
 		this.dragHandler = new CanvasDragHandler(this.transformation, this.messaging_system);
@@ -211,6 +212,8 @@ define([
 			image_topleft_coordinate.y = Math.max(0, image_topleft_coordinate.y);
 			image_bottomright_coordinate.x = Math.min(image_bottomright_coordinate.x, this.image.width);
 			image_bottomright_coordinate.y = Math.min(image_bottomright_coordinate.y, this.image.height);
+			this.context.mozImageSmoothingEnabled = false;
+			//this.context.webkitImageSmoothingEnabled=false;
 			this.context.drawImage(this.image, image_topleft_coordinate.x, image_topleft_coordinate.y, image_bottomright_coordinate.x-image_topleft_coordinate.x, image_bottomright_coordinate.y-image_topleft_coordinate.y, canvas_topleft_coordinate.x, canvas_topleft_coordinate.y, canvas_bottomright_coordinate.x-canvas_topleft_coordinate.x, canvas_bottomright_coordinate.y-canvas_topleft_coordinate.y);
 			this.drawDisplayObjects();
 		}
