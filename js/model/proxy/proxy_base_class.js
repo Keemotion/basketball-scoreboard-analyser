@@ -30,6 +30,9 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.getDisplaying = function(){
 		return this.obj.getDisplaying();
 	};
+	BaseProxy.prototype.getSimulating = function(){
+		return this.obj.getSimulating();
+	};
 	BaseProxy.prototype.getIdentification = function(){
 		return this.obj.getIdentification();
 	};

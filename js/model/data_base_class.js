@@ -4,6 +4,7 @@ define(["../messaging_system/event_listener"],function(EventListener){
 	BaseDataClass.prototype.init = function(){
 		this.sub_nodes_proxies = new Array();
 		this.displaying = true;
+		this.simulating = true;
 		this.toggleDisplayObjectListener = new EventListener(this, this.toggleDisplay);
 		this.messaging_system.addEventListener(this.messaging_system.events.ToggleDisplayObject, this.toggleDisplayObjectListener);
 	};
@@ -67,6 +68,22 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		}
 		if(send_notification){
 			this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
+		}
+	};
+	BaseDataClass.prototype.getSimulating = function(){
+		return this.simulating;
+	};
+	BaseDataClass.prototype.setSimulating = function(simulating, send_notification){
+		this.simulating = simulating;
+		if(send_notification == null){
+			send_notification = true;
+		}
+		var sub_nodes = this.getSubNodes();
+		for(var i = 0; i < sub_nodes.length; ++i){
+			sub_nodes[i].setSimulating(simulating, false);
+		}
+		if(send_notification){
+			this.messaging_system.fire(this.messaging_system.DisplayObjectsChanged, null);
 		}
 	};
 	BaseDataClass.prototype.getIdentification = function(){
