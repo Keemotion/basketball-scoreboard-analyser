@@ -25,13 +25,20 @@ define([
         for(var i = 0; i < 4; ++i){
             digits.push(new Array());
             for(var j = 0; j < 3; ++j){
-                digits[i].push(null);
+            	var o = new Object();
+            	o.type = "digit";
+                digits[i].push(o);
             }
         }
         this.addObject("team1_label1", digits[0], false);
         this.addObject("team1_label2", digits[1], false);
         this.addObject("team2_label1", digits[3], false);
         this.addObject("team2_label2", digits[2], false);
+        var dot = new Array();
+        var o = new Object();
+        o.type = "dot";
+        dot.push(o);
+        this.addObject("dot", dot, false);
     };
 	State.prototype.loadState = function(signal, data){
 		this.parseJSON(data.getDataString());

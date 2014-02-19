@@ -1,10 +1,12 @@
 define([
-	"./digit_details_content_view", 
+	"./digit_details_content_view",
+	"./dot_details_content_view", 
 	"../../messaging_system/event_listener", 
 	"../../messaging_system/events/submit_label_object_details_event",
 	"../../messaging_system/events/toggle_display_object_event"], 
 	function(
 		DigitDetailsContentView, 
+		DotDetailsContentView,
 		EventListener, 
 		SubmitLabelObjectDetailsEvent,
 		ToggleDisplayObjectEvent){
@@ -88,7 +90,16 @@ define([
 		this.title_element.text(this.data_proxy.getTitle());
 		this.content_elements.length = 0;
 		for(var i = 0; i < subnodes.length; ++i){
-			var el = new DigitDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
+			var el;
+			switch(subnodes[i].getType()){
+				case 'digit':
+					el = new DigitDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
+					break;
+				case 'dot':
+					el = new DotDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
+					break;
+			}
+			//var el = new DigitDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
 			this.content_elements.push(el);
 		}
 	};

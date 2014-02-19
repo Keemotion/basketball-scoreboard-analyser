@@ -25,6 +25,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
     Digit.prototype.getStringifyData = function(){
         var d = new Object();
         d.corners = new Array();
+        d.type = this.getType();
         for(var i = 0; i < this.corners.length; ++i){
             var c = new Object();
 			c.coordinate = new Object();

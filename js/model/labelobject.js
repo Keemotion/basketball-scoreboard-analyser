@@ -1,4 +1,15 @@
-define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_listener", "./data_base_class", '../messaging_system/events/label_changed_event'],function(Digit, LabelObjectProxy, EventListener, DataBaseClass, LabelChangedEvent){
+define(["./digit", 
+	"./proxy/labelobject_proxy", 
+	"../messaging_system/event_listener", 
+	"./data_base_class", 
+	'../messaging_system/events/label_changed_event',
+	'./dot'],function(
+		Digit, 
+		LabelObjectProxy, 
+		EventListener, 
+		DataBaseClass, 
+		LabelChangedEvent,
+		Dot){
     var LabelObject = function(name, digits, parent_state, id, messaging_system){
         this.messaging_system = messaging_system;
 		this.init();
@@ -40,7 +51,11 @@ define(["./digit", "./proxy/labelobject_proxy", "../messaging_system/event_liste
 		this.messaging_system.fire(this.messaging_system.events.LabelChanged, new LabelChangedEvent(/*this.getId()*/this.getIdentification()));
 	};
     LabelObject.prototype.addDigit = function(digit_data){
-        this.digits.push(new Digit(this, this.digits.length, digit_data, this.messaging_system));
+		if (digit_data.type == "digit") {
+			this.digits.push(new Digit(this, this.digits.length, digit_data, this.messaging_system));
+		} else if(digit_data.type == "dot"){
+			this.digits.push(new Dot(this, this.digits.length, digit_data, this.messaging_system));
+		}
         this.sub_nodes_proxies.push(this.digits[this.digits.length-1].getProxy());
     };
     LabelObject.prototype.load = function(data){

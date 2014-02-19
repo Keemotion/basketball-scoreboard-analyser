@@ -85,6 +85,7 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 		var d = new Object();
 		d.id = this.data_proxy.getId();
 		d.name = this.data_proxy.getTitle();
+		d.type = this.data_proxy.getType();
 		d.corners = new Array();
 		for(var i = 0; i < this.content_elements.length; ++i){
 			d.corners.push(this.content_elements[i].collectFormData());
