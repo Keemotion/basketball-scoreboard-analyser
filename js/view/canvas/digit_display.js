@@ -6,7 +6,8 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		this.setProxy(proxy);
 		this.loadSubComponents();
 	};
-	BaseDisplay.applyMethods(DigitDisplay.prototype);
+	//BaseDisplay.applyMethods(DigitDisplay.prototype);
+	DigitDisplay.prototype = new BaseDisplay();
 	DigitDisplay.prototype.drawMyself = function(context, transformation){
 		if(!this.getProxy().getSimulating()){
 			return;

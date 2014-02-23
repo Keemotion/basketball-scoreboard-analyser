@@ -5,7 +5,8 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		this.messaging_system = messaging_system;
 		this.setProxy(proxy);
 	};
-	BaseDisplay.applyMethods(DotDisplay.prototype);
+	//BaseDisplay.applyMethods(DotDisplay.prototype);
+	DotDisplay.prototype = new BaseDisplay();
 	DotDisplay.prototype.drawMyself = function(context, transformation){
 		/*if(!this.getProxy().getSimulating()){
 			return;

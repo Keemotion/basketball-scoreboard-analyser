@@ -1,35 +1,34 @@
 define([], function(){
-	var BaseDisplay = new Object();
-	BaseDisplay.applyMethods = function(type){
-		type.init = function(){
-			this.sub_components = new Array();
-		};
-		type.getSubComponents = function(){
-			return this.sub_components;
-		};
-		type.getParent = function(){
-			return this.parent;
-		};
-		type.setParent = function(parent){
-			this.parent = parent;
-		};
-		type.draw = function(context, transformation){
-			for(var i = 0; i < this.sub_components.length; ++i){
-				this.sub_components[i].draw(context, transformation);
-			}
-			if(this.getProxy().getDisplaying()){
-				this.drawMyself(context, transformation);
-			}
-		};
-		type.drawMyself = function(context, transformation){
+	var BaseDisplay = function(){
+	};
+	BaseDisplay.prototype.init = function(){
+		this.sub_components = new Array();
+	};
+	BaseDisplay.prototype.getSubComponents = function(){
+		return this.sub_components;
+	};
+	BaseDisplay.prototype.getParent = function(){
+		return this.parent;
+	};
+	BaseDisplay.prototype.setParent = function(parent){
+		this.parent = parent;
+	};
+	BaseDisplay.prototype.draw = function(context, transformation){
+		for(var i = 0; i < this.sub_components.length; ++i){
+			this.sub_components[i].draw(context, transformation);
+		}
+		if(this.getProxy().getDisplaying()){
+			this.drawMyself(context, transformation);
+		}
+	};
+	BaseDisplay.prototype.drawMyself = function(context, transformation){
 //			console.log("TODO: implement drawMyself");
-		};
-		type.getProxy = function(){
-			return this.proxy;
-		};
-		type.setProxy = function(proxy){
-			this.proxy = proxy;
-		};
+	};
+	BaseDisplay.prototype.getProxy = function(){
+		return this.proxy;
+	};
+	BaseDisplay.prototype.setProxy = function(proxy){
+		this.proxy = proxy;
 	};
 	return BaseDisplay;
 });
