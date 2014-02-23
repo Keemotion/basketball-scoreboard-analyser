@@ -10,6 +10,8 @@ define([],function(){
 		return this.y;
 	};
 	Coordinate.prototype.isValid = function(){
+		//TODO: find a better validation function
+		//can we use this one? http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric?page=1&tab=votes#tab-top
 		return this.x && this.y;
 	};
     Coordinate.prototype.type = "coordinate";
@@ -30,6 +32,10 @@ define([],function(){
 		var dx = c1.getX()-c2.getX();
 		var dy = c1.getY()-c2.getY();
 		return dx*dx+dy*dy;
+	};
+	Coordinate.prototype.round = function(){
+		this.x = Math.round(this.x);
+		this.y = Math.round(this.y);
 	};
     return Coordinate;
 });

@@ -16,10 +16,11 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 			return;
 		var coordinates = new Array();
 		for(var i = 0; i < sub_proxies.length; ++i){
+			console.log("checking whether the coordinate is valid");
 			if(!sub_proxies[i].getCoordinate().isValid()){
 				return;
 			}
-			coordinates.push(transformation.transformImageCoordinateToCanvasCoordinate(sub_proxies[i].getCoordinate()));
+			coordinates.push(transformation.transformRelativeImageCoordinateToCanvasCoordinate(sub_proxies[i].getCoordinate()));
 		}
 		var left_middle = new Coordinate((coordinates[0].getX()+coordinates[3].getX())/2.0, (coordinates[0].getY()+coordinates[3].getY())/2.0);
 		var right_middle = new Coordinate((coordinates[1].getX()+coordinates[2].getX())/2.0, (coordinates[1].getY()+coordinates[2].getY())/2.0);

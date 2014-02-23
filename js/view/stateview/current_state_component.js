@@ -19,6 +19,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 	CurrentStateComponent.prototype.loadComponent = function(){
 		var state_string = this.state_proxy.getStateString();
 		this.text_area.text(state_string);	
+		//TODO: find correct data: uri-scheme + encode 
 		this.download_btn.attr('href', 'data:application/json,'+encodeURIComponent(state_string));
 	};
 	CurrentStateComponent.prototype.setProxy = function(proxy){

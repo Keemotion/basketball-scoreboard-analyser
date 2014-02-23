@@ -9,7 +9,7 @@ define(["./base_display"], function(BaseDisplay){
 	CornerDisplay.prototype.drawMyself = function(context, transformation){
 		if(!this.getProxy().getCoordinate().isValid())
 			return;
-		var c = transformation.transformImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
+		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
 		context.beginPath();
 		context.strokeStyle = "#0000FF";
 		context.lineWidth = 3;
