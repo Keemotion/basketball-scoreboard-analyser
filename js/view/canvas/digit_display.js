@@ -16,7 +16,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 			return;
 		var coordinates = new Array();
 		for(var i = 0; i < sub_proxies.length; ++i){
-			console.log("checking whether the coordinate is valid");
 			if(!sub_proxies[i].getCoordinate().isValid()){
 				return;
 			}
