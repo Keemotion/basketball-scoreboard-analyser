@@ -7,7 +7,8 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 			.attr({
 				'class':'txt_state'
 			});
-		this.target_view.append(this.text_area);
+		this.download_btn = $('<a>').attr('download', 'config.rpm').text('Download');
+		this.target_view.append(this.text_area).append('<br>').append(this.download_btn);
 		this.loadComponent();
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, new EventListener(this, this.stateChanged));
@@ -16,7 +17,9 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 		this.loadComponent();
 	};
 	CurrentStateComponent.prototype.loadComponent = function(){
-		this.text_area.text(this.state_proxy.getStateString());	
+		var state_string = this.state_proxy.getStateString();
+		this.text_area.text(state_string);	
+		this.download_btn.attr('href', 'data:application/json,'+encodeURIComponent(state_string));
 	};
 	CurrentStateComponent.prototype.setProxy = function(proxy){
 		this.state_proxy = proxy;

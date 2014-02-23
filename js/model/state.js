@@ -46,6 +46,7 @@ define([
 	};
 	State.prototype.loadStateFile = function(signal, data){
 		console.log("received state file: "+data.data_string);
+		//TODO: implement
 	};
 	State.prototype.stateChanged = function(){
 		this.messaging_system.fire(this.messaging_system.events.StateChanged, new StateChangedEvent());
