@@ -8,10 +8,8 @@ define(["./base_display",
 		this.setProxy(proxy);
 		this.loadSubComponents();
 	};
-	//BaseDisplay.applyMethods(LabelDisplay.prototype);
 	LabelDisplay.prototype = new BaseDisplay();
 	LabelDisplay.prototype.drawMyself = function(context, transformation){
-		//console.log("TODO: labeldisplay has overridden this drawMyself method, but still needs some proper implementation");
 	};
 	LabelDisplay.prototype.loadSubComponents = function(){
 		var sub_proxies = this.getProxy().getSubNodes();

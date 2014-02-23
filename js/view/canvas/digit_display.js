@@ -6,7 +6,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		this.setProxy(proxy);
 		this.loadSubComponents();
 	};
-	//BaseDisplay.applyMethods(DigitDisplay.prototype);
 	DigitDisplay.prototype = new BaseDisplay();
 	DigitDisplay.prototype.drawMyself = function(context, transformation){
 		if(!this.getProxy().getSimulating()){
@@ -36,6 +35,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.lineTo(right_middle.getX(), right_middle.getY());
 		context.strokeStyle = "#00ff00";
 		context.stroke();
+		//sampling points:
 		var sampling_points = new Array();
 		sampling_points.push(Coordinate.getMiddle([coordinates[0], coordinates[1]]));
 		sampling_points.push(Coordinate.getMiddle([coordinates[1], right_middle]));
@@ -68,8 +68,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 				context.stroke();
 			}
 		}
-		//sampling points:
-		//console.log("TODO: digitdisplay has overridden this drawMyself method, but still needs some proper implementation");
+		
 	};
 	DigitDisplay.prototype.loadSubComponents = function(){
 		var sub_proxies = this.getProxy().getSubNodes();

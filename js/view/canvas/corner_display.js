@@ -5,7 +5,6 @@ define(["./base_display"], function(BaseDisplay){
 		this.messaging_system = messaging_system;
 		this.setProxy(proxy);
 	};
-	//BaseDisplay.applyMethods(CornerDisplay.prototype);
 	CornerDisplay.prototype = new BaseDisplay();
 	CornerDisplay.prototype.drawMyself = function(context, transformation){
 		if(!this.getProxy().getCoordinate().isValid())

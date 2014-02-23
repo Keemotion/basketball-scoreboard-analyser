@@ -22,7 +22,6 @@ define([], function(){
 		}
 	};
 	BaseDisplay.prototype.drawMyself = function(context, transformation){
-//			console.log("TODO: implement drawMyself");
 	};
 	BaseDisplay.prototype.getProxy = function(){
 		return this.proxy;

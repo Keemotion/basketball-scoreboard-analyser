@@ -104,7 +104,6 @@ define([
 		this.setProxy(proxy);
 	};
 	MyCanvas.prototype.displayObjectsChanged = function(signal, data){
-		//TODO:update all children display objects
 		this.updateCanvas();
 	};
 	MyCanvas.prototype.canvasScrolled = function(signal, data){
