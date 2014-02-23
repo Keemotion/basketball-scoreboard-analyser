@@ -1,5 +1,7 @@
 define(['../../messaging_system/events/load_state_event'],function(LoadStateEvent){
-	return function LoadStateComponent(view_target, messaging_system){
+	var LoadStateComponent = function(view_target, messaging_system){
+		var self = this;
+		this.messaging_system = messaging_system;
 		this.containerElement = view_target;
 		var text_area = this.textArea = $('<textarea>')
             .attr({
@@ -16,7 +18,23 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 				messaging_system.fire(messaging_system.events.LoadState, new LoadStateEvent(t));
 			});
         btn_div.append(this.btnApply);
+        this.file_btn = $('<input>').attr('type', 'file').text('Kies een bestand')
+        	.change(function(){self.fileChanged();})
+        	.attr('id', 'btnLoadFile');
+        var file_div = $('<div>').append(this.file_btn);
 		this.containerElement.append(this.textArea)
-			.append(btn_div);
+			.append(btn_div)
+			.append(file_div);
 	};
+	LoadStateComponent.prototype.fileChanged = function(evt){
+		var self = this;
+		var files = $('#btnLoadFile')[0].files;
+		var f = files[0];
+		var reader = new FileReader();
+		reader.onload = function(e){
+			self.messaging_system.fire(self.messaging_system.events.LoadStateFile, new LoadStateEvent(e.target.result));
+		};
+		reader.readAsText(f);
+	};
+	return LoadStateComponent;
 });

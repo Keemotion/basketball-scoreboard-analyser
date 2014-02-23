@@ -13,6 +13,7 @@ define([
 		this.setProxy(new StateProxy(this));
 		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, new EventListener(this, this.labelChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadState, new EventListener(this, this.loadState));
+		this.messaging_system.addEventListener(this.messaging_system.events.LoadStateFile, new EventListener(this, this.loadStateFile));
     };
 	State.prototype = new DataBaseClass();
 	State.prototype.type = "state";
@@ -42,6 +43,9 @@ define([
     };
 	State.prototype.loadState = function(signal, data){
 		this.parseJSON(data.getDataString());
+	};
+	State.prototype.loadStateFile = function(signal, data){
+		console.log("received state file: "+data.data_string);
 	};
 	State.prototype.stateChanged = function(){
 		this.messaging_system.fire(this.messaging_system.events.StateChanged, new StateChangedEvent());
