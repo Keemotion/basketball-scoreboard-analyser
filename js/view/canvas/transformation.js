@@ -52,10 +52,6 @@ define(["../../model/coordinate"], function(Coordinate){
 		return new Coordinate(canvas_center.x-this.getCanvasWidth()/(this.getImageRatio()*this.getScale()), canvas_center.y+this.getCanvasHeight()/(this.getImageRatio()*this.getScale())); 
 	};
 	Transformation.prototype.transformRelativeImageCoordinateToAbsoluteImageCoordinate = function(coordinate){
-		//return new Coordinate((coordinate.x+1.0)*this.getImageWidth()/2.0, (-coordinate.y+1.0)*this.getImageHeight()/2.0);
-		console.log("coordinate = "+JSON.stringify(coordinate));
-		console.log("horizontal ratio = "+this.getHorizontalRatio());
-		console.log("image ratio = " + this.getImageRatio());
 		return new Coordinate((coordinate.x+this.getHorizontalRatio())*this.getImageRatio()/2.0, (-coordinate.y+this.getVerticalRatio())*this.getImageRatio()/2.0);
 	};
 	Transformation.prototype.getImageRatio = function(){
@@ -63,7 +59,6 @@ define(["../../model/coordinate"], function(Coordinate){
 	};
 	
 	Transformation.prototype.transformAbsoluteImageCoordinateToRelativeImageCoordinate = function(coordinate){
-		//return new Coordinate(coordinate.x*2.0/this.getImageWidth()-1, coordinate.y*2.0/this.getImageHeight()-1);
 		return new Coordinate(coordinate.x*2.0/this.getImageRatio()-this.getHorizontalRatio(), coordinate.y*2.0/this.getImageRatio()-this.getVerticalRatio());
 	};
 	Transformation.prototype.transformAbsoluteImageCoordinateToCanvasCoordinate = function(coordinate){
@@ -79,13 +74,9 @@ define(["../../model/coordinate"], function(Coordinate){
 			(canvas_origin.y-coordinate.y)*this.getScale()*this.getImageRatio()/2.0);
 	};
 	Transformation.prototype.getHorizontalRatio = function(){
-		//return this.getImageWidth()/this.getCanvasWidth();
-		//return this.getImageRatio()/this.getCanvasWidth();
 		return this.getImageWidth()/this.getImageRatio();
 	};
 	Transformation.prototype.getVerticalRatio = function(){
-		//return this.getImageHeight()/this.getCanvasHeight();
-		//return this.getImageRatio()/this.getCanvasHeight();
 		return this.getImageHeight()/this.getImageRatio();
 	};
 	Transformation.prototype.transformCanvasCoordinateToRelativeImageCoordinate = function(coordinate){

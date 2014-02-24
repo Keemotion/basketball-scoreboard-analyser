@@ -9,6 +9,9 @@ define([], function(){
 		var read_function = 0;
 		var sync_function = 0;
 		var requested_stability_ms = 0;
+		var chronometer_parse_function = 0;
+		var score_team_A_parse_function = 0;
+		var score_team_B_parse_function = 0;
 		
 		var label_objects = new Object();
 		
@@ -19,7 +22,6 @@ define([], function(){
 			var parts = lines[i].split('=');
 			var key = parts[0];
 			var value=parts[1];
-			//console.log("key = "+key);
 			switch(key){
 				case 'luminance_threshold':
 					luminance_treshold = value;
@@ -35,6 +37,15 @@ define([], function(){
 					break;
 				case 'requested_stability_ms':
 					requested_stability_ms = value;
+					break;
+				case 'chronometer_parse_function':
+					chronometer_parse_function = value;
+					break;
+				case 'score_team_A_parse_function':
+					score_team_A_parse_function = value;
+					break;
+				case 'score_team_B_parse_function':
+					score_team_B_parse_function = value;
 					break;
 				default:
 					var key_parts = key.split('_');

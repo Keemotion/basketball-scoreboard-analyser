@@ -180,13 +180,9 @@ define([
 	MyCanvas.prototype.drawCanvas = function(){
 		this.context.clearRect(0, 0, this.canvas_element.width, this.canvas_element.height);
 		if(this.image){
-			//console.log("x = -1, y = -1 results in absolute image coordinates: "+JSON.stringify(this.transformation.transformRelativeImageCoordinateToAbsoluteImageCoordinate(new Coordinate(-1,-1))));
-			//console.log("canvas dimensions: "+this.transformation.getCanvasWidth()+" "+this.transformation.getCanvasHeight());
-			//console.log("x = -1, y = -1 results in canvas coordinates: "+JSON.stringify(this.transformation.transformRelativeImageCoordinateToCanvasCoordinate(new Coordinate(-1,-1))));
 			var image_top_left = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(0,0));
 			image_top_left.x = Math.max(-this.transformation.getImageWidth()/this.transformation.getImageRatio(), image_top_left.x);
 			image_top_left.y = Math.min(this.transformation.getImageHeight()/this.transformation.getImageRatio(), image_top_left.y);
-			console.log("image_top_left = "+JSON.stringify(image_top_left));
 			var canvas_top_left = this.transformation.transformRelativeImageCoordinateToCanvasCoordinate(image_top_left);
 			image_top_left = this.transformation.transformRelativeImageCoordinateToAbsoluteImageCoordinate(image_top_left);
 			
@@ -200,9 +196,6 @@ define([
 			image_bottom_right.round();
 			canvas_top_left.round();
 			canvas_bottom_right.round();
-			console.log("image_top_left = "+JSON.stringify(image_top_left));
-			console.log("canvas_top_left = "+JSON.stringify(canvas_top_left));
-			console.log("image bottom right = "+JSON.stringify(image_bottom_right));
 			
 			if(!this.transformation.inCanvasRange(canvas_top_left) || !this.transformation.inCanvasRange(canvas_bottom_right)){
 				return;
