@@ -5,34 +5,29 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         this.parent_label = parent_label;
         this.id = id;
 		this.name = "digit";
-        this.corners = new Array();
 		this.setProxy(new DigitProxy(this));
         this.setCorners((data?data.corners:null), false);
     };
-	Digit.prototype = new DataBaseClass();
-	Digit.prototype.type = "digit";
-	Digit.prototype.getSubNodes = function(){
-		return this.corners;
-	};
+	Digit.prototype = new DataBaseClass("digit");
+
     Digit.prototype.resetCorners = function(){
-        this.corners.length = 0;
-		this.sub_nodes_proxies.length = 0;
+        this.clearSubNodes();
         for(var i = 0; i < 4; ++i){
-            this.corners.push(new Corner(this, new Coordinate("", ""), i, this.messaging_system));
-            this.sub_nodes_proxies.push(this.corners[i].getProxy());
+        	this.addSubNode(new Corner(this, new Coordinate("", ""), i, this.messaging_system));
         }
     };
     Digit.prototype.getStringifyData = function(){
         var d = new Object();
         d.corners = new Array();
         d.type = this.getType();
-        for(var i = 0; i < this.corners.length; ++i){
+        var corners = this.getSubNodes();
+        for(var i = 0; i < corners.length; ++i){
             var c = new Object();
 			c.coordinate = new Object();
-            c.coordinate.x = this.corners[i].getCoordinate().getX();
-            c.coordinate.y = this.corners[i].getCoordinate().getY();
-			c.name = this.corners[i].getTitle();
-			c.id = this.corners[i].getId();
+            c.coordinate.x = corners[i].getCoordinate().getX();
+            c.coordinate.y = corners[i].getCoordinate().getY();
+			c.name = corners[i].getTitle();
+			c.id = corners[i].getId();
             d.corners.push(c);
         }
         return d;
@@ -76,7 +71,8 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
     Digit.prototype.changeCorner = function(corner_index, x, y, warn_listeners){
         if(warn_listeners == null)
             warn_listeners = true;
-		this.corners[corner_index].setCoordinate(new Coordinate(x, y));
+        var corners = this.getSubNodes();
+		corners[corner_index].setCoordinate(new Coordinate(x, y));
         if(warn_listeners){
 			this.notifyLabelChanged();
         }

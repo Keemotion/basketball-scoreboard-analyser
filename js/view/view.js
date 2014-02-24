@@ -72,7 +72,7 @@ define([
         });
     };
     View.prototype.labelObjectClicked = function(signal, data){
-		if(data.data_proxy.getType() == "label"){
+		if(data.data_proxy.getType() == "labelobject"){
 	        this.loadLabelObjectDetails(data.data_proxy);
 		}
     };

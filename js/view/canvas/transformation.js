@@ -63,6 +63,7 @@ define(["../../model/coordinate"], function(Coordinate){
 	Transformation.prototype.transformCanvasCoordinateToAbsoluteImageCoordinate = function(coordinate){
 		return this.transformRelativeImageCoordinateToAbsoluteImageCoordinate(this.transformCanvasCoordinateToRelativeImageCoordinate(coordinate));
 	};
+	//TODO: incorrect!!!
 	Transformation.prototype.transformRelativeImageCoordinateToCanvasCoordinate = function(coordinate){
 		var canvas_origin = this.getCanvasOrigin();
 		return new Coordinate((coordinate.x-canvas_origin.x)*this.getCanvasWidth()*this.getScale()*this.getHorizontalRatio()/2.0, 

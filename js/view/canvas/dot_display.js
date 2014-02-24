@@ -10,7 +10,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		if(!this.getProxy().getCoordinate().isValid()){
 			return;
 		}
-		var c = transformation.transformImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
+		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
 		context.beginPath();
 		context.strokeStyle = "#FF0000";
 		context.lineWidth = 3;

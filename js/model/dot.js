@@ -5,14 +5,11 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
         this.parent_label = parent_label;
         this.id = id;
 		this.name = "dot";
-		this.coordinate = new Coordinate();
+		this.coordinate = new Coordinate(data.coordinate.x, data.coordinate.y);
 		this.setProxy(new DotProxy(this));
     };
 	Dot.prototype = new DataBaseClass();
 	Dot.prototype.type = "dot";
-	Dot.prototype.getSubNodes = function(){
-		return new Array();
-	};
 	Dot.prototype.getCoordinate = function(){
 		return this.coordinate;
 	};

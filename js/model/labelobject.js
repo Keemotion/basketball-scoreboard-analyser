@@ -15,20 +15,14 @@ define(["./digit",
 		this.init();
         this.parent_state = parent_state;
         this.name = name;
-        this.digits = new Array();
         this.id = id;
         this.setProxy(new LabelObjectProxy(this));
         this.setDigits(digits);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitLabelObjectDetails, new EventListener(this, this.submitLabelObjectDetails));
     };
-	LabelObject.prototype = new DataBaseClass();
-    LabelObject.prototype.type = "label";
-    LabelObject.prototype.getSubNodes = function(){
-		return this.digits;
-	};
+	LabelObject.prototype = new DataBaseClass("labelobject");
     LabelObject.prototype.setDigits = function(digits){
-        this.digits.length = 0;
-        this.sub_nodes_proxies.length = 0;
+        this.clearSubNodes();
         for(var i = 0; i < digits.length; ++i){
             this.addDigit(digits[i]);
         }
@@ -41,22 +35,26 @@ define(["./digit",
 	LabelObject.prototype.update = function(data){
 		this.name = data.name;
 		this.id = data.id;
-		this.digits.length = data.digits.length;
-		for(var i = 0; i < this.digits.length; ++i){
-			this.digits[i].update(data.digits[i], false);
+		var digits = this.getSubNodes();
+		digits.length = data.digits.length;
+		for(var i = 0; i < digits.length; ++i){
+			digits[i].update(data.digits[i], false);
 		}
 		this.notifyLabelChanged();
 	};
 	LabelObject.prototype.notifyLabelChanged = function(){
-		this.messaging_system.fire(this.messaging_system.events.LabelChanged, new LabelChangedEvent(/*this.getId()*/this.getIdentification()));
+		this.messaging_system.fire(this.messaging_system.events.LabelChanged, new LabelChangedEvent(this.getIdentification()));
 	};
     LabelObject.prototype.addDigit = function(digit_data){
+    	var obj = null;
 		if (digit_data.type == "digit") {
-			this.digits.push(new Digit(this, this.digits.length, digit_data, this.messaging_system));
+			obj = new Digit(this, this.getNewSubNodeId(), digit_data, this.messaging_system);
 		} else if(digit_data.type == "dot"){
-			this.digits.push(new Dot(this, this.digits.length, digit_data, this.messaging_system));
+			obj = new Dot(this, this.getNewSubNodeId(), digit_data, this.messaging_system);
 		}
-        this.sub_nodes_proxies.push(this.digits[this.digits.length-1].getProxy());
+		if(obj){
+			this.addSubNode(obj);
+		}
     };
     LabelObject.prototype.load = function(data){
         this.name = data.name;
@@ -68,16 +66,20 @@ define(["./digit",
         var d = new Object();
         d.name = this.name;
         d.digits = new Array();
-        for(var i = 0; i < this.digits.length; ++i){
-            d.digits.push(this.digits[i].getStringifyData());
+        var digits = this.getSubNodes();
+        for(var i = 0; i < digits.length; ++i){
+            d.digits.push(digits[i].getStringifyData());
         }
         return d;
     };     
     LabelObject.prototype.removeDigit = function(index){
-        for(var i = index+1; i < this.digits.length; ++i){
-            this.digits[i-1] = this.digits[i];
+    	//TODO: general 
+    	var digits = this.getSubNodes();
+    	console.log("TODO: implement remove digit");
+        for(var i = index+1; i < digits.length; ++i){
+            digits[i-1] = digits[i];
         }
-        --this.digits.length;
+        --digits.length;
 		this.notifyLabelChanged();
     };
     return LabelObject;

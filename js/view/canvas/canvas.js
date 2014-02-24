@@ -129,6 +129,7 @@ define([
 		this.transformation.setCanvasWidth(this.canvas_element.width);
 		this.transformation.setCanvasHeight(this.canvas_element.height);
 		if(this.image){
+			console.log("transformation image width = "+this.image.width+ " image height = "+this.image.height);
 			this.transformation.setImageWidth(this.image.width);
 			this.transformation.setImageHeight(this.image.height);
 		}

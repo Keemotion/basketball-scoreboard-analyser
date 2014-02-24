@@ -1,8 +1,9 @@
 define(["../messaging_system/event_listener"],function(EventListener){
-	var BaseDataClass = function(){
+	var BaseDataClass = function(type){
+		this.type = type;
 	};
 	BaseDataClass.prototype.init = function(){
-		this.sub_nodes_proxies = new Array();
+		this.sub_nodes = new Array();
 		this.displaying = true;
 		this.simulating = true;
 		this.toggleDisplayObjectListener = new EventListener(this, this.toggleDisplay);
@@ -20,7 +21,12 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		this.proxy = proxy;
 	};
 	BaseDataClass.prototype.getSubNodesProxies = function(){
-		return this.sub_nodes_proxies;
+		var sub_nodes_proxies = new Array();
+		var sub_nodes = this.getSubNodes();
+		for(var i = 0; i < sub_nodes.length; ++i){
+			sub_nodes_proxies.push(sub_nodes[i].getProxy());
+		}
+		return sub_nodes_proxies;
 	};
 	BaseDataClass.prototype.getTitle = function(){
 		return this.name;
@@ -29,13 +35,14 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		return this.id;
 	};
 	BaseDataClass.prototype.getParent = function(){
-		return this.parent_state;
+		return this.parent;
 	};
 	BaseDataClass.prototype.getType = function(){
 		return this.type;
 	};
 	BaseDataClass.prototype.notifyLabelChanged = function(){
-		this.getParent().notifyLabelChanged();
+		if(this.getParent())
+			this.getParent().notifyLabelChanged();
 	};
 	BaseDataClass.prototype.isPossiblyAboutThis = function(target, index){
 		if(target.length == 0)
@@ -97,7 +104,28 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		return identification;
 	};
 	BaseDataClass.prototype.getSubNodes = function(){
-		throw "getSubNodes must be implemented";
+		return this.sub_nodes;
+	};
+	BaseDataClass.prototype.clear = function(){
+		console.log( "clear needs to be implemented! type = "+this.getType());
+	};
+	BaseDataClass.prototype.clearSubNodes = function(){
+		//TODO: clear each subnode
+		for(var i = 0; i < this.sub_nodes.length; ++i){
+			this.sub_nodes[i].clear();
+		}
+		this.sub_nodes.length = 0;
+	};
+	BaseDataClass.prototype.addSubNode = function(sub_node){
+		this.sub_nodes.push(sub_node);
+	};
+	BaseDataClass.prototype.getNewSubNodeId = function(){
+		var id = 0;
+		var sub_nodes = this.getSubNodes();
+		for(var i = 0; i < sub_nodes.length; ++i){
+			id = Math.max(sub_nodes[i].getId()+1, id);
+		}
+		return id;
 	};
 	return BaseDataClass;
 });
