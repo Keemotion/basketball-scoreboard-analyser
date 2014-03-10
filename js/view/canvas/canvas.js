@@ -57,6 +57,32 @@ define([
 		var ev = data.event_data;
 		this.canvasMouseUp(signal, data);
 	};
+	var DisplayChangedHandler = function(canvas){
+		this.canvas = canvas;
+		this.drawn = false;
+		this.last_edit = 0;
+		this.checkDraw();
+		this.interval = 150;
+	};
+	DisplayChangedHandler.prototype.checkDraw = function(){
+		var self = this;
+		var now = new Date().getTime();
+		if(now-this.last_edit > this.interval && !this.drawn){
+			this.drawn = true;
+			this.canvas.drawCanvas();
+		}else{
+			setTimeout(function(){self.checkDraw();}, self.interval);
+		}
+	};
+	DisplayChangedHandler.prototype.fireEdited = function(){
+		var self = this;
+		this.drawn = false;
+		this.last_edit = new Date().getTime();
+		setTimeout(function(){self.checkDraw();}, self.interval);
+	};
+	DisplayChangedHandler.prototype.canBeDrawn = function(){
+		return (new Date().getTime())-this.last_edit > this.interval;
+	};
 	var MyCanvas = function(target_view, proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
@@ -102,6 +128,7 @@ define([
 		this.displayObjectsChangedListener = new EventListener(this, this.displayObjectsChanged);
 		this.messaging_system.addEventListener(this.messaging_system.events.DisplayObjectsChanged, this.displayObjectsChangedListener);
 		this.setProxy(proxy);
+		this.display_changed_handler = new DisplayChangedHandler(this);
 	};
 	MyCanvas.prototype.displayObjectsChanged = function(signal, data){
 		this.updateCanvas();
@@ -116,7 +143,8 @@ define([
 			factor = 10/9;
 		}
 		this.transformation.setScale(this.transformation.getScale()*factor);
-		this.drawCanvas();
+		//this.drawCanvas();
+		this.updateCanvas(signal, data);
 		return data.event_data.preventDefault() && false;
 	};
 	MyCanvas.prototype.windowResized = function(signal, data){
@@ -165,6 +193,7 @@ define([
 		}
 	};
 	MyCanvas.prototype.updateCanvas = function(signal, data){
+		this.getDisplayChangedHandler().fireEdited();
 		this.drawCanvas();
 	};
 	MyCanvas.prototype.loadImage = function(signal, data){
@@ -177,7 +206,14 @@ define([
 		};
 		this.image.src = data;
 	};
+	MyCanvas.prototype.getDisplayObjectsEnabled = function(){
+		return this.getDisplayChangedHandler().canBeDrawn();
+	};
+	MyCanvas.prototype.getDisplayChangedHandler = function(){
+		return this.display_changed_handler;
+	};
 	MyCanvas.prototype.drawCanvas = function(){
+		var starttime = new Date().getTime();
 		this.context.clearRect(0, 0, this.canvas_element.width, this.canvas_element.height);
 		if(this.image){
 			var image_top_left = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(0,0));
@@ -203,8 +239,12 @@ define([
 			this.context.mozImageSmoothingEnabled = false;
 			this.context.webkitImageSmoothingEnabled=false;
 			this.context.drawImage(this.image, image_top_left.x, image_top_left.y, image_bottom_right.x-image_top_left.x, image_bottom_right.y-image_top_left.y, canvas_top_left.x, canvas_top_left.y, canvas_bottom_right.x-canvas_top_left.x, canvas_bottom_right.y-canvas_top_left.y);
-			this.drawDisplayObjects();
+			if(this.getDisplayObjectsEnabled()){
+				this.drawDisplayObjects();
+			}
 		}
+		var endtime = new Date().getTime();
+		console.log("canvas drawMyself took "+(endtime-starttime) + " ms");
 	};
 	return MyCanvas;
 }
