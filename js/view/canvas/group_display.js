@@ -1,19 +1,19 @@
 define(['./base_display', './label_display'], function(BaseDisplay, LabelDisplay){
-	var DisplayTree = function(proxy, messaging_system){
+	var GroupDisplay = function(parent, proxy, messaging_system){
 		this.init();
-		this.setParent(null);
+		this.setParent(parent);
 		this.messaging_system = messaging_system;
 		this.setProxy(proxy);
 		this.loadSubComponents();
 	};
-	DisplayTree.prototype = new BaseDisplay();
-	DisplayTree.prototype.drawMyself = function(context, transformation){
+	GroupDisplay.prototype = new BaseDisplay();
+	GroupDisplay.prototype.drawMyself = function(context, transformation){
 	};
-	DisplayTree.prototype.loadSubComponents = function(){
+	GroupDisplay.prototype.loadSubComponents = function(){
 		var sub_proxies = this.getProxy().getSubNodes();
 		this.sub_components.length = 0;
 		for(var i = 0; i < sub_proxies.length; ++i){
-			if(sub_proxies[i].getType() == "group"){
+			if(sub_proxies.getType() == "group"){
 				this.sub_components.push(new GroupDisplay(this, sub_proxies[i], this.messaging_system));
 			}else{
 				this.sub_components.push(new LabelDisplay(this, sub_proxies[i], this.messaging_system));

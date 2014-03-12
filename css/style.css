@@ -33,6 +33,7 @@ div#div_toolbox{
 	float:left;
 	display:block;
 	width:25%;
+	height:100%;
 }
 div.horizontal#div_state_container div.div_state{
 	height:100%;
@@ -56,6 +57,10 @@ textarea.txt_state{
 }
 div.div_state div.div_state_buttons{
 	float:left;
+}
+div#div_toolbox_objects_tree{
+	overflow:auto;
+	height:50%;
 }
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree{
 	list-style-type: none;
@@ -93,6 +98,10 @@ div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li>span.span_li_title:
 	cursor:pointer;
 }
 
+div#div_toolbox_objects_details{
+	overflow:auto;
+	height:45%;
+}
 div#div_toolbox_objects_details div#div_details ul.ul_corners{
 	list-style-type:none;
 	margin:0px;
