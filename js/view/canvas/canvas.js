@@ -157,7 +157,6 @@ define([
 		this.transformation.setCanvasWidth(this.canvas_element.width);
 		this.transformation.setCanvasHeight(this.canvas_element.height);
 		if(this.image){
-			console.log("transformation image width = "+this.image.width+ " image height = "+this.image.height);
 			this.transformation.setImageWidth(this.image.width);
 			this.transformation.setImageHeight(this.image.height);
 		}
@@ -213,7 +212,6 @@ define([
 		return this.display_changed_handler;
 	};
 	MyCanvas.prototype.drawCanvas = function(){
-		var starttime = new Date().getTime();
 		this.context.clearRect(0, 0, this.canvas_element.width, this.canvas_element.height);
 		if(this.image){
 			var image_top_left = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(0,0));
@@ -243,8 +241,6 @@ define([
 				this.drawDisplayObjects();
 			}
 		}
-		var endtime = new Date().getTime();
-		console.log("canvas drawMyself took "+(endtime-starttime) + " ms");
 	};
 	return MyCanvas;
 }
