@@ -118,16 +118,19 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		for(var i = 0; i < sub_nodes.length; ++i){
 			this.addSubNode(sub_nodes[i]);
 		}
+		this.notifyGroupChanged();
 	};
 	BaseDataClass.prototype.clearSubNodes = function(){
 		for(var i = 0; i < this.sub_nodes.length; ++i){
 			this.sub_nodes[i].clear();
 		}
 		this.sub_nodes.length = 0;
+		this.notifyGroupChanged();
 	};
 	BaseDataClass.prototype.addSubNode = function(sub_node){
 		this.sub_nodes.push(sub_node);
 		sub_node.setParent(this);
+		this.notifyGroupChanged();
 	};
 	BaseDataClass.prototype.removeSubNode = function(sub_node){
 		for(var i = 0; i < this.sub_nodes.length; ++i){
@@ -137,6 +140,7 @@ define(["../messaging_system/event_listener"],function(EventListener){
 				return true;
 			}
 		}
+		this.notifyGroupChanged();
 		return false;
 	};
 	BaseDataClass.prototype.getNewSubNodeId = function(){
@@ -151,6 +155,7 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		var d = new Object();
         d.name = this.name;
         d.sub_nodes = new Array();
+        d.type = this.getType();
         var sub_nodes = this.getSubNodes();
         for(var i = 0; i < sub_nodes.length; ++i){
             d.sub_nodes.push(sub_nodes[i].getStringifyData());

@@ -32,6 +32,15 @@ define([
         this.addObject("team1_group2", digits[1], false);
         this.addObject("team2_group1", digits[3], false);
         this.addObject("team2_group2", digits[2], false);
+        group_subnodes = new Array();
+        for(var i = 0; i < 3; ++i){
+        	var obj = new Object();
+        	obj.sub_nodes = digits[i];
+        	obj.type = "group";
+        	obj.name = "sub group test "+ i;
+        	group_subnodes.push(obj);
+        }
+        this.addObject("group test", group_subnodes, false);
         var dot = new Array();
         var o = new Object();
         o.type = "dot";
@@ -53,37 +62,24 @@ define([
 	};
 	State.prototype.groupChanged = function(signal, data){
 	};
-    State.prototype.addObject = function(group_name, digits, single_event){
+    State.prototype.addObject = function(group_name, sub_nodes, single_event){
     	if(single_event==null)
     		single_event = true;
-    	this.addSubNode(new Group(group_name, digits, this, this.getNewSubNodeId(), this.messaging_system));
+    	this.addSubNode(new Group(group_name, sub_nodes, this, this.getNewSubNodeId(), this.messaging_system));
         if(single_event){
             this.messaging_system.fire(this.messaging_system.events.StateChanged, this);
         }
     };
-    /*State.prototype.getStringifyData = function(){
-        var objects_data = new Array();
-        var objects = this.getSubNodes();
-        for(var i = 0; i < objects.length; ++i){
-            objects_data.push(objects[i].getStringifyData());
-        }
-        return {'objects':objects_data};
-    };*/
     State.prototype.stringify = function(){
         return JSON.stringify(this.getStringifyData());
     };
-
-	State.prototype.reset = function(){
-		//TODO: clean up all children! (javascript destructor?)
-		//TODO: also clean up these children
-		this.clearSubNodes();
-	};
 	//TODO: make this method!
 	//In a class (JSONParser -> generate()) -> recursive
     State.prototype.parseJSON = function(json){
-		this.reset();
+		this.clear();
+		console.log("start parsing");
         try{
-			//console.log("json = "+json);
+			console.log("json = "+json);
             var data = JSON.parse(json);
 			return this.parse(data);
         }catch(err){

@@ -1,12 +1,14 @@
 define([
 	"./digit_details_content_view",
 	"./dot_details_content_view", 
+	"./group_details_content_view",
 	"../../messaging_system/event_listener", 
 	"../../messaging_system/events/submit_group_details_event",
 	"../../messaging_system/events/toggle_display_object_event"], 
 	function(
 		DigitDetailsContentView, 
 		DotDetailsContentView,
+		GroupDetailsContentView,
 		EventListener, 
 		SubmitGroupDetailsEvent,
 		ToggleDisplayObjectEvent){
@@ -27,11 +29,9 @@ define([
 				var target_identification = data_proxy.getIdentification();
 				messaging_system.fire(messaging_system.events.ToggleDisplayObject, new ToggleDisplayObjectEvent(target_identification, self.displaying));
 			});
-		return this.element;
 	};
 	var AddDigitButton = function(data_proxy, messaging_system){
-		var element = $('<button>').text('add digit');
-		return element;
+		this.element = $('<button>').text('add digit');
 	};
 	var GroupDetailsView = function(target_view, data_proxy, messaging_system){
 		var self = this;
@@ -62,8 +62,8 @@ define([
 			.attr({
 				'class':'span_details_controls'
 			})
-			.append(this.highlight_button)
-			.append(this.add_digit_button);
+			.append(this.highlight_button.element)
+			.append(this.add_digit_button.element);
 		this.content_element = $('<div>').text(this.data_proxy.getTitle());
 		this.element.append(this.title_element)
 			.append(this.controls_element)
@@ -97,6 +97,9 @@ define([
 					break;
 				case 'dot':
 					el = new DotDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
+					break;
+				case 'group':
+					el = new GroupDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
 					break;
 			}
 			this.content_elements.push(el);

@@ -10,14 +10,14 @@ define(["./digit",
 		DataBaseClass, 
 		GroupChangedEvent,
 		Dot){
-    var Group = function(name, digits, parent_state, id, messaging_system){
+    var Group = function(name, sub_nodes, parent, id, messaging_system){
         this.messaging_system = messaging_system;
 		this.init();
-        this.parent_state = parent_state;
+        this.setParent(parent);
         this.name = name;
         this.id = id;
         this.setProxy(new GroupProxy(this));
-        this.createSubNodes(digits);
+        this.createSubNodes(sub_nodes);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
     };
 	Group.prototype = new DataBaseClass("group");
@@ -52,7 +52,7 @@ define(["./digit",
 		} else if(info.type == "dot"){
 			obj = new Dot(this, this.getNewSubNodeId(), info, this.messaging_system);
 		} else if(info.type == "group"){
-			obj = new Group(this, this.getNewSubNodeId(), info, this.messaging_system);
+			obj = new Group(info.name, info.sub_nodes, this, this.getNewSubNodeId(), this.messaging_system);
 		}
 		if(obj){
 			this.addSubNode(obj);
@@ -64,25 +64,5 @@ define(["./digit",
 		this.createSubNodes(data.digits);
 		this.notifyGroupChanged();
     };
-    /*Group.prototype.getStringifyData = function(){
-        var d = new Object();
-        d.name = this.name;
-        d.digits = new Array();
-        var digits = this.getSubNodes();
-        for(var i = 0; i < digits.length; ++i){
-            d.digits.push(digits[i].getStringifyData());
-        }
-        return d;
-    };*/
-    /*Group.prototype.removeDigit = function(index){
-    	//TODO: general 
-    	var digits = this.getSubNodes();
-    	console.log("TODO: implement remove digit");
-        for(var i = index+1; i < digits.length; ++i){
-            digits[i-1] = digits[i];
-        }
-        --digits.length;
-		this.notifyGroupChanged();
-    };*/
     return Group;
 });

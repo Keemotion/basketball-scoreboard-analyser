@@ -49,6 +49,9 @@ define(['../../messaging_system/event_listener'], function(EventListener){
                 var data = new Object();
                 data.data_proxy = data_proxy;
                 messaging_system.fire(messaging_system.events.GroupClicked, data);
+                if(data_proxy.getType() == "group"){
+                	return false;
+                }
             });
         this.lock_depth = 0;
         target_view.append(this.node_element);

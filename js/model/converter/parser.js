@@ -52,7 +52,6 @@ define([], function(){
 					value_parts = value.split(',');
 					var group_to_add = null;
 					if(!(key in root_groups)){
-						//console.log("making group with key name "+key);
 						root_groups[key] = new Object();
 						root_groups[key].name = key;
 						root_groups[key].sub_nodes = new Array();
