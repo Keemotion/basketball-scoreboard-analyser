@@ -1,8 +1,8 @@
 define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotProxy, Coordinate, DataBaseClass){
-    var Dot = function(parent_label, id, data, messaging_system){
+    var Dot = function(parent, id, data, messaging_system){
         this.messaging_system = messaging_system;
 		this.init();
-        this.parent_label = parent_label;
+        this.setParent(parent);
         this.id = id;
 		this.name = "dot";
 		this.coordinate = new Coordinate(data.coordinate.x, data.coordinate.y);
@@ -27,7 +27,7 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
             warn_listeners = true;
         this.setCoordinate(data.coordinate);
         if(warn_listeners){
-			this.notifyLabelChanged();
+			this.notifyGroupChanged();
   		}      
     };
     Dot.prototype.update = function(data, warn_listeners){
@@ -36,7 +36,7 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
 		this.name = data.name;
 		this.setCoordinate(data.coordinate);
 		if(warn_listeners){
-			this.notifyLabelChanged();
+			this.notifyGroupChanged();
 		}
     };
     return Dot;

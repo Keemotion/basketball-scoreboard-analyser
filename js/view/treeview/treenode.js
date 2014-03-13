@@ -48,7 +48,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
             .click(function(){
                 var data = new Object();
                 data.data_proxy = data_proxy;
-                messaging_system.fire(messaging_system.events.LabelObjectClicked, data);
+                messaging_system.fire(messaging_system.events.GroupClicked, data);
             });
         this.lock_depth = 0;
         target_view.append(this.node_element);
@@ -68,11 +68,9 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 		}
 	};
 	TreeNode.prototype.updated = function(signal, data){
-		//var identification = new Object();
-		//identification['label'] = data.getLabelId();
 		var identification = data.getTarget();
 		if(this.data_proxy.isPossiblyAboutThis(identification)){	
-			this.update(data.getLabelId());
+			this.update(data.getGroupId());
 		}
 	};
 	TreeNode.prototype.addSubNode = function(data){
@@ -97,7 +95,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
             this.addSubNode(sub_nodes[i]);
         }
         this.subNodesChanged();
-    }
+    };
     TreeNode.prototype.subNodesChanged = function(){
         if(this.sub_nodes.length > 0){
             this.tree_controls_element.show();

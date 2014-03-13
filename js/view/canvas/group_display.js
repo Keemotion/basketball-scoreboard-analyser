@@ -1,7 +1,9 @@
-define(['./base_display', './label_display'], function(BaseDisplay, LabelDisplay){
-	var GroupDisplay = function(parent, proxy, messaging_system){
+define(["./base_display", 
+	"./digit_display",
+	"./dot_display"], function(BaseDisplay, DigitDisplay, DotDisplay){
+	var GroupDisplay = function(parent_component, proxy, messaging_system){
 		this.init();
-		this.setParent(parent);
+		this.setParent(parent_component);
 		this.messaging_system = messaging_system;
 		this.setProxy(proxy);
 		this.loadSubComponents();
@@ -13,12 +15,14 @@ define(['./base_display', './label_display'], function(BaseDisplay, LabelDisplay
 		var sub_proxies = this.getProxy().getSubNodes();
 		this.sub_components.length = 0;
 		for(var i = 0; i < sub_proxies.length; ++i){
-			if(sub_proxies.getType() == "group"){
+			if(sub_proxies[i].getType() == "digit"){
+				this.sub_components.push(new DigitDisplay(this, sub_proxies[i], this.messaging_system));
+			}else if(sub_proxies[i].getType() == "dot"){
+				this.sub_components.push(new DotDisplay(this, sub_proxies[i], this.messaging_system));
+			}else if(sub_proxies[i].getType() == "group"){
 				this.sub_components.push(new GroupDisplay(this, sub_proxies[i], this.messaging_system));
-			}else{
-				this.sub_components.push(new LabelDisplay(this, sub_proxies[i], this.messaging_system));
 			}
 		}
 	};
-	return DisplayTree;
+	return GroupDisplay;
 });

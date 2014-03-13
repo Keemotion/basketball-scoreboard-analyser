@@ -2,7 +2,7 @@ define([
 		'./canvas/canvas', 
 		'./stateview/load_state_component', 
 		'./treeview/treeview', 
-		'./detailsview/labelobject_detailsview', 
+		'./detailsview/group_detailsview', 
 		'../messaging_system/event_listener',
 		'./canvas/display_tree',
 		'./stateview/current_state_component'
@@ -11,7 +11,7 @@ define([
 		MyCanvas, 
 		LoadStateComponent, 
 		TreeView, 
-		LabelObjectDetailsView, 
+		GroupDetailsView, 
 		EventListener,
 		DisplayTree,
 		CurrentStateComponent
@@ -65,32 +65,32 @@ define([
 		this.current_state_component = new CurrentStateComponent(this.current_state_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
         this.loadStateComponent = new LoadStateComponent(this.load_state_div, this.messaging_system);
         this.tree_view = new TreeView(this.toolbox_tree_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
-        this.messaging_system.addEventListener(this.messaging_system.events.LabelObjectClicked, new EventListener(this,this.labelObjectClicked));
+        this.messaging_system.addEventListener(this.messaging_system.events.GroupClicked, new EventListener(this,this.groupClicked));
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
         window.addEventListener('resize', function(){
             messaging_system.fire(messaging_system.events.WindowResized, null);
         });
     };
-    View.prototype.labelObjectClicked = function(signal, data){
-		if(data.data_proxy.getType() == "labelobject"){
-	        this.loadLabelObjectDetails(data.data_proxy);
+    View.prototype.groupClicked = function(signal, data){
+		if(data.data_proxy.getType() == "group"){
+	        this.loadGroupDetails(data.data_proxy);
 		}
     };
-	View.prototype.clearLabelObjectDetails = function(){
+	View.prototype.clearGroupDetails = function(){
 		if(this.toolbox_details_content){
 			this.toolbox_details_content.cleanUp();
 		}
 		this.toolbox_details_div.empty();
 	};
-    View.prototype.loadLabelObjectDetails = function(data_proxy){
-		this.clearLabelObjectDetails();
-        this.toolbox_details_content = new LabelObjectDetailsView(this.toolbox_details_div,data_proxy, this.messaging_system);
+    View.prototype.loadGroupDetails = function(data_proxy){
+		this.clearGroupDetails();
+        this.toolbox_details_content = new GroupDetailsView(this.toolbox_details_div,data_proxy, this.messaging_system);
     };
 	View.prototype.stateChanged = function(signal, data){
 		this.canvas.setProxy(this.controller.getModel().getState().getProxy());
 		this.current_state_component.setProxy(this.controller.getModel().getState().getProxy());
 		this.tree_view.setProxy(this.controller.getModel().getState().getProxy());
-		this.clearLabelObjectDetails();
+		this.clearGroupDetails();
 	};
     return View;
 });

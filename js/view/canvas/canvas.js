@@ -53,7 +53,7 @@ define([
 		var ev = data.event_data;
 		this.dragging = false;
 	};
-	CanvasDragHandler.prototype.canvasFocusOut = function(signal, data){		
+	CanvasDragHandler.prototype.canvasFocusOut = function(signal, data){
 		var ev = data.event_data;
 		this.canvasMouseUp(signal, data);
 	};
@@ -102,7 +102,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadImage, new EventListener(this, this.loadImage));
 		this.messaging_system.addEventListener(this.messaging_system.events.WindowResized, new EventListener(this, this.windowResized));
 		this.messaging_system.addEventListener(this.messaging_system.events.ImageDisplayChanged, new EventListener(this, this.updateCanvas));
-		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, new EventListener(this, this.updateCanvas));
+		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.updateCanvas));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
 		this.windowResized(null, null);
 		var scrollF = function(e){

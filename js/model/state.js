@@ -1,17 +1,17 @@
 define([
-		"./labelobject", 
+		"./group", 
 		"./proxy/state_proxy", 
 		'./data_base_class',
 		'../messaging_system/events/state_changed_event',
 		'../messaging_system/event_listener',
 		'./converter/parser'
-		], function(LabelObject, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser){
+		], function(Group, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser){
     var State = function(messaging_system){
     	this.id = 0;
         this.messaging_system = messaging_system;
 		this.init();
 		this.setProxy(new StateProxy(this));
-		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, new EventListener(this, this.labelChanged));
+		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadState, new EventListener(this, this.loadState));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadStateFile, new EventListener(this, this.loadStateFile));
     };
@@ -28,10 +28,10 @@ define([
                 digits[i].push(o);
             }
         }
-        this.addObject("team1_label1", digits[0], false);
-        this.addObject("team1_label2", digits[1], false);
-        this.addObject("team2_label1", digits[3], false);
-        this.addObject("team2_label2", digits[2], false);
+        this.addObject("team1_group1", digits[0], false);
+        this.addObject("team1_group2", digits[1], false);
+        this.addObject("team2_group1", digits[3], false);
+        this.addObject("team2_group2", digits[2], false);
         var dot = new Array();
         var o = new Object();
         o.type = "dot";
@@ -51,24 +51,24 @@ define([
 	State.prototype.stateChanged = function(){
 		this.messaging_system.fire(this.messaging_system.events.StateChanged, new StateChangedEvent());
 	};
-	State.prototype.labelChanged = function(signal, data){
+	State.prototype.groupChanged = function(signal, data){
 	};
-    State.prototype.addObject = function(label_name, digits, single_event){
+    State.prototype.addObject = function(group_name, digits, single_event){
     	if(single_event==null)
     		single_event = true;
-    	this.addSubNode(new LabelObject(label_name, digits, this, this.getNewSubNodeId(), this.messaging_system));
+    	this.addSubNode(new Group(group_name, digits, this, this.getNewSubNodeId(), this.messaging_system));
         if(single_event){
             this.messaging_system.fire(this.messaging_system.events.StateChanged, this);
         }
     };
-    State.prototype.getStringifyData = function(){
+    /*State.prototype.getStringifyData = function(){
         var objects_data = new Array();
         var objects = this.getSubNodes();
         for(var i = 0; i < objects.length; ++i){
             objects_data.push(objects[i].getStringifyData());
         }
         return {'objects':objects_data};
-    };
+    };*/
     State.prototype.stringify = function(){
         return JSON.stringify(this.getStringifyData());
     };

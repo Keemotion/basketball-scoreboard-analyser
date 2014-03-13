@@ -2,13 +2,13 @@ define([
 	"./digit_details_content_view",
 	"./dot_details_content_view", 
 	"../../messaging_system/event_listener", 
-	"../../messaging_system/events/submit_label_object_details_event",
+	"../../messaging_system/events/submit_group_details_event",
 	"../../messaging_system/events/toggle_display_object_event"], 
 	function(
 		DigitDetailsContentView, 
 		DotDetailsContentView,
 		EventListener, 
-		SubmitLabelObjectDetailsEvent,
+		SubmitGroupDetailsEvent,
 		ToggleDisplayObjectEvent){
 	var HighlightButton = function(data_proxy, messaging_system){
 		var self = this;
@@ -33,7 +33,7 @@ define([
 		var element = $('<button>').text('add digit');
 		return element;
 	};
-	var LabelObjectDetailsView = function(target_view, data_proxy, messaging_system){
+	var GroupDetailsView = function(target_view, data_proxy, messaging_system){
 		var self = this;
 		this.target_view = target_view;
 		this.data_proxy = data_proxy;
@@ -45,17 +45,17 @@ define([
 				var d = new Object();
 				d.data = self.collectFormData();
 				d.target = self.data_proxy.getIdentification();
-				messaging_system.fire(messaging_system.events.SubmitLabelObjectDetails, new SubmitLabelObjectDetailsEvent(d.target, d.data));
+				messaging_system.fire(messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(d.target, d.data));
 			});
 		this.element = $('<div>')
 			.attr({
-				'class':'div_label_details'
+				'class':'div_group_details'
 			});
 		this.title_element = $('<span>')
 			.attr({
 				'class':'span_details_title'
 			})
-			.text('Label details');
+			.text('Group details');
 		this.highlight_button = new HighlightButton(this.data_proxy, this.messaging_system);
 		this.add_digit_button = new AddDigitButton(this.data_proxy, this.messaging_system);
 		this.controls_element = $('<div>')
@@ -71,10 +71,10 @@ define([
 		this.form.append(this.element);
 		this.target_view.append(this.form);
 		this.loadContent();
-		this.labelChangedListener = new EventListener(this, this.labelChanged);
-		this.messaging_system.addEventListener(this.messaging_system.events.LabelChanged, this.labelChangedListener);
+		this.groupChangedListener = new EventListener(this, this.groupChanged);
+		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
 	};
-	LabelObjectDetailsView.prototype.collectFormData = function(){
+	GroupDetailsView.prototype.collectFormData = function(){
 		var d = new Object();
 		d.id = this.data_proxy.getId();
 		d.name = this.data_proxy.getTitle();
@@ -84,7 +84,7 @@ define([
 		}
 		return d;
 	};
-	LabelObjectDetailsView.prototype.loadContent = function(){
+	GroupDetailsView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();
 		this.content_element.empty();
 		this.title_element.text(this.data_proxy.getTitle());
@@ -99,26 +99,26 @@ define([
 					el = new DotDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
 					break;
 			}
-			//var el = new DigitDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
 			this.content_elements.push(el);
 		}
 	};
-	LabelObjectDetailsView.prototype.update = function(){
+	GroupDetailsView.prototype.update = function(){
 		this.title_element.text(this.data_proxy.getTitle());
 		for(var i = 0; i < this.content_elements.length; ++i){
 			this.content_elements[i].update();
 		}
 	};
-	LabelObjectDetailsView.prototype.labelChanged = function(signal, data){
-		if(data.getLabelId() == this.data_proxy.getId()){
+	GroupDetailsView.prototype.groupChanged = function(signal, data){
+		//TODO: proper identification (already implemented!)
+		if(data.getGroupId() == this.data_proxy.getId()){
 			this.update();
 		}
 	};
-	LabelObjectDetailsView.prototype.cleanUp = function(){
-		this.messaging_system.removeEventListener(this.messaging_system.events.LabelChanged, this.labelChangedListener);
+	GroupDetailsView.prototype.cleanUp = function(){
+		this.messaging_system.removeEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
 		for(var i = 0; i < this.content_elements.length; ++i){
 			this.content_elements[i].cleanUp();
 		}
 	};
-	return LabelObjectDetailsView;
+	return GroupDetailsView;
 });

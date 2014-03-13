@@ -21,7 +21,7 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
 		this.id = corner_data.id;
 		this.setCoordinate(corner_data.coordinate);
 		if(warn_listeners){
-			this.notifyLabelChanged();
+			this.notifyGroupChanged();
 		}
 	};
     return Corner;

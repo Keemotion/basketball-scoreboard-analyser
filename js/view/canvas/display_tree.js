@@ -1,4 +1,4 @@
-define(['./base_display', './label_display'], function(BaseDisplay, LabelDisplay){
+define(['./base_display', './group_display'], function(BaseDisplay, GroupDisplay){
 	var DisplayTree = function(proxy, messaging_system){
 		this.init();
 		this.setParent(null);
@@ -13,11 +13,7 @@ define(['./base_display', './label_display'], function(BaseDisplay, LabelDisplay
 		var sub_proxies = this.getProxy().getSubNodes();
 		this.sub_components.length = 0;
 		for(var i = 0; i < sub_proxies.length; ++i){
-			if(sub_proxies[i].getType() == "group"){
-				this.sub_components.push(new GroupDisplay(this, sub_proxies[i], this.messaging_system));
-			}else{
-				this.sub_components.push(new LabelDisplay(this, sub_proxies[i], this.messaging_system));
-			}
+			this.sub_components.push(new GroupDisplay(this, sub_proxies[i], this.messaging_system));
 		}
 	};
 	return DisplayTree;

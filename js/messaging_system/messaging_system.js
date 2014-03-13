@@ -3,13 +3,13 @@ define([],function(){
 	};
 	MessagingSystem.prototype.events = new Object({
 		LoadState:'LoadState',
-        LabelChanged:'LabelChanged',
+        GroupChanged:'GroupChanged',
         StateChanged:'StateChanged',
         LoadImage:'LoadImage',
         WindowResized:'WindowResized',
         ImageDisplayChanged:'ImageDisplayChanged',
-        LabelObjectClicked: 'LabelObjectClicked',
-		SubmitLabelObjectDetails: 'SubmitLabelObjectDetails',
+        GroupClicked: 'GroupClicked',
+		SubmitGroupDetails: 'SubmitGroupDetails',
 		CanvasScrolled:'CanvasScrolled',
 		CanvasMouseMove: 'CanvasMouseMove',
 		CanvasMouseUp: 'CanvasMouseUp',

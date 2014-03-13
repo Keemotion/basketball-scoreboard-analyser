@@ -13,7 +13,7 @@ define([], function(){
 		var score_team_A_parse_function = 0;
 		var score_team_B_parse_function = 0;
 		
-		var label_objects = new Object();
+		var root_groups = new Object();
 		
 		for(var i = 0; i < lines.length; ++i){
 			lines[i] = lines[i].trim();
@@ -50,12 +50,12 @@ define([], function(){
 				default:
 					var key_parts = key.split('_');
 					value_parts = value.split(',');
-					var label_object_to_add = null;
-					if(!(key in label_objects)){
-						//console.log("making label object with key name "+key);
-						label_objects[key] = new Object();
-						label_objects[key].name = key;
-						label_objects[key].sub_nodes = new Array();
+					var group_to_add = null;
+					if(!(key in root_groups)){
+						//console.log("making group with key name "+key);
+						root_groups[key] = new Object();
+						root_groups[key].name = key;
+						root_groups[key].sub_nodes = new Array();
 					}
 					switch(key_parts[key_parts.length-1]){
 						case 'leds':
@@ -67,7 +67,7 @@ define([], function(){
 								d.coordinate.x = x;
 								d.coordinate.y = y;
 								d.type = "dot";
-								label_objects[key].sub_nodes.push(d);
+								root_groups[key].sub_nodes.push(d);
 							}
 							break;
 						case 'digit':
@@ -84,7 +84,7 @@ define([], function(){
 							if(value_parts.length%2==1){
 								dig.extra_value = value_parts[value_parts.length-1];
 							}
-							label_objects[key].sub_nodes.push(dig);
+							root_groups[key].sub_nodes.push(dig);
 							break;
 						default:
 							to_add = null;
@@ -93,9 +93,9 @@ define([], function(){
 		}
 		var result = new Object();
 		result.sub_nodes = new Array();
-		for(var name in label_objects){
-			if(label_objects.hasOwnProperty(name)){
-				result.sub_nodes.push(label_objects[name]);
+		for(var name in root_groups){
+			if(root_groups.hasOwnProperty(name)){
+				result.sub_nodes.push(root_groups[name]);
 			}
 		}
 		return result;

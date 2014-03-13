@@ -1,8 +1,8 @@
 define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'], function(Corner, DigitProxy, Coordinate, DataBaseClass){
-    var Digit = function(parent_label, id, data, messaging_system){
+    var Digit = function(parent, id, data, messaging_system){
         this.messaging_system = messaging_system;
 		this.init();
-        this.parent_label = parent_label;
+        this.setParent(parent);
         this.id = id;
 		this.name = "digit";
 		this.setProxy(new DigitProxy(this));
@@ -39,7 +39,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			this.changeCorner(i, corners_data[i].coordinate.x, corners_data[i].coordinate.y, false);
 		}
         if(warn_listeners){
-			this.notifyLabelChanged();
+			this.notifyGroupChanged();
 		}      
 	};
     Digit.prototype.setCorners = function(corners_data, warn_listeners){
@@ -48,7 +48,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			this.updateCorners(corners_data, false);	
 		}
         if(warn_listeners){
-			this.notifyLabelChanged();
+			this.notifyGroupChanged();
 		}      
     };
     Digit.prototype.load = function(data, warn_listeners){
@@ -56,7 +56,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
             warn_listeners = true;
         this.setCorners(data.corners, false);
         if(warn_listeners){
-			this.notifyLabelChanged();
+			this.notifyGroupChanged();
   		}      
     };
 	Digit.prototype.update = function(data, warn_listeners){
@@ -65,7 +65,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 		this.name = data.name;
 		this.updateCorners(data.corners, false);
 		if(warn_listeners){
-			this.notifyLabelChanged();
+			this.notifyGroupChanged();
 		}
 	};
     Digit.prototype.changeCorner = function(corner_index, x, y, warn_listeners){
@@ -74,7 +74,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         var corners = this.getSubNodes();
 		corners[corner_index].setCoordinate(new Coordinate(x, y));
         if(warn_listeners){
-			this.notifyLabelChanged();
+			this.notifyGroupChanged();
         }
     };
     return Digit;
