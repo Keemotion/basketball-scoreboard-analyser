@@ -1,5 +1,2 @@
-DotGroup class? (subclass of group, just other type)
 last number (digits/leds)
-configuration keys
-prevent regeneration of rpm/json so often
 exporter: name single dot -> name
