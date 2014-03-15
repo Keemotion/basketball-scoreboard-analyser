@@ -118,6 +118,7 @@ define([], function(){
 								d.type = "dot";
 								root_groups[key].sub_nodes.push(d);
 							}
+							//TODO: add last integer as parameter
 							break;
 						case 'digit':
 							var dig = new Object();
