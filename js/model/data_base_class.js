@@ -3,6 +3,7 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		this.type = type;
 	};
 	BaseDataClass.prototype.init = function(){
+		this.notification_lock = 0;
 		this.sub_nodes = new Array();
 		this.displaying = true;
 		this.simulating = true;
@@ -13,6 +14,12 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		if(this.isPossiblyAboutThis(data.target_identification)){
 			this.setDisplaying(data.displaying);
 		}
+	};
+	BaseDataClass.prototype.setConfigurationKeys = function(configuration_keys){
+		this.configuration_keys = configuration_keys;
+	};
+	BaseDataClass.prototype.getConfigurationKeys = function(){
+		return this.configuration_keys;
 	};
 	BaseDataClass.prototype.getProxy = function(){
 		return this.proxy;
@@ -43,8 +50,14 @@ define(["../messaging_system/event_listener"],function(EventListener){
 	BaseDataClass.prototype.getType = function(){
 		return this.type;
 	};
+	BaseDataClass.prototype.lockNotification = function(){
+		this.notification_lock++;
+	};
+	BaseDataClass.prototype.unlockNotification = function(){
+		this.notification_lock--;
+	};
 	BaseDataClass.prototype.notifyGroupChanged = function(){
-		if(this.getParent())
+		if(this.getParent() && this.notification_lock == 0)
 			this.getParent().notifyGroupChanged();
 	};
 	BaseDataClass.prototype.isPossiblyAboutThis = function(target, index){
@@ -160,6 +173,8 @@ define(["../messaging_system/event_listener"],function(EventListener){
         for(var i = 0; i < sub_nodes.length; ++i){
             d.sub_nodes.push(sub_nodes[i].getStringifyData());
         }
+        d.configuration_keys = this.getConfigurationKeys();
+        
         return d;
 	};
 	return BaseDataClass;

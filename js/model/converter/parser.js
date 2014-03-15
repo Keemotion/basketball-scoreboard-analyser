@@ -108,7 +108,7 @@ define([], function(){
 							break;
 						case 'leds':
 						case 'led':
-							for(var j = 0; j < value_parts.length/2; ++j){
+							for(var j = 0; j < Math.floor(value_parts.length/2); ++j){
 								var x = value_parts[2*j];
 								var y = value_parts[2*j+1];
 								var d = new Object();
@@ -118,13 +118,15 @@ define([], function(){
 								d.type = "dot";
 								root_groups[key].sub_nodes.push(d);
 							}
-							//TODO: add last integer as parameter
+							if(value_parts.length%2==1){
+								root_groups[key].extra_led_value = value_parts[value_parts.length-1];
+							}
 							break;
 						case 'digit':
 							var dig = new Object();
 							dig.corners = new Array();
 							dig.type = "digit";
-							for(var j = 0; j < value_parts.length/2; ++j){
+							for(var j = 0; j < Math.floor(value_parts.length/2); ++j){
 								var d = new Object();
 								d.coordinate = new Object();
 								d.coordinate.x = value_parts[j*2];

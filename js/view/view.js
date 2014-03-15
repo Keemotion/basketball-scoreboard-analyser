@@ -28,7 +28,7 @@ define([
         this.current_state_div = $('<div>').attr({
         		class:'div_state',
         		id: 'div_current_state'
-        		}).text('to fill current state div');
+        		});
       	this.load_state_div = $('<div>').attr({
   				class:'div_state',
   				id:'div_load_state'

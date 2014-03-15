@@ -72,7 +72,7 @@ define(["../../model/coordinate", "../../messaging_system/event_listener"],funct
 			.append($('<br>'))
 			.append(this.y_label)
 			.append(this.y_text);
-		
+		this.update();
 	};
 	DotDetailsContentView.prototype.stoppedListening = function(){
 		this.click_button.removeClass('active');
@@ -82,8 +82,8 @@ define(["../../model/coordinate", "../../messaging_system/event_listener"],funct
 	};
 	DotDetailsContentView.prototype.update = function(){
 		this.title_span.text(this.data_proxy.getTitle());
-		this.x_text.text(this.data_proxy.getCoordinate().getX());
-		this.y_text.text(this.data_proxy.getCoordinate().getY());
+		this.x_text.val(this.data_proxy.getCoordinate().getX());
+		this.y_text.val(this.data_proxy.getCoordinate().getY());
 	};
 	DotDetailsContentView.prototype.collectFormData = function(){
 		var d = new Object();

@@ -46,13 +46,24 @@ define([], function(){
 			case 'dot':
 				if(special == "inline"){
 					result += obj.coordinate.x+","+obj.coordinate.y;
+					return result;
 				}else{
 					console.log("dot = "+JSON.stringify(obj));
 					result += current_group_name+"_led=";
 					result += obj.coordinate.x+","+obj.coordinate.y;
 					result += "\n";
 				}
-				break;
+				
+		}
+		if(obj.configuration_keys){
+			for(var key in obj.configuration_keys){
+				if(obj.configuration_keys.hasOwnProperty(key)){
+					result += concat_group_name(current_group_name, obj.name)+"_"+key+"="+obj.configuration_keys[key]+"\n";	
+				}
+			}
+			/*for(var i = 0; i < obj.configuration_keys.length; ++i){
+				result += concat_group_name(current_group_name, obj.name)+"_"+obj.configuration_keys[i]
+			}*/
 		}
 		return result;
 	};

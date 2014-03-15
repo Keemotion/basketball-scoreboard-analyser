@@ -3,6 +3,7 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
         this.messaging_system = messaging_system;
 		this.init();
         this.setParent(parent);
+        this.setConfigurationKeys(data.configuration_keys);
         this.id = id;
 		this.name = "dot";
 		this.coordinate = new Coordinate(data.coordinate.x, data.coordinate.y);

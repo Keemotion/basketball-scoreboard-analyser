@@ -3,10 +3,13 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         this.messaging_system = messaging_system;
 		this.init();
         this.setParent(parent);
+        this.setConfigurationKeys(data.configuration_keys);
         this.id = id;
 		this.name = "digit";
 		this.setProxy(new DigitProxy(this));
+		this.lockNotification();
         this.setCorners((data?data.corners:null), false);
+        this.unlockNotification();
     };
 	Digit.prototype = new DataBaseClass("digit");
 
@@ -48,7 +51,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			this.updateCorners(corners_data, false);	
 		}
         if(warn_listeners){
-			this.notifyGroupChanged();
+        	this.notifyGroupChanged();
 		}      
     };
     Digit.prototype.load = function(data, warn_listeners){

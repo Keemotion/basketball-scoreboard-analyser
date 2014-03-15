@@ -19,7 +19,7 @@ define([
 	State.prototype = new DataBaseClass("state");
 	
     State.prototype.loadObjects = function(){
-        this.clearSubNodes();
+        /*this.clearSubNodes();
         var digits = new Array();
         for(var i = 0; i < 4; ++i){
             digits.push(new Array());
@@ -47,7 +47,10 @@ define([
         o.type = "dot";
         o.coordinate = {'x':'', 'y':''};
         dot.push(o);
-        this.addObject("dot", dot, false);
+        var tmp_dot = new Object();
+        tmp_dot.name = "dot";
+        tmp_dot.sub_nodes = dot;
+        this.addObject(tmp_dot, false);*/
     };
 	State.prototype.loadState = function(signal, data){
 		this.parseJSON(data.getDataString());
@@ -63,14 +66,21 @@ define([
 	};
 	State.prototype.groupChanged = function(signal, data){
 	};
-    State.prototype.addObject = function(group_name, sub_nodes, single_event){
+	State.prototype.addObject = function(data, single_event){
+		if(single_event == null)
+			single_event = true;
+		this.addSubNode(new Group(data, this, this.getNewSubNodeId(), this.messaging_system));
+		if(single_event)
+			this.messaging_system.fire(this.messaging_system.events.StateChanged, this);
+	};
+    /*State.prototype.addObject = function(group_name, sub_nodes, single_event){
     	if(single_event==null)
     		single_event = true;
     	this.addSubNode(new Group(group_name, sub_nodes, this, this.getNewSubNodeId(), this.messaging_system));
         if(single_event){
             this.messaging_system.fire(this.messaging_system.events.StateChanged, this);
         }
-    };
+    };*/
     State.prototype.stringify = function(){
         return JSON.stringify(this.getStringifyData(), null, 2);
     };
@@ -94,11 +104,12 @@ define([
         }
     };
     State.prototype.parse = function(data){
-    	console.log("parsing: "+JSON.stringify(data));
+    	this.lockNotification();
     	this.clearSubNodes();
     	for(var i = 0; i < data.sub_nodes.length; ++i){
-			this.addObject(data.sub_nodes[i].name, data.sub_nodes[i].sub_nodes, false);
+			this.addObject(data.sub_nodes[i], false);
 		}
+		this.unlockNotification();
        	this.stateChanged();
         return true;
     };

@@ -21,7 +21,6 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 		var state_string = this.state_proxy.getStateString();
 		var exported_string = this.state_proxy.getExportedString();
 		this.text_area.text(state_string);	
-		//TODO: find correct data: uri-scheme + encode 
 		this.download_json_btn.attr('href', 'data:application/json,'+encodeURIComponent(state_string));
 		this.download_rpm_btn.attr('href', 'data:text/plain,'+encodeURIComponent(exported_string));
 	};
