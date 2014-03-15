@@ -61,16 +61,15 @@ define([
 		this.parse(p.parse());
 	};
 	State.prototype.stateChanged = function(){
+		if(this.notification_lock != 0)
+			return;
 		this.messaging_system.fire(this.messaging_system.events.StateChanged, new StateChangedEvent());
 	};
 	State.prototype.groupChanged = function(signal, data){
 	};
 	State.prototype.addObject = function(data, single_event){
-		if(single_event == null)
-			single_event = true;
 		this.addSubNode(new Group(data, this, this.getNewSubNodeId(), this.messaging_system));
-		if(single_event)
-			this.messaging_system.fire(this.messaging_system.events.StateChanged, this);
+		this.stateChanged();
 	};
     State.prototype.stringify = function(){
         return JSON.stringify(this.getStringifyData(), null, 2);

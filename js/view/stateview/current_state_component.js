@@ -12,7 +12,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 		this.target_view.append(this.text_area).append('<br>').append(this.download_json_btn).append('<br>').append(this.download_rpm_btn);
 		this.loadComponent();
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
-		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.stateChanged));
+		//this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.stateChanged));
 	};
 	CurrentStateComponent.prototype.stateChanged = function(signal, data){
 		this.loadComponent();
