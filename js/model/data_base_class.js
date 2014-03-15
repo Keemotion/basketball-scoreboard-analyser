@@ -108,7 +108,7 @@ define(["../messaging_system/event_listener"],function(EventListener){
 	};
 	BaseDataClass.prototype.clear = function(){
 		this.clearSubNodes();
-		console.log( "clear needs to be implemented! type = "+this.getType());
+		//console.log( "clear needs to be implemented! type = "+this.getType());
 	};
 	BaseDataClass.prototype.getSubNodes = function(){
 		return this.sub_nodes;

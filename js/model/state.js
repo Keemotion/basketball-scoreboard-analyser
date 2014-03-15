@@ -88,6 +88,7 @@ define([
         }
     };
     State.prototype.parse = function(data){
+    	console.log("parsing: "+JSON.stringify(data));
     	this.clearSubNodes();
     	for(var i = 0; i < data.sub_nodes.length; ++i){
 			this.addObject(data.sub_nodes[i].name, data.sub_nodes[i].sub_nodes, false);
