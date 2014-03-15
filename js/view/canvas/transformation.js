@@ -49,15 +49,18 @@ define(["../../model/coordinate"], function(Coordinate){
 	};
 	Transformation.prototype.getCanvasOrigin = function(){
 		var canvas_center = this.getCanvasCenter();
-		return new Coordinate(canvas_center.x-this.getCanvasWidth()/(this.getImageRatio()*this.getScale()), canvas_center.y+this.getCanvasHeight()/(this.getImageRatio()*this.getScale())); 
+		return new Coordinate(canvas_center.x-this.getCanvasWidth()/(this.getDisplayRatio()*this.getScale()), canvas_center.y+this.getCanvasHeight()/(this.getDisplayRatio()*this.getScale())); 
 	};
 	Transformation.prototype.transformRelativeImageCoordinateToAbsoluteImageCoordinate = function(coordinate){
 		return new Coordinate((coordinate.x+this.getHorizontalRatio())*this.getImageRatio()/2.0, (-coordinate.y+this.getVerticalRatio())*this.getImageRatio()/2.0);
 	};
+	Transformation.prototype.getDisplayRatio = function(){
+		var m = Math.min(this.getImageWidth(), this.getImageHeight());
+		return Math.min(m*this.getCanvasHeight()/this.getImageHeight(), m*this.getCanvasWidth()/this.getImageWidth());
+	};
 	Transformation.prototype.getImageRatio = function(){
 		return Math.min(this.getImageWidth(), this.getImageHeight());
 	};
-	
 	Transformation.prototype.transformAbsoluteImageCoordinateToRelativeImageCoordinate = function(coordinate){
 		return new Coordinate(coordinate.x*2.0/this.getImageRatio()-this.getHorizontalRatio(), coordinate.y*2.0/this.getImageRatio()-this.getVerticalRatio());
 	};
@@ -67,11 +70,10 @@ define(["../../model/coordinate"], function(Coordinate){
 	Transformation.prototype.transformCanvasCoordinateToAbsoluteImageCoordinate = function(coordinate){
 		return this.transformRelativeImageCoordinateToAbsoluteImageCoordinate(this.transformCanvasCoordinateToRelativeImageCoordinate(coordinate));
 	};
-	//TODO: incorrect!!!
 	Transformation.prototype.transformRelativeImageCoordinateToCanvasCoordinate = function(coordinate){
 		var canvas_origin = this.getCanvasOrigin();
-		return new Coordinate((coordinate.x-canvas_origin.x)*this.getScale()*this.getImageRatio()/2.0, 
-			(canvas_origin.y-coordinate.y)*this.getScale()*this.getImageRatio()/2.0);
+		return new Coordinate((coordinate.x-canvas_origin.x)*this.getScale()*this.getDisplayRatio()/2.0, 
+			(canvas_origin.y-coordinate.y)*this.getScale()*this.getDisplayRatio()/2.0);
 	};
 	Transformation.prototype.getHorizontalRatio = function(){
 		return this.getImageWidth()/this.getImageRatio();
@@ -81,8 +83,8 @@ define(["../../model/coordinate"], function(Coordinate){
 	};
 	Transformation.prototype.transformCanvasCoordinateToRelativeImageCoordinate = function(coordinate){
 		var canvas_origin = this.getCanvasOrigin();
-		return new Coordinate(2.0*coordinate.x/(this.getScale()*this.getImageRatio())+canvas_origin.x,
-			canvas_origin.y-2.0*coordinate.y/(this.getScale()*this.getImageRatio()));
+		return new Coordinate(2.0*coordinate.x/(this.getScale()*this.getDisplayRatio())+canvas_origin.x,
+			canvas_origin.y-2.0*coordinate.y/(this.getScale()*this.getDisplayRatio()));
 	};
 	return Transformation;
 });
