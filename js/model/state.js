@@ -66,6 +66,7 @@ define([
 		this.messaging_system.fire(this.messaging_system.events.StateChanged, new StateChangedEvent());
 	};
 	State.prototype.groupChanged = function(signal, data){
+		//this.stateChanged();
 	};
 	State.prototype.addObject = function(data, single_event){
 		this.addSubNode(new Group(data, this, this.getNewSubNodeId(), this.messaging_system));

@@ -102,7 +102,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadImage, new EventListener(this, this.loadImage));
 		this.messaging_system.addEventListener(this.messaging_system.events.WindowResized, new EventListener(this, this.windowResized));
 		this.messaging_system.addEventListener(this.messaging_system.events.ImageDisplayChanged, new EventListener(this, this.updateCanvas));
-		//this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.updateCanvas));
+		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.updateCanvas));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
 		this.windowResized(null, null);
 		var scrollF = function(e){
@@ -144,7 +144,6 @@ define([
 			factor = 10/9;
 		}
 		this.transformation.setScale(this.transformation.getScale()*factor);
-		//this.drawCanvas();
 		this.updateCanvas(signal, data);
 		return data.event_data.preventDefault() && false;
 	};
