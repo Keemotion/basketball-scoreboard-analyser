@@ -5,7 +5,6 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
         this.setParent(parent);
         this.setConfigurationKeys(data.configuration_keys);
         this.id = id;
-		this.name = "dot";
 		this.coordinate = new Coordinate(data.coordinate.x, data.coordinate.y);
 		this.setProxy(new DotProxy(this));
     };

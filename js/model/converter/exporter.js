@@ -57,13 +57,10 @@ define([], function(){
 		}
 		if(obj.configuration_keys){
 			for(var key in obj.configuration_keys){
-				if(obj.configuration_keys.hasOwnProperty(key)){
+				if(obj.configuration_keys.hasOwnProperty(key) && obj.configuration_keys[key] != null){
 					result += concat_group_name(current_group_name, obj.name)+"_"+key+"="+obj.configuration_keys[key]+"\n";	
 				}
 			}
-			/*for(var i = 0; i < obj.configuration_keys.length; ++i){
-				result += concat_group_name(current_group_name, obj.name)+"_"+obj.configuration_keys[i]
-			}*/
 		}
 		return result;
 	};

@@ -5,7 +5,6 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         this.setParent(parent);
         this.setConfigurationKeys(data.configuration_keys);
         this.id = id;
-		this.name = "digit";
 		this.setProxy(new DigitProxy(this));
 		this.lockNotification();
         this.setCorners((data?data.corners:null), false);
@@ -29,8 +28,6 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			c.coordinate = new Object();
             c.coordinate.x = corners[i].getCoordinate().getX();
             c.coordinate.y = corners[i].getCoordinate().getY();
-			c.name = corners[i].getTitle();
-			c.id = corners[i].getId();
             d.sub_nodes.push(c);
         }
         return d;

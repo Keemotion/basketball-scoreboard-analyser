@@ -13,13 +13,13 @@ define([], function(){
 		var lines = this.data_string.split('\n');
 		
 		var must_be_on = false;
-		var luminance_threshold = 0;
-		var luminance_differential_threshold = 0;
-		var requested_stability_ms = 0;
-		var read_function = 0;
-		var sync_function = 0;
-		var parse_function = 0;
-		var dtype = 0;
+		var luminance_threshold = null;
+		var luminance_differential_threshold = null;
+		var requested_stability_ms = null;
+		var read_function = null;
+		var sync_function = null;
+		var parse_function = null;
+		var dtype = null;
 		
 		var root_groups = new Object();
 		

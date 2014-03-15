@@ -59,7 +59,6 @@ define([
 		console.log("received state file: "+data.data_string);
 		var p = new Parser(data.data_string);
 		this.parse(p.parse());
-		//TODO: implement
 	};
 	State.prototype.stateChanged = function(){
 		this.messaging_system.fire(this.messaging_system.events.StateChanged, new StateChangedEvent());
@@ -73,14 +72,6 @@ define([
 		if(single_event)
 			this.messaging_system.fire(this.messaging_system.events.StateChanged, this);
 	};
-    /*State.prototype.addObject = function(group_name, sub_nodes, single_event){
-    	if(single_event==null)
-    		single_event = true;
-    	this.addSubNode(new Group(group_name, sub_nodes, this, this.getNewSubNodeId(), this.messaging_system));
-        if(single_event){
-            this.messaging_system.fire(this.messaging_system.events.StateChanged, this);
-        }
-    };*/
     State.prototype.stringify = function(){
         return JSON.stringify(this.getStringifyData(), null, 2);
     };
