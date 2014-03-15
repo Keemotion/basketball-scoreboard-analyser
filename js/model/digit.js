@@ -18,7 +18,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
     };
     Digit.prototype.getStringifyData = function(){
         var d = new Object();
-        d.corners = new Array();
+        d.sub_nodes = new Array();
         d.type = this.getType();
         var corners = this.getSubNodes();
         for(var i = 0; i < corners.length; ++i){
@@ -28,7 +28,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
             c.coordinate.y = corners[i].getCoordinate().getY();
 			c.name = corners[i].getTitle();
 			c.id = corners[i].getId();
-            d.corners.push(c);
+            d.sub_nodes.push(c);
         }
         return d;
     };

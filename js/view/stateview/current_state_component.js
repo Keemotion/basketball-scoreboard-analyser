@@ -7,8 +7,9 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 			.attr({
 				'class':'txt_state'
 			});
-		this.download_btn = $('<a>').attr('download', 'config.rpm').text('Download');
-		this.target_view.append(this.text_area).append('<br>').append(this.download_btn);
+		this.download_json_btn = $('<a>').attr('download', 'config.json').text('Download JSON');
+		this.download_rpm_btn = $('<a>').attr('download', 'config.rpm').text('Download RPM');
+		this.target_view.append(this.text_area).append('<br>').append(this.download_json_btn).append('<br>').append(this.download_rpm_btn);
 		this.loadComponent();
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.stateChanged));
@@ -18,9 +19,11 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 	};
 	CurrentStateComponent.prototype.loadComponent = function(){
 		var state_string = this.state_proxy.getStateString();
+		var exported_string = this.state_proxy.getExportedString();
 		this.text_area.text(state_string);	
 		//TODO: find correct data: uri-scheme + encode 
-		this.download_btn.attr('href', 'data:application/json,'+encodeURIComponent(state_string));
+		this.download_json_btn.attr('href', 'data:application/json,'+encodeURIComponent(state_string));
+		this.download_rpm_btn.attr('href', 'data:text/plain,'+encodeURIComponent(exported_string));
 	};
 	CurrentStateComponent.prototype.setProxy = function(proxy){
 		this.state_proxy = proxy;

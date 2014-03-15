@@ -9,6 +9,7 @@ define([], function(){
 	};
 	Exporter.prototype.getExportString = function(obj, current_group_name, special){
 		var result = "";
+		//TODO: configuration keys
 		switch(obj.type){
 			case 'group':
 				var dot_group = true;
@@ -21,12 +22,13 @@ define([], function(){
 				var special = null;
 				if(dot_group){
 					special = "inline";
+					result += concat_group_name(current_group_name, obj.name)+"_leds=";
 				}
 				for(var i = 0; i < obj.sub_nodes.length; ++i){
 					if(dot_group && i > 0){
 						result += ",";
 					}
-					result += getExportString(obj.sub_nodes[i], concat_group_name(current_group_name, obj.name), special);
+					result += this.getExportString(obj.sub_nodes[i], concat_group_name(current_group_name, obj.name), special);
 				}
 				if(dot_group){
 					result += "\n";
@@ -37,18 +39,22 @@ define([], function(){
 				for(var i = 0; i < obj.sub_nodes.length; ++i){
 					if(i != 0)
 						result += ",";
-					result += obj.sub_nodes[i].corners.coordinate.x+","+obj.sub_nodes[i].corners.coordinate.y;	
+					result += obj.sub_nodes[i].coordinate.x+","+obj.sub_nodes[i].coordinate.y;	
 				}
-				return result;
+				result += "\n";
+				break;
 			case 'dot':
 				if(special == "inline"){
 					result += obj.coordinate.x+","+obj.coordinate.y;
 				}else{
+					console.log("dot = "+JSON.stringify(obj));
 					result += current_group_name+"_led=";
 					result += obj.coordinate.x+","+obj.coordinate.y;
+					result += "\n";
 				}
-				return result;
+				break;
 		}
+		return result;
 	};
 	Exporter.prototype.export = function(){
 		var result = "";
@@ -57,6 +63,7 @@ define([], function(){
 			var subnode = this.data.sub_nodes[i];
 			result += this.getExportString(subnode, "");
 		}
+		console.log("result = "+result);
 		return result;
 	};
 	return Exporter;

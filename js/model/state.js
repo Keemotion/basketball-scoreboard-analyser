@@ -4,8 +4,9 @@ define([
 		'./data_base_class',
 		'../messaging_system/events/state_changed_event',
 		'../messaging_system/event_listener',
-		'./converter/parser'
-		], function(Group, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser){
+		'./converter/parser',
+		'./converter/exporter'
+		], function(Group, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser, Exporter){
     var State = function(messaging_system){
     	this.id = 0;
         this.messaging_system = messaging_system;
@@ -37,10 +38,10 @@ define([
         	var obj = new Object();
         	obj.sub_nodes = digits[i];
         	obj.type = "group";
-        	obj.name = "sub group test "+ i;
+        	obj.name = "sub_group_test_"+ i;
         	group_subnodes.push(obj);
         }
-        this.addObject("group test", group_subnodes, false);
+        this.addObject("group_test", group_subnodes, false);
         var dot = new Array();
         var o = new Object();
         o.type = "dot";
@@ -71,7 +72,12 @@ define([
         }
     };
     State.prototype.stringify = function(){
-        return JSON.stringify(this.getStringifyData());
+        return JSON.stringify(this.getStringifyData(), null, 2);
+    };
+    State.prototype.getExportedString = function(){
+    	var data = this.getStringifyData();
+    	var exporter = new Exporter(data);
+    	return exporter.export();
     };
 	//TODO: make this method!
 	//In a class (JSONParser -> generate()) -> recursive
