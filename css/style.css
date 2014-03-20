@@ -71,6 +71,10 @@ div#div_toolbox_objects_tree ul.list_toolbox_objects_tree ul{
 }
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li{
 }
+div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.sortable-placeholder{
+	/*display:block;
+	height:10px;*/
+}
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.collapsed > ul{
 	display:none;
 }
@@ -94,7 +98,7 @@ div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li>span.span_li_title{
 	overflow:hidden;
 }
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li>span.span_li_title:hover{
-	background-color:blue;
+	/*background-color:blue;*/
 	cursor:pointer;
 }
 

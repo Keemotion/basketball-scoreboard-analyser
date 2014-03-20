@@ -10,7 +10,7 @@ define(["./treenode", "../../messaging_system/event_listener"],function(TreeNode
 		this.setProxy(state_proxy);
     };
     TreeView.prototype.addNode = function(dataProxy){
-        this.nodes.push(new TreeNode(this.tree_element, dataProxy, this.messaging_system));
+        this.nodes.push(new TreeNode(this.tree_element, dataProxy, this.messaging_system, true));
     };
    	TreeView.prototype.setProxy = function(proxy){
 		this.state_proxy = proxy;
@@ -23,6 +23,10 @@ define(["./treenode", "../../messaging_system/event_listener"],function(TreeNode
         for(var i = 0; i < sub_nodes.length; ++i){
             this.addNode(sub_nodes[i]);
         }
+        this.tree_element.sortable('destroy');
+        this.tree_element.sortable({forcePlaceholderSize:true}).bind('sortupdate', function(e, ui){
+        	console.log("sorting");
+        });
     };
     return TreeView;
 });

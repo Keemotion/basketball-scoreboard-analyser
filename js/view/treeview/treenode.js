@@ -21,7 +21,9 @@ define(['../../messaging_system/event_listener'], function(EventListener){
             });
         return element;
     };
-    var TreeNode = function(target_view, data_proxy, messaging_system){
+    var TreeNode = function(target_view, data_proxy, messaging_system, on_root_level){
+    	console.log("on root level: "+on_root_level);
+    	this.on_root_level = on_root_level;
         this.messaging_system = messaging_system;
         this.data_proxy = data_proxy;
         this.sub_nodes = new Array();
@@ -40,7 +42,8 @@ define(['../../messaging_system/event_listener'], function(EventListener){
             .append(new CollapseCommand());
         this.node_element = $('<li>')
             .attr({
-                'class':'collapsed'
+                'class':'collapsed',
+                'draggable':this.on_root_level
             })
             .append(this.tree_controls_element)
             .append(this.title_element)
@@ -53,6 +56,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
                 	return false;
                 }
             });
+        console.log("id = "+this.id+" on root level = "+this.on_root_level+", attr = "+this.node_element.attr('draggable'));
         this.lock_depth = 0;
         target_view.append(this.node_element);
         this.loadData();
@@ -77,12 +81,16 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 		}
 	};
 	TreeNode.prototype.addSubNode = function(data){
-        this.sub_nodes.push(new TreeNode(this.sub_nodes_element, data, this.messaging_system));
+        this.sub_nodes.push(new TreeNode(this.sub_nodes_element, data, this.messaging_system, false));
         this.subNodesChanged();
     };
     TreeNode.prototype.setTitle = function(title){
         this.title = title;
-        this.title_element.text(title);
+        if(title == null){
+        	this.title_element.html("&nbsp;");	
+        }else{
+        	this.title_element.html(title);
+        }
     };
     TreeNode.prototype.setId = function(id){
         this.id = id;

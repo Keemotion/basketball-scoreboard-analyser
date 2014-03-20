@@ -21,7 +21,7 @@ define([
 		this.parseJSON(data.getDataString());
 	};
 	State.prototype.loadStateFile = function(signal, data){
-		console.log("received state file: "+data.data_string);
+		//console.log("received state file: "+data.data_string);
 		var p = new Parser(data.data_string);
 		this.parse(p.parse());
 	};
