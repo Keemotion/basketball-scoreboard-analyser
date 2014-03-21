@@ -9,10 +9,17 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		this.simulating = true;
 		this.toggleDisplayObjectListener = new EventListener(this, this.toggleDisplay);
 		this.messaging_system.addEventListener(this.messaging_system.events.ToggleDisplayObject, this.toggleDisplayObjectListener);
+		this.reOrderedListener = new EventListener(this, this.reOrdered);
+		this.messaging_system.addEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
 	};
 	BaseDataClass.prototype.toggleDisplay = function(signal, data){
 		if(this.isPossiblyAboutThis(data.target_identification)){
 			this.setDisplaying(data.displaying);
+		}
+	};
+	BaseDataClass.prototype.reOrdered = function(signal, data){
+		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
+			this.reArrange(data.getNewOrder());
 		}
 	};
 	BaseDataClass.prototype.setConfigurationKeys = function(configuration_keys){
@@ -40,6 +47,10 @@ define(["../messaging_system/event_listener"],function(EventListener){
 	};
 	BaseDataClass.prototype.getId = function(){
 		return this.id;
+	};
+	BaseDataClass.prototype.setId = function(id){
+		this.id = id;
+		this.notifyGroupChanged();
 	};
 	BaseDataClass.prototype.getParent = function(){
 		return this.parent;
@@ -140,6 +151,7 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		this.notifyGroupChanged();
 	};
 	BaseDataClass.prototype.addSubNode = function(sub_node){
+		sub_node.setId(this.sub_nodes.length);
 		this.sub_nodes.push(sub_node);
 		sub_node.setParent(this);
 		this.notifyGroupChanged();
@@ -175,6 +187,16 @@ define(["../messaging_system/event_listener"],function(EventListener){
         d.configuration_keys = this.getConfigurationKeys();
         
         return d;
+	};
+	BaseDataClass.prototype.reArrange = function(indices){
+		console.log("indices = "+indices);
+		var new_sub_nodes = new Array();
+		for(var i = 0; i < indices.length; ++i){
+			new_sub_nodes.push(this.sub_nodes[indices[i]]);
+			this.sub_nodes[indices[i]].setId(i);
+		}
+		this.sub_nodes = new_sub_nodes;
+		this.notifyGroupChanged();
 	};
 	return BaseDataClass;
 });

@@ -22,12 +22,13 @@ define(['../../messaging_system/event_listener'], function(EventListener){
         return element;
     };
     var TreeNode = function(target_view, data_proxy, messaging_system, on_root_level){
-    	console.log("on root level: "+on_root_level);
+    	//console.log("on root level: "+on_root_level);
     	this.on_root_level = on_root_level;
         this.messaging_system = messaging_system;
         this.data_proxy = data_proxy;
         this.sub_nodes = new Array();
 		this.title = "";
+		this.id_element = $('<input>').attr({'type':'hidden', 'name':'id'}).val('-1');
         this.title_element = $('<span>').attr({
             'class':'span_li_title'
         });
@@ -45,6 +46,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
                 'class':'collapsed',
                 'draggable':this.on_root_level
             })
+            .append(this.id_element)
             .append(this.tree_controls_element)
             .append(this.title_element)
             .append(this.sub_nodes_element)
@@ -56,7 +58,8 @@ define(['../../messaging_system/event_listener'], function(EventListener){
                 	return false;
                 }
             });
-        console.log("id = "+this.id+" on root level = "+this.on_root_level+", attr = "+this.node_element.attr('draggable'));
+        
+       	//console.log("id = "+this.id+" on root level = "+this.on_root_level+", attr = "+this.node_element.attr('draggable'));
         this.lock_depth = 0;
         target_view.append(this.node_element);
         this.loadData();
@@ -80,8 +83,10 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 			this.update(data.getGroupId());
 		}
 	};
-	TreeNode.prototype.addSubNode = function(data){
-        this.sub_nodes.push(new TreeNode(this.sub_nodes_element, data, this.messaging_system, false));
+	TreeNode.prototype.addSubNode = function(data, id){
+		var tree_node = new TreeNode(this.sub_nodes_element, data, this.messaging_system, false);
+        this.sub_nodes.push(tree_node);
+        tree_node.setId(id);
         this.subNodesChanged();
     };
     TreeNode.prototype.setTitle = function(title){
@@ -94,7 +99,8 @@ define(['../../messaging_system/event_listener'], function(EventListener){
     };
     TreeNode.prototype.setId = function(id){
         this.id = id;
-        this.node_element.attr('id', 'tree_node_'+id);
+        //this.node_element.attr('id', 'tree_node_'+id);
+        this.id_element.val(id);
     };
     TreeNode.prototype.setSubNodes = function(sub_nodes){
         if(!sub_nodes){
@@ -103,7 +109,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
         this.sub_nodes.length = 0;
 		this.sub_nodes_element.empty();
         for(var i = 0; i < sub_nodes.length; ++i){
-            this.addSubNode(sub_nodes[i]);
+            this.addSubNode(sub_nodes[i], i);
         }
         this.subNodesChanged();
     };

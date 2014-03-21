@@ -19,7 +19,8 @@ define([],function(){
 		CoordinateClickListenerStarted:'CoordinateClickListenerStarted',
 		DisplayObjectsChanged:'DisplayObjectsChanged',
 		ToggleDisplayObject:'ToggleDisplayObject',
-		LoadStateFile:'LoadStateFile'
+		LoadStateFile:'LoadStateFile', 
+		ReOrdered: 'ReOrdered'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){
