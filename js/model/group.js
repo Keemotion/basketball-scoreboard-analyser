@@ -48,7 +48,10 @@ define(["./digit",
         }
     };
 	Group.prototype.update = function(data){
-		this.lockNotification();
+		this.name = data.name;
+		console.log("updating!");
+		this.notifyGroupChanged();
+		/*this.lockNotification();
 		this.name = data.name;
 		this.id = data.id;
 		var digits = this.getSubNodes();
@@ -57,7 +60,7 @@ define(["./digit",
 			digits[i].update(data.digits[i]);
 		}
 		this.unlockNotification();
-		this.notifyGroupChanged();
+		this.notifyGroupChanged();*/
 	};
     Group.prototype.createSubNode = function(info){
     	var obj = null;

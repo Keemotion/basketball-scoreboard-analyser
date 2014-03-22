@@ -59,11 +59,18 @@ define([
 			.attr({
 				'class':'div_group_details'
 			});
-		this.title_element = $('<span>')
-			.attr({
-				'class':'span_details_title'
-			})
-			.text('Group details');
+		this.title_input = $('<input>').attr({'type':'text','name':'name'}).val(this.data_proxy.getTitle());
+		this.title_form = $('<form>')
+			.append(this.title_input)
+			.append($('<button>').attr({'type':'button'}).text('submit').click(function(){self.title_form.submit();}))
+			.submit(function(e){
+				//e.preventDefault();
+				var identification = data_proxy.getIdentification();
+				var data = self.collectFormData();
+				//console.log("submitting: data = "+JSON.stringify(data)+", identification = "+JSON.stringify(identification));
+				messaging_system.fire(messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, data));
+				return false;
+			});
 		this.highlight_button = new HighlightButton(this.data_proxy, this.messaging_system);
 		this.add_digit_button = new AddButton(this.data_proxy, this.messaging_system, 'digit');
 		this.add_dot_button = new AddButton(this.data_proxy, this.messaging_system, 'dot');
@@ -74,8 +81,8 @@ define([
 			.append(this.highlight_button.element)
 			.append(this.add_digit_button.element)
 			.append(this.add_dot_button.element);
-		this.content_element = $('<div>').text(this.data_proxy.getTitle());
-		this.element.append(this.title_element)
+		this.content_element = $('<div>');
+		this.element.append(this.title_form)
 			.append(this.controls_element)
 			.append(this.content_element);
 		//this.form.append(this.element);
@@ -84,20 +91,21 @@ define([
 		this.groupChangedListener = new EventListener(this, this.groupChanged);
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
 	};
-	/*GroupDetailsView.prototype.collectFormData = function(){
+	GroupDetailsView.prototype.collectFormData = function(){
 		var d = new Object();
-		d.id = this.data_proxy.getId();
-		d.name = this.data_proxy.getTitle();
-		d.digits = new Array();
+		//d.id = this.data_proxy.getId();
+		//d.name = this.data_proxy.getTitle();
+		d.name = this.title_input.val();
+		/*d.digits = new Array();
 		for(var i = 0; i < this.content_elements.length; ++i){
 			d.digits.push(this.content_elements[i].collectFormData());
-		}
+		}*/
 		return d;
-	};*/
+	};
 	GroupDetailsView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();
 		this.content_element.empty();
-		this.title_element.text(this.data_proxy.getTitle());
+		this.title_input.val(this.data_proxy.getTitle());
 		this.content_elements.length = 0;
 		for(var i = 0; i < subnodes.length; ++i){
 			var el;
