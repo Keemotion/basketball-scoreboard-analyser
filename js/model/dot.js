@@ -37,7 +37,11 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
         this.setCoordinate(data.coordinate);
         if(warn_listeners){
 			this.notifyGroupChanged();
-  		}      
+  		}     
+    };
+    
+    Dot.prototype.getTitle = function(){
+        return "x: "+(this.getCoordinate().x + "").substr(0, 10)+" y: "+(this.getCoordinate().y+"").substr(0, 10);
     };
     Dot.prototype.update = function(data, warn_listeners){
     	if(warn_listeners == null)

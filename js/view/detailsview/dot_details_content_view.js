@@ -1,4 +1,4 @@
-define(["../../model/coordinate", "../../messaging_system/event_listener"],function(Coordinate, EventListener){
+define(["../../model/coordinate", "../../messaging_system/event_listener", "../../messaging_system/events/submit_group_details_event"],function(Coordinate, EventListener, SubmitGroupDetailsEvent){
 	
 	var CanvasClickListener = function(parentView, messaging_system){
 		this.parentView = parentView;
@@ -48,8 +48,9 @@ define(["../../model/coordinate", "../../messaging_system/event_listener"],funct
 				'class':'button_dot_coordinate_click'
 			})
 			.click(function(e){
-				e.preventDefault();
+				//e.preventDefault();
 				self.canvasClickListener.startListening();
+				return false;
 			});
 		this.x_text = $('<input>')
 			.val('');
@@ -57,9 +58,17 @@ define(["../../model/coordinate", "../../messaging_system/event_listener"],funct
 			.val('');
 		this.x_label = $('<label>').text('X');
 		this.y_label = $('<label>').text('Y');
+		
+		this.form = $('<form>')
+			.append(this.content_element)
+			.submit(function(){
+				var identification = data_proxy.getIdentification();
+				var data = self.collectFormData();
+				self.messaging_system.fire(self.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, data));
+				return false;
+			});
 		this.target_view
-			.append(this.click_button)
-			.append(this.content_element);
+			.append(this.form);
 		this.loadContent();
 	};
 	DotDetailsContentView.prototype.loadContent = function(){
@@ -71,7 +80,8 @@ define(["../../model/coordinate", "../../messaging_system/event_listener"],funct
 			.append(this.x_text)
 			.append($('<br>'))
 			.append(this.y_label)
-			.append(this.y_text);
+			.append(this.y_text)
+			.append(this.click_button);
 		this.update();
 	};
 	DotDetailsContentView.prototype.stoppedListening = function(){
