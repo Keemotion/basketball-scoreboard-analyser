@@ -28,8 +28,6 @@ define(["./treenode", "../../messaging_system/event_listener", "../../messaging_
         }
         this.tree_element.sortable('destroy');
         this.tree_element.sortable({forcePlaceholderSize:true}).bind('sortupdate', function(e, ui){
-        	console.log("sorting");
-        	//ui.item contains current dragged element (at new DOM position)
         	var new_order = new Array();
         	self.tree_element.children('li').each(function(index){
         		new_order.push($(this).children('input[name=id]').val());

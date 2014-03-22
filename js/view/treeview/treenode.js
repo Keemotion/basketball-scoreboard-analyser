@@ -1,7 +1,7 @@
 define(['../../messaging_system/event_listener'], function(EventListener){
     var ExpandCommand = function(){
         var element = $('<span>').attr({
-            'class':'command expand_command'
+            	'class':'command expand_command'
             })
             .html('&gt;&nbsp;')
             .click(function(e){
@@ -12,7 +12,7 @@ define(['../../messaging_system/event_listener'], function(EventListener){
     };
     var CollapseCommand = function(){
         var element = $('<span>').attr({
-            'class':'command collapse_command'
+            	'class':'command collapse_command'
             })
             .html('v&nbsp;')
             .click(function(e){
@@ -22,7 +22,6 @@ define(['../../messaging_system/event_listener'], function(EventListener){
         return element;
     };
     var TreeNode = function(target_view, data_proxy, messaging_system, on_root_level){
-    	//console.log("on root level: "+on_root_level);
     	this.on_root_level = on_root_level;
         this.messaging_system = messaging_system;
         this.data_proxy = data_proxy;
@@ -59,7 +58,6 @@ define(['../../messaging_system/event_listener'], function(EventListener){
                 }
             });
         
-       	//console.log("id = "+this.id+" on root level = "+this.on_root_level+", attr = "+this.node_element.attr('draggable'));
         this.lock_depth = 0;
         target_view.append(this.node_element);
         this.loadData();
@@ -99,7 +97,6 @@ define(['../../messaging_system/event_listener'], function(EventListener){
     };
     TreeNode.prototype.setId = function(id){
         this.id = id;
-        //this.node_element.attr('id', 'tree_node_'+id);
         this.id_element.val(id);
     };
     TreeNode.prototype.setSubNodes = function(sub_nodes){

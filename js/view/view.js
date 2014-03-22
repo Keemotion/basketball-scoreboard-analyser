@@ -24,37 +24,37 @@ define([
         this.canvas_container_div = $('<div>').attr({
         		class: 'div_horizontal',
         		id: 'div_image'
-        		});
+    		});
         this.current_state_div = $('<div>').attr({
         		class:'div_state',
         		id: 'div_current_state'
-        		});
+    		});
       	this.load_state_div = $('<div>').attr({
   				class:'div_state',
   				id:'div_load_state'
-      			});
+  			});
         this.state_container_div = $('<div>').attr({
 		    	class: 'div_horizontal',
 		    	id: 'div_state_container'
-		    	})
+	    	})
         	.append(this.current_state_div)
         	.append(this.load_state_div);
         this.left_container_div = $('<div>').attr({
         		class: 'div_vertical',
         		id:'div_main_container'
-        		})
+    		})
         	.append(this.canvas_container_div)
         	.append(this.state_container_div);
         this.toolbox_tree_div = $('<div>').attr({
         		id:'div_toolbox_objects_tree',
-        		}).text('fill toolbox tree');
+    		});
         this.toolbox_details_div = $('<div>').attr({
         		id:'div_toolbox_objects_details'
-        		}).text('fill toolbox details');
+    		});
         this.right_container_div = $('<div>').attr({
         		class:'div_vertical',
         		id:'div_toolbox'
-        		})
+    		})
         	.append(this.toolbox_tree_div)
         	.append($('<hr>'))
         	.append(this.toolbox_details_div);
