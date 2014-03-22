@@ -20,7 +20,8 @@ define([],function(){
 		DisplayObjectsChanged:'DisplayObjectsChanged',
 		ToggleDisplayObject:'ToggleDisplayObject',
 		LoadStateFile:'LoadStateFile', 
-		ReOrdered: 'ReOrdered'
+		ReOrdered: 'ReOrdered', 
+		AddElement:'AddElement'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

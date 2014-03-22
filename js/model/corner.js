@@ -7,12 +7,13 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
         this.parent_digit = parent_digit;
         this.proxy = new CornerProxy(this);
     };
-	Corner.prototype = new DataBaseClass("type");
+	Corner.prototype = new DataBaseClass("corner");
     Corner.prototype.getCoordinate = function(){
         return this.coordinate;
     };
     Corner.prototype.setCoordinate = function(coordinate){
         this.coordinate = coordinate;
+        this.notifyGroupChanged();
     };
     Corner.prototype.getTitle = function(){
         return "x: "+(this.getCoordinate().x + "").substr(0, 10)+" y: "+(this.getCoordinate().y+"").substr(0, 10);
@@ -23,6 +24,9 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
 		if(warn_listeners){
 			this.notifyGroupChanged();
 		}
+	};
+	Corner.prototype.update = function(data){
+		this.setCoordinate(data.coordinate);
 	};
     return Corner;
 });

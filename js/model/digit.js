@@ -1,17 +1,28 @@
 define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'], function(Corner, DigitProxy, Coordinate, DataBaseClass){
-    var Digit = function(parent, id, data, messaging_system){
+    var Digit = function(parent/*, id*/, data, messaging_system){
         this.messaging_system = messaging_system;
 		this.init();
         this.setParent(parent);
-        this.setConfigurationKeys(data.configuration_keys);
-        this.id = id;
+        //this.setConfigurationKeys(data.configuration_keys);
+        //this.id = id;
 		this.setProxy(new DigitProxy(this));
 		this.lockNotification();
-        this.setCorners((data?data.corners:null), false);
+		this.loadData(data);
+        //this.setCorners((data?data.corners:null), false);
         this.unlockNotification();
     };
 	Digit.prototype = new DataBaseClass("digit");
-
+	Digit.default_configuration_keys = {};
+	Digit.prototype.loadData = function(data){
+		if(data == null){
+			//default
+			this.resetCorners();
+			this.setConfigurationKeys(Digit.default_configuration_keys);
+		}else{
+			this.setCorners(data.corners);
+			this.setConfigurationKeys(data.configuration_keys);
+		}
+	};
     Digit.prototype.resetCorners = function(){
         this.clearSubNodes();
         for(var i = 0; i < 4; ++i){

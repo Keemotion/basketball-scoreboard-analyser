@@ -1,4 +1,4 @@
-define(["../../model/coordinate", '../../messaging_system/event_listener'], function(Coordinate, EventListener){
+define(["../../model/coordinate", '../../messaging_system/event_listener', '../../messaging_system/events/submit_group_details_event'], function(Coordinate, EventListener, SubmitGroupDetailsEvent){
 	var CanvasClickListener = function(parentView, messaging_system){
 		this.parentView = parentView;
 		this.listening = false;
@@ -56,7 +56,15 @@ define(["../../model/coordinate", '../../messaging_system/event_listener'], func
 			.append(this.y_label)
 			.append(this.y_text)
 			.append(this.click_button);
-		this.target_view.append(this.content_element);
+		this.form = $('<form>')
+			.append(this.content_element)
+			.submit(function(){
+				var data = self.collectFormData();
+				var identification = self.data_proxy.getIdentification();
+				self.messaging_system.fire(self.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, data));
+				return false;
+			});
+		this.target_view.append(this.form);
 		this.loadContent();
 	};
 	CornerDetailsContentView.prototype.setCoordinate = function(x, y){

@@ -3,6 +3,5 @@ define(["../../messaging_system/messaging_system", './proxy_base_class'],functio
 		this.setObj(group);
     };
 	GroupProxy.prototype = new ProxyBaseClass();
-	GroupProxy.prototype.update_events = [MessagingSystem.prototype.events.GroupChanged];
     return GroupProxy;
 });

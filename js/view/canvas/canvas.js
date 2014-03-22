@@ -168,7 +168,7 @@ define([
 		if(this.state_display_object)
 			this.removeDisplayObject(this.state_display_object);
 		this.proxy = proxy;
-		this.addDisplayObject(new DisplayTree(this.proxy));
+		this.addDisplayObject(new DisplayTree(this.proxy, this.messaging_system));
 	};
 	MyCanvas.prototype.addDisplayObject = function(display_object){
 		this.display_objects.push(display_object);

@@ -3,7 +3,7 @@ define([], function(){
 		this.target = target;
 		this.data = data;
 	};
-	SubmitGroupDetailsEvent.prototype.getTarget = function(){
+	SubmitGroupDetailsEvent.prototype.getTargetIdentification = function(){
 		return this.target;
 	};
 	SubmitGroupDetailsEvent.prototype.getData = function(){

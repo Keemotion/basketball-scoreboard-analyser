@@ -1,6 +1,15 @@
-define(["./treenode", "../../messaging_system/event_listener", "../../messaging_system/events/ReOrderedEvent"],function(TreeNode, EventListener, ReOrderedEvent){
+define(["./treenode", "../../messaging_system/event_listener", "../../messaging_system/events/re_ordered_event", "../../messaging_system/events/add_element_event"],function(TreeNode, EventListener, ReOrderedEvent, AddElementEvent){
     var TreeView = function(target_view, state_proxy, messaging_system){
+    	var self = this;
         this.messaging_system = messaging_system;
+        this.add_element = $('<button>')
+        	.attr({
+        		'type':'button'
+        	}).text('Add')
+        	.click(function(){
+        		self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('group', self.state_proxy.getIdentification()));
+        	});
+        target_view.append(this.add_element);
         this.tree_element = $('<ul>')
             .attr({
                 'class':'list_toolbox_objects_tree'

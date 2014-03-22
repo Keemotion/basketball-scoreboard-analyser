@@ -7,6 +7,7 @@ define([
 		'./converter/parser',
 		'./converter/exporter'
 		], function(Group, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser, Exporter){
+	//console.log("group in state = "+Group);
     var State = function(messaging_system){
     	this.id = 0;
         this.messaging_system = messaging_system;
@@ -33,7 +34,7 @@ define([
 	State.prototype.groupChanged = function(signal, data){
 	};
 	State.prototype.addObject = function(data, single_event){
-		this.addSubNode(new Group(data, this, this.getNewSubNodeId(), this.messaging_system));
+		this.addSubNode(new Group(data, this, /*this.getNewSubNodeId(), */this.messaging_system));
 		this.stateChanged();
 	};
     State.prototype.stringify = function(){
@@ -67,5 +68,17 @@ define([
        	this.stateChanged();
         return true;
     };
+    State.prototype.addElement = function(signal, data){
+		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
+			var s = null;
+			switch(data.getType()){
+				case 'group':
+					s = new Group(null, this, this.messaging_system);
+					break;
+			}
+			this.addSubNode(s);
+			this.stateChanged();
+		}
+	};
     return State;
 });

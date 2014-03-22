@@ -1,4 +1,4 @@
-define(["./corner_details_content_view", "../../messaging_system/event_listener"],function(CornerDetailsContentView, EventListener){
+define(["./corner_details_content_view", "../../messaging_system/event_listener", "../../messaging_system/events/submit_group_details_event"],function(CornerDetailsContentView, EventListener, SubmitGroupDetailsEvent){
 	var CanvasClickListener = function(parentView, messaging_system){
 		this.parentView = parentView;
 		this.listening = false;
@@ -52,9 +52,19 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 			.click(function(e){
 				e.preventDefault();
 				self.canvasClickListener.startListening();
+				return false;
+			});
+		
+		this.form = $('<form>')
+			.append(this.content_element)
+			.submit(function(){
+				var data = self.collectFormData();
+				var target = self.data_proxy.getIdentification();
+				self.messaging_system.fire(self.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(target, data));
+				return false;
 			});
 		this.target_view
-			.append(this.content_element);
+			.append(this.form);
 		this.loadContent();
 	};
 	DigitDetailsContentView.prototype.loadContent = function(){

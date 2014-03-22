@@ -71,14 +71,15 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 	TreeNode.prototype.update = function(){
 		this.setTitle(this.data_proxy.getTitle());
 		this.setId(this.data_proxy.getId());
+		this.setSubNodes(this.data_proxy.getSubNodes());
 		for(var i = 0; i < this.sub_nodes.length; ++i){
 			this.sub_nodes[i].update();
 		}
 	};
 	TreeNode.prototype.updated = function(signal, data){
-		var identification = data.getTarget();
+		var identification = data.getTargetIdentification();
 		if(this.data_proxy.isPossiblyAboutThis(identification)){	
-			this.update(data.getGroupId());
+			this.update();
 		}
 	};
 	TreeNode.prototype.addSubNode = function(data, id){

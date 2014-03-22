@@ -1,4 +1,4 @@
-define(["../messaging_system/event_listener"],function(EventListener){
+define(["../messaging_system/event_listener", "../messaging_system/events/group_changed_event"],function(EventListener, GroupChangedEvent){
 	var BaseDataClass = function(type){
 		this.type = type;
 	};
@@ -11,6 +11,16 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		this.messaging_system.addEventListener(this.messaging_system.events.ToggleDisplayObject, this.toggleDisplayObjectListener);
 		this.reOrderedListener = new EventListener(this, this.reOrdered);
 		this.messaging_system.addEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
+		this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
+		if(this.addElement){
+			this.addElementListener = new EventListener(this, this.addElement);
+			this.messaging_system.addEventListener(this.messaging_system.events.AddElement, this.addElementListener);
+		}
+	};
+	BaseDataClass.prototype.submitGroupDetails = function(signal, data){
+		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
+			this.update(data.getData());	
+		}
 	};
 	BaseDataClass.prototype.toggleDisplay = function(signal, data){
 		if(this.isPossiblyAboutThis(data.target_identification)){
@@ -67,9 +77,21 @@ define(["../messaging_system/event_listener"],function(EventListener){
 	BaseDataClass.prototype.unlockNotification = function(){
 		this.notification_lock--;
 	};
+	BaseDataClass.prototype.canNotify = function(){
+		if(this.notification_lock != 0)
+			return false;
+		if(this.getParent())
+			return this.getParent().canNotify();
+		return true;
+	};
 	BaseDataClass.prototype.notifyGroupChanged = function(){
-		if(this.getParent() && this.notification_lock == 0)
-			this.getParent().notifyGroupChanged();
+		if(!this.canNotify()){
+			return;
+		}
+		/*if(this.notification_lock != 0)
+			return;
+	*/
+		this.messaging_system.fire(this.messaging_system.events.GroupChanged, new GroupChangedEvent(this.getIdentification()));
 	};
 	BaseDataClass.prototype.isPossiblyAboutThis = function(target, index){
 		if(target.length == 0)
@@ -138,9 +160,11 @@ define(["../messaging_system/event_listener"],function(EventListener){
 	};
 	BaseDataClass.prototype.setSubNodes = function(sub_nodes){
 		this.clearSubNodes();
+		this.lockNotification();
 		for(var i = 0; i < sub_nodes.length; ++i){
 			this.addSubNode(sub_nodes[i]);
 		}
+		this.unlockNotification();
 		this.notifyGroupChanged();
 	};
 	BaseDataClass.prototype.clearSubNodes = function(){
@@ -167,14 +191,6 @@ define(["../messaging_system/event_listener"],function(EventListener){
 		this.notifyGroupChanged();
 		return false;
 	};
-	BaseDataClass.prototype.getNewSubNodeId = function(){
-		var id = 0;
-		var sub_nodes = this.getSubNodes();
-		for(var i = 0; i < sub_nodes.length; ++i){
-			id = Math.max(sub_nodes[i].getId()+1, id);
-		}
-		return id;
-	};
 	BaseDataClass.prototype.getStringifyData = function(){
 		var d = new Object();
         d.name = this.name;
@@ -189,13 +205,14 @@ define(["../messaging_system/event_listener"],function(EventListener){
         return d;
 	};
 	BaseDataClass.prototype.reArrange = function(indices){
-		console.log("indices = "+indices);
 		var new_sub_nodes = new Array();
+		this.lockNotification();
 		for(var i = 0; i < indices.length; ++i){
 			new_sub_nodes.push(this.sub_nodes[indices[i]]);
 			this.sub_nodes[indices[i]].setId(i);
 		}
 		this.sub_nodes = new_sub_nodes;
+		this.unlockNotification();
 		this.notifyGroupChanged();
 	};
 	return BaseDataClass;
