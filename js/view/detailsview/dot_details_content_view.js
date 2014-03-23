@@ -1,4 +1,11 @@
-define(["../../model/coordinate", "../../messaging_system/event_listener", "../../messaging_system/events/submit_group_details_event"],function(Coordinate, EventListener, SubmitGroupDetailsEvent){
+define(["../../model/coordinate", 
+	"../../messaging_system/event_listener", 
+	"../../messaging_system/events/submit_group_details_event",
+	"../../messaging_system/events/remove_group_event"],
+	function(Coordinate, 
+		EventListener, 
+		SubmitGroupDetailsEvent,
+		RemoveGroupEvent){
 	
 	var CanvasClickListener = function(parentView, messaging_system){
 		this.parentView = parentView;
@@ -52,6 +59,13 @@ define(["../../model/coordinate", "../../messaging_system/event_listener", "../.
 				self.canvasClickListener.startListening();
 				return false;
 			});
+		this.remove_button = $('<button>')
+			.text('Remove dot')
+			.attr('type', 'button')
+			.click(function(){
+				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(data_proxy.getIdentification()));
+				return false;
+			});
 		this.x_text = $('<input>')
 			.val('');
 		this.y_text = $('<input>')
@@ -76,12 +90,15 @@ define(["../../model/coordinate", "../../messaging_system/event_listener", "../.
 		this.content_elements.length = 0;
 		this.content_element.empty();
 		this.title_span.text(this.data_proxy.getTitle());
-		this.content_element.append(this.x_label)
+		this.content_element
+			.append(this.click_button)
+			.append(this.remove_button)
+			.append($('<br>'))
+			.append(this.x_label)
 			.append(this.x_text)
 			.append($('<br>'))
 			.append(this.y_label)
-			.append(this.y_text)
-			.append(this.click_button);
+			.append(this.y_text);
 		this.update();
 	};
 	DotDetailsContentView.prototype.stoppedListening = function(){

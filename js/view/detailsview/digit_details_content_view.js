@@ -1,4 +1,11 @@
-define(["./corner_details_content_view", "../../messaging_system/event_listener", "../../messaging_system/events/submit_group_details_event"],function(CornerDetailsContentView, EventListener, SubmitGroupDetailsEvent){
+define(["./corner_details_content_view", 
+	"../../messaging_system/event_listener", 
+	"../../messaging_system/events/submit_group_details_event",
+	"../../messaging_system/events/remove_group_event"],
+	function(CornerDetailsContentView, 
+		EventListener, 
+		SubmitGroupDetailsEvent,
+		RemoveGroupEvent){
 	var CanvasClickListener = function(parentView, messaging_system){
 		this.parentView = parentView;
 		this.listening = false;
@@ -39,7 +46,7 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 		this.content_elements = new Array();
 		this.data_proxy = data_proxy;
 		this.content_element= $('<div>')
-			.append($('<span>').text('test'));
+			.append($('<span>').text(''));
 		this.title_span = $('<span>')
 			.text('');
 		this.canvasClickListener = null;
@@ -52,6 +59,13 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 			.click(function(e){
 				e.preventDefault();
 				self.canvasClickListener.startListening();
+				return false;
+			});
+		this.remove_button = $('<button>')
+			.text('Remove digit')
+			.attr({'type':'button'})
+			.click(function(){
+				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(data_proxy.getIdentification()));
 				return false;
 			});
 		
@@ -74,6 +88,7 @@ define(["./corner_details_content_view", "../../messaging_system/event_listener"
 		this.title_span.text(this.data_proxy.getTitle());
 		this.content_element.append(this.title_span);
 		this.content_element.append(this.click_button);
+		this.content_element.append(this.remove_button);
 		for(var i = 0; i < 4; ++i){
 			var el = new CornerDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
 			this.content_elements.push(el);

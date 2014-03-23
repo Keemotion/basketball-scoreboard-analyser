@@ -28,7 +28,6 @@ define(["./treenode", "../../messaging_system/event_listener", "../../messaging_
 		this.loadView();
 	};
     TreeView.prototype.loadView = function(){
-    	var start_time = new Date();
     	var self = this;
         this.tree_element.empty();
         this.nodes.length = 0;
@@ -44,8 +43,6 @@ define(["./treenode", "../../messaging_system/event_listener", "../../messaging_
         	});
         	self.messaging_system.fire(self.messaging_system.events.ReOrdered, new ReOrderedEvent(new_order, self.state_proxy.getIdentification()));
         });
-        var end_time = new Date();
-        console.log("treeview loadview time: "+(end_time-start_time));
     };
     return TreeView;
 });
