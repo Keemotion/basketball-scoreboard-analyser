@@ -4,7 +4,6 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
 		this.init();
         this.setParent(parent);
         this.loadData(data);
-		this.loadData(); 
 		this.setProxy(new DotProxy(this));
     };
 	Dot.prototype = new DataBaseClass();

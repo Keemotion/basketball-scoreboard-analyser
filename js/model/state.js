@@ -80,5 +80,11 @@ define([
 			this.stateChanged();
 		}
 	};
+	State.prototype.notifyGroupChanged = function(){
+		if(!this.canNotify()){
+			return;
+		}
+		this.stateChanged();
+	};
     return State;
 });

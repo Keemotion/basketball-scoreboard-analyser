@@ -5,7 +5,8 @@ define([
 	"../../messaging_system/event_listener", 
 	"../../messaging_system/events/submit_group_details_event",
 	"../../messaging_system/events/toggle_display_object_event",
-	"../../messaging_system/events/add_element_event"], 
+	"../../messaging_system/events/add_element_event",
+	"../../messaging_system/events/remove_group_event"], 
 	function(
 		DigitDetailsContentView, 
 		DotDetailsContentView,
@@ -13,7 +14,8 @@ define([
 		EventListener, 
 		SubmitGroupDetailsEvent,
 		ToggleDisplayObjectEvent,
-		AddElementEvent){
+		AddElementEvent,
+		RemoveGroupEvent){
 	var HighlightButton = function(data_proxy, messaging_system){
 		var self = this;
 		this.displaying = data_proxy.getDisplaying();
@@ -61,6 +63,7 @@ define([
 			});
 		this.title_input = $('<input>').attr({'type':'text','name':'name'}).val(this.data_proxy.getTitle());
 		this.title_form = $('<form>')
+			.append($('<span>').text('Name: '))
 			.append(this.title_input)
 			.append($('<button>').attr({'type':'button'}).text('submit').click(function(){self.title_form.submit();}))
 			.submit(function(e){
@@ -84,7 +87,12 @@ define([
 		this.content_element = $('<div>');
 		this.element.append(this.title_form)
 			.append(this.controls_element)
-			.append(this.content_element);
+			.append(this.content_element)
+			.append($('<button>').text('Delete group').attr('type','button').click(function(){
+				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(self.data_proxy.getIdentification()));
+				//clear DOM
+				return false;
+			}));
 		//this.form.append(this.element);
 		this.target_view.append(this.element);
 		this.loadContent();

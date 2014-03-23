@@ -12,9 +12,21 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		this.reOrderedListener = new EventListener(this, this.reOrdered);
 		this.messaging_system.addEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
+		this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, new EventListener(this, this.removeElement));
 		if(this.addElement){
 			this.addElementListener = new EventListener(this, this.addElement);
 			this.messaging_system.addEventListener(this.messaging_system.events.AddElement, this.addElementListener);
+		}
+	};
+	//event listener
+	BaseDataClass.prototype.removeElement = function(signal, data){
+		if(data.getHandled())
+			return;
+		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
+			if(this.getParent()){
+				this.getParent().removeSubNode(this.getId());
+			}
+			data.setHandled(true);
 		}
 	};
 	BaseDataClass.prototype.submitGroupDetails = function(signal, data){
@@ -180,7 +192,18 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		sub_node.setParent(this);
 		this.notifyGroupChanged();
 	};
-	BaseDataClass.prototype.removeSubNode = function(sub_node){
+	BaseDataClass.prototype.removeSubNode = function(index){
+		this.lockNotification();
+		this.sub_nodes[index].cleanUp();
+		for(var i = index+1; i < this.sub_nodes.length; ++i){
+			this.sub_nodes[i-1]=this.sub_nodes[i];
+			this.sub_nodes[i-1].setId(i-1);
+		}
+		this.sub_nodes.length = this.sub_nodes.length-1;
+		this.unlockNotification();
+		this.notifyGroupChanged();
+	};
+	/*BaseDataClass.prototype.removeSubNode = function(sub_node){
 		for(var i = 0; i < this.sub_nodes.length; ++i){
 			if(this.sub_nodes[i]==sub_node){
 				sub_node.clear();
@@ -190,6 +213,11 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		}
 		this.notifyGroupChanged();
 		return false;
+	};*/
+	BaseDataClass.prototype.cleanUp = function(){
+		//TODO: remove event listeners
+		//TODO: specific clean handler (digit/state/group...)
+		this.clear();
 	};
 	BaseDataClass.prototype.getStringifyData = function(){
 		var d = new Object();
@@ -205,6 +233,13 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
         return d;
 	};
 	BaseDataClass.prototype.reArrange = function(indices){
+		var good = false;
+		for(var i = 0; i < indices.length && !good; ++i){
+			if(indices[i] != i)
+				good = true;
+		}
+		if(!good)
+			return;
 		var new_sub_nodes = new Array();
 		this.lockNotification();
 		for(var i = 0; i < indices.length; ++i){
