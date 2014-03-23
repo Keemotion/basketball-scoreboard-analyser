@@ -73,6 +73,8 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		return this.id;
 	};
 	BaseDataClass.prototype.setId = function(id){
+		if(id == this.id)
+			return;
 		this.id = id;
 		this.notifyGroupChanged();
 	};
