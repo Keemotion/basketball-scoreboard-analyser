@@ -65,7 +65,9 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		return sub_nodes_proxies;
 	};
 	BaseDataClass.prototype.getTitle = function(){
-		return this.name;
+		if(this.name)
+			return this.name;
+		return this.getType()+" #"+(this.getId()+1);
 	};
 	BaseDataClass.prototype.getId = function(){
 		return this.id;

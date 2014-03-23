@@ -69,9 +69,11 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 		}
 	};
 	TreeNode.prototype.update = function(){
-		this.setTitle(this.data_proxy.getTitle());
+		this.loadData();
+		/*this.setTitle(this.data_proxy.getTitle());
 		this.setId(this.data_proxy.getId());
-		this.setSubNodes(this.data_proxy.getSubNodes());
+		
+		this.setSubNodes(this.data_proxy.getSubNodes());*/
 		for(var i = 0; i < this.sub_nodes.length; ++i){
 			this.sub_nodes[i].update();
 		}
@@ -106,9 +108,11 @@ define(['../../messaging_system/event_listener'], function(EventListener){
         }
         this.sub_nodes.length = 0;
 		this.sub_nodes_element.empty();
+		if(this.data_proxy.getType() == "group" || this.data_proxy.getType() == "state"){
         for(var i = 0; i < sub_nodes.length; ++i){
             this.addSubNode(sub_nodes[i], i);
         }
+       }
         this.subNodesChanged();
     };
     TreeNode.prototype.subNodesChanged = function(){
