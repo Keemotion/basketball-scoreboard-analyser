@@ -1,4 +1,4 @@
-define(["./base_display"], function(BaseDisplay){
+define(["./base_display", "../../model/coordinate"], function(BaseDisplay, Coordinate){
 	var CornerDisplay = function(parent_component, proxy, messaging_system){
 		this.init();
 		this.setParent(parent_component);
@@ -15,6 +15,12 @@ define(["./base_display"], function(BaseDisplay){
 		context.lineWidth = 3;
 		context.arc(c.x, c.y, 5, 0, 2*Math.PI);
 		context.stroke();
+	};
+	CornerDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation){
+		if(Coordinate.getSquareDistance(coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate())) <= 25){
+			return true;
+		}
+		return false;
 	};
 	return CornerDisplay;
 });

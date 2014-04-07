@@ -18,7 +18,7 @@ define(["./corner_details_content_view",
 	};
 	CanvasClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
-			this.parentView.content_elements[this.index].setCoordinate(data.imageX, data.imageY);
+			this.parentView.content_elements[this.index].setCoordinate(data.getCoordinate().getX(), data.getCoordinate().getY());
 			++this.index;
 			if(this.index== 4){
 				this.stopListening();

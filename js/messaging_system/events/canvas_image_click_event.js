@@ -1,7 +1,9 @@
 define([], function(){
-	var CanvasImageClickEvent = function(imageX, imageY){
-		this.imageX = imageX;
-		this.imageY = imageY;
+	var CanvasImageClickEvent = function(coordinate){
+		this.coordinate = coordinate;
+	};
+	CanvasImageClickEvent.prototype.getCoordinate = function(){
+		return this.coordinate;
 	};
 	return CanvasImageClickEvent;
 });

@@ -51,5 +51,11 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
 			this.notifyGroupChanged();
 		}
     };
+    Dot.prototype.isAtCanvasCoordinate = function(coordinate, transformation){
+		var canvas_coordinate = transformation.transformRelativeCoordinateToCanvasCoordinate(this.getCoordinate());
+		if(canvas_coordinate.getSquareDistance(coordinate) < 25){
+			return true;
+		}
+	};
     return Dot;
 });

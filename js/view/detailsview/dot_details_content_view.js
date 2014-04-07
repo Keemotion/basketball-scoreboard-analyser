@@ -19,7 +19,7 @@ define(["../../model/coordinate",
 	};
 	CanvasClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
-			this.parentView.setCoordinate(data.imageX, data.imageY);
+			this.parentView.setCoordinate(data.getCoordinate().getX(), data.getCoordinate().getY());
 			this.stopListening();
 		}
 	};

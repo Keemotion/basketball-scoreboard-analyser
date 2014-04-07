@@ -29,5 +29,20 @@ define([], function(){
 	BaseDisplay.prototype.setProxy = function(proxy){
 		this.proxy = proxy;
 	};
+	BaseDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation){
+		return false;
+	};
+	//@param coordinate: canvas coordinate
+	BaseDisplay.prototype.getObjectAtCanvasCoordinate = function(coordinate, transformation){
+		if(this.isAtCanvasCoordinate(coordinate, transformation))
+			return this;
+		for(var i = 0; i < this.sub_components.length; ++i){
+			var res = this.sub_components[i].getObjectAtCanvasCoordinate(coordinate, transformation);
+			if(res == null)
+				continue;
+			return res;
+		}
+		return null;
+	};
 	return BaseDisplay;
 });

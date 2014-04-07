@@ -11,7 +11,7 @@ define(["../../model/coordinate", '../../messaging_system/event_listener', '../.
 	CanvasClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
 			this.stopListening();
-			this.parentView.setCoordinate(data.imageX, data.imageY);
+			this.parentView.setCoordinate(data.getCoordinate().getX(), data.getCoordinate().getY());
 		}
 	};
 	CanvasClickListener.prototype.startListening = function(){

@@ -1,6 +1,9 @@
 define([], function(){
-	var CanvasMouseMoveEvent = function(e){
-		this.event_data = e;
+	var CanvasMouseMoveEvent = function(coordinate){
+		this.coordinate = coordinate;
+	};
+	CanvasMouseMoveEvent.prototype.getCoordinate = function(){
+		return this.coordinate;
 	};
 	return CanvasMouseMoveEvent;
 });
