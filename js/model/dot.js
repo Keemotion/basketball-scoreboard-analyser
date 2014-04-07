@@ -38,10 +38,12 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
 			this.notifyGroupChanged();
   		}     
     };
-    
-    /*Dot.prototype.getTitle = function(){
-        return "x: "+(this.getCoordinate().x + "").substr(0, 10)+" y: "+(this.getCoordinate().y+"").substr(0, 10);
-    };*/
+    Dot.prototype.getData = function(){
+    	var object = new Object();
+    	object.name = this.name;
+    	object.coordinate = this.getCoordinate();
+    	return object;
+    };
     Dot.prototype.update = function(data, warn_listeners){
     	if(warn_listeners == null)
             warn_listeners = true;

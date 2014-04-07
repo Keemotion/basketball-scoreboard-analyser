@@ -104,9 +104,6 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		if(!this.canNotify()){
 			return;
 		}
-		/*if(this.notification_lock != 0)
-			return;
-	*/
 		this.messaging_system.fire(this.messaging_system.events.GroupChanged, new GroupChangedEvent(this.getIdentification()));
 	};
 	BaseDataClass.prototype.isPossiblyAboutThis = function(target, index){
@@ -207,17 +204,6 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		this.unlockNotification();
 		this.notifyGroupChanged();
 	};
-	/*BaseDataClass.prototype.removeSubNode = function(sub_node){
-		for(var i = 0; i < this.sub_nodes.length; ++i){
-			if(this.sub_nodes[i]==sub_node){
-				sub_node.clear();
-				this.sub_nodes.splice(i, 1);
-				return true;
-			}
-		}
-		this.notifyGroupChanged();
-		return false;
-	};*/
 	BaseDataClass.prototype.cleanUp = function(){
 		//TODO: remove event listeners
 		//TODO: specific clean handler (digit/state/group...)

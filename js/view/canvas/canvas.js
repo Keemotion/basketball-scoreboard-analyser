@@ -8,7 +8,8 @@ define([
 		"../../messaging_system/events/canvas_mouse_down_event",
 		"../../messaging_system/events/canvas_focus_out_event",
 		"./display_tree",
-		"../../messaging_system/events/canvas_image_click_event"
+		"../../messaging_system/events/canvas_image_click_event",
+		"../../messaging_system/events/submit_group_details_event"
 		], 
 	function(
 		EventListener, 
@@ -20,16 +21,27 @@ define([
 		CanvasMouseDownEvent,
 		CanvasFocusOutEvent,
 		DisplayTree,
-		CanvasImageClickEvent
+		CanvasImageClickEvent,
+		SubmitGroupDetailsEvent
 		){
 	var CanvasDragHandler = function(transformation, messaging_system){
 		this.dragging = false;
 		this.messaging_system = messaging_system;
 		this.transformation = transformation;
+		this.pause_level = 0;
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseMove, new EventListener(this, this.canvasMouseMove));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseDown, new EventListener(this, this.canvasMouseDown));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.canvasMouseUp));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.canvasFocusOut));
+		this.messaging_system.addEventListener(this.messaging_system.events.StartObjectDragging, new EventListener(this, this.pauseCanvasDragging));
+		this.messaging_system.addEventListener(this.messaging_system.events.StopObjectDragging, new EventListener(this, this.unpauseCanvasDragging));
+	};
+	CanvasDragHandler.prototype.pauseCanvasDragging = function(){
+		this.stopDragging();
+		this.pause_level++;
+	};
+	CanvasDragHandler.prototype.unpauseCanvasDragging = function(){
+		this.pause_level = Math.max(0,this.pause_level-1);
 	};
 	CanvasDragHandler.prototype.canvasMouseMove = function(signal, data){
 		var ev = data.event_data;
@@ -44,12 +56,17 @@ define([
 		}
 		return true;
 	};
+	CanvasDragHandler.prototype.stopDragging = function(){
+		this.dragging = false;
+	};
 	CanvasDragHandler.prototype.canvasMouseDown = function(signal, data){
+		if(this.pause_level > 0)
+			return;
 		this.dragging = true;
 		this.dragStartCoordinate = data.getCoordinate();
 	};
 	CanvasDragHandler.prototype.canvasMouseUp = function(signal, data){
-		this.dragging = false;
+		this.stopDragging();
 	};
 	CanvasDragHandler.prototype.canvasFocusOut = function(signal, data){
 		this.canvasMouseUp(signal, data);
@@ -59,7 +76,7 @@ define([
 		this.drawn = false;
 		this.last_edit = 0;
 		this.checkDraw();
-		this.interval = 150;
+		this.interval = 250;
 	};
 	DisplayChangedHandler.prototype.checkDraw = function(){
 		var self = this;
@@ -80,7 +97,52 @@ define([
 	DisplayChangedHandler.prototype.canBeDrawn = function(){
 		return (new Date().getTime())-this.last_edit > this.interval;
 	};
-	var CanvasHoverHandler = function(canvas, proxy, messaging_system){
+	var CanvasObjectDragHandler = function(canvas, messaging_system){
+		this.canvas = canvas;
+		this.messaging_system = messaging_system;
+		this.setSelected(null);
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseDown, new EventListener(this, this.mouseDown));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.endDrag));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseMove, new EventListener(this, this.mouseMove));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.endDrag));
+	};
+	CanvasObjectDragHandler.prototype.getSelected = function(){
+		return this.selected_object;
+	};
+	CanvasObjectDragHandler.prototype.setSelected = function(object){
+		this.selected_object = object;
+	};
+	CanvasObjectDragHandler.prototype.mouseDown = function(signal, data){
+		var event_data = data.getEventData();
+		if(!event_data.ctrlKey){
+			return;
+		}
+		this.setSelected(this.canvas.getObjectAtCanvasCoordinate(data.getCoordinate()));
+		this.startObjectDragging();
+	};
+	CanvasObjectDragHandler.prototype.startObjectDragging = function(){
+		this.messaging_system.fire(this.messaging_system.events.StartObjectDragging, null);
+	};
+	CanvasObjectDragHandler.prototype.stopObjectDragging = function(){
+		this.messaging_system.fire(this.messaging_system.events.StopObjectDragging, null);
+	};
+	CanvasObjectDragHandler.prototype.mouseMove = function(signal, data){
+		if(!this.getSelected()){
+			return;
+		}
+		this.updateObjectCoordinate(this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate()));
+	};
+	CanvasObjectDragHandler.prototype.updateObjectCoordinate = function(coordinate){
+		var data = this.getSelected().getProxy().getData();
+		data.coordinate = coordinate;
+		this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(this.getSelected().getProxy().getIdentification(), data));
+	};
+	//mouse up, lose focus, mouse out...
+	CanvasObjectDragHandler.prototype.endDrag = function(signal, data){
+		this.setSelected(null);
+		this.stopObjectDragging();
+	};
+	var CanvasHoverHandler = function(canvas, messaging_system){
 		this.last_move = 0;
 		this.canvas = canvas;
 		this.interval = 100;
@@ -98,7 +160,6 @@ define([
 		--this.waiting;
 		if(this.waiting != 0)
 			return;
-		console.log("display hovered object");
 		this.canvas.displayHoveredObject(this.cursor_position);
 	};
 	var MyCanvas = function(target_view, proxy, messaging_system){
@@ -114,7 +175,8 @@ define([
 		this.container_element = target_view;
 		this.transformation = new Transformation(new Coordinate(0,0), 1,1,1, 1,1);
 		this.dragHandler = new CanvasDragHandler(this.transformation, this.messaging_system);
-		this.hoverHandler = new CanvasHoverHandler(this, this.proxy, this.messaging_system);
+		//this.hoverHandler = new CanvasHoverHandler(this, this.messaging_system);
+		this.canvas_object_drag_handler = new CanvasObjectDragHandler(this, this.messaging_system);
 		this.display_objects = new Array();
 		$(this.container_element).append(this.canvas_element);
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.updateCanvas));
@@ -131,23 +193,23 @@ define([
 		this.canvas_element.addEventListener('mousewheel', scrollF, false);
 		$(this.canvas_element).mousemove(function(e){
 			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasMouseMove, new CanvasMouseMoveEvent(c));
+			messaging_system.fire(messaging_system.events.CanvasMouseMove, new CanvasMouseMoveEvent(c, e));
 		});
 		$(this.canvas_element).mousedown(function(e){
 			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasMouseDown, new CanvasMouseDownEvent(c));
+			messaging_system.fire(messaging_system.events.CanvasMouseDown, new CanvasMouseDownEvent(c, e));
 		});
 		$(this.canvas_element).mouseup(function(e){
 			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasMouseUp, new CanvasMouseUpEvent(c));
+			messaging_system.fire(messaging_system.events.CanvasMouseUp, new CanvasMouseUpEvent(c, e));
 		});
 		$(this.canvas_element).focusout(function(e){
 			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasFocusOut, new CanvasFocusOutEvent(c));
+			messaging_system.fire(messaging_system.events.CanvasFocusOut, new CanvasFocusOutEvent(c, e));
 		});
 		$(this.canvas_element).click(function(e){
 			var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
-			messaging_system.fire(messaging_system.events.CanvasImageClick, new CanvasImageClickEvent(c));
+			messaging_system.fire(messaging_system.events.CanvasImageClick, new CanvasImageClickEvent(c, e));
 		});
 		this.displayObjectsChangedListener = new EventListener(this, this.displayObjectsChanged);
 		this.messaging_system.addEventListener(this.messaging_system.events.DisplayObjectsChanged, this.displayObjectsChangedListener);
@@ -167,13 +229,10 @@ define([
 		return null;
 	};
 	MyCanvas.prototype.displayHoveredObject = function(coordinate){
-		//console.log("searching");
 		var obj = this.getObjectAtCanvasCoordinate(coordinate);
-		//console.log("found: "+JSON.stringify(obj));
 		if(obj == null)
 			return;
 		var proxy = obj.getProxy();
-		console.log("hovering: "+JSON.stringify(proxy.getIdentification()));
 		//TODO: implement method to find object at a given cursor position
 		//TODO: find a place to show which object is at the given cursor position
 	};
@@ -281,8 +340,15 @@ define([
 			this.context.drawImage(this.image, image_top_left.x, image_top_left.y, image_bottom_right.x-image_top_left.x, image_bottom_right.y-image_top_left.y, canvas_top_left.x, canvas_top_left.y, canvas_bottom_right.x-canvas_top_left.x, canvas_bottom_right.y-canvas_top_left.y);
 			if(this.getDisplayObjectsEnabled()){
 				this.drawDisplayObjects();
+			}else{
+				if(this.canvas_object_drag_handler.getSelected()){
+					this.canvas_object_drag_handler.getSelected().draw(this.context, this.getTransformation());
+				}
 			}
 		}
+	};
+	MyCanvas.prototype.getTransformation = function(){
+		return this.transformation;
 	};
 	return MyCanvas;
 }

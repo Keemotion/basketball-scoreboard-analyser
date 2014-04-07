@@ -36,5 +36,8 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.getIdentification = function(){
 		return this.obj.getIdentification();
 	};
+	BaseProxy.prototype.getData = function(){
+		return this.obj.getData();
+	};
 	return BaseProxy;
 });

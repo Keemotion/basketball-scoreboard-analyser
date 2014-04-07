@@ -28,5 +28,10 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
 	Corner.prototype.update = function(data){
 		this.setCoordinate(data.coordinate);
 	};
+	Corner.prototype.getData = function(){
+		var object = new Object();
+		object.coordinate = this.getCoordinate();
+		return object;
+	};
     return Corner;
 });

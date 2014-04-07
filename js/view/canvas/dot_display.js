@@ -17,5 +17,12 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.arc(c.x, c.y, 5, 0, 2*Math.PI);
 		context.stroke();
 	};
+	
+	DotDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation){
+		if(Coordinate.getSquareDistance(coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate())) <= 25){
+			return true;
+		}
+		return false;
+	};
 	return DotDisplay;
 });

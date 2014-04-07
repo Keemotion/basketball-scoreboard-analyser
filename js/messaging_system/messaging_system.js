@@ -22,7 +22,9 @@ define([],function(){
 		LoadStateFile:'LoadStateFile', 
 		ReOrdered: 'ReOrdered', 
 		AddElement:'AddElement',
-		RemoveGroup:'RemoveGroup'
+		RemoveGroup:'RemoveGroup',
+		StartObjectDragging:'StartObjectDragging',
+		StopObjectDragging:'StopObjectDragging'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

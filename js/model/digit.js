@@ -79,6 +79,17 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			this.notifyGroupChanged();
 		}
 	};
+	Digit.prototype.getData = function(){
+		var object = new Object();
+		object.name = this.name;
+		object.corners = new Array();
+		for(var i = 0; i < this.corners.length; ++i){
+			var o = new Object();
+			o.coordinate = this.corners[i].getCoordinate();
+			object.corners.push(o);
+		}
+		return object;
+	};
     Digit.prototype.changeCorner = function(corner_index, x, y, warn_listeners){
         if(warn_listeners == null)
             warn_listeners = true;
