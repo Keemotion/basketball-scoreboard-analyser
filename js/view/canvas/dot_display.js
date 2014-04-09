@@ -24,5 +24,8 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		}
 		return false;
 	};
+	DotDisplay.prototype.drawChanging = function(context, transformation){
+		this.draw(context, transformation);
+	};
 	return DotDisplay;
 });

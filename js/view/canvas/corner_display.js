@@ -22,5 +22,8 @@ define(["./base_display", "../../model/coordinate"], function(BaseDisplay, Coord
 		}
 		return false;
 	};
+	CornerDisplay.prototype.drawChanging = function(context, transformation){
+		this.getParent().draw(context, transformation);
+	};
 	return CornerDisplay;
 });

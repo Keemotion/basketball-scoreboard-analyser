@@ -342,7 +342,7 @@ define([
 				this.drawDisplayObjects();
 			}else{
 				if(this.canvas_object_drag_handler.getSelected()){
-					this.canvas_object_drag_handler.getSelected().draw(this.context, this.getTransformation());
+					this.canvas_object_drag_handler.getSelected().drawChanging(this.context, this.getTransformation());
 				}
 			}
 		}
