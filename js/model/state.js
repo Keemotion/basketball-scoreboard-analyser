@@ -7,7 +7,7 @@ define([
 		'./converter/parser',
 		'./converter/exporter'
 		], function(Group, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser, Exporter){
-	//console.log("group in state = "+Group);
+	//represents root node in the hierarchy of objects
     var State = function(messaging_system){
     	this.id = 0;
         this.messaging_system = messaging_system;
@@ -18,14 +18,16 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadStateFile, new EventListener(this, this.loadStateFile));
     };
 	State.prototype = new DataBaseClass("state");
+	//load the state based on a JSON format
 	State.prototype.loadState = function(signal, data){
 		this.parseJSON(data.getDataString());
 	};
+	//load the state based on the original file format
 	State.prototype.loadStateFile = function(signal, data){
-		//console.log("received state file: "+data.data_string);
 		var p = new Parser(data.data_string);
 		this.parse(p.parse());
 	};
+	//warn all interested listeners that the current state has changed and that they might need to update themselves
 	State.prototype.stateChanged = function(){
 		if(this.notification_lock != 0)
 			return;
@@ -33,18 +35,22 @@ define([
 	};
 	State.prototype.groupChanged = function(signal, data){
 	};
+	//add a sub node 
 	State.prototype.addObject = function(data, single_event){
-		this.addSubNode(new Group(data, this, /*this.getNewSubNodeId(), */this.messaging_system));
+		this.addSubNode(new Group(data, this, this.messaging_system));
 		this.stateChanged();
 	};
+	//generate a string based on the data this node and all its ancestors generated
     State.prototype.stringify = function(){
         return JSON.stringify(this.getStringifyData(), null, 2);
     };
+	//generate the original output format of all data this node and all its ancestors generated
     State.prototype.getExportedString = function(){
     	var data = this.getStringifyData();
     	var exporter = new Exporter(data);
     	return exporter.export();
     };
+	//parses a json object and loads it to the current state
 	//TODO: make this method!
 	//In a class (JSONParser -> generate()) -> recursive
     State.prototype.parseJSON = function(json){
@@ -58,6 +64,7 @@ define([
 			this.stateChanged();
         }
     };
+	//load data in javascript Object format
     State.prototype.parse = function(data){
     	this.lockNotification();
     	this.clearSubNodes();
@@ -68,6 +75,7 @@ define([
        	this.stateChanged();
         return true;
     };
+	//add an empty sub group
     State.prototype.addElement = function(signal, data){
 		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
 			var s = null;

@@ -10,6 +10,7 @@ define(["./digit",
 		DataBaseClass, 
 		GroupChangedEvent,
 		Dot){
+	//represents a collection of digits/dots/groups
    	var Group = function(data, parent, messaging_system){
         this.messaging_system = messaging_system;
 		this.init();
@@ -20,6 +21,7 @@ define(["./digit",
         this.unlockNotification();
     };
 	Group.prototype = new DataBaseClass("group");
+	//the default configuration keys that are applied to a group in the configuration file
 	Group.default_configuration_keys = {
         "parse_function": null,
         "read_function": "digit_pattern_32",
@@ -29,6 +31,8 @@ define(["./digit",
         "dtype": null,
         "luminance_threshold": "190"
       };
+	//load the data for this group
+	//when no data is provided, an empty group is made and the default configuration keys are applied to it
 	Group.prototype.loadData = function(data){
 		if(data == null){
 			//default
@@ -41,27 +45,19 @@ define(["./digit",
 			this.setConfigurationKeys(data.configuration_keys);
 		}
 	};
+	//create subnodes based on subnode_info
     Group.prototype.createSubNodes = function(subnode_info){
         this.clearSubNodes();
         for(var i = 0; i < subnode_info.length; ++i){
             this.createSubNode(subnode_info[i]);
         }
     };
+	//update the group properties (not its children)
 	Group.prototype.update = function(data){
 		this.name = data.name;
-		console.log("updating!");
 		this.notifyGroupChanged();
-		/*this.lockNotification();
-		this.name = data.name;
-		this.id = data.id;
-		var digits = this.getSubNodes();
-		digits.length = data.digits.length;
-		for(var i = 0; i < digits.length; ++i){
-			digits[i].update(data.digits[i]);
-		}
-		this.unlockNotification();
-		this.notifyGroupChanged();*/
 	};
+	//adds a subnode based on info
     Group.prototype.createSubNode = function(info){
     	var obj = null;
 		if (info.type == "digit") {
@@ -75,12 +71,14 @@ define(["./digit",
 			this.addSubNode(obj);
 		}
     };
+	//loads the group data, including its sub nodes
     Group.prototype.load = function(data){
         this.name = data.name;
 		this.id = data.id;
 		this.createSubNodes(data.digits);
 		this.notifyGroupChanged();
     };
+	//adds an empty element to the sub nodes
     Group.prototype.addElement = function(signal, data){
 		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
 			var s = null;

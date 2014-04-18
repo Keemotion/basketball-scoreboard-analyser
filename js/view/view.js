@@ -16,6 +16,7 @@ define([
 		DisplayTree,
 		CurrentStateComponent
 		){
+	//View represents the GUI
     var View = function(controller, target_view, messaging_system){
     	this.messaging_system = messaging_system;
         this.controller = controller;
@@ -60,11 +61,16 @@ define([
         	.append(this.toolbox_details_div);
         this.element.append(this.left_container_div)
         	.append(this.right_container_div);
-        
+
+    	//the canvas    
         this.canvas = new MyCanvas(this.canvas_container_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
+		//the export field
 		this.current_state_component = new CurrentStateComponent(this.current_state_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
+		//the import field
         this.loadStateComponent = new LoadStateComponent(this.load_state_div, this.messaging_system);
+		//the tree
         this.tree_view = new TreeView(this.toolbox_tree_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
+
         this.messaging_system.addEventListener(this.messaging_system.events.GroupClicked, new EventListener(this,this.groupClicked));
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
         window.addEventListener('resize', function(){

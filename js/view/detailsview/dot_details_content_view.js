@@ -1,42 +1,14 @@
 define(["../../model/coordinate", 
 	"../../messaging_system/event_listener", 
 	"../../messaging_system/events/submit_group_details_event",
-	"../../messaging_system/events/remove_group_event"],
+	"../../messaging_system/events/remove_group_event",
+	"./canvas_single_click_listener"],
 	function(Coordinate, 
 		EventListener, 
 		SubmitGroupDetailsEvent,
-		RemoveGroupEvent){
-	
-	var CanvasClickListener = function(parentView, messaging_system){
-		this.parentView = parentView;
-		this.listening = false;
-		this.index = 0;
-		this.messaging_system = messaging_system;
-		this.clickListener = new EventListener(this ,this.clickReceived);
-		this.otherListenerStartedListener = new EventListener(this, this.stopListening);
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
-		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
-	};
-	CanvasClickListener.prototype.clickReceived = function(signal, data){
-		if(this.listening == true){
-			this.parentView.setCoordinate(data.getCoordinate().getX(), data.getCoordinate().getY());
-			this.stopListening();
-		}
-	};
-	CanvasClickListener.prototype.startListening = function(){
-		this.messaging_system.fire(this.messaging_system.events.CoordinateClickListenerStarted, null);
-		this.listening = true;
-		this.index = 0;
-		this.parentView.startedListening();
-	};
-	CanvasClickListener.prototype.stopListening = function(){
-		this.listening = false;
-		this.parentView.stoppedListening();
-	};
-	CanvasClickListener.prototype.cleanUp = function(){
-		this.messaging_system.removeEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
-		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
-	};
+		RemoveGroupEvent,
+		CanvasSingleClickListener){
+	//Groups all details data about a dot (coordinate, button to set the coordinate)
 	var DotDetailsContentView = function(target_view, data_proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
@@ -48,14 +20,13 @@ define(["../../model/coordinate",
 		this.title_span = $('<span>')
 			.text('');
 		this.canvasClickListener = null;
-		this.canvasClickListener = new CanvasClickListener(this, this.messaging_system);
+		this.canvasClickListener = new CanvasSingleClickListener(this, this.messaging_system);
 		this.click_button = $('<button>')
 			.text('click to set dot')
 			.attr({
 				'class':'button_dot_coordinate_click'
 			})
 			.click(function(e){
-				//e.preventDefault();
 				self.canvasClickListener.startListening();
 				return false;
 			});
@@ -112,6 +83,7 @@ define(["../../model/coordinate",
 		this.x_text.val(this.data_proxy.getCoordinate().getX());
 		this.y_text.val(this.data_proxy.getCoordinate().getY());
 	};
+	//Collects all data about this object in an Object that can be sent to the Messaging System
 	DotDetailsContentView.prototype.collectFormData = function(){
 		var d = new Object();
 		d.id = this.data_proxy.getId();
@@ -120,6 +92,7 @@ define(["../../model/coordinate",
 		d.coordinate = new Coordinate(this.x_text.val(), this.y_text.val());
 		return d;
 	};
+	//setCoordinate can be used by the Canvas Click Listener
 	DotDetailsContentView.prototype.setCoordinate = function(x, y){
 		this.x_text.val(x);
 		this.y_text.val(y);

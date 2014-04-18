@@ -1,4 +1,5 @@
 define(['./base_display', './group_display', '../../messaging_system/event_listener'], function(BaseDisplay, GroupDisplay, EventListener){
+	//represents the root node of all display objects
 	var DisplayTree = function(proxy, messaging_system){
 		this.init();
 		this.setParent(null);

@@ -1,13 +1,16 @@
 define(['../../messaging_system/event_listener'], function(EventListener){
+	//Provides buttons to export the current data
 	var CurrentStateComponent = function(target_view, state_proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
 		this.state_proxy = state_proxy;
 		this.target_view = target_view;
+		//download data as JSON
 		this.download_json_btn = $('<a>').attr('download', 'config.json').attr('href', '#').text('Download JSON').click(function(){
 			var state_string = self.state_proxy.getStateString();
 			self.download_json_btn.attr('href', 'data:application/json,'+encodeURIComponent(state_string));
 		});
+		//download data as RPM (the original file structure)
 		this.download_rpm_btn = $('<a>').attr('download', 'config.rpm').attr('href', '#').text('Download RPM').click(function(){
 			var exported_string =  self.state_proxy.getExportedString();
 			self.download_rpm_btn.attr('href', 'data:text/plain,'+encodeURIComponent(exported_string));

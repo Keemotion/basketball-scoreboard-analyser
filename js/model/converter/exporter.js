@@ -1,4 +1,5 @@
 define([], function(){
+	//Exports to the original format"
 	var Exporter = function(data){
 		this.data = data;
 	};
@@ -7,9 +8,11 @@ define([], function(){
 			base_group_name += "_";
 		return base_group_name + suffix;	
 	};
+	//generates the export string of obj (this method is called recursively)
 	Exporter.prototype.getExportString = function(obj, current_group_name, special){
 		var result = "";
 		//TODO: configuration keys
+		//currently all configuration keys are outputted every time, but they should be grouped as to reduce the file size
 		switch(obj.type){
 			case 'group':
 				var dot_group = true;
@@ -64,6 +67,7 @@ define([], function(){
 		}
 		return result;
 	};
+	//returns the exportstring of the root node
 	Exporter.prototype.export = function(){
 		var result = "";
 		//TODO: set this.configuration_keys

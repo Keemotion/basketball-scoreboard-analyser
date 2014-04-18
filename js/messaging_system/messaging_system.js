@@ -1,29 +1,65 @@
 define([],function(){
+	//Manages all custom events
 	var MessagingSystem = function(){
 	};
 	MessagingSystem.prototype.events = new Object({
-		LoadState:'LoadState',
-        GroupChanged:'GroupChanged',
-        StateChanged:'StateChanged',
-        LoadImage:'LoadImage',
-        WindowResized:'WindowResized',
+		//A new tree was loaded
+		LoadState:'LoadState', 
+
+		//Data in the current state changed
+        GroupChanged:'GroupChanged', 
+
+		//Something at the root level of the state tree changed
+        StateChanged:'StateChanged', 
+
+		//A new image was loaded
+        LoadImage:'LoadImage', 
+
+		//The browser window was resized
+        WindowResized:'WindowResized',  
+
+		//Something on the canvas changed
         ImageDisplayChanged:'ImageDisplayChanged',
-        GroupClicked: 'GroupClicked',
+
+		//A group was clicked (request to show details)
+        GroupClicked: 'GroupClicked',		
+
+		//Data was submitted in the GUI and needs to be applied to the model
 		SubmitGroupDetails: 'SubmitGroupDetails',
+
+		//Canvas events
 		CanvasScrolled:'CanvasScrolled',
 		CanvasMouseMove: 'CanvasMouseMove',
 		CanvasMouseUp: 'CanvasMouseUp',
 		CanvasMouseDown: 'CanvasMouseDown',
 		CanvasFocusOut:'CanvasFocusOut',
 		CanvasImageClick:'CanvasClick',
+
+		//User started clicking in the canvas to set coordinates (so don't do anything else with the clicks
 		CoordinateClickListenerStarted:'CoordinateClickListenerStarted',
+
+		//Some new objects should be displayed on the canvas and/or some objects don't need to be shown on the canvas anymore
 		DisplayObjectsChanged:'DisplayObjectsChanged',
+
+		//The display property of an object was toggled
 		ToggleDisplayObject:'ToggleDisplayObject',
+
+		//A file has been submitted for loading
 		LoadStateFile:'LoadStateFile', 
+
+		//The order of the objects has changed in the GUI
 		ReOrdered: 'ReOrdered', 
+
+		//A new element was added in the GUI
 		AddElement:'AddElement',
+
+		//A group was deleted in the GUI
 		RemoveGroup:'RemoveGroup',
+
+		//The user started dragging a display object, so don't do anything else with mouse dragging
 		StartObjectDragging:'StartObjectDragging',
+
+		//The user stopped dragging a display object, so mouse dragging can againb be processed
 		StopObjectDragging:'StopObjectDragging'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();

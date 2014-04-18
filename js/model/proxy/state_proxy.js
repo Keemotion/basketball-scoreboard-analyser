@@ -1,4 +1,5 @@
 define(['./proxy_base_class'], function(ProxyBaseClass){
+	//provides access to the state data the view can access
     var StateProxy = function(state){
 		this.setObj(state);
     };

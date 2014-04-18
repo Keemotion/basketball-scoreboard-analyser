@@ -1,4 +1,5 @@
 define([], function(){
+	//BaseDisplay represents the common properties for all display objects
 	var BaseDisplay = function(){
 	};
 	BaseDisplay.prototype.init = function(){
@@ -21,6 +22,8 @@ define([], function(){
 			this.drawMyself(context, transformation);
 		}
 	};
+	//draws the object itself (without children)
+	//should be overridden
 	BaseDisplay.prototype.drawMyself = function(context, transformation){
 	};
 	BaseDisplay.prototype.getProxy = function(){
@@ -29,9 +32,12 @@ define([], function(){
 	BaseDisplay.prototype.setProxy = function(proxy){
 		this.proxy = proxy;
 	};
+	//determines whether this display object is at (around) the given canvas coordinate
+	//should be overridden
 	BaseDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation){
 		return false;
 	};
+	//determines whether this display object or one of its children are at the given canvas coordinate
 	//@param coordinate: canvas coordinate
 	BaseDisplay.prototype.getObjectAtCanvasCoordinate = function(coordinate, transformation){
 		if(this.isAtCanvasCoordinate(coordinate, transformation))

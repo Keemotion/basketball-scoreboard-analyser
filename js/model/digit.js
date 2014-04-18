@@ -3,16 +3,15 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         this.messaging_system = messaging_system;
 		this.init();
         this.setParent(parent);
-        //this.setConfigurationKeys(data.configuration_keys);
-        //this.id = id;
 		this.setProxy(new DigitProxy(this));
 		this.lockNotification();
 		this.loadData(data);
-        //this.setCorners((data?data.corners:null), false);
         this.unlockNotification();
     };
 	Digit.prototype = new DataBaseClass("digit");
 	Digit.default_configuration_keys = {};
+	//loads the digit
+	//when no data is provided, 4 empty corners are generated and all default properties are set to this digit
 	Digit.prototype.loadData = function(data){
 		if(data == null){
 			//default
@@ -29,6 +28,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
         	this.addSubNode(new Corner(this, new Coordinate("", ""), i, this.messaging_system));
         }
     };
+	//collects all data about this digit in an Object that can be converted to JSON by the export function
     Digit.prototype.getStringifyData = function(){
         var d = new Object();
         d.sub_nodes = new Array();
@@ -79,6 +79,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			this.notifyGroupChanged();
 		}
 	};
+	//getData is used by the proxy. It collects all data that can be accessed via the proxy
 	Digit.prototype.getData = function(){
 		var object = new Object();
 		object.name = this.name;
@@ -90,6 +91,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 		}
 		return object;
 	};
+	//changing the coordinate of a corner
     Digit.prototype.changeCorner = function(corner_index, x, y, warn_listeners){
         if(warn_listeners == null)
             warn_listeners = true;

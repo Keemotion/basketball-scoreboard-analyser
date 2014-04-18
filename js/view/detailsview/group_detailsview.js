@@ -16,6 +16,7 @@ define([
 		ToggleDisplayObjectEvent,
 		AddElementEvent,
 		RemoveGroupEvent){
+	//Button to toggle display on canvas for this group object
 	var HighlightButton = function(data_proxy, messaging_system){
 		var self = this;
 		this.displaying = data_proxy.getDisplaying();
@@ -34,6 +35,7 @@ define([
 				messaging_system.fire(messaging_system.events.ToggleDisplayObject, new ToggleDisplayObjectEvent(target_identification, self.displaying));
 			});
 	};
+	//Button to add a subelement to this group
 	var AddButton = function(data_proxy, messaging_system, type){
 		var self = this;
 		this.element = $('<button>')
@@ -43,20 +45,13 @@ define([
 				return false;
 			});
 	};
+	//Groups all details data about this group in the GUI (also sub elements: dots/corners/...)
 	var GroupDetailsView = function(target_view, data_proxy, messaging_system){
 		var self = this;
 		this.target_view = target_view;
 		this.data_proxy = data_proxy;
 		this.messaging_system = messaging_system;
 		this.content_elements = new Array();
-		/*this.form = $('<form>')
-			.submit(function(e){
-				e.preventDefault();
-				var d = new Object();
-				d.data = self.collectFormData();
-				d.target = self.data_proxy.getIdentification();
-				messaging_system.fire(messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(d.target, d.data));
-			});*/
 		this.element = $('<div>')
 			.attr({
 				'class':'div_group_details'
@@ -67,10 +62,8 @@ define([
 			.append(this.title_input)
 			.append($('<button>').attr({'type':'button'}).text('submit').click(function(){self.title_form.submit();}))
 			.submit(function(e){
-				//e.preventDefault();
 				var identification = data_proxy.getIdentification();
 				var data = self.collectFormData();
-				//console.log("submitting: data = "+JSON.stringify(data)+", identification = "+JSON.stringify(identification));
 				messaging_system.fire(messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, data));
 				return false;
 			});
@@ -90,26 +83,22 @@ define([
 			.append(this.content_element)
 			.append($('<button>').text('Delete group').attr('type','button').click(function(){
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(self.data_proxy.getIdentification()));
-				//clear DOM
 				return false;
 			}));
-		//this.form.append(this.element);
 		this.target_view.append(this.element);
 		this.loadContent();
 		this.groupChangedListener = new EventListener(this, this.groupChanged);
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
 	};
+	//Collects all data about the current group in an Object that can be sent to the Messaging System
+	//this data does NOT include the children, the children have own collectFormData methods
 	GroupDetailsView.prototype.collectFormData = function(){
 		var d = new Object();
-		//d.id = this.data_proxy.getId();
-		//d.name = this.data_proxy.getTitle();
 		d.name = this.title_input.val();
-		/*d.digits = new Array();
-		for(var i = 0; i < this.content_elements.length; ++i){
-			d.digits.push(this.content_elements[i].collectFormData());
-		}*/
 		return d;
 	};
+	//loads the details div
+	//Only direct children are shown (children of subgroups are NOT shown)
 	GroupDetailsView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();
 		this.content_element.empty();
@@ -131,19 +120,9 @@ define([
 			this.content_elements.push(el);
 		}
 	};
-	/*GroupDetailsView.prototype.update = function(){
-		this.title_element.text(this.data_proxy.getTitle());
-		for(var i = 0; i < this.content_elements.length; ++i){
-			this.content_elements[i].update();
-		}
-	};*/
+	//updates the content of the div when data about this group has changed
 	GroupDetailsView.prototype.groupChanged = function(signal, data){
-		//TODO: proper identification (already implemented!)
-		/*if(data.getGroupId() == this.data_proxy.getId()){
-			this.update();
-		}*/
 		if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
-			//this.update();
 			this.loadContent();
 		}
 	};

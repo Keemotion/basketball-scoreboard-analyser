@@ -1,4 +1,5 @@
 define(["./treenode", "../../messaging_system/event_listener", "../../messaging_system/events/re_ordered_event", "../../messaging_system/events/add_element_event"],function(TreeNode, EventListener, ReOrderedEvent, AddElementEvent){
+	//Coordinates the whole tree
     var TreeView = function(target_view, state_proxy, messaging_system){
     	var self = this;
         this.messaging_system = messaging_system;

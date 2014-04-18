@@ -1,4 +1,5 @@
 define([],function(){
+	//A few helper methods for working with coordinates
     var Coordinate = function(x, y){
         this.x = x;
         this.y = y;
@@ -15,6 +16,7 @@ define([],function(){
 		return this.x && this.y;
 	};
     Coordinate.prototype.type = "coordinate";
+	//Calculates the center of the coordinates in an array (equal weights)
 	Coordinate.getMiddle = function(arr){
 		if(arr.length == 0)
 			return new Coordinate('', '');
@@ -33,6 +35,7 @@ define([],function(){
 		var dy = c1.getY()-c2.getY();
 		return dx*dx+dy*dy;
 	};
+	//Convert floating point coordinates to integer coordinates for use on the canvas
 	Coordinate.prototype.round = function(){
 		this.x = Math.round(this.x);
 		this.y = Math.round(this.y);

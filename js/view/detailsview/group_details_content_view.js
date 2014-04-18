@@ -1,4 +1,6 @@
 define([],function(){
+	//Gives a short overview of the group. This view is used when the group is shown as a subgroup of another group.
+	// (inside the GroupDetailsView)
 	var GroupDetailsContentView = function(target_view, data_proxy, messaging_system){
 		this.messaging_system = messaging_system;
 		this.target_view = target_view;

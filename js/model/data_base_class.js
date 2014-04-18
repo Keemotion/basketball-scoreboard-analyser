@@ -1,4 +1,5 @@
 define(["../messaging_system/event_listener", "../messaging_system/events/group_changed_event"],function(EventListener, GroupChangedEvent){
+	//Base class for groups/digits/corners/state
 	var BaseDataClass = function(type){
 		this.type = type;
 	};
@@ -9,6 +10,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		this.simulating = true;
 		this.toggleDisplayObjectListener = new EventListener(this, this.toggleDisplay);
 		this.messaging_system.addEventListener(this.messaging_system.events.ToggleDisplayObject, this.toggleDisplayObjectListener);
+		//when the order of the sub nodes changed, this function is called to save changes
 		this.reOrderedListener = new EventListener(this, this.reOrdered);
 		this.messaging_system.addEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
@@ -18,7 +20,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 			this.messaging_system.addEventListener(this.messaging_system.events.AddElement, this.addElementListener);
 		}
 	};
-	//event listener
+	//event listener when a sub node is removed in the GUI
 	BaseDataClass.prototype.removeElement = function(signal, data){
 		if(data.getHandled())
 			return;
@@ -29,33 +31,39 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 			data.setHandled(true);
 		}
 	};
+	//save changes that were submitted from the GUI
 	BaseDataClass.prototype.submitGroupDetails = function(signal, data){
 		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
 			this.update(data.getData());	
 		}
 	};
+	//sets whether this object should be displayed on the canvas
 	BaseDataClass.prototype.toggleDisplay = function(signal, data){
 		if(this.isPossiblyAboutThis(data.target_identification)){
 			this.setDisplaying(data.displaying);
 		}
 	};
+	//when the order of the sub nodes changed, this function is called to save changes
 	BaseDataClass.prototype.reOrdered = function(signal, data){
 		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
 			this.reArrange(data.getNewOrder());
 		}
 	};
+	//saves which parameters were present about this object in the file that was loaded
 	BaseDataClass.prototype.setConfigurationKeys = function(configuration_keys){
 		this.configuration_keys = configuration_keys;
 	};
 	BaseDataClass.prototype.getConfigurationKeys = function(){
 		return this.configuration_keys;
 	};
+	//the proxy which the view can use to collect data about this object 
 	BaseDataClass.prototype.getProxy = function(){
 		return this.proxy;
 	};
 	BaseDataClass.prototype.setProxy = function(proxy){
 		this.proxy = proxy;
 	};
+	//generates an array of proxies of the sub nodes
 	BaseDataClass.prototype.getSubNodesProxies = function(){
 		var sub_nodes_proxies = new Array();
 		var sub_nodes = this.getSubNodes();
@@ -64,6 +72,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		}
 		return sub_nodes_proxies;
 	};
+	//Default title generation: type + id
 	BaseDataClass.prototype.getTitle = function(){
 		if(this.name)
 			return this.name;
@@ -87,6 +96,9 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 	BaseDataClass.prototype.getType = function(){
 		return this.type;
 	};
+	//when changing a bunch of objects at once, notifications can be blocked by lockNotification()
+	//each unlockNotification undoes one lockNotification
+	//When no lockNotifications are active, notifications are sent to the messaging system
 	BaseDataClass.prototype.lockNotification = function(){
 		this.notification_lock++;
 	};
@@ -106,6 +118,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		}
 		this.messaging_system.fire(this.messaging_system.events.GroupChanged, new GroupChangedEvent(this.getIdentification()));
 	};
+	//checks whether the target identification matches the identification of this object
 	BaseDataClass.prototype.isPossiblyAboutThis = function(target, index){
 		if(target.length == 0)
 			return false;
@@ -123,9 +136,12 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		}
 		return false;
 	};
+	//returns whether this object has to be displayed on the canvas
 	BaseDataClass.prototype.getDisplaying = function(){
 		return this.displaying;
 	};
+	//sets whether this object has to be displayed on the canvas.
+	//This settings is applied to all children objects as well
 	BaseDataClass.prototype.setDisplaying = function(displaying, send_notification){
 		this.displaying = displaying;
 		if(send_notification == null){
@@ -139,9 +155,11 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 			this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
 		}
 	};
+	//returns whether this object has to be simulated (used when dragging this object around the canvas, to draw only the current object)
 	BaseDataClass.prototype.getSimulating = function(){
 		return this.simulating;
 	};
+	//sets whether this object has to be simulated (used when dragging this object around the canvas, to draw only the current object)
 	BaseDataClass.prototype.setSimulating = function(simulating, send_notification){
 		this.simulating = simulating;
 		if(send_notification == null){
@@ -155,6 +173,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 			this.messaging_system.fire(this.messaging_system.DisplayObjectsChanged, null);
 		}
 	};
+	//generate an object containing all identification data about this object and its ancestors
 	BaseDataClass.prototype.getIdentification = function(){
 		var identification;
 		if(this.getParent()){
@@ -209,6 +228,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		//TODO: specific clean handler (digit/state/group...)
 		this.clear();
 	};
+	//returns all data about this object and its children in an Object that can be converted to JSON by the export function
 	BaseDataClass.prototype.getStringifyData = function(){
 		var d = new Object();
         d.name = this.name;

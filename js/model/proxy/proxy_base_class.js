@@ -1,4 +1,5 @@
 define(['../../messaging_system/messaging_system'], function(MessagingSystem){
+	//provdes some basic methods all proxies need
 	var BaseProxy = function(){
 		
 	};
@@ -15,6 +16,7 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.getId = function(){
 		return this.obj.getId();
 	};
+	//returns all events that affect the status of the corresponding object, so views can listen to them
 	BaseProxy.prototype.getUpdateEvents = function(){
 		return this.update_events;
 	};

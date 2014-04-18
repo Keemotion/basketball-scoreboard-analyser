@@ -2,6 +2,7 @@ define(["./base_display",
 	"./digit_display",
 	"./dot_display",
 	"../../messaging_system/event_listener"], function(BaseDisplay, DigitDisplay, DotDisplay, EventListener){
+	//Display Equivalent of Group
 	var GroupDisplay = function(parent_component, proxy, messaging_system){
 		this.init();
 		this.setParent(parent_component);

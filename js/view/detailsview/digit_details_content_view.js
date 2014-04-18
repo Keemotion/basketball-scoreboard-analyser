@@ -1,44 +1,14 @@
 define(["./corner_details_content_view", 
 	"../../messaging_system/event_listener", 
 	"../../messaging_system/events/submit_group_details_event",
-	"../../messaging_system/events/remove_group_event"],
+	"../../messaging_system/events/remove_group_event",
+	"./canvas_multiple_click_listener"],
 	function(CornerDetailsContentView, 
 		EventListener, 
 		SubmitGroupDetailsEvent,
-		RemoveGroupEvent){
-	var CanvasClickListener = function(parentView, messaging_system){
-		this.parentView = parentView;
-		this.listening = false;
-		this.index = 0;
-		this.messaging_system = messaging_system;
-		this.clickListener = new EventListener(this ,this.clickReceived);
-		this.otherListenerStartedListener = new EventListener(this, this.stopListening);
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
-		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
-	};
-	CanvasClickListener.prototype.clickReceived = function(signal, data){
-		if(this.listening == true){
-			this.parentView.content_elements[this.index].setCoordinate(data.getCoordinate().getX(), data.getCoordinate().getY());
-			++this.index;
-			if(this.index== 4){
-				this.stopListening();
-			}
-		}
-	};
-	CanvasClickListener.prototype.startListening = function(){
-		this.messaging_system.fire(this.messaging_system.events.CoordinateClickListenerStarted, null);
-		this.listening = true;
-		this.index = 0;
-		this.parentView.startedListening();
-	};
-	CanvasClickListener.prototype.stopListening = function(){
-		this.listening = false;
-		this.parentView.stoppedListening();
-	};
-	CanvasClickListener.prototype.cleanUp = function(){
-		this.messaging_system.removeEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
-		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
-	};
+		RemoveGroupEvent,
+		CanvasMultipleClickListener){
+	//Groups all data about this digit
 	var DigitDetailsContentView = function(target_view, data_proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
@@ -50,7 +20,7 @@ define(["./corner_details_content_view",
 		this.title_span = $('<span>')
 			.text('');
 		this.canvasClickListener = null;
-		this.canvasClickListener = new CanvasClickListener(this, this.messaging_system);
+		this.canvasClickListener = new CanvasMultipleClickListener(this, this.messaging_system, 4);
 		this.click_button = $('<button>')
 			.text('click to set digit')
 			.attr({
@@ -81,6 +51,7 @@ define(["./corner_details_content_view",
 			.append(this.form);
 		this.loadContent();
 	};
+	//Loads the details about this digit and its four corners
 	DigitDetailsContentView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();
 		this.content_elements.length = 0;
@@ -100,12 +71,14 @@ define(["./corner_details_content_view",
 	DigitDetailsContentView.prototype.startedListening = function(){
 		this.click_button.addClass('active');
 	};
+	//Updates the shown data of the digit and the data of the four corners in the GUI
 	DigitDetailsContentView.prototype.update = function(){
 		this.title_span.text(this.data_proxy.getTitle());
 		for(var i = 0; i < 4; ++i){
 			this.content_elements[i].update();
 		}
 	};
+	//Collects the data about this digit in an Object, including the data of the four corners
 	DigitDetailsContentView.prototype.collectFormData = function(){
 		var d = new Object();
 		d.id = this.data_proxy.getId();

@@ -1,4 +1,5 @@
 define([], function(){
+	//loads the data of the original file format to a javascript Object that can be loaded by the State class
 	var Parser = function(data){
 		this.data_string = data;
 	};

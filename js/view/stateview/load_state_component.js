@@ -1,4 +1,5 @@
 define(['../../messaging_system/events/load_state_event'],function(LoadStateEvent){
+	//Provides the GUI to import data 
 	var LoadStateComponent = function(view_target, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
@@ -11,6 +12,7 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
             .attr({
                 'class':'div_state_buttons'
             });
+		//loading JSON from the text area
 		this.btnApply = $('<button>')
 			.text('apply')
 			.click(function(){
@@ -18,6 +20,7 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 				messaging_system.fire(messaging_system.events.LoadState, new LoadStateEvent(t));
 			});
         btn_div.append(this.btnApply);
+		//loading RPM from a file
         this.file_btn = $('<input>').attr('type', 'file').text('Kies een bestand')
         	.change(function(){self.fileChanged();})
         	.attr('id', 'btnLoadFile');

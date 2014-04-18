@@ -9,7 +9,11 @@ define([
 		"../../messaging_system/events/canvas_focus_out_event",
 		"./display_tree",
 		"../../messaging_system/events/canvas_image_click_event",
-		"../../messaging_system/events/submit_group_details_event"
+		"../../messaging_system/events/submit_group_details_event",
+		"./handlers/canvas_drag_handler",
+		"./handlers/display_changed_handler",
+		"./handlers/canvas_object_drag_handler",
+		"./handlers/canvas_hover_handler"
 		], 
 	function(
 		EventListener, 
@@ -22,146 +26,12 @@ define([
 		CanvasFocusOutEvent,
 		DisplayTree,
 		CanvasImageClickEvent,
-		SubmitGroupDetailsEvent
+		SubmitGroupDetailsEvent,
+		CanvasDragHandler,
+		DisplayChangedHandler,
+		CanvasObjectDragHandler,
+		CanvasHoverHandler
 		){
-	var CanvasDragHandler = function(transformation, messaging_system){
-		this.dragging = false;
-		this.messaging_system = messaging_system;
-		this.transformation = transformation;
-		this.pause_level = 0;
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseMove, new EventListener(this, this.canvasMouseMove));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseDown, new EventListener(this, this.canvasMouseDown));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.canvasMouseUp));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.canvasFocusOut));
-		this.messaging_system.addEventListener(this.messaging_system.events.StartObjectDragging, new EventListener(this, this.pauseCanvasDragging));
-		this.messaging_system.addEventListener(this.messaging_system.events.StopObjectDragging, new EventListener(this, this.unpauseCanvasDragging));
-	};
-	CanvasDragHandler.prototype.pauseCanvasDragging = function(){
-		this.stopDragging();
-		this.pause_level++;
-	};
-	CanvasDragHandler.prototype.unpauseCanvasDragging = function(){
-		this.pause_level = Math.max(0,this.pause_level-1);
-	};
-	CanvasDragHandler.prototype.canvasMouseMove = function(signal, data){
-		var ev = data.event_data;
-		if(this.dragging){
-			var mv = new Coordinate(
-					this.transformation.getCanvasWidth()/2 - (data.getCoordinate().getX()-this.dragStartCoordinate.x), 
-					this.transformation.getCanvasHeight()/2- (data.getCoordinate().getY()-this.dragStartCoordinate.y));
-			var transformed = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(mv);
-			this.transformation.setCanvasCenter(transformed);
-			this.dragStartCoordinate = data.getCoordinate();
-			this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
-		}
-		return true;
-	};
-	CanvasDragHandler.prototype.stopDragging = function(){
-		this.dragging = false;
-	};
-	CanvasDragHandler.prototype.canvasMouseDown = function(signal, data){
-		if(this.pause_level > 0)
-			return;
-		this.dragging = true;
-		this.dragStartCoordinate = data.getCoordinate();
-	};
-	CanvasDragHandler.prototype.canvasMouseUp = function(signal, data){
-		this.stopDragging();
-	};
-	CanvasDragHandler.prototype.canvasFocusOut = function(signal, data){
-		this.canvasMouseUp(signal, data);
-	};
-	var DisplayChangedHandler = function(canvas){
-		this.canvas = canvas;
-		this.drawn = false;
-		this.last_edit = 0;
-		this.checkDraw();
-		this.interval = 250;
-	};
-	DisplayChangedHandler.prototype.checkDraw = function(){
-		var self = this;
-		var now = new Date().getTime();
-		if(now-this.last_edit > this.interval && !this.drawn){
-			this.drawn = true;
-			this.canvas.drawCanvas();
-		}else{
-			setTimeout(function(){self.checkDraw();}, self.interval);
-		}
-	};
-	DisplayChangedHandler.prototype.fireEdited = function(){
-		var self = this;
-		this.drawn = false;
-		this.last_edit = new Date().getTime();
-		setTimeout(function(){self.checkDraw();}, self.interval);
-	};
-	DisplayChangedHandler.prototype.canBeDrawn = function(){
-		return (new Date().getTime())-this.last_edit > this.interval;
-	};
-	var CanvasObjectDragHandler = function(canvas, messaging_system){
-		this.canvas = canvas;
-		this.messaging_system = messaging_system;
-		this.setSelected(null);
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseDown, new EventListener(this, this.mouseDown));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.endDrag));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseMove, new EventListener(this, this.mouseMove));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.endDrag));
-	};
-	CanvasObjectDragHandler.prototype.getSelected = function(){
-		return this.selected_object;
-	};
-	CanvasObjectDragHandler.prototype.setSelected = function(object){
-		this.selected_object = object;
-	};
-	CanvasObjectDragHandler.prototype.mouseDown = function(signal, data){
-		var event_data = data.getEventData();
-		if(!event_data.ctrlKey){
-			return;
-		}
-		this.setSelected(this.canvas.getObjectAtCanvasCoordinate(data.getCoordinate()));
-		this.startObjectDragging();
-	};
-	CanvasObjectDragHandler.prototype.startObjectDragging = function(){
-		this.messaging_system.fire(this.messaging_system.events.StartObjectDragging, null);
-	};
-	CanvasObjectDragHandler.prototype.stopObjectDragging = function(){
-		this.messaging_system.fire(this.messaging_system.events.StopObjectDragging, null);
-	};
-	CanvasObjectDragHandler.prototype.mouseMove = function(signal, data){
-		if(!this.getSelected()){
-			return;
-		}
-		this.updateObjectCoordinate(this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate()));
-	};
-	CanvasObjectDragHandler.prototype.updateObjectCoordinate = function(coordinate){
-		var data = this.getSelected().getProxy().getData();
-		data.coordinate = coordinate;
-		this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(this.getSelected().getProxy().getIdentification(), data));
-	};
-	//mouse up, lose focus, mouse out...
-	CanvasObjectDragHandler.prototype.endDrag = function(signal, data){
-		this.setSelected(null);
-		this.stopObjectDragging();
-	};
-	var CanvasHoverHandler = function(canvas, messaging_system){
-		this.last_move = 0;
-		this.canvas = canvas;
-		this.interval = 100;
-		this.cursor_position = new Coordinate(0,0);
-		this.waiting = 0;
-		messaging_system.addEventListener(messaging_system.events.CanvasMouseMove, new EventListener(this, this.mouseMoved));
-	};
-	CanvasHoverHandler.prototype.mouseMoved = function(signal, data){
-		var self = this;
-		this.waiting++;
-		setTimeout(function(){self.displayHoveredObject();}, self.interval);
-		this.cursor_position = data.getCoordinate();
-	};
-	CanvasHoverHandler.prototype.displayHoveredObject = function(){
-		--this.waiting;
-		if(this.waiting != 0)
-			return;
-		this.canvas.displayHoveredObject(this.cursor_position);
-	};
 	var MyCanvas = function(target_view, proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
@@ -175,7 +45,6 @@ define([
 		this.container_element = target_view;
 		this.transformation = new Transformation(new Coordinate(0,0), 1,1,1, 1,1);
 		this.dragHandler = new CanvasDragHandler(this.transformation, this.messaging_system);
-		//this.hoverHandler = new CanvasHoverHandler(this, this.messaging_system);
 		this.canvas_object_drag_handler = new CanvasObjectDragHandler(this, this.messaging_system);
 		this.display_objects = new Array();
 		$(this.container_element).append(this.canvas_element);
@@ -216,9 +85,11 @@ define([
 		this.setProxy(proxy);
 		this.display_changed_handler = new DisplayChangedHandler(this);
 	};
+	//one of the display objects has changed
 	MyCanvas.prototype.displayObjectsChanged = function(signal, data){
 		this.updateCanvas();
 	};
+	//find the object at a certain coordinate on the canvas
 	MyCanvas.prototype.getObjectAtCanvasCoordinate = function(coordinate){
 		for(var i = 0; i < this.display_objects.length; ++i){
 			var res = this.display_objects[i].getObjectAtCanvasCoordinate(coordinate, this.transformation);
@@ -228,14 +99,7 @@ define([
 		}
 		return null;
 	};
-	MyCanvas.prototype.displayHoveredObject = function(coordinate){
-		var obj = this.getObjectAtCanvasCoordinate(coordinate);
-		if(obj == null)
-			return;
-		var proxy = obj.getProxy();
-		//TODO: implement method to find object at a given cursor position
-		//TODO: find a place to show which object is at the given cursor position
-	};
+	//event handler for canvas croll
 	MyCanvas.prototype.canvasScrolled = function(signal, data){
 		var evt = data.event_data;
 		var delta = evt.wheelDelta?evt.wheelDelta/40:evt.detail?-evt.detail : 0;
@@ -249,12 +113,14 @@ define([
 		this.updateCanvas(signal, data);
 		return data.event_data.preventDefault() && false;
 	};
+	//event handler for window resize
 	MyCanvas.prototype.windowResized = function(signal, data){
 		this.canvas_element.height = $(this.canvas_element).parent().height();
 		this.canvas_element.width = $(this.canvas_element).parent().width();
 		this.updateTransformation();
 		this.drawCanvas();
 	};
+	//update the display matrix for the canvas based on canvas width/height
 	MyCanvas.prototype.updateTransformation = function(){
 		this.transformation.setCanvasWidth(this.canvas_element.width);
 		this.transformation.setCanvasHeight(this.canvas_element.height);
@@ -288,15 +154,18 @@ define([
 		}
 		--this.display_objects.length;
 	};
+	//draw all display objects on the canvas
 	MyCanvas.prototype.drawDisplayObjects = function(){
 		for(var i = 0; i < this.display_objects.length; ++i){
 			this.display_objects[i].draw(this.context, this.transformation);
 		}
 	};
+	//something has changed on the canvas, warn displayChangedChandler (to prevent all display objects from being drawn every time -> lag)
 	MyCanvas.prototype.updateCanvas = function(signal, data){
 		this.getDisplayChangedHandler().fireEdited();
 		this.drawCanvas();
 	};
+	//load image to the canvas and update transformation
 	MyCanvas.prototype.loadImage = function(signal, data){
 		var self = this;
 		this.image = new Image();
@@ -307,12 +176,16 @@ define([
 		};
 		this.image.src = data;
 	};
+	//return whether all display objects have to be drawn
 	MyCanvas.prototype.getDisplayObjectsEnabled = function(){
 		return this.getDisplayChangedHandler().canBeDrawn();
 	};
+	//the displayChangedHandler prevents all display objects from being drawn every time the canvas is updated -> lag
+	//it waits until there haven't been any updates for a certain time to allow the display objects to be drawn
 	MyCanvas.prototype.getDisplayChangedHandler = function(){
 		return this.display_changed_handler;
 	};
+	//draws the canvas image and (if needed) the display objects
 	MyCanvas.prototype.drawCanvas = function(){
 		this.context.clearRect(0, 0, this.canvas_element.width, this.canvas_element.height);
 		if(this.image){

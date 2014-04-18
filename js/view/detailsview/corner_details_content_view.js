@@ -1,39 +1,19 @@
-define(["../../model/coordinate", '../../messaging_system/event_listener', '../../messaging_system/events/submit_group_details_event'], function(Coordinate, EventListener, SubmitGroupDetailsEvent){
-	var CanvasClickListener = function(parentView, messaging_system){
-		this.parentView = parentView;
-		this.listening = false;
-		this.messaging_system = messaging_system;
-		this.clickListener = new EventListener(this ,this.clickReceived);
-		this.otherListenerStartedListener = new EventListener(this, this.stopListening);
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
-		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
-	};
-	CanvasClickListener.prototype.clickReceived = function(signal, data){
-		if(this.listening == true){
-			this.stopListening();
-			this.parentView.setCoordinate(data.getCoordinate().getX(), data.getCoordinate().getY());
-		}
-	};
-	CanvasClickListener.prototype.startListening = function(){
-		this.messaging_system.fire(this.messaging_system.events.CoordinateClickListenerStarted, null);
-		this.listening = true;
-		this.parentView.startedListening();
-	};
-	CanvasClickListener.prototype.stopListening = function(){
-		this.listening = false;
-		this.parentView.stoppedListening();
-	};
-	CanvasClickListener.prototype.cleanUp = function(){
-		this.messaging_system.removeEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
-		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
-	};
+define(["../../model/coordinate", 
+	'../../messaging_system/event_listener', 
+	'../../messaging_system/events/submit_group_details_event',
+	'./canvas_single_click_listener'], 
+	function(Coordinate, 
+		EventListener, 
+		SubmitGroupDetailsEvent,
+		CanvasSingleClickListener){
+	//Groups the coordinate of a corner together with a button to set the coordinate by clicking on the canvas
 	var CornerDetailsContentView = function(target_view, data_proxy, messaging_system){
 		var self = this;
 		this.target_view = target_view;
 		this.data_proxy = data_proxy;
 		this.messaging_system = messaging_system;
 		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerAdded, new EventListener(self, self.stopListening));
-		this.canvasClickListener = new CanvasClickListener(this, this.messaging_system);
+		this.canvasClickListener = new CanvasSingleClickListener(this, this.messaging_system);
 		this.x_text = $('<input>')
 			.val('');
 		this.y_text = $('<input>')
@@ -67,6 +47,7 @@ define(["../../model/coordinate", '../../messaging_system/event_listener', '../.
 		this.target_view.append(this.form);
 		this.loadContent();
 	};
+	//setCoordinate can by used by the CanvasClickListener
 	CornerDetailsContentView.prototype.setCoordinate = function(x, y){
 		this.x_text.val(x);
 		this.y_text.val(y);
@@ -85,6 +66,7 @@ define(["../../model/coordinate", '../../messaging_system/event_listener', '../.
 	CornerDetailsContentView.prototype.loadContent = function(){
 		this.update();
 	};
+	//Collects all data about this corner in an Object that can be sent to the Messaging System
 	CornerDetailsContentView.prototype.collectFormData = function(){
 		var d = new Object();
 		d.id = this.data_proxy.getId();
