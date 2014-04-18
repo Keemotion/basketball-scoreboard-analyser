@@ -20,7 +20,7 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 				messaging_system.fire(messaging_system.events.LoadState, new LoadStateEvent(t));
 			});
         btn_div.append(this.btnApply);
-		//loading RPM from a file
+		//loading PRM from a file
         this.file_btn = $('<input>').attr('type', 'file').text('Kies een bestand')
         	.change(function(){self.fileChanged();})
         	.attr('id', 'btnLoadFile');

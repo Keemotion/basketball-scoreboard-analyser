@@ -10,12 +10,12 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 			var state_string = self.state_proxy.getStateString();
 			self.download_json_btn.attr('href', 'data:application/json,'+encodeURIComponent(state_string));
 		});
-		//download data as RPM (the original file structure)
-		this.download_rpm_btn = $('<a>').attr('download', 'config.rpm').attr('href', '#').text('Download RPM').click(function(){
+		//download data as PRM (the original file structure)
+		this.download_prm_btn = $('<a>').attr('download', 'config.prm').attr('href', '#').text('Download PRM').click(function(){
 			var exported_string =  self.state_proxy.getExportedString();
-			self.download_rpm_btn.attr('href', 'data:text/plain,'+encodeURIComponent(exported_string));
+			self.download_prm_btn.attr('href', 'data:text/plain,'+encodeURIComponent(exported_string));
 		});
-		this.target_view.append(this.download_json_btn).append('<br>').append(this.download_rpm_btn);
+		this.target_view.append(this.download_json_btn).append('<br>').append(this.download_prm_btn);
 	};
 	CurrentStateComponent.prototype.setProxy = function(proxy){
 		this.state_proxy = proxy;
