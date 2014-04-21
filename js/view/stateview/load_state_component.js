@@ -21,12 +21,15 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 			});
         btn_div.append(this.btnApply);
 		//loading PRM from a file
-        this.file_btn = $('<input>').attr('type', 'file').text('Kies een bestand')
+        this.file_btn = $('<input>').attr('type', 'file')
         	.change(function(){self.fileChanged();})
         	.attr('id', 'btnLoadFile');
-        var file_div = $('<div>').append(this.file_btn);
-		this.containerElement.append(this.textArea)
-			.append(btn_div)
+        this.img_btn = $('<input>').attr('type', 'file')
+        	.change(function(){self.imageChanged();})
+        	.attr('id', 'btnLoadImage');
+        var file_div = $('<div>').append($('<span>').html('File:')).append(this.file_btn).append($('<span>').html('<br>Image: ')).append(this.img_btn);
+		this.containerElement/*.append(this.textArea)*/
+			/*.append(btn_div)*/
 			.append(file_div);
 	};
 	LoadStateComponent.prototype.fileChanged = function(evt){
@@ -38,6 +41,16 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 			self.messaging_system.fire(self.messaging_system.events.LoadStateFile, new LoadStateEvent(e.target.result));
 		};
 		reader.readAsText(f);
+	};
+	LoadStateComponent.prototype.imageChanged = function(evt){
+		var self = this;
+		var files = $('#btnLoadImage')[0].files;
+		var f = files[0];
+		var reader = new FileReader();
+		reader.onload = function(e){
+			self.messaging_system.fire(self.messaging_system.events.LoadImage, reader.result);
+		};
+		reader.readAsDataURL(f);
 	};
 	return LoadStateComponent;
 });
