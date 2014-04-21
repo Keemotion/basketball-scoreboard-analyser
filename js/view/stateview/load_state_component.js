@@ -31,6 +31,11 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 		this.containerElement/*.append(this.textArea)*/
 			/*.append(btn_div)*/
 			.append(file_div);
+		
+		this.reset_view_btn = $('<button>').text('Reset Canvas View').click(function(){
+			self.messaging_system.fire(self.messaging_system.events.ResetCanvasView, null);
+		});
+		this.containerElement.append(this.reset_view_btn);
 	};
 	LoadStateComponent.prototype.fileChanged = function(evt){
 		var self = this;

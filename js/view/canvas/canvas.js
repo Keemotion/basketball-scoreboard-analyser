@@ -52,6 +52,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadImage, new EventListener(this, this.loadImage));
 		this.messaging_system.addEventListener(this.messaging_system.events.WindowResized, new EventListener(this, this.windowResized));
 		this.messaging_system.addEventListener(this.messaging_system.events.ImageDisplayChanged, new EventListener(this, this.updateCanvas));
+		this.messaging_system.addEventListener(this.messaging_system.events.ResetCanvasView, new EventListener(this, this.resetCanvasView));
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.updateCanvas));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
 		this.windowResized(null, null);
@@ -129,6 +130,11 @@ define([
 			this.transformation.setImageHeight(this.image.height);
 		}
 	};
+	MyCanvas.prototype.resetCanvasView = function(){
+		this.updateTransformation();
+		this.transformation.reset();
+		this.updateCanvas();
+	};
 	MyCanvas.prototype.getDisplayObjects = function(){
 		return this.display_objects;
 	};
@@ -170,8 +176,9 @@ define([
 		var self = this;
 		this.image = new Image();
 		this.image.onload = function(){
-			self.transformation.setCanvasCenter(new Coordinate(0,0));
-			self.updateTransformation();
+			self.resetCanvasView();
+			//self.transformation.setCanvasCenter(new Coordinate(0,0));
+			//self.updateTransformation();
 			self.messaging_system.fire(self.messaging_system.events.ImageDisplayChanged, null);
 		};
 		this.image.src = data;

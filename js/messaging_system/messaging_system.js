@@ -20,6 +20,9 @@ define([],function(){
 
 		//Something on the canvas changed
         ImageDisplayChanged:'ImageDisplayChanged',
+        
+        //Reset Canvas View (zoom, translation)
+        ResetCanvasView: 'ResetCanvasView',
 
 		//A group was clicked (request to show details)
         GroupClicked: 'GroupClicked',		
