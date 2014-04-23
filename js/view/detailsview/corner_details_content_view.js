@@ -21,7 +21,7 @@ define(["../../model/coordinate",
 		this.x_label = $('<label>').text('X');
 		this.y_label = $('<label>').text('Y');
 		this.click_button = $('<button>')
-			.text('click')
+			.text('Click')
 			.attr({
 				'class':'button_corner_coordinate_click'
 			})
@@ -46,7 +46,13 @@ define(["../../model/coordinate",
 			});
 		this.target_view.append(this.form);
 		this.loadContent();
+        messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 	};
+    CornerDetailsContentView.prototype.groupChanged = function(signal, data){
+        if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
+            this.loadContent();
+        }
+    };
 	//setCoordinate can by used by the CanvasClickListener
 	CornerDetailsContentView.prototype.setCoordinate = function(x, y){
 		this.x_text.val(x);

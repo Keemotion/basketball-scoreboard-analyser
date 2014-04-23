@@ -27,7 +27,7 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
         this.img_btn = $('<input>').attr('type', 'file')
         	.change(function(){self.imageChanged();})
         	.attr('id', 'btnLoadImage');
-        var file_div = $('<div>').append($('<span>').html('File:')).append(this.file_btn).append($('<span>').html('<br>Image: ')).append(this.img_btn);
+        var file_div = $('<div>').append($('<span>').html('Load file:')).append(this.file_btn).append($('<span>').html('<br>Load image: ')).append(this.img_btn);
 		this.containerElement/*.append(this.textArea)*/
 			/*.append(btn_div)*/
 			.append(file_div);

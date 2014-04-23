@@ -76,15 +76,15 @@ define([
 			})
 			.append(this.highlight_button.element)
 			.append(this.add_digit_button.element)
-			.append(this.add_dot_button.element);
-		this.content_element = $('<div>');
-		this.element.append(this.title_form)
-			.append(this.controls_element)
-			.append(this.content_element)
-			.append($('<button>').text('Delete group').attr('type','button').click(function(){
+			.append(this.add_dot_button.element)
+            .append($('<button>').text('Delete group').attr('type','button').click(function(){
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(self.data_proxy.getIdentification()));
 				return false;
 			}));
+		this.content_element = $('<div>');
+		this.element.append(this.title_form)
+			.append(this.controls_element)
+			.append(this.content_element);
 		this.target_view.append(this.element);
 		this.loadContent();
 		this.groupChangedListener = new EventListener(this, this.groupChanged);

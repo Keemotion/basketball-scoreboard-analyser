@@ -22,7 +22,7 @@ define(["../../model/coordinate",
 		this.canvasClickListener = null;
 		this.canvasClickListener = new CanvasSingleClickListener(this, this.messaging_system);
 		this.click_button = $('<button>')
-			.text('click to set dot')
+			.text('Click')
 			.attr({
 				'class':'button_dot_coordinate_click'
 			})
@@ -31,7 +31,7 @@ define(["../../model/coordinate",
 				return false;
 			});
 		this.remove_button = $('<button>')
-			.text('Remove dot')
+			.text('Delete dot')
 			.attr('type', 'button')
 			.click(function(){
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(data_proxy.getIdentification()));
@@ -55,13 +55,20 @@ define(["../../model/coordinate",
 		this.target_view
 			.append(this.form);
 		this.loadContent();
+        messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 	};
+    DotDetailsContentView.prototype.groupChanged = function(signal, data){
+        if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
+            this.loadContent();
+        }
+    };
 	DotDetailsContentView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();
 		this.content_elements.length = 0;
 		this.content_element.empty();
 		this.title_span.text(this.data_proxy.getTitle());
 		this.content_element
+            .append(this.title_span)
 			.append(this.click_button)
 			.append(this.remove_button)
 			.append($('<br>'))

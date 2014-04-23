@@ -22,7 +22,7 @@ define(["./corner_details_content_view",
 		this.canvasClickListener = null;
 		this.canvasClickListener = new CanvasMultipleClickListener(this, this.messaging_system, 4);
 		this.click_button = $('<button>')
-			.text('click to set digit')
+			.text('Click to set digit')
 			.attr({
 				'class':'button_digit_coordinate_click'
 			})
@@ -32,7 +32,7 @@ define(["./corner_details_content_view",
 				return false;
 			});
 		this.remove_button = $('<button>')
-			.text('Remove digit')
+			.text('Delete digit')
 			.attr({'type':'button'})
 			.click(function(){
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(data_proxy.getIdentification()));
@@ -50,7 +50,13 @@ define(["./corner_details_content_view",
 		this.target_view
 			.append(this.form);
 		this.loadContent();
+        messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 	};
+    DigitDetailsContentView.prototype.groupChanged = function(signal, data){
+        if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
+            this.loadContent();
+        }
+    };
 	//Loads the details about this digit and its four corners
 	DigitDetailsContentView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();

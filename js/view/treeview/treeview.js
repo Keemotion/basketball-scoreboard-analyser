@@ -6,7 +6,7 @@ define(["./treenode", "../../messaging_system/event_listener", "../../messaging_
         this.add_element = $('<button>')
         	.attr({
         		'type':'button'
-        	}).text('Add')
+        	}).text('Add group')
         	.click(function(){
         		self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('group', self.state_proxy.getIdentification()));
         	});

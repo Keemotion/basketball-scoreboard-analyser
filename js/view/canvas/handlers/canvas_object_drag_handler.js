@@ -1,4 +1,4 @@
-define(["../../../messaging_system/event_listener"], function(EventListener){
+define(["../../../messaging_system/event_listener", "../../../messaging_system/events/submit_group_details_event"], function(EventListener, SubmitGroupDetailsEvent){
 	//Translate objects when they are dragged on the canvas
 	var CanvasObjectDragHandler = function(canvas, messaging_system){
 		this.canvas = canvas;
