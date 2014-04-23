@@ -24,7 +24,15 @@ define(["../../messaging_system/event_listener"], function(EventListener){
 		this.listening = false;
 		this.parentView.stoppedListening();
 	};
+    CanvasSingleClickListener.prototype.toggleListening = function(){
+        if(this.listening){
+            this.stopListening();
+        }else{
+            this.startListening();
+        }
+    };
 	CanvasSingleClickListener.prototype.cleanUp = function(){
+        this.stopListening();
 		this.messaging_system.removeEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
 		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
 	};

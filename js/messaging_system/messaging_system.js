@@ -6,6 +6,9 @@ define([],function(){
 		//A new tree was loaded
 		LoadState:'LoadState', 
 
+        //Reset state
+        ResetState:'ResetState',
+
 		//Data in the current state changed
         GroupChanged:'GroupChanged', 
 

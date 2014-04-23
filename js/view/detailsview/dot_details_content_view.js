@@ -27,7 +27,7 @@ define(["../../model/coordinate",
 				'class':'button_dot_coordinate_click'
 			})
 			.click(function(e){
-				self.canvasClickListener.startListening();
+				self.canvasClickListener.toggleListening();
 				return false;
 			});
 		this.remove_button = $('<button>')

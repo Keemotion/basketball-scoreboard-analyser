@@ -16,6 +16,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadState, new EventListener(this, this.loadState));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadStateFile, new EventListener(this, this.loadStateFile));
+        this.messaging_system.addEventListener(this.messaging_system.events.ResetState, new EventListener(this, this.reset));
     };
 	State.prototype = new DataBaseClass("state");
 	//load the state based on a JSON format
@@ -64,10 +65,16 @@ define([
 			this.stateChanged();
         }
     };
+    State.prototype.reset = function(){
+        this.lockNotification();
+        this.clearSubNodes();
+        this.unlockNotification();
+        this.stateChanged();
+    };
 	//load data in javascript Object format
     State.prototype.parse = function(data){
     	this.lockNotification();
-    	this.clearSubNodes();
+        this.reset();
     	for(var i = 0; i < data.sub_nodes.length; ++i){
 			this.addObject(data.sub_nodes[i], false);
 		}

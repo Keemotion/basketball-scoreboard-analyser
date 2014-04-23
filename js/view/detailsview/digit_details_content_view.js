@@ -28,7 +28,7 @@ define(["./corner_details_content_view",
 			})
 			.click(function(e){
 				e.preventDefault();
-				self.canvasClickListener.startListening();
+				self.canvasClickListener.toggleListening();
 				return false;
 			});
 		this.remove_button = $('<button>')

@@ -27,7 +27,7 @@ define(["../../model/coordinate",
 			})
 			.click(function(e){
 				e.preventDefault();
-				self.canvasClickListener.startListening();
+				self.canvasClickListener.toggleListening();
 			});
 		this.content_element = $('<div>')
 			.append(this.x_label)
