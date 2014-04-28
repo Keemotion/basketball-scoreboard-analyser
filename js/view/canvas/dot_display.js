@@ -20,8 +20,11 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.stroke();
 	};
 	//Returns whether the given coordinate is within 5 canvas pixels from the dot coordinate
-	DotDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation){
-		if(Coordinate.getSquareDistance(coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate())) <= 25){
+	DotDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation, current){
+		var distance =Coordinate.getSquareDistance(coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate()));
+		console.log("current maximal sq distance = "+current.maximal_sq_distance); 
+		if(distance <= current.maximal_sq_distance){
+			current.maximal_sq_distance = distance;
 			return true;
 		}
 		return false;

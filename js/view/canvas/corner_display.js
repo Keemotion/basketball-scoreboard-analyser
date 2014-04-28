@@ -19,8 +19,11 @@ define(["./base_display", "../../model/coordinate"], function(BaseDisplay, Coord
 		context.stroke();
 	};
 	//Returns whether the given canvas coordinate is within 5 pixels of the Corner Coordinate
-	CornerDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation){
-		if(Coordinate.getSquareDistance(coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate())) <= 25){
+	CornerDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation, current){
+		var distance =Coordinate.getSquareDistance(coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate())); 
+		if(distance <= current.maximal_sq_distance){
+			current.maximal_sq_distance = distance;
+			console.log("at canvas coordinate!");
 			return true;
 		}
 		return false;

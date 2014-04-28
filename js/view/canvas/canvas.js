@@ -91,14 +91,14 @@ define([
 		this.updateCanvas();
 	};
 	//find the object at a certain coordinate on the canvas
-	MyCanvas.prototype.getObjectAtCanvasCoordinate = function(coordinate){
+	MyCanvas.prototype.getObjectAtCanvasCoordinate = function(coordinate, distance){
+		var obj = new Object();
+		obj.maximal_sq_distance = distance;
+		var res = null;
 		for(var i = 0; i < this.display_objects.length; ++i){
-			var res = this.display_objects[i].getObjectAtCanvasCoordinate(coordinate, this.transformation);
-			if(res == null)
-				continue;
-			return res;
+			res = this.display_objects[i].getObjectAtCanvasCoordinate(coordinate, this.transformation, obj);
 		}
-		return null;
+		return res;
 	};
 	//event handler for canvas croll
 	MyCanvas.prototype.canvasScrolled = function(signal, data){

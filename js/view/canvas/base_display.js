@@ -34,21 +34,22 @@ define([], function(){
 	};
 	//determines whether this display object is at (around) the given canvas coordinate
 	//should be overridden
-	BaseDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation){
+	BaseDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation, current){
 		return false;
 	};
 	//determines whether this display object or one of its children are at the given canvas coordinate
 	//@param coordinate: canvas coordinate
-	BaseDisplay.prototype.getObjectAtCanvasCoordinate = function(coordinate, transformation){
-		if(this.isAtCanvasCoordinate(coordinate, transformation))
+	BaseDisplay.prototype.getObjectAtCanvasCoordinate = function(coordinate, transformation, current){
+		if(this.isAtCanvasCoordinate(coordinate, transformation, current))
 			return this;
+		var res = null;
 		for(var i = 0; i < this.sub_components.length; ++i){
-			var res = this.sub_components[i].getObjectAtCanvasCoordinate(coordinate, transformation);
-			if(res == null)
-				continue;
-			return res;
+			var tmp = this.sub_components[i].getObjectAtCanvasCoordinate(coordinate, transformation, current);
+			if(tmp != null){
+				res = tmp;
+			}
 		}
-		return null;
+		return res;
 	};
 	return BaseDisplay;
 });

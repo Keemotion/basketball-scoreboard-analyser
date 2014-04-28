@@ -22,7 +22,7 @@ define(["../../../messaging_system/event_listener", "../../../messaging_system/e
 		if(!event_data.ctrlKey){
 			return;
 		}
-		this.setSelected(this.canvas.getObjectAtCanvasCoordinate(data.getCoordinate()));
+		this.setSelected(this.canvas.getObjectAtCanvasCoordinate(data.getCoordinate(), 64));
 		this.startObjectDragging();
 	};
 	CanvasObjectDragHandler.prototype.startObjectDragging = function(){
