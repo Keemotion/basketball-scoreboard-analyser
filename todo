@@ -3,3 +3,37 @@ configuration keys in UI
 TO ASK: 
     default configuration keys?
     objects grouped meaningfully vs optimally (for keys)
+export last number for digits
+other color for current selected digit/group
+show configuration values
+display pattern functions 
+optimize: minimize number of lines
+configuration keys after the definition (digits/leds)
+moving led: see other leds in same group
+move whole digit at once
+move whole group of leds at once
+select a set of groups and move it at once
+selecting by square selection + selecting/deselecting by shift+click
+debug: add digit for new configuration
+
+selecting for moving: find closest one, but larger area than 5 px
+default: don't display green circles, only when working on that one (selected digits: all info)
+selecting by clicking inside the digit
+
+display bug: rounding corners
+
+mouse pointer change: over edge -> move digit, on corner -> move corner, else: drag canvas
+
+
+hovering in toggle mode for patterns -> display RGB/grayscale values of current pixel
+
+-------
+automisation
+------
+select starting and end led -> auto find all leds in between by equal-spacing (not recognizing)
+find center of led by recognizing
+
+first try digit recognizing: 
+    maximize variance in luminance by shearing -> greedy
+second try: (if no success)
+    Fast Fourier/..?
