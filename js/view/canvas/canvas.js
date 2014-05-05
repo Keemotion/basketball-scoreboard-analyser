@@ -196,28 +196,11 @@ define([
 	MyCanvas.prototype.drawCanvas = function(){
 		this.context.clearRect(0, 0, this.canvas_element.width, this.canvas_element.height);
 		if(this.image){
-			var image_top_left = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(0,0));
-			image_top_left.x = Math.max(-this.transformation.getHorizontalRatio(), image_top_left.x);
-			image_top_left.y = Math.min(this.transformation.getVerticalRatio(), image_top_left.y);
-			var canvas_top_left = this.transformation.transformRelativeImageCoordinateToCanvasCoordinate(image_top_left);
-			image_top_left = this.transformation.transformRelativeImageCoordinateToAbsoluteImageCoordinate(image_top_left);
-			
-			var image_bottom_right = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(this.canvas_element.width, this.canvas_element.height));
-			image_bottom_right.x = Math.min(this.transformation.getHorizontalRatio(), image_bottom_right.x);
-			image_bottom_right.y = Math.max(-this.transformation.getVerticalRatio(), image_bottom_right.y);
-			var canvas_bottom_right = this.transformation.transformRelativeImageCoordinateToCanvasCoordinate(image_bottom_right);
-			image_bottom_right = this.transformation.transformRelativeImageCoordinateToAbsoluteImageCoordinate(image_bottom_right);
-			image_top_left.round();
-			image_bottom_right.round();
-			canvas_top_left.round();
-			canvas_bottom_right.round();
-			
-			if(!this.transformation.inCanvasRange(canvas_top_left) || !this.transformation.inCanvasRange(canvas_bottom_right)){
-				return;
-			}
+			var canvas_top_left = this.transformation.transformAbsoluteImageCoordinateToCanvasCoordinate(new Coordinate(0,0));
+			var canvas_bottom_right = this.transformation.transformAbsoluteImageCoordinateToCanvasCoordinate(new Coordinate(this.transformation.getImageWidth(), this.transformation.getImageHeight()));
 			this.context.mozImageSmoothingEnabled = false;
 			this.context.webkitImageSmoothingEnabled=false;
-			this.context.drawImage(this.image, image_top_left.x, image_top_left.y, image_bottom_right.x-image_top_left.x, image_bottom_right.y-image_top_left.y, canvas_top_left.x, canvas_top_left.y, canvas_bottom_right.x-canvas_top_left.x, canvas_bottom_right.y-canvas_top_left.y);
+			this.context.drawImage(this.image, canvas_top_left.x, canvas_top_left.y, canvas_bottom_right.x-canvas_top_left.x, canvas_bottom_right.y-canvas_top_left.y);
 			if(this.getDisplayObjectsEnabled()){
 				this.drawDisplayObjects();
 			}else{

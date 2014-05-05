@@ -40,5 +40,13 @@ define([],function(){
 		this.x = Math.round(this.x);
 		this.y = Math.round(this.y);
 	};
+	Coordinate.prototype.roundUp = function(){
+		this.x = Math.ceil(this.x);
+		this.y = Math.ceil(this.y);
+	};
+	Coordinate.prototype.roundDown = function(){
+		this.x = Math.floor(this.x);
+		this.y = Math.floor(this.y);
+	};
     return Coordinate;
 });
