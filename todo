@@ -15,16 +15,14 @@ select a set of groups and move it at once
 selecting by square selection + selecting/deselecting by shift+click
 debug: add digit for new configuration
 
-selecting for moving: find closest one, but larger area than 5 px
 default: don't display green circles, only when working on that one (selected digits: all info)
 selecting by clicking inside the digit
 
-display bug: rounding corners
-
 mouse pointer change: over edge -> move digit, on corner -> move corner, else: drag canvas
 
-
 hovering in toggle mode for patterns -> display RGB/grayscale values of current pixel
+
+validate JS-code
 
 -------
 automisation
