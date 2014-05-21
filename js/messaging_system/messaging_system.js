@@ -49,6 +49,8 @@ define([],function(){
 		CanvasMouseDown: 'CanvasMouseDown',
 		CanvasFocusOut:'CanvasFocusOut',
 		CanvasImageClick:'CanvasClick',
+		
+		CanvasKeyDown:'CanvasKeyDown',
 
 		//User started clicking in the canvas to set coordinates (so don't do anything else with the clicks
 		CoordinateClickListenerStarted:'CoordinateClickListenerStarted',

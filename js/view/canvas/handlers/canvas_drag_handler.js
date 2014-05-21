@@ -8,7 +8,7 @@ define(["../../../messaging_system/event_listener",
 			AreaSelectEvent,
 			SubmitGroupDetailsEvent
 			){
-	//translates the canvas when draggin
+	//translates the canvas when dragging
 	var CanvasDragHandler = function(canvas, transformation, messaging_system){
 		this.canvas = canvas;
 		this.messaging_system = messaging_system;
@@ -18,12 +18,18 @@ define(["../../../messaging_system/event_listener",
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseDown, new EventListener(this, this.canvasMouseDown));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.canvasMouseUp));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.canvasFocusOut));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasKeyDown, new EventListener(this, this.canvasKeyDown));
 		this.current_state = CanvasDragHandler.states.NONE;
 		this.area_selection_start_coordinate = new Coordinate();
 		this.area_selection_end_coordinate = new Coordinate();
 		this.selected_objects = new Array();
 	};
 	CanvasDragHandler.states = {NONE:'NONE', CANVAS_DRAGGING:'CANVAS_DRAGGING', OBJECTS_DRAGGING:'OBJECTS_DRAGGING', AREA_SELECTING:'AREA_SELECTING'};
+	CanvasDragHandler.prototype.canvasKeyDown = function(signal, data){
+		if(data.getEventData().which == 27){//escape
+			this.resetSelected();
+		}
+	};
 	CanvasDragHandler.prototype.canvasMouseMove = function(signal, data){
 		switch(this.current_state){
 			case CanvasDragHandler.states.NONE:
@@ -111,6 +117,7 @@ define(["../../../messaging_system/event_listener",
 			this.selected_objects[i].setSelected(false);
 		}
 		this.selected_objects.length = 0;
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	};
 	CanvasDragHandler.prototype.setSelected = function(objects){
 		this.resetSelected();

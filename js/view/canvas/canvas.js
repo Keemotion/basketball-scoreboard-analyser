@@ -13,6 +13,7 @@ define([
 		"./handlers/canvas_drag_handler",
 		"./handlers/display_changed_handler",
 		"./handlers/canvas_hover_handler",
+		"../../messaging_system/events/canvas_keydown_event"
 		], 
 	function(
 		EventListener, 
@@ -29,8 +30,7 @@ define([
 		CanvasDragHandler,
 		DisplayChangedHandler,
 		CanvasHoverHandler, 
-		ObjectSelectedEvent,
-		ObjectUnSelectedEvent
+		CanvasKeyDownEvent
 		){
 	var MyCanvas = function(target_view, proxy, messaging_system){
 		var self = this;
@@ -80,6 +80,9 @@ define([
 		$(this.canvas_element).click(function(e){
 			var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
 			messaging_system.fire(messaging_system.events.CanvasImageClick, new CanvasImageClickEvent(c, e));
+		});
+		$('html').keydown(function(e){
+			messaging_system.fire(messaging_system.events.CanvasKeyDown, new CanvasKeyDownEvent(e));
 		});
 		this.displayObjectsChangedListener = new EventListener(this, this.displayObjectsChanged);
 		this.messaging_system.addEventListener(this.messaging_system.events.DisplayObjectsChanged, this.displayObjectsChangedListener);
