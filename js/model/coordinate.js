@@ -5,9 +5,13 @@ define([],function(){
         this.y = y;
     };
 	Coordinate.prototype.getX = function(){
+		if(this.x)
+			return parseFloat(this.x);
 		return this.x;
 	};
 	Coordinate.prototype.getY = function(){
+		if(this.y)
+			return parseFloat(this.y);
 		return this.y;
 	};
 	Coordinate.prototype.isValid = function(){

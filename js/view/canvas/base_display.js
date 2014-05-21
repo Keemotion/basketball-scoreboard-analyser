@@ -5,6 +5,9 @@ define([], function(){
 	BaseDisplay.prototype.init = function(){
 		this.sub_components = new Array();
 	};
+	BaseDisplay.prototype.getIdentification = function(){
+		return this.getProxy().getIdentification();
+	};
 	BaseDisplay.prototype.getSubComponents = function(){
 		return this.sub_components;
 	};
@@ -19,12 +22,19 @@ define([], function(){
 			this.sub_components[i].draw(context, transformation);
 		}
 		if(this.getProxy().getDisplaying()){
-			this.drawMyself(context, transformation);
+			if(this.getSelected()){
+				this.drawMyselfSelected(context, transformation);
+			}else{
+				this.drawMyself(context, transformation);
+			}
 		}
 	};
 	//draws the object itself (without children)
 	//should be overridden
 	BaseDisplay.prototype.drawMyself = function(context, transformation){
+	};
+	BaseDisplay.prototype.drawMyselfSelected = function(context, transformation){
+		//this.drawMyself(context, transformation);
 	};
 	BaseDisplay.prototype.getProxy = function(){
 		return this.proxy;
@@ -50,6 +60,38 @@ define([], function(){
 			}
 		}
 		return res;
+	};
+	BaseDisplay.prototype.canBeSelected = function(){
+		return false;
+	};
+	BaseDisplay.prototype.childrenCanBeSelected = function(){
+		return true;
+	};
+	BaseDisplay.prototype.isInRectangle = function(transformation, start_coordinate, end_coordinate){
+		return false;
+	};
+	BaseDisplay.prototype.getObjectsInRectangle = function(transformation, start_coordinate, end_coordinate){
+		var res = new Array();
+		if(this.canBeSelected()){
+			if(this.isInRectangle(transformation, start_coordinate, end_coordinate)){
+				res.push(this);
+			}
+		}
+		if(this.childrenCanBeSelected()){
+			for(var i = 0; i < this.sub_components.length; ++i){
+				var tmp = this.sub_components[i].getObjectsInRectangle(transformation, start_coordinate, end_coordinate);
+				for(var j = 0; j < tmp.length; ++j){
+					res.push(tmp[j]);
+				}
+			}
+		}
+		return res;
+	};
+	BaseDisplay.prototype.getSelected = function(){
+		return this.selected;
+	};
+	BaseDisplay.prototype.setSelected = function(selected){
+		this.selected = selected;
 	};
 	return BaseDisplay;
 });

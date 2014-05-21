@@ -30,6 +30,15 @@ define([],function(){
 		//A group was clicked (request to show details)
         GroupClicked: 'GroupClicked',		
 
+		//An object was selected
+		ObjectSelected: 'ObjectSelected',
+		
+		//An object was unselected
+		ObjectUnSelected: 'ObjectUnSelected',
+		
+		//Try to select all objects in a rectangle on the canvas (canvas coordinate)
+		AreaSelect: 'AreaSelect',
+		
 		//Data was submitted in the GUI and needs to be applied to the model
 		SubmitGroupDetails: 'SubmitGroupDetails',
 

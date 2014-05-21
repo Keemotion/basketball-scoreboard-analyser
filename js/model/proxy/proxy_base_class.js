@@ -41,5 +41,8 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.getData = function(){
 		return this.obj.getData();
 	};
+	BaseProxy.prototype.getSelected = function(){
+		return this.obj.getSelected();
+	};
 	return BaseProxy;
 });

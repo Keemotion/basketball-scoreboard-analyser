@@ -12,8 +12,7 @@ define([
 		"../../messaging_system/events/submit_group_details_event",
 		"./handlers/canvas_drag_handler",
 		"./handlers/display_changed_handler",
-		"./handlers/canvas_object_drag_handler",
-		"./handlers/canvas_hover_handler"
+		"./handlers/canvas_hover_handler",
 		], 
 	function(
 		EventListener, 
@@ -29,11 +28,13 @@ define([
 		SubmitGroupDetailsEvent,
 		CanvasDragHandler,
 		DisplayChangedHandler,
-		CanvasObjectDragHandler,
-		CanvasHoverHandler
+		CanvasHoverHandler, 
+		ObjectSelectedEvent,
+		ObjectUnSelectedEvent
 		){
 	var MyCanvas = function(target_view, proxy, messaging_system){
 		var self = this;
+		this.selected = new Array();
 		this.messaging_system = messaging_system;
 		this.canvas_element = $('<canvas>').attr({
 			class:'canvas_image',
@@ -44,8 +45,7 @@ define([
 		this.context = this.canvas_element.getContext('2d');
 		this.container_element = target_view;
 		this.transformation = new Transformation(new Coordinate(0,0), 1,1,1, 1,1);
-		this.dragHandler = new CanvasDragHandler(this.transformation, this.messaging_system);
-		this.canvas_object_drag_handler = new CanvasObjectDragHandler(this, this.messaging_system);
+		this.canvas_drag_handler = new CanvasDragHandler(this, this.transformation, this.messaging_system);
 		this.display_objects = new Array();
 		$(this.container_element).append(this.canvas_element);
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.updateCanvas));
@@ -86,9 +86,20 @@ define([
 		this.setProxy(proxy);
 		this.display_changed_handler = new DisplayChangedHandler(this);
 	};
+	
 	//one of the display objects has changed
 	MyCanvas.prototype.displayObjectsChanged = function(signal, data){
 		this.updateCanvas();
+	};
+	MyCanvas.prototype.getObjectsInRectangle = function(start_coordinate, end_coordinate){
+		var res = new Array();
+		for(var i = 0; i < this.display_objects.length; ++i){
+			var tmp = this.display_objects[i].getObjectsInRectangle(this.getTransformation(), start_coordinate, end_coordinate);
+			for(var j = 0; j < tmp.length; ++j){
+				res.push(tmp[j]);
+			}
+		}
+		return res;
 	};
 	//find the object at a certain coordinate on the canvas
 	MyCanvas.prototype.getObjectAtCanvasCoordinate = function(coordinate, distance){
@@ -206,8 +217,8 @@ define([
 			if(this.getDisplayObjectsEnabled()){
 				this.drawDisplayObjects();
 			}else{
-				if(this.canvas_object_drag_handler.getSelected()){
-					this.canvas_object_drag_handler.getSelected().drawChanging(this.context, this.getTransformation());
+				for(var i = 0; i < this.canvas_drag_handler.getSelected().length; ++i){
+					this.canvas_drag_handler.getSelected()[i].drawChanging(this.context, this.getTransformation());
 				}
 			}
 		}

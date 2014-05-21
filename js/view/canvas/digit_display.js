@@ -35,6 +35,35 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.lineTo(right_middle.getX(), right_middle.getY());
 		context.strokeStyle = "#00ff00";
 		context.stroke();
+	};
+	DigitDisplay.prototype.drawMyselfSelected = function(context, transformation){
+		if(!this.getProxy().getSimulating()){
+			return;
+		}
+		var sub_proxies = this.getProxy().getSubNodes();
+		if(sub_proxies.length != 4)
+			return;
+		var coordinates = new Array();
+		for(var i = 0; i < sub_proxies.length; ++i){
+			if(!sub_proxies[i].getCoordinate().isValid()){
+				return;
+			}
+			coordinates.push(transformation.transformRelativeImageCoordinateToCanvasCoordinate(sub_proxies[i].getCoordinate()));
+		}
+		var left_middle = new Coordinate((coordinates[0].getX()+coordinates[3].getX())/2.0, (coordinates[0].getY()+coordinates[3].getY())/2.0);
+		var right_middle = new Coordinate((coordinates[1].getX()+coordinates[2].getX())/2.0, (coordinates[1].getY()+coordinates[2].getY())/2.0);
+		context.lineWidth = 2;
+		context.beginPath();
+		context.moveTo(left_middle.getX(), left_middle.getY());
+		context.lineTo(coordinates[0].getX(), coordinates[0].getY());
+		context.lineTo(coordinates[1].getX(), coordinates[1].getY());
+		context.lineTo(right_middle.getX(), right_middle.getY());
+		context.lineTo(left_middle.getX(), left_middle.getY());
+		context.lineTo(coordinates[3].getX(), coordinates[3].getY());
+		context.lineTo(coordinates[2].getX(), coordinates[2].getY());
+		context.lineTo(right_middle.getX(), right_middle.getY());
+		context.strokeStyle = "#0000ff";
+		context.stroke();
 		//sampling points:
 		var sampling_points = new Array();
 		sampling_points.push(Coordinate.getMiddle([coordinates[0], coordinates[1]]));

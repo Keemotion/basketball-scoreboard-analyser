@@ -5,6 +5,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 	};
 	BaseDataClass.prototype.init = function(){
 		this.notification_lock = 0;
+		this.selected = false;
 		this.sub_nodes = new Array();
 		this.displaying = true;
 		this.simulating = true;
@@ -15,11 +16,23 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		this.messaging_system.addEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
 		this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, new EventListener(this, this.removeElement));
+//		this.messaging_system.addEventListener(this.messaging_system.events.ObjectSelected, new EventListener(this, this.objectSelected));
+//		this.messaging_system.addEventListener(this.messaging_system.events.ObjectUnSelected, new EventListener(this, this.objectUnSelected));
 		if(this.addElement){
 			this.addElementListener = new EventListener(this, this.addElement);
 			this.messaging_system.addEventListener(this.messaging_system.events.AddElement, this.addElementListener);
 		}
 	};
+/*	BaseDataClass.prototype.objectSelected = function(signal, data){
+		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
+			this.setSelected(true);
+		}
+	};
+	BaseDataClass.prototype.objectUnSelected = function(signal, data){
+		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
+			this.setSelected(false);
+		}
+	};*/
 	//event listener when a sub node is removed in the GUI
 	BaseDataClass.prototype.removeElement = function(signal, data){
 		if(data.getHandled())
@@ -260,5 +273,14 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		this.unlockNotification();
 		this.notifyGroupChanged();
 	};
+/*	BaseDataClass.prototype.getSelected = function(){
+		return this.selected;
+	};
+	BaseDataClass.prototype.setSelected = function(selected){
+		this.selected = selected;
+		for(var i = 0; i < this.sub_nodes.length; ++i){
+			this.sub_nodes[i].setSelected(selected);
+		}
+	};*/
 	return BaseDataClass;
 });
