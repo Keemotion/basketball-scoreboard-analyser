@@ -12,8 +12,8 @@ configuration keys in UI
 TO ASK: 
     default configuration keys?
     objects grouped meaningfully vs optimally (for keys)
-export last number for digits
-other color for current selected digit/group
+x export last number for digits
+x other color for current selected digit/group
 show configuration values
 display pattern functions 
 optimize: minimize number of lines

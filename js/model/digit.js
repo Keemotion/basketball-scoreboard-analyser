@@ -20,6 +20,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 		}else{
 			this.setCorners(data.corners);
 			this.setConfigurationKeys(data.configuration_keys);
+			this.extra_value = data.extra_value;
 		}
 	};
     Digit.prototype.resetCorners = function(){
@@ -41,6 +42,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
             c.coordinate.y = corners[i].getCoordinate().getY();
             d.sub_nodes.push(c);
         }
+        d.extra_value = this.extra_value;
         return d;
     };
 	Digit.prototype.updateCorners = function(corners_data, warn_listeners){
@@ -89,6 +91,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			o.coordinate = this.corners[i].getCoordinate();
 			object.corners.push(o);
 		}
+		object.extra_value = this.extra_value;
 		return object;
 	};
 	//changing the coordinate of a corner

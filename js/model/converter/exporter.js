@@ -44,6 +44,9 @@ define([], function(){
 						result += ",";
 					result += obj.sub_nodes[i].coordinate.x+","+obj.sub_nodes[i].coordinate.y;	
 				}
+				if(obj.extra_value){
+					result += ","+obj.extra_value;
+				}
 				result += "\n";
 				break;
 			case 'dot':
@@ -54,6 +57,9 @@ define([], function(){
 					console.log("dot = "+JSON.stringify(obj));
 					result += current_group_name+"_led=";
 					result += obj.coordinate.x+","+obj.coordinate.y;
+					if(obj.extra_value){
+						result += ","+obj.extra_value;
+					}
 					result += "\n";
 				}
 				

@@ -19,6 +19,7 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
 		}else{
 			this.setConfigurationKeys(data.configuration_keys);
 			this.coordinate = new Coordinate(data.coordinate.x, data.coordinate.y); 
+			this.extra_value = data.extra_led_value;
 		}
 	};
 	Dot.prototype.getCoordinate = function(){
@@ -32,6 +33,7 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
         var d = new Object();
         d.type = this.getType();
 		d.coordinate = this.getCoordinate();
+		d.extra_value = this.extra_value;
         return d;
     };
 	//loads the data for this dot
@@ -48,6 +50,7 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
     	var object = new Object();
     	object.name = this.name;
     	object.coordinate = this.getCoordinate();
+    	object.extra_value = this.extra_value;
     	return object;
     };
 	//updates the data for this dot
