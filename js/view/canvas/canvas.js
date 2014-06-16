@@ -153,8 +153,9 @@ define([
 		return this.display_objects;
 	};
 	MyCanvas.prototype.setProxy = function(proxy){
-		if(this.state_display_object)
-			this.removeDisplayObject(this.state_display_object);
+//		if(this.state_display_object)
+//			this.removeDisplayObject(this.state_display_object);
+		this.resetDisplayObjects();
 		this.proxy = proxy;
 		this.addDisplayObject(new DisplayTree(this.proxy, this.messaging_system));
 	};
@@ -176,9 +177,11 @@ define([
 	};
 	//draw all display objects on the canvas
 	MyCanvas.prototype.drawDisplayObjects = function(){
+		console.log("start drawing: "+this.display_objects.length);
 		for(var i = 0; i < this.display_objects.length; ++i){
 			this.display_objects[i].draw(this.context, this.transformation);
 		}
+		console.log("end drawing");
 	};
 	//something has changed on the canvas, warn displayChangedChandler (to prevent all display objects from being drawn every time -> lag)
 	MyCanvas.prototype.updateCanvas = function(signal, data){

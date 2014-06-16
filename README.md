@@ -9,7 +9,7 @@ The input file corresponding to the default image can be found at: http://fkint.
 <li>Load a prm-file containing the current data using the "Load file" button.
 <li>Load a scoreboard image using the "Load image" button.
 <li>Add groups to the current configuration using the "Add group" button.
-<li>Click on a group to view its details at the bottom right corner of the screen.
+<li>Click on a group in the tree view to view its details at the bottom right corner of the screen.
 <li>Adding digits and dots to a group can be done with the corresponding buttons in the details view.
 <li>Toggle highlighting of a group on the canvas by clicking on the highlight button in the details view.
 <li>Use the "Click" button to set the coordinate for a corner/dot by clicking on the canvas.
@@ -20,6 +20,7 @@ The input file corresponding to the default image can be found at: http://fkint.
 <li>Click-and-drag the canvas to reposition it.
 <li>Scroll to zoom the canvas.
 <li>Control-drag to move corners/dots.
+<li>Shift-click drag to select all corners/dots in an area
 <li>Download JSON/PRM using the corresponding buttons in the bottom left corner of the screen.
 <li>Reset the canvas view using the button at the bottom middle of the screen.
 </ul>

@@ -12,10 +12,23 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		if(!this.getProxy().getCoordinate().isValid()){
 			return;
 		}
+		console.log("normal draw dot: "+JSON.stringify(this.getProxy().getIdentification()));
 		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
 		context.beginPath();
 		context.strokeStyle = "#FF0000";
 		context.lineWidth = 3;
+		context.arc(c.x, c.y, 5, 0, 2*Math.PI);
+		context.stroke();
+	};
+	DotDisplay.prototype.drawMyselfSelected = function(context, transformation){
+		if(!this.getProxy().getCoordinate().isValid()){
+			return;
+		}
+		console.log("selected draw dot: "+JSON.stringify(this.getProxy().getIdentification()));
+		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
+		context.beginPath();
+		context.strokeStyle = "#880000";
+		context.lineWidth=  3;
 		context.arc(c.x, c.y, 5, 0, 2*Math.PI);
 		context.stroke();
 	};
@@ -30,6 +43,15 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 	};
 	DotDisplay.prototype.drawChanging = function(context, transformation){
 		this.getParent().draw(context, transformation);
+	};
+	DotDisplay.prototype.isInRectangle = function(transformation, start_coordinate, end_coordinate) {
+		var canvas_coordinate = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
+		var margin = 5;
+		return canvas_coordinate.getX() > start_coordinate.getX() - margin && canvas_coordinate.getX() < end_coordinate.getX() + margin && canvas_coordinate.getY() > start_coordinate.getY() - margin && canvas_coordinate.getY() < end_coordinate.getY() - margin;
+//		return true;
+	};
+	DotDisplay.prototype.canBeSelected = function(){
+		return true;
 	};
 	return DotDisplay;
 });

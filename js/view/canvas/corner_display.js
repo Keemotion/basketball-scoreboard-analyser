@@ -12,7 +12,6 @@ define(["./base_display", "../../model/coordinate"], function(BaseDisplay, Coord
 
 	};
 	CornerDisplay.prototype.drawMyselfSelected = function(context, transformation) {
-		console.log("selected drawing");
 		if (!this.getProxy().getCoordinate().isValid())
 			return;
 		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
@@ -27,7 +26,6 @@ define(["./base_display", "../../model/coordinate"], function(BaseDisplay, Coord
 		var distance = Coordinate.getSquareDistance(coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate()));
 		if (distance <= current.maximal_sq_distance) {
 			current.maximal_sq_distance = distance;
-			console.log("at canvas coordinate!");
 			return true;
 		}
 		return false;

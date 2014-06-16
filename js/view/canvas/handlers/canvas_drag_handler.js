@@ -19,6 +19,7 @@ define(["../../../messaging_system/event_listener",
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.canvasMouseUp));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.canvasFocusOut));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasKeyDown, new EventListener(this, this.canvasKeyDown));
+		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
 		this.current_state = CanvasDragHandler.states.NONE;
 		this.area_selection_start_coordinate = new Coordinate();
 		this.area_selection_end_coordinate = new Coordinate();
@@ -26,6 +27,9 @@ define(["../../../messaging_system/event_listener",
 		this.selected_element_is_temporarily = false;
 	};
 	CanvasDragHandler.states = {NONE:'NONE', CANVAS_DRAGGING:'CANVAS_DRAGGING', OBJECTS_DRAGGING:'OBJECTS_DRAGGING', AREA_SELECTING:'AREA_SELECTING'};
+	CanvasDragHandler.prototype.stateChanged = function(signal, data){
+		this.resetSelected();
+	};
 	CanvasDragHandler.prototype.canvasKeyDown = function(signal, data){
 		if(data.getEventData().which == 27){//escape
 			this.resetSelected();

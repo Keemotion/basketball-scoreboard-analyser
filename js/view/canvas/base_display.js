@@ -4,6 +4,7 @@ define([], function(){
 	};
 	BaseDisplay.prototype.init = function(){
 		this.sub_components = new Array();
+		this.selected = false;
 	};
 	BaseDisplay.prototype.getIdentification = function(){
 		return this.getProxy().getIdentification();
@@ -18,6 +19,7 @@ define([], function(){
 		this.parent = parent;
 	};
 	BaseDisplay.prototype.draw = function(context, transformation){
+		//console.log("drawing: "+JSON.stringify(this.getProxy().getIdentification()));
 		for(var i = 0; i < this.sub_components.length; ++i){
 			this.sub_components[i].draw(context, transformation);
 		}

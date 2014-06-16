@@ -1,3 +1,12 @@
+DisplayTree.prototype.loadSubComponents
+    on removal of items -> clear getSelected()
+    event notification for canvas?
+    recursively update/add elements, but don't replace them unless stateChangedEvent indicated so
+DisplayTree.prototype.stateChanged
+    StateChangedEvent -> parameter for update or remake. on update
+        
+
+
 optimize exporter (group settings)
 configuration keys in UI
 TO ASK: 
