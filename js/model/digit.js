@@ -86,9 +86,9 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 		var object = new Object();
 		object.name = this.name;
 		object.corners = new Array();
-		for(var i = 0; i < this.corners.length; ++i){
+		for(var i = 0; i < this.sub_nodes.length; ++i){
 			var o = new Object();
-			o.coordinate = this.corners[i].getCoordinate();
+			o.coordinate = this.sub_nodes[i].getCoordinate();
 			object.corners.push(o);
 		}
 		object.extra_value = this.extra_value;

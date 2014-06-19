@@ -106,5 +106,50 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 			this.sub_components.push(new CornerDisplay(this, sub_proxies[i], this.messaging_system));
 		}
 	};
+	var Geometry = function(){
+		
+	};
+	Geometry.determinant = function(a, b,c, d){
+		return a*d-b*c;
+	};
+	//returns whether the line segment [pq] intersects with the line segment [line1, line2]
+	Geometry.intersects = function(line1x, line1y, line2x, line2y, px, py, qx, qy){
+		var d = Geometry.determinant(qx-px, line1x-line2x, qy-py, line1y-line2y);
+		var dk = Geometry.determinant(line1x-px, line1x-line2x, line1y-py, line1y-line2y);
+		var dl = Geometry.determinant(qx-px,line1x-px,qy-py,line1y-py);
+		console.log("d = "+d);
+		var k = dk*1.0/d;
+		var l = dl*1.0/d;
+		//console.log("k = "+k+" l = "+l);
+		return 0<=k && k <= 1.0 && 0<=l &&l<=1.0;
+	};
+	Geometry.insidePolygon = function(points, cx, cy){
+		var intersection_amount = 0;
+		var px = Math.random()*10000.0+10000.0;
+		var py = Math.random()*10000.0+10000.0;
+		//console.log("inside polygon with: "+points.length+" points, cx = "+cx+", cy = "+cy+", px = "+px+", py = "+py);
+		for(var i = 0; i < points.length; ++i){
+			if(Geometry.intersects(points[i].x, points[i].y, points[(i+points.length-1)%points.length].x, points[(i+points.length-1)%points.length].y, cx, cy, px, py)){
+				intersection_amount ++;
+		//		console.log("intersecting!");
+			}
+		}
+		return intersection_amount%2 == 1;
+	};
+	DigitDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate, transformation){
+		//coordinate inside 4 corners?
+		var points = Array();
+		for(var i = 0; i < this.sub_components.length; ++i){
+			points.push(this.sub_components[i].getProxy().getCoordinate());
+		}
+		//var c2 = transformation.transformCanvasCoordinateToRelativeImageCoordinate(coordinate);
+		var c2 = coordinate;
+		var cx = c2.getX();
+		var cy = c2.getY();
+		if(Geometry.insidePolygon(points, cx, cy)){
+			return this;
+		}
+		return null;
+	};
 	return DigitDisplay;
 });

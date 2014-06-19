@@ -4,6 +4,7 @@ define(["../../../messaging_system/event_listener",
 	"../../../messaging_system/events/object_unselected_event"], function(EventListener, SubmitGroupDetailsEvent, ObjectSelectedEvent, ObjectUnSelectedEvent){
 	//Translate objects when they are dragged on the canvas
 	var CanvasObjectDragHandler = function(canvas, messaging_system){
+		console.log("step 1");
 		this.canvas = canvas;
 		this.messaging_system = messaging_system;
 		this.selected_objects = new Array();
@@ -11,6 +12,9 @@ define(["../../../messaging_system/event_listener",
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.endDrag));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseMove, new EventListener(this, this.mouseMove));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.endDrag));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, new EventListener(this, this.click));
+		this.clicked();
+		console.log("testj");
 		this.mouse_down = 0;
 	};
 	//returns the object that's being dragged
@@ -39,7 +43,6 @@ define(["../../../messaging_system/event_listener",
 	CanvasObjectDragHandler.prototype.mouseDown = function(signal, data){
 		++this.mouse_down;
 		var event_data = data.getEventData();
-		console.log("shift: "+event_data.shiftKey);
 		if(!event_data.ctrlKey && !event_data.shiftKey){
 			return;
 		}
@@ -69,7 +72,6 @@ define(["../../../messaging_system/event_listener",
 		}
 	};
 	CanvasObjectDragHandler.prototype.updateObjectsCoordinate = function(coordinate){
-		console.log("updating objects coordinate: "+JSON.stringify(coordinate)+" "+this.getSelected().length);
 		for(var i = 0; i < this.getSelected().length; ++i){
 			var data = this.getSelected()[i].getProxy().getData();
 			data.coordinate = coordinate;
@@ -81,6 +83,9 @@ define(["../../../messaging_system/event_listener",
 		this.mouse_down = 0;
 		this.resetSelected();
 		this.stopObjectDragging();
+	};
+	CanvasObjectDragHandler.prototype.clicked = function(signal, data){
+		console.log("clicked!");
 	};
 	return CanvasObjectDragHandler;
 });

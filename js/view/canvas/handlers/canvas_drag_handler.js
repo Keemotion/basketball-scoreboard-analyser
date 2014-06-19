@@ -20,6 +20,7 @@ define(["../../../messaging_system/event_listener",
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.canvasFocusOut));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasKeyDown, new EventListener(this, this.canvasKeyDown));
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageDoubleClick, new EventListener(this, this.doubleClick));
 		this.current_state = CanvasDragHandler.states.NONE;
 		this.area_selection_start_coordinate = new Coordinate();
 		this.area_selection_end_coordinate = new Coordinate();
@@ -160,6 +161,19 @@ define(["../../../messaging_system/event_listener",
 	};
 	CanvasDragHandler.prototype.getAreaSelecting = function(){
 		return this.current_state == CanvasDragHandler.states.AREA_SELECTING;
+	};
+	CanvasDragHandler.prototype.doubleClick = function(signal, data){
+		if(data.getEventData().shiftKey){
+			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
+			//inside digit -> select
+			if(res){
+				this.addSelected(res);
+				console.log("added one");
+			}else{
+				console.log("didn't add one");
+			}
+			//inside dot
+		}
 	};
 	return CanvasDragHandler;
 });

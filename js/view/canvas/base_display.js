@@ -95,5 +95,15 @@ define([], function(){
 	BaseDisplay.prototype.setSelected = function(selected){
 		this.selected = selected;
 	};
+	BaseDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate, transformation){
+		for(var i = 0; i < this.sub_components.length; ++i){
+			var res = this.sub_components[i].getObjectAroundCanvasCoordinate(coordinate, transformation);
+			if(res)
+				return res;
+		}
+	};
+	BaseDisplay.prototype.drawChanging = function(context,transformation){
+		this.draw(context, transformation);
+	};
 	return BaseDisplay;
 });

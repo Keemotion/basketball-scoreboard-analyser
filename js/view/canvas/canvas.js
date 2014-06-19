@@ -13,7 +13,8 @@ define([
 		"./handlers/canvas_drag_handler",
 		"./handlers/display_changed_handler",
 		"./handlers/canvas_hover_handler",
-		"../../messaging_system/events/canvas_keydown_event"
+		"../../messaging_system/events/canvas_keydown_event",
+		"../../messaging_system/events/canvas_image_double_click_event"
 		], 
 	function(
 		EventListener, 
@@ -30,7 +31,8 @@ define([
 		CanvasDragHandler,
 		DisplayChangedHandler,
 		CanvasHoverHandler, 
-		CanvasKeyDownEvent
+		CanvasKeyDownEvent,
+		CanvasImageDoubleClickEvent
 		){
 	var MyCanvas = function(target_view, proxy, messaging_system){
 		var self = this;
@@ -81,6 +83,10 @@ define([
 			var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
 			messaging_system.fire(messaging_system.events.CanvasImageClick, new CanvasImageClickEvent(c, e));
 		});
+		$(this.canvas_element).dblclick(function(e){
+			var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
+			messaging_system.fire(messaging_system.events.CanvasImageDoubleClick, new CanvasImageDoubleClickEvent(c, e));
+		});
 		$('html').keydown(function(e){
 			messaging_system.fire(messaging_system.events.CanvasKeyDown, new CanvasKeyDownEvent(e));
 		});
@@ -93,6 +99,14 @@ define([
 	//one of the display objects has changed
 	MyCanvas.prototype.displayObjectsChanged = function(signal, data){
 		this.updateCanvas();
+	};
+	MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+		for(var i = 0; i < this.display_objects.length; ++i){
+			var res = this.display_objects[i].getObjectAroundCanvasCoordinate(coordinate, this.transformation);	
+			if(res)
+				return res;
+		}
+		return null;
 	};
 	MyCanvas.prototype.getObjectsInRectangle = function(start_coordinate, end_coordinate){
 		var res = new Array();
