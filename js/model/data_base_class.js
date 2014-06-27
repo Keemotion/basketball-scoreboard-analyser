@@ -16,6 +16,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		this.messaging_system.addEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
 		this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, new EventListener(this, this.removeElement));
+		this.messaging_system.addEventListener(this.messaging_system.events.ObjectsMoved, new EventListener(this, this.objectMoved));
 //		this.messaging_system.addEventListener(this.messaging_system.events.ObjectSelected, new EventListener(this, this.objectSelected));
 //		this.messaging_system.addEventListener(this.messaging_system.events.ObjectUnSelected, new EventListener(this, this.objectUnSelected));
 		if(this.addElement){
@@ -282,5 +283,31 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 			this.sub_nodes[i].setSelected(selected);
 		}
 	};*/
+	BaseDataClass.prototype.objectMoved = function(signal, data){
+		if(this.canBeMoved()){
+			if(this.isAboutThisOrAncestors(data.getTargetIdentifications())){
+				this.move(data.getTranslation());
+			}
+		}
+	};
+	BaseDataClass.prototype.isAboutThisOrAncestors = function(identifications){
+		if(this.getParent()){
+			if(this.getParent().isAboutThisOrAncestors(identifications)){
+				return true;
+			}
+		}
+		for(var i = 0; i < identifications.length; ++i){
+			if(this.isPossiblyAboutThis(identifications[i])){
+				return true;
+			}
+		}
+		return false;
+	};
+	BaseDataClass.prototype.canBeMoved = function(){
+		return false;
+	};
+	BaseDataClass.prototype.move = function(translation){
+		throw "Move not implemented at "+this.getType();
+	};
 	return BaseDataClass;
 });

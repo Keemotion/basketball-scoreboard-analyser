@@ -41,6 +41,8 @@ define([],function(){
 		
 		//Data was submitted in the GUI and needs to be applied to the model
 		SubmitGroupDetails: 'SubmitGroupDetails',
+		//An object or a group of objects has been moved
+		ObjectsMoved: 'ObjectsMoved',
 
 		//Canvas events
 		CanvasScrolled:'CanvasScrolled',

@@ -101,6 +101,9 @@ define(["../../model/coordinate"], function(Coordinate){
 		return new Coordinate(2.0*coordinate.x/(this.getScale()*this.getDisplayRatio())+canvas_origin.x,
 			canvas_origin.y-2.0*coordinate.y/(this.getScale()*this.getDisplayRatio()));
 	};
+	Transformation.prototype.transformCanvasTranslationToRelativeImageTranslation = function(coordinate){
+		return new Coordinate(2.0*coordinate.x/(this.getScale()*this.getDisplayRatio()), -2.0*coordinate.y/(this.getScale()*this.getDisplayRatio()));
+	};
 	Transformation.prototype.reset = function(){
 		this.setScale(1);
 		this.setCanvasCenter(new Coordinate(0,0));

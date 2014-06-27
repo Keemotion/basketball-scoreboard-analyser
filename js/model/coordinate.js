@@ -52,5 +52,8 @@ define([],function(){
 		this.x = Math.floor(this.x);
 		this.y = Math.floor(this.y);
 	};
+	Coordinate.prototype.add = function(c2){
+		return new Coordinate(c2.getX()+this.getX(), c2.getY()+this.getY());
+	};
     return Coordinate;
 });

@@ -105,5 +105,14 @@ define([], function(){
 	BaseDisplay.prototype.drawChanging = function(context,transformation){
 		this.draw(context, transformation);
 	};
+	BaseDisplay.prototype.getSelectElements = function(){
+		var a = Array();
+		if(this.sub_components.length){
+			for(var i = 0; i < this.sub_components.length; ++i){
+				a.push(this.sub_components[i]);
+			}
+			return a;
+		}
+	};
 	return BaseDisplay;
 });
