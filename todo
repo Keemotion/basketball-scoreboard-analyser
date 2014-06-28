@@ -19,7 +19,7 @@ display pattern functions
 optimize: minimize number of lines
 configuration keys after the definition (digits/leds)
 x move whole digit at once
-move whole group of leds at once
+x move whole group of leds at once
 x select a set of groups and move it at once
 selecting by square selection + selecting/deselecting by shift+click
 debug: add digit for new configuration

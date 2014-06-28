@@ -71,5 +71,11 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
 			return true;
 		}
 	};
+	Dot.prototype.canBeMoved = function(){
+		return true;
+	};
+	Dot.prototype.move = function(translation){
+		this.setCoordinate(this.getCoordinate().add(translation));
+	};
     return Dot;
 });
