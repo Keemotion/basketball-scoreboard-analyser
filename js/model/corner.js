@@ -41,7 +41,6 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
 		return true;
 	};
 	Corner.prototype.move = function(translation){
-		console.log("translation = "+JSON.stringify(translation));
 		this.setCoordinate(this.getCoordinate().add(translation));
 	};
     return Corner;

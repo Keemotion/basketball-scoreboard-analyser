@@ -12,7 +12,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		if(!this.getProxy().getCoordinate().isValid()){
 			return;
 		}
-		console.log("normal draw dot: "+JSON.stringify(this.getProxy().getIdentification()));
 		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
 		context.beginPath();
 		context.strokeStyle = "#FF0000";
@@ -24,7 +23,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		if(!this.getProxy().getCoordinate().isValid()){
 			return;
 		}
-		console.log("selected draw dot: "+JSON.stringify(this.getProxy().getIdentification()));
 		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
 		context.beginPath();
 		context.strokeStyle = "#880000";

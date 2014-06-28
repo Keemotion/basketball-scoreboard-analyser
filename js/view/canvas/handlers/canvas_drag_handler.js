@@ -165,9 +165,7 @@ define(["../../../messaging_system/event_listener",
 			//inside digit -> select
 			if(res){
 				this.addSelected(res);
-				console.log("added one");
 			}else{
-				console.log("didn't add one");
 			}
 			//inside dot
 		}

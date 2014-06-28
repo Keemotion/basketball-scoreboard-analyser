@@ -117,7 +117,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		var d = Geometry.determinant(qx-px, line1x-line2x, qy-py, line1y-line2y);
 		var dk = Geometry.determinant(line1x-px, line1x-line2x, line1y-py, line1y-line2y);
 		var dl = Geometry.determinant(qx-px,line1x-px,qy-py,line1y-py);
-		console.log("d = "+d);
 		var k = dk*1.0/d;
 		var l = dl*1.0/d;
 		return 0<=k && k <= 1.0 && 0<=l &&l<=1.0;

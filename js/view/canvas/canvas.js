@@ -191,11 +191,9 @@ define([
 	};
 	//draw all display objects on the canvas
 	MyCanvas.prototype.drawDisplayObjects = function(){
-		console.log("start drawing: "+this.display_objects.length);
 		for(var i = 0; i < this.display_objects.length; ++i){
 			this.display_objects[i].draw(this.context, this.transformation);
 		}
-		console.log("end drawing");
 	};
 	//something has changed on the canvas, warn displayChangedChandler (to prevent all display objects from being drawn every time -> lag)
 	MyCanvas.prototype.updateCanvas = function(signal, data){
