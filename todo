@@ -18,14 +18,14 @@ show configuration values
 display pattern functions 
 optimize: minimize number of lines
 configuration keys after the definition (digits/leds)
-move whole digit at once
+x move whole digit at once
 move whole group of leds at once
-select a set of groups and move it at once
+x select a set of groups and move it at once
 selecting by square selection + selecting/deselecting by shift+click
 debug: add digit for new configuration
 
 x default: don't display green circles, only when working on that one (selected digits: all info)
-selecting by clicking inside the digit
+x selecting by clicking inside the digit
 
 mouse pointer change: over edge -> move digit, on corner -> move corner, else: drag canvas
 
