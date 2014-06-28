@@ -42,7 +42,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		return false;
 	};
 	DotDisplay.prototype.drawChanging = function(context, transformation){
-		this.getParent().draw(context, transformation);
+		//this.getParent().drawChanging(context, transformation);
 	};
 	DotDisplay.prototype.isInRectangle = function(transformation, start_coordinate, end_coordinate) {
 		var canvas_coordinate = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
@@ -52,6 +52,12 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 	};
 	DotDisplay.prototype.canBeSelected = function(){
 		return true;
+	};
+	
+	DotDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+		if(Coordinate.getSquareDistance(coordinate, this.getProxy().getCoordinate()) <= 0.001){
+			return this.getParent();
+		}
 	};
 	return DotDisplay;
 });

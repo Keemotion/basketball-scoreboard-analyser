@@ -90,14 +90,19 @@ define([], function(){
 		return res;
 	};
 	BaseDisplay.prototype.getSelected = function(){
-		return this.selected;
+		if(this.selected)
+			return true;
+		if(this.getParent()){
+			return this.getParent().getSelected();
+		}
+		return false;
 	};
 	BaseDisplay.prototype.setSelected = function(selected){
 		this.selected = selected;
 	};
-	BaseDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate, transformation){
+	BaseDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
 		for(var i = 0; i < this.sub_components.length; ++i){
-			var res = this.sub_components[i].getObjectAroundCanvasCoordinate(coordinate, transformation);
+			var res = this.sub_components[i].getObjectAroundCanvasCoordinate(coordinate);
 			if(res)
 				return res;
 		}

@@ -102,7 +102,7 @@ define([
 	};
 	MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
 		for(var i = 0; i < this.display_objects.length; ++i){
-			var res = this.display_objects[i].getObjectAroundCanvasCoordinate(coordinate, this.transformation);	
+			var res = this.display_objects[i].getObjectAroundCanvasCoordinate(coordinate);	
 			if(res)
 				return res;
 		}

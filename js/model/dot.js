@@ -27,6 +27,7 @@ define(["./proxy/dot_proxy", './coordinate', './data_base_class'], function(DotP
 	};
 	Dot.prototype.setCoordinate = function(coordinate){
 		this.coordinate = coordinate;
+		this.notifyGroupChanged();
 	};
 	//Collects all data about this dot in an Object that can be converted to JSON by the export function
     Dot.prototype.getStringifyData = function(){

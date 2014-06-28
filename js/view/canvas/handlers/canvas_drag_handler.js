@@ -64,28 +64,13 @@ define(["../../../messaging_system/event_listener",
 	};
 	CanvasDragHandler.prototype.moveObjects = function(coordinate){
 		var translation = new Coordinate(coordinate.getX()-this.previous_dragging_coordinate.getX(), coordinate.getY()-this.previous_dragging_coordinate.getY());
-		console.log("translation before transformation: "+JSON.stringify(translation));
 		translation = this.transformation.transformCanvasTranslationToRelativeImageTranslation(translation);
-		console.log("translation initiated with "+JSON.stringify(translation));
 		var identifications = new Array();
 		for(var i = 0; i < this.selected_objects.length; ++i){
 			identifications.push(this.selected_objects[i].getIdentification());
 		}
 		var data = new ObjectsMovedEvent(identifications, translation);
 		this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, data);
-		/*
-		for(var i = 0; i < this.selected_objects.length; ++i){
-			var data = this.selected_objects[i].getProxy().getData();
-			if(!data.coordinate){
-				continue;
-			}
-			var old_canvas_coordinate = this.transformation.transformRelativeImageCoordinateToCanvasCoordinate(data.coordinate);
-			var new_canvas_coordinate = new Coordinate(old_canvas_coordinate.getX() + translation.getX(), old_canvas_coordinate.getY() + translation.getY());
-
-//			data.coordinate = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new_canvas_coordinate);
-//			var identification = this.selected_objects[i].getProxy().getIdentification();
-//			this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, data));
-		}*/
 	};
 	CanvasDragHandler.prototype.canvasMouseDown = function(signal, data){
 		var event_data = data.getEventData();
