@@ -32,6 +32,7 @@ mouse pointer change: over edge -> move digit, on corner -> move corner, else: d
 hovering in toggle mode for patterns -> display RGB/grayscale values of current pixel
 
 validate JS-code
+display object movement more efficiently
 
 -------
 automisation
