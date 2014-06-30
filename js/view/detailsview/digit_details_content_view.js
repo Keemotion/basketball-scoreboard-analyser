@@ -17,6 +17,7 @@ define(["./corner_details_content_view",
 		this.data_proxy = data_proxy;
 		this.content_element= $('<div>')
 			.append($('<span>').text(''));
+		this.configuration_element = $('<ul>');
 		this.title_span = $('<span>')
 			.text('');
 		this.canvasClickListener = null;
@@ -41,6 +42,7 @@ define(["./corner_details_content_view",
 		
 		this.form = $('<form>')
 			.append(this.content_element)
+			.append(this.configuration_element)
 			.submit(function(){
 				var data = self.collectFormData();
 				var target = self.data_proxy.getIdentification();
@@ -66,6 +68,12 @@ define(["./corner_details_content_view",
 		this.content_element.append(this.title_span);
 		this.content_element.append(this.click_button);
 		this.content_element.append(this.remove_button);
+		this.configuration_element.empty();
+		var configuration_keys = this.data_proxy.getConfigurationKeys();
+//		for(var i = 0; i < configuration_keys.length; ++i){
+		for(var k in configuration_keys){
+			this.configuration_element.append($('<li>').text('configuration_key: '+k+" = "+configuration_keys[k]))
+		}
 		for(var i = 0; i < 4; ++i){
 			var el = new CornerDetailsContentView(this.content_element, subnodes[i], this.messaging_system);
 			this.content_elements.push(el);

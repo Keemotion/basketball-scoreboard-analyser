@@ -82,8 +82,10 @@ define([
 				return false;
 			}));
 		this.content_element = $('<div>');
+		this.configuration_element = $('<ul>');
 		this.element.append(this.title_form)
 			.append(this.controls_element)
+			.append(this.configuration_element)
 			.append(this.content_element);
 		this.target_view.append(this.element);
 		this.loadContent();
@@ -118,6 +120,11 @@ define([
 					break;
 			}
 			this.content_elements.push(el);
+		}
+		var configuration_keys = this.data_proxy.getConfigurationKeys();
+		this.configuration_element.empty();
+		for(var k in configuration_keys){
+			this.configuration_element.append($('<li>').text('configuration key: '+k+" = "+configuration_keys[k]));
 		}
 	};
 	//updates the content of the div when data about this group has changed

@@ -14,7 +14,7 @@ TO ASK:
     objects grouped meaningfully vs optimally (for keys)
 x export last number for digits
 x other color for current selected digit/group
-show configuration values
+x show configuration values
 display pattern functions 
 optimize: minimize number of lines
 configuration keys after the definition (digits/leds)
