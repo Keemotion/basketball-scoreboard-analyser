@@ -150,10 +150,18 @@ define(["../../../messaging_system/event_listener",
 	CanvasDragHandler.prototype.addSelected = function(obj){
 		if(!obj)
 			return;
+		var identifications = new Array();
+		identifications.push(obj.getProxy().getIdentification());
 		for(var i = 0; i < this.selected_objects.length; ++i){
-			if(this.selected_objects[i].getProxy().isPossiblyAboutThis(obj.getProxy().getIdentification())){
+			var tmp_identifications = new Array();
+			tmp_identifications.push(this.selected_objects[i].getProxy().getIdentification());
+			if(obj.getProxy().isAboutThisOrAncestors(tmp_identifications)){
 				return;
 			}
+			if(this.selected_objects[i].getProxy().isAboutThisOrAncestors(identifications)){
+				this.removeSelected(this.selected_objects[i]);
+				--i;
+			};
 		}
 		obj.setSelected(true);
 		this.selected_objects.push(obj);
