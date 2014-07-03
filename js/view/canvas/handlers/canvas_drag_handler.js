@@ -77,6 +77,7 @@ define(["../../../messaging_system/event_listener",
 		if(event_data.shiftKey){
 			this.current_state = CanvasDragHandler.states.AREA_SELECTING;
 			this.area_selection_start_coordinate = data.getCoordinate();
+			this.area_selection_end_coordinate = data.getCoordinate();
 		}else if(event_data.ctrlKey){
 			this.current_state = CanvasDragHandler.states.OBJECTS_DRAGGING;
 			if(this.getSelected().length == 0){
@@ -94,13 +95,15 @@ define(["../../../messaging_system/event_listener",
 		//then try to find an enclosing digit (group)
 		//if no such items found, don't do anything
 		var object = this.canvas.getObjectAtCanvasCoordinate(coordinate, 25);
-		this.toggleSelected(object);
+		this.addSelected(object);
 		this.selected_element_is_temporarily = true;
-		//console.log("single selection element = "+JSON.stringify(object));
 	};
 	CanvasDragHandler.prototype.canvasMouseUp = function(signal, data){
 		switch(this.current_state){
 			case CanvasDragHandler.states.AREA_SELECTING:
+				if(Coordinate.getSquareDistance(this.getSelectionStartCoordinate(), this.getSelectionEndCoordinate()) == 0){
+					break;
+				}
 				this.areaSelect();
 				break;
 			case CanvasDragHandler.states.OBJECTS_DRAGGING:
@@ -126,11 +129,9 @@ define(["../../../messaging_system/event_listener",
 		return this.selected_objects;
 	};
 	CanvasDragHandler.prototype.toggleSelected = function(obj){
-		console.log("toggle selected");
 		for(var i = 0; i < this.selected_objects.length; ++i){
 			if(this.selected_objects[i].getProxy().isPossiblyAboutThis(obj.getProxy().getIdentification())){
 				this.removeSelected(obj);
-				console.log("should be removed");
 				return;
 			}
 		}
@@ -139,9 +140,7 @@ define(["../../../messaging_system/event_listener",
 	CanvasDragHandler.prototype.removeSelected = function(obj){
 		for(var i = 0; i < this.selected_objects.length; ++i){
 			if(this.selected_objects[i].getProxy().isPossiblyAboutThis(obj.getProxy().getIdentification())){
-				console.log("length before: "+this.selected_objects.length);
 				this.selected_objects.splice(i,1);
-				console.log("length after: "+this.selected_objects.length);
 				break;
 			}
 		}
