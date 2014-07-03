@@ -94,7 +94,7 @@ define(["../../../messaging_system/event_listener",
 		//then try to find an enclosing digit (group)
 		//if no such items found, don't do anything
 		var object = this.canvas.getObjectAtCanvasCoordinate(coordinate, 25);
-		this.addSelected(object);
+		this.toggleSelected(object);
 		this.selected_element_is_temporarily = true;
 		//console.log("single selection element = "+JSON.stringify(object));
 	};
@@ -124,6 +124,29 @@ define(["../../../messaging_system/event_listener",
 		this.canvasMouseUp(signal, data);
 	};	CanvasDragHandler.prototype.getSelected = function(){
 		return this.selected_objects;
+	};
+	CanvasDragHandler.prototype.toggleSelected = function(obj){
+		console.log("toggle selected");
+		for(var i = 0; i < this.selected_objects.length; ++i){
+			if(this.selected_objects[i].getProxy().isPossiblyAboutThis(obj.getProxy().getIdentification())){
+				this.removeSelected(obj);
+				console.log("should be removed");
+				return;
+			}
+		}
+		this.addSelected(obj);
+	};
+	CanvasDragHandler.prototype.removeSelected = function(obj){
+		for(var i = 0; i < this.selected_objects.length; ++i){
+			if(this.selected_objects[i].getProxy().isPossiblyAboutThis(obj.getProxy().getIdentification())){
+				console.log("length before: "+this.selected_objects.length);
+				this.selected_objects.splice(i,1);
+				console.log("length after: "+this.selected_objects.length);
+				break;
+			}
+		}
+		obj.setSelected(false);
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	};
 	CanvasDragHandler.prototype.addSelected = function(obj){
 		if(!obj)
@@ -164,7 +187,7 @@ define(["../../../messaging_system/event_listener",
 			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 			//inside digit -> select
 			if(res){
-				this.addSelected(res);
+				this.toggleSelected(res);
 			}else{
 			}
 			//inside dot

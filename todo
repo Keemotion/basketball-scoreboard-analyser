@@ -8,7 +8,8 @@ DisplayTree.prototype.stateChanged
 
 
 optimize exporter (group settings)
-configuration keys in UI
+x configuration keys in UI
+change configuration keys in UI
 TO ASK: 
     default configuration keys?
     objects grouped meaningfully vs optimally (for keys)
@@ -21,7 +22,7 @@ configuration keys after the definition (digits/leds)
 x move whole digit at once
 x move whole group of leds at once
 x select a set of groups and move it at once
-selecting by square selection + selecting/deselecting by shift+click
+x selecting by square selection + selecting/deselecting by shift+click
 debug: add digit for new configuration
 
 x default: don't display green circles, only when working on that one (selected digits: all info)
