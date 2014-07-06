@@ -13,7 +13,7 @@ define([], function(){
 	Parser.prototype.parse = function(){
 		var lines = this.data_string.split('\n');
 		
-		var must_be_on = false;
+/*		var must_be_on = false;
 		var luminance_threshold = null;
 		var luminance_differential_threshold = null;
 		var requested_stability_ms = null;
@@ -21,9 +21,12 @@ define([], function(){
 		var sync_function = null;
 		var parse_function = null;
 		var dtype = null;
-		
+	*/	
 		var root_groups = new Object();
 		
+		var result = new Object();
+		result.sub_nodes = new Array();
+
 		for(var i = 0; i < lines.length; ++i){
 			lines[i] = lines[i].trim();
 			if(lines[i].length==0)
@@ -33,28 +36,18 @@ define([], function(){
 			var value=parts[1];
 			switch(key){
 				case 'must_be_on':
-					must_be_on = value;
-					break;
 				case 'luminance_threshold':
-					luminance_threshold = value;
-					break;
 				case 'luminance_differential_threshold':
-					luminance_differential_treshold = value;
-					break;
 				case 'requested_stability_ms':
-					requested_stability_ms = value;
-					break;
 				case 'read_function':
-					read_function = value;
-					break;
 				case 'sync_function':
-					sync_function = value;
-					break;
 				case 'parse_function':
-					parse_function = value;
-					break;
 				case 'dtype':
-					dtype = value;
+					var obj = new Object();
+					obj.key = key;
+					obj.value = value;
+					obj.type = "configuration_key";
+					result.sub_nodes.push(obj);
 					break;
 				default:
 					var action = "none";
@@ -95,14 +88,15 @@ define([], function(){
 						root_groups[key].name = key;
 						root_groups[key].sub_nodes = new Array();
 						root_groups[key].configuration_keys = new Object();
-						
-						root_groups[key].configuration_keys.parse_function = parse_function;
+						root_groups[key].type = "group";
+						result.sub_nodes.push(root_groups[key]);			
+/*						root_groups[key].configuration_keys.parse_function = parse_function;
 						root_groups[key].configuration_keys.read_function = read_function;
 						root_groups[key].configuration_keys.sync_function = sync_function;
 						root_groups[key].configuration_keys.first_digit_restricted = false;
 						root_groups[key].configuration_keys.must_be_on = must_be_on;
 						root_groups[key].configuration_keys.dtype = dtype;
-						root_groups[key].configuration_keys.luminance_threshold = luminance_threshold;
+						root_groups[key].configuration_keys.luminance_threshold = luminance_threshold;*/
 					}
 					switch(action){
 						case 'none':
@@ -143,13 +137,6 @@ define([], function(){
 							root_groups[key].configuration_keys[action]=value_parts[0];
 							break;
 					}
-			}
-		}
-		var result = new Object();
-		result.sub_nodes = new Array();
-		for(var name in root_groups){
-			if(root_groups.hasOwnProperty(name)){
-				result.sub_nodes.push(root_groups[name]);
 			}
 		}
 		return result;

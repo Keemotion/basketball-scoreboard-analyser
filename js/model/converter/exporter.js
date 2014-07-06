@@ -62,7 +62,10 @@ define([], function(){
 					}
 					result += "\n";
 				}
-				
+				break;
+			case 'configuration_key':
+				result += obj.key+"="+obj.value+"\n";
+				break;
 		}
 		if(obj.configuration_keys){
 			for(var key in obj.configuration_keys){

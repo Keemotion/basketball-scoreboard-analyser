@@ -1,12 +1,13 @@
 define([
 		"./group", 
+		"./configuration_key",
 		"./proxy/state_proxy", 
 		'./data_base_class',
 		'../messaging_system/events/state_changed_event',
 		'../messaging_system/event_listener',
 		'./converter/parser',
 		'./converter/exporter'
-		], function(Group, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser, Exporter){
+		], function(Group, ConfigurationKey, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser, Exporter){
 	//represents root node in the hierarchy of objects
     var State = function(messaging_system){
     	this.id = 0;
@@ -38,7 +39,14 @@ define([
 	};
 	//add a sub node 
 	State.prototype.addObject = function(data, single_event){
-		this.addSubNode(new Group(data, this, this.messaging_system));
+		switch(data.type){
+			case "configuration_key":
+				this.addSubNode(new ConfigurationKey(data.key, data.value, this.messaging_system));
+				break;
+			default:
+				this.addSubNode(new Group(data, this, this.messaging_system));
+				break;
+		}
 		this.stateChanged();
 	};
 	//generate a string based on the data this node and all its ancestors generated

@@ -262,15 +262,6 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		this.unlockNotification();
 		this.notifyGroupChanged();
 	};
-/*	BaseDataClass.prototype.getSelected = function(){
-		return this.selected;
-	};
-	BaseDataClass.prototype.setSelected = function(selected){
-		this.selected = selected;
-		for(var i = 0; i < this.sub_nodes.length; ++i){
-			this.sub_nodes[i].setSelected(selected);
-		}
-	};*/
 	BaseDataClass.prototype.objectMoved = function(signal, data){
 		if(this.canBeMoved()){
 			if(this.isAboutThisOrAncestors(data.getTargetIdentifications())){

@@ -18,6 +18,9 @@ define(['./base_display', './group_display', '../../messaging_system/event_liste
 		var sub_proxies = this.getProxy().getSubNodes();
 		this.sub_components.length = 0;
 		for(var i = 0; i < sub_proxies.length; ++i){
+			if(sub_proxies[i].getType() == "configuration_key"){
+				continue;
+			}
 			this.sub_components.push(new GroupDisplay(this, sub_proxies[i], this.messaging_system));
 		}
 	};
