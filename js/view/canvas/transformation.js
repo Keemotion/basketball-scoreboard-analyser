@@ -9,9 +9,17 @@ define(["../../model/coordinate"], function(Coordinate){
 		this.setImageHeight(image_height);
 	};
 	//zooming
-	Transformation.prototype.setScale = function(scale){
+	Transformation.prototype.setScale = function(scale, zoom_coordinate){
+		var old_scale = this.getScale();
 		this.scale = scale;
 		this.scale = Math.max(this.scale, 1);
+		if(zoom_coordinate != null){
+			var factor = this.getScale()/old_scale;
+			var center_coordinate = this.getCanvasCenter();
+			//var mouse_coordinate = this.transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+			var new_canvas_center = zoom_coordinate.scalarMultiply(factor-1).add(center_coordinate).scalarMultiply(1/factor);
+			this.setCanvasCenter(new_canvas_center);
+		}
 	};
 	Transformation.prototype.setCanvasWidth = function(width){
 		this.canvas_width = width;

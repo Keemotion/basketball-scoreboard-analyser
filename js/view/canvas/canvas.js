@@ -59,7 +59,8 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
 		this.windowResized(null, null);
 		var scrollF = function(e){
-			messaging_system.fire(messaging_system.events.CanvasScrolled, new CanvasScrolledEvent(e));
+			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
+			messaging_system.fire(messaging_system.events.CanvasScrolled, new CanvasScrolledEvent(c, e));
 		};
 		this.canvas_element.addEventListener('DOMMouseScroll', scrollF, false);
 		this.canvas_element.addEventListener('mousewheel', scrollF, false);
@@ -138,7 +139,8 @@ define([
 		}else{
 			factor = 10/9;
 		}
-		this.transformation.setScale(this.transformation.getScale()*factor);
+		var mouse_coordinate = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+		this.transformation.setScale(this.transformation.getScale()*factor, mouse_coordinate);
 		this.updateCanvas(signal, data);
 		return data.event_data.preventDefault() && false;
 	};

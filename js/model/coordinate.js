@@ -55,5 +55,8 @@ define([],function(){
 	Coordinate.prototype.add = function(c2){
 		return new Coordinate(c2.getX()+this.getX(), c2.getY()+this.getY());
 	};
+	Coordinate.prototype.scalarMultiply = function(l){
+		return new Coordinate(this.getX()*l, this.getY()*l);
+	};
     return Coordinate;
 });
