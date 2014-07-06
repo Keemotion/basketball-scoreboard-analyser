@@ -288,5 +288,10 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 	BaseDataClass.prototype.move = function(translation){
 		throw "Move not implemented at "+this.getType();
 	};
+	BaseDataClass.prototype.clear = function(){
+		this.sub_nodes.length = 0;
+		this.configuration_keys = new Object();
+		this.notifyGroupChanged();
+	};
 	return BaseDataClass;
 });

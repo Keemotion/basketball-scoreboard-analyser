@@ -8,6 +8,9 @@ define([],function(){
 
         //Reset state
         ResetState:'ResetState',
+        
+        //Clear state (empty all groups of digits/dots but keep empty groups)
+        ClearState:'ClearState',
 
 		//Data in the current state changed
         GroupChanged:'GroupChanged', 

@@ -18,11 +18,25 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadState, new EventListener(this, this.loadState));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadStateFile, new EventListener(this, this.loadStateFile));
         this.messaging_system.addEventListener(this.messaging_system.events.ResetState, new EventListener(this, this.reset));
+        this.messaging_system.addEventListener(this.messaging_system.events.ClearState, new EventListener(this, this.clearState));
     };
 	State.prototype = new DataBaseClass("state");
 	//load the state based on a JSON format
 	State.prototype.loadState = function(signal, data){
 		this.parseJSON(data.getDataString());
+	};
+	State.prototype.clearState = function(signal, data){
+		this.lockNotification();
+		for(var i = 0; i < this.sub_nodes.length; ++i){
+			if(this.sub_nodes[i].getType() == "configuration_key"){
+				this.sub_nodes.splice(i, 1);
+				--i;
+				continue;
+			}
+			this.sub_nodes[i].clear();
+		}
+		this.unlockNotification();
+		this.notifyGroupChanged();
 	};
 	//load the state based on the original file format
 	State.prototype.loadStateFile = function(signal, data){

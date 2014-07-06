@@ -28,8 +28,7 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
         	.change(function(){self.imageChanged();})
         	.attr('id', 'btnLoadImage');
         var file_div = $('<div>').append($('<span>').html('Load file:')).append(this.file_btn).append($('<span>').html('<br>Load image: ')).append(this.img_btn);
-		this.containerElement/*.append(this.textArea)*/
-			/*.append(btn_div)*/
+		this.containerElement
 			.append(file_div);
 		
 		this.reset_view_btn = $('<button>').text('Reset Canvas View').click(function(){
@@ -38,9 +37,13 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
         this.reset_state_btn = $('<button>').text('Reset configuration').click(function(){
             self.messaging_system.fire(self.messaging_system.events.ResetState, null);
         });
+        this.clear_state_btn = $('<button>').text('Clear configuration').click(function(){
+        	self.messaging_system.fire(self.messaging_system.events.ClearState, null);
+        });
 		this.containerElement
             .append(this.reset_view_btn)
-            .append(this.reset_state_btn);
+            .append(this.reset_state_btn)
+            .append(this.clear_state_btn);
 	};
 	LoadStateComponent.prototype.fileChanged = function(evt){
 		var self = this;
