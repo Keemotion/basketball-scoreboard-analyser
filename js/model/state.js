@@ -1,7 +1,7 @@
 define([
-		"./group", 
+		"./group",
 		"./configuration_key",
-		"./proxy/state_proxy", 
+		"./proxy/state_proxy",
 		'./data_base_class',
 		'../messaging_system/events/state_changed_event',
 		'../messaging_system/event_listener',
@@ -19,6 +19,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadStateFile, new EventListener(this, this.loadStateFile));
         this.messaging_system.addEventListener(this.messaging_system.events.ResetState, new EventListener(this, this.reset));
         this.messaging_system.addEventListener(this.messaging_system.events.ClearState, new EventListener(this, this.clearState));
+        this.messaging_system.addEventListener(this.messaging_system.events.ObjectsMoved, new EventListener(this, this.objectsMoved));
     };
 	State.prototype = new DataBaseClass("state");
 	//load the state based on a JSON format
@@ -51,7 +52,7 @@ define([
 	};
 	State.prototype.groupChanged = function(signal, data){
 	};
-	//add a sub node 
+	//add a sub node
 	State.prototype.addObject = function(data, single_event){
 		switch(data.type){
 			case "configuration_key":
@@ -122,6 +123,12 @@ define([
 			return;
 		}
 		this.stateChanged();
+	};
+	State.prototype.objectsMoved = function(signal, data){
+		var translation = data.getTranslation();
+		var tree = data.getTree();
+		console.log("translation = "+JSON.stringify(translation));
+		this.moveSelection(tree.getRoot(), translation);
 	};
     return State;
 });

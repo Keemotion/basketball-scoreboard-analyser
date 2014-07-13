@@ -24,7 +24,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
 		this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, new EventListener(this, this.removeElement));
-		this.messaging_system.addEventListener(this.messaging_system.events.ObjectsMoved, new EventListener(this, this.objectMoved));
+		//this.messaging_system.addEventListener(this.messaging_system.events.ObjectsMoved, new EventListener(this, this.objectMoved));
 		if(this.addElement){
 			this.addElementListener = new EventListener(this, this.addElement);
 			this.messaging_system.addEventListener(this.messaging_system.events.AddElement, this.addElementListener);
@@ -270,13 +270,13 @@ define([
 		this.unlockNotification();
 		this.notifyGroupChanged();
 	};
-	BaseDataClass.prototype.objectMoved = function(signal, data){
+	/*BaseDataClass.prototype.objectMoved = function(signal, data){
 		if(this.canBeMoved()){
 			if(this.isAboutThisOrAncestors(data.getTargetIdentifications())){
 				this.move(data.getTranslation());
 			}
 		}
-	};
+	};*/
 	BaseDataClass.prototype.isAboutThisOrAncestors = function(identifications){
 		if(this.getParent()){
 			if(this.getParent().isAboutThisOrAncestors(identifications)){
@@ -290,12 +290,12 @@ define([
 		}
 		return false;
 	};
-	BaseDataClass.prototype.canBeMoved = function(){
+	/*BaseDataClass.prototype.canBeMoved = function(){
 		return false;
 	};
 	BaseDataClass.prototype.move = function(translation){
 		throw "Move not implemented at "+this.getType();
-	};
+	};*/
 	BaseDataClass.prototype.clear = function(){
 		this.sub_nodes.length = 0;
 		this.configuration_keys = new Object();
@@ -314,6 +314,21 @@ define([
 			return this.getParent().getSelectionTree(false, tree);
 		}
 		return tree;
+	};
+	BaseDataClass.prototype.moveSelection = function(node, translation){
+		if(node.getSelected()){
+			this.move(translation);
+			return;
+		}
+		var children = node.getChildren();
+		for(var i = 0; i < children.length; ++i){
+			this.sub_nodes[children[i].getId()].moveSelection(children[i], translation);
+		}
+	};
+	BaseDataClass.prototype.move = function(translation){
+		for(var i = 0; i < this.sub_nodes.length; ++i){
+			this.sub_nodes[i].move(translation);
+		}
 	};
 	return BaseDataClass;
 });

@@ -1,11 +1,13 @@
 define([
 	"../../../messaging_system/event_listener",
 	"../../../model/coordinate",
-	"../../../messaging_system/events/selection_event"]
+	"../../../messaging_system/events/selection_event",
+	"../../../messaging_system/events/objects_moved_event"]
 	, function(
 		EventListener,
 		Coordinate,
-		SelectionEvent
+		SelectionEvent,
+		ObjectsMovedEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -68,7 +70,8 @@ define([
 	};
 	CanvasMouseHandler.MouseModes = {
 		SelectionMode:"SelectionMode",
-		ViewEditMode:"ViewEditMode"
+		ViewEditMode:"ViewEditMode",
+		DragMode:"DragMode"
 	};
 	CanvasMouseHandler.prototype.canvasScrolled = function(signal, data){
 		var evt = data.event_data;
@@ -94,14 +97,23 @@ define([
 					);
 					var transformed = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(mv);
 					this.canvas.getTransformation().setCanvasCenter(transformed);
-					this.previous_mouse_coordinate = data.getCoordinate();
-					//this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 					this.canvas.updateCanvas(signal, data);
 				}
 				break;
 			case CanvasMouseHandler.MouseModes.SelectionMode:
 				if(this.mouse_down){
 					this.updateSelection(data);
+				}
+				break;
+			case CanvasMouseHandler.MouseModes.DragMode:
+				if(this.mouse_down){
+					//var mv = new Coordinate(
+					//	this.canvas.getTransformation().getCanvasWidth() / 2 - (data.getCoordinate().getX() - this.previous_mouse_coordinate.getX()),
+					//	this.canvas.getTransformation().getCanvasHeight() / 2 - (data.getCoordinate().getY() - this.previous_mouse_coordinate.getY())
+					//);
+					var mv = new Coordinate(data.getCoordinate().getX()-this.previous_mouse_coordinate.getX(), data.getCoordinate().getY()-this.previous_mouse_coordinate.getY());
+					var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(mv);
+					this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.canvas.view.getCurrentSelectionTree(), transformed));
 				}
 				break;
 		}

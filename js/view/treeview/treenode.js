@@ -114,7 +114,7 @@ return element;
 		}
 		this.sub_nodes.length = 0;
 		this.sub_nodes_element.empty();
-		if(this.data_proxy.getType() == "group" || this.data_proxy.getType() == "state"){
+		if(this.data_proxy.getType() == "group" || this.data_proxy.getType() == "state" || this.data_proxy.getType() == "digit"){
 			for(var i = 0; i < sub_nodes.length; ++i){
 				this.addSubNode(sub_nodes[i], i);
 			}

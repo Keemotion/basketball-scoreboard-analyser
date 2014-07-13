@@ -28,12 +28,16 @@ define([
 		this.edit_view_tool_btn = $('<button>').text('View edit mode').click(function(){
 			self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.ViewEditMode));
 		});
+		this.drag_tool_btn = $('<button>').text('Drag mode').click(function(){
+			self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.DragMode));
+		});
 		this.target_view
 			.append(this.download_json_btn)
 			.append('<br>')
 			.append(this.download_prm_btn)
 			.append(this.selection_tool_btn)
-			.append(this.edit_view_tool_btn);
+			.append(this.edit_view_tool_btn)
+			.append(this.drag_tool_btn);
 	};
 	CurrentStateComponent.prototype.setProxy = function(proxy){
 		this.state_proxy = proxy;
