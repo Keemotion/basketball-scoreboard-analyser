@@ -258,12 +258,8 @@ define([
 			}
 			if(this.getDisplayObjectsEnabled()){
 				this.drawDisplayObjects();
-			}else{
-				this.drawSelectedDisplayObjects();
-				/*for(var i = 0; i < this.canvas_drag_handler.getSelected().length; ++i){
-					this.canvas_drag_handler.getSelected()[i].drawChanging(this.context, this.getTransformation());
-				}*/
 			}
+			this.drawSelectedDisplayObjects();
 		}
 	};
 	MyCanvas.prototype.getTransformation = function(){

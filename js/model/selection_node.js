@@ -62,7 +62,7 @@ define([], function(){
 			for(var j = 0; j < own_children.length; ++j){
 				if(own_children[j].equals(other_children[i])){
 					found = true;
-					own_children.addSelection(other_children[i]);
+					own_children[j].addSelection(other_children[i]);
 					break;
 				}
 			}

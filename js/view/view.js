@@ -95,22 +95,32 @@ define([
     };
     View.prototype.selectionAdded = function(signal, data){
     	console.log("selection added: "+JSON.stringify(data));
+    	this.current_selection_tree = this.official_selection_tree.clone();
+    	this.current_selection_tree.addSelection(data.getTree());
+    	if(!data.getTemporary()){
+    		this.official_selection_tree = this.current_selection_tree.clone();
+    	}
     };
     View.prototype.selectionRemoved = function(signal, data){
     	console.log("selection removed: "+JSON.stringify(data));
     };
     View.prototype.selectionToggled = function(signal, data){
     	console.log("selection toggled: "+JSON.stringify(data));
+    	this.current_selection_tree = this.official_selection_tree.clone();
+    	this.current_selection_tree.toggleSelection(data.getTree());
+    	if(!data.getTemporary()){
+    		this.official_selection_tree = this.current_selection_tree.clone();
+    	}
     };
     View.prototype.selectionSet = function(signal, data){
     	console.log("selection set: "+JSON.stringify(data));
-    	if(data.getTemporary()){
-    		this.current_selection_tree = data.getTree().clone();
-    		this.official_selection_tree = data.getTree().clone();
-    	}
+		this.current_selection_tree = data.getTree().clone();
+		this.official_selection_tree = data.getTree().clone();
     };
     View.prototype.selectionReset = function(signal, data){
     	console.log("selection reset: "+JSON.stringify(data));
+    	this.current_selection_tree = new SelectionTree();
+    	this.official_selection_tree = new SelectionTree();
     };
     View.prototype.groupClicked = function(signal, data){
 		if(data.data_proxy.getType() == "group"){
