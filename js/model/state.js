@@ -59,7 +59,7 @@ define([
 				this.addSubNode(new ConfigurationKey(data.key, data.value, this.messaging_system));
 				break;
 			default:
-				this.addSubNode(new Group(data, this, this.messaging_system));
+				this.addSubNode(new Group(data, data.group_type, this, this.messaging_system));
 				break;
 		}
 		this.stateChanged();
@@ -102,7 +102,7 @@ define([
 			this.addObject(data.sub_nodes[i], false);
 		}
 		this.unlockNotification();
-	   	this.stateChanged();
+		this.stateChanged();
 		return true;
 	};
 	//add an empty sub group
@@ -111,7 +111,7 @@ define([
 			var s = null;
 			switch(data.getType()){
 				case 'group':
-					s = new Group(null, this, this.messaging_system);
+					s = new Group(null, data.getExtraData(), this, this.messaging_system);
 					break;
 			}
 			this.addSubNode(s);

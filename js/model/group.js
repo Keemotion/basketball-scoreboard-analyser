@@ -1,19 +1,20 @@
-define(["./digit", 
-	"./proxy/group_proxy", 
-	"../messaging_system/event_listener", 
-	"./data_base_class", 
+define(["./digit",
+	"./proxy/group_proxy",
+	"../messaging_system/event_listener",
+	"./data_base_class",
 	'../messaging_system/events/group_changed_event',
 	'./dot'],function(
-		Digit, 
-		GroupProxy, 
-		EventListener, 
-		DataBaseClass, 
+		Digit,
+		GroupProxy,
+		EventListener,
+		DataBaseClass,
 		GroupChangedEvent,
 		Dot){
 	//represents a collection of digits/dots/groups
-   	var Group = function(data, parent, messaging_system){
+	var Group = function(data, group_type, parent, messaging_system){
 		this.messaging_system = messaging_system;
 		this.init();
+		this.group_type = group_type;
 		this.setParent(parent);
 		this.setProxy(new GroupProxy(this));
 		this.lockNotification();
@@ -30,7 +31,7 @@ define(["./digit",
 		"must_be_on": false,
 		"dtype": null,
 		"luminance_threshold": "190"
-	  };
+	};
 	//load the data for this group
 	//when no data is provided, an empty group is made and the default configuration keys are applied to it
 	Group.prototype.loadData = function(data){
@@ -95,6 +96,9 @@ define(["./digit",
 			}
 			this.addSubNode(s);
 		}
+	};
+	Group.prototype.getGroupType = function(){
+		return this.group_type;
 	};
 	return Group;
 });

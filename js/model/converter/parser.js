@@ -9,10 +9,10 @@ define([], function(){
 	function subtract(base_str, pattern){
 		return base_str.substring(0, base_str.length-pattern.length);
 	};
-	
+
 	Parser.prototype.parse = function(){
 		var lines = this.data_string.split('\n');
-		
+
 /*		var must_be_on = false;
 		var luminance_threshold = null;
 		var luminance_differential_threshold = null;
@@ -21,9 +21,9 @@ define([], function(){
 		var sync_function = null;
 		var parse_function = null;
 		var dtype = null;
-	*/	
+	*/
 		var root_groups = new Object();
-		
+
 		var result = new Object();
 		result.sub_nodes = new Array();
 
@@ -89,7 +89,7 @@ define([], function(){
 						root_groups[key].sub_nodes = new Array();
 						root_groups[key].configuration_keys = new Object();
 						root_groups[key].type = "group";
-						result.sub_nodes.push(root_groups[key]);			
+						result.sub_nodes.push(root_groups[key]);
 /*						root_groups[key].configuration_keys.parse_function = parse_function;
 						root_groups[key].configuration_keys.read_function = read_function;
 						root_groups[key].configuration_keys.sync_function = sync_function;
@@ -103,6 +103,7 @@ define([], function(){
 							break;
 						case 'leds':
 						case 'led':
+							root_groups[key].group_type = "dot";
 							for(var j = 0; j < Math.floor(value_parts.length/2); ++j){
 								var x = value_parts[2*j];
 								var y = value_parts[2*j+1];
@@ -118,6 +119,7 @@ define([], function(){
 							}
 							break;
 						case 'digit':
+							root_groups[key].group_type = "digit";
 							var dig = new Object();
 							dig.corners = new Array();
 							dig.type = "digit";

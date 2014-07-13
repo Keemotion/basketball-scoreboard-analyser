@@ -3,14 +3,22 @@ define(["./treenode", "../../messaging_system/event_listener", "../../messaging_
 	var TreeView = function(target_view, state_proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
-		this.add_element = $('<button>')
+		this.add_digit_element = $('<button>')
 			.attr({
 				'type':'button'
-			}).text('Add group')
+			}).text('Add digit group')
 			.click(function(){
-				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('group', self.state_proxy.getIdentification()));
+				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('group', self.state_proxy.getIdentification(), 'digit'));
 			});
-		target_view.append(this.add_element);
+		target_view.append(this.add_digit_element);
+		this.add_dot_element = $('<button>')
+			.attr({
+				'type':'button'
+			}).text('Add leds group')
+			.click(function(){
+				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElement('group', self.state_proxy.getIdentification(), 'dot'));
+			});
+		target_view.append(this.add_dot_element);
 		this.tree_element = $('<ul>')
 			.attr({
 				'class':'list_toolbox_objects_tree'

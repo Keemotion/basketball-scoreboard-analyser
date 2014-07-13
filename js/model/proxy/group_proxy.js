@@ -4,5 +4,8 @@ define(["../../messaging_system/messaging_system", './proxy_base_class'],functio
 		this.setObj(group);
 	};
 	GroupProxy.prototype = new ProxyBaseClass();
+	GroupProxy.prototype.getGroupType = function(){
+		return this.obj.getGroupType();
+	};
 	return GroupProxy;
 });

@@ -1,10 +1,10 @@
-define(["./corner_details_content_view", 
-	"../../messaging_system/event_listener", 
+define(["./corner_details_content_view",
+	"../../messaging_system/event_listener",
 	"../../messaging_system/events/submit_group_details_event",
 	"../../messaging_system/events/remove_group_event",
 	"./canvas_multiple_click_listener"],
-	function(CornerDetailsContentView, 
-		EventListener, 
+	function(CornerDetailsContentView,
+		EventListener,
 		SubmitGroupDetailsEvent,
 		RemoveGroupEvent,
 		CanvasMultipleClickListener){
@@ -39,7 +39,7 @@ define(["./corner_details_content_view",
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(data_proxy.getIdentification()));
 				return false;
 			});
-		
+
 		this.form = $('<form>')
 			.append(this.content_element)
 			.append(this.configuration_element)
@@ -72,7 +72,7 @@ define(["./corner_details_content_view",
 		var configuration_keys = this.data_proxy.getConfigurationKeys();
 //		for(var i = 0; i < configuration_keys.length; ++i){
 		for(var k in configuration_keys){
-			this.configuration_element.append($('<li>').text('configuration_key: '+k+" = "+configuration_keys[k]))
+			this.configuration_element.append($('<li>').text('configuration_key: '+k+" = "+configuration_keys[k]));
 		}
 		for(var i = 0; i < 4; ++i){
 			var el = new CornerDetailsContentView(this.content_element, subnodes[i], this.messaging_system);

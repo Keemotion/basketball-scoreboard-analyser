@@ -1,17 +1,17 @@
 define([
 	"./digit_details_content_view",
-	"./dot_details_content_view", 
+	"./dot_details_content_view",
 	"./group_details_content_view",
-	"../../messaging_system/event_listener", 
+	"../../messaging_system/event_listener",
 	"../../messaging_system/events/submit_group_details_event",
 	"../../messaging_system/events/toggle_display_object_event",
 	"../../messaging_system/events/add_element_event",
-	"../../messaging_system/events/remove_group_event"], 
+	"../../messaging_system/events/remove_group_event"],
 	function(
-		DigitDetailsContentView, 
+		DigitDetailsContentView,
 		DotDetailsContentView,
 		GroupDetailsContentView,
-		EventListener, 
+		EventListener,
 		SubmitGroupDetailsEvent,
 		ToggleDisplayObjectEvent,
 		AddElementEvent,
@@ -74,9 +74,13 @@ define([
 			.attr({
 				'class':'span_details_controls'
 			})
-			.append(this.highlight_button.element)
-			.append(this.add_digit_button.element)
-			.append(this.add_dot_button.element)
+			.append(this.highlight_button.element);
+		if(data_proxy.getGroupType() == "digit"){
+			this.controls_element.append(this.add_digit_button.element);
+		}else if(data_proxy.getGroupType() == "dot"){
+			this.controls_element.append(this.add_dot_button.element);
+		}
+		this.controls_element
 			.append($('<button>').text('Delete group').attr('type','button').click(function(){
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(self.data_proxy.getIdentification()));
 				return false;
