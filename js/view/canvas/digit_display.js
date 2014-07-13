@@ -73,10 +73,10 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		sampling_points.push(Coordinate.getMiddle([coordinates[3], left_middle]));
 		sampling_points.push(Coordinate.getMiddle([left_middle, coordinates[0]]));
 		sampling_points.push(Coordinate.getMiddle([right_middle, left_middle]));
-		
+
 		sampling_points.push(Coordinate.getMiddle([coordinates[0], coordinates[1], left_middle, right_middle]));
 		sampling_points.push(Coordinate.getMiddle([coordinates[2], coordinates[3], left_middle, right_middle]));
-		
+
 		//only draw if no circles intersect
 		var sampling_point_radius = 5;
 		var intersecting = false;
@@ -97,7 +97,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 				context.stroke();
 			}
 		}
-		
+
 	};
 	DigitDisplay.prototype.loadSubComponents = function(){
 		var sub_proxies = this.getProxy().getSubNodes();
@@ -107,7 +107,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		}
 	};
 	var Geometry = function(){
-		
+
 	};
 	Geometry.determinant = function(a, b,c, d){
 		return a*d-b*c;
@@ -132,7 +132,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		}
 		return intersection_amount%2 == 1;
 	};
-	DigitDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+	/*DigitDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
 		var points = Array();
 		for(var i = 0; i < this.sub_components.length; ++i){
 			points.push(this.sub_components[i].getProxy().getCoordinate());
@@ -144,6 +144,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 			return this;
 		}
 		return null;
-	};
+	};*/
 	return DigitDisplay;
 });

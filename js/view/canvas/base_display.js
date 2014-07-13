@@ -1,4 +1,10 @@
-define([], function(){
+define([
+	"../../model/selection_tree",
+	"../../model/selection_node"
+	], function(
+		SelectionTree,
+		SelectionNode
+	){
 	//BaseDisplay represents the common properties for all display objects
 	var BaseDisplay = function(){
 	};
@@ -24,11 +30,12 @@ define([], function(){
 			this.sub_components[i].draw(context, transformation);
 		}
 		if(this.getProxy().getDisplaying()){
-			if(this.getSelected()){
+			/*if(this.getSelected()){
 				this.drawMyselfSelected(context, transformation);
 			}else{
 				this.drawMyself(context, transformation);
-			}
+			}*/
+			this.drawMyself(context, transformation);
 		}
 	};
 	//draws the object itself (without children)
@@ -36,7 +43,20 @@ define([], function(){
 	BaseDisplay.prototype.drawMyself = function(context, transformation){
 	};
 	BaseDisplay.prototype.drawMyselfSelected = function(context, transformation){
-		//this.drawMyself(context, transformation);
+		this.drawMyself(context, transformation);
+	};
+	BaseDisplay.prototype.drawSelected = function(selection_node, context, transformation){
+		if(selection_node.getType() != this.getProxy().getType() || selection_node.getId() != this.getProxy().getId()){
+			console.log("own type = "+this.getProxy().getType()+", selection_node type = "+selection_node.getType());
+			console.log("own id = "+this.getProxy().getId()+", selection_node type = "+selection_node.getId());
+		}
+		if(selection_node.getSelected()){
+			this.drawMyselfSelected(context, transformation);
+		}
+		var children = selection_node.getChildren();
+		for(var i = 0; i < children.length; ++i){
+			this.sub_components[children[i].getId()].drawSelected(children[i], context, transformation);
+		}
 	};
 	BaseDisplay.prototype.getProxy = function(){
 		return this.proxy;
@@ -44,7 +64,7 @@ define([], function(){
 	BaseDisplay.prototype.setProxy = function(proxy){
 		this.proxy = proxy;
 	};
-	//determines whether this display object is at (around) the given canvas coordinate
+	/*//determines whether this display object is at (around) the given canvas coordinate
 	//should be overridden
 	BaseDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation, current){
 		return false;
@@ -62,17 +82,17 @@ define([], function(){
 			}
 		}
 		return res;
-	};
+	};*/
 	BaseDisplay.prototype.canBeSelected = function(){
 		return false;
 	};
-	BaseDisplay.prototype.childrenCanBeSelected = function(){
+	/*BaseDisplay.prototype.childrenCanBeSelected = function(){
 		return true;
-	};
-	BaseDisplay.prototype.isInRectangle = function(transformation, start_coordinate, end_coordinate){
+	};*/
+	/*BaseDisplay.prototype.isInRectangle = function(transformation, start_coordinate, end_coordinate){
 		return false;
-	};
-	BaseDisplay.prototype.getObjectsInRectangle = function(transformation, start_coordinate, end_coordinate){
+	};*/
+	/*BaseDisplay.prototype.getObjectsInRectangle = function(transformation, start_coordinate, end_coordinate){
 		var res = new Array();
 		if(this.canBeSelected()){
 			if(this.isInRectangle(transformation, start_coordinate, end_coordinate)){
@@ -88,8 +108,8 @@ define([], function(){
 			}
 		}
 		return res;
-	};
-	BaseDisplay.prototype.getSelected = function(){
+	};*/
+	/*BaseDisplay.prototype.getSelected = function(){
 		if(this.selected)
 			return true;
 		if(this.getParent()){
@@ -99,15 +119,38 @@ define([], function(){
 	};
 	BaseDisplay.prototype.setSelected = function(selected){
 		this.selected = selected;
-	};
-	BaseDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+	};*/
+	/*BaseDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
 		for(var i = 0; i < this.sub_components.length; ++i){
 			var res = this.sub_components[i].getObjectAroundCanvasCoordinate(coordinate);
 			if(res)
 				return res;
 		}
+	};*/
+	BaseDisplay.prototype.isInRectangle = function(rectangle){
+		return false;
 	};
-	BaseDisplay.prototype.drawChanging = function(context,transformation){
+	BaseDisplay.prototype.getSelectionTree = function(rectangle){
+		var selection_tree = new SelectionTree();
+		selection_tree.getRoot().setType(this.getProxy().getType());
+		selection_tree.getRoot().setId(this.getProxy().getId());
+		if(this.canBeSelected()){
+			if(this.isInRectangle(rectangle)){
+				selection_tree.getRoot().setSelected(true);
+			}
+		}
+		for(var i = 0; i < this.sub_components.length; ++i){
+			var tmp_tree = this.sub_components[i].getSelectionTree(rectangle);
+			if(tmp_tree.getRoot().getSelected() || tmp_tree.getRoot().getChildren().length > 0){
+				selection_tree.getRoot().addChild(tmp_tree.getRoot());
+				//TODO: check this!
+				//tmp_tree.getRoot() should be a child of selection_tree.getRoot()
+				//console.log("selection_tree = "+JSON.stringify(selection_tree));
+			}
+		}
+		return selection_tree;
+	};
+	/*BaseDisplay.prototype.drawChanging = function(context,transformation){
 		this.draw(context, transformation);
 	};
 	BaseDisplay.prototype.getSelectElements = function(){
@@ -118,6 +161,6 @@ define([], function(){
 			}
 			return a;
 		}
-	};
+	};*/
 	return BaseDisplay;
 });

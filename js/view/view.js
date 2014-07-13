@@ -1,25 +1,31 @@
 define([
-		'./canvas/canvas', 
-		'./stateview/load_state_component', 
-		'./treeview/treeview', 
-		'./detailsview/group_detailsview', 
+		'./canvas/canvas',
+		'./stateview/load_state_component',
+		'./treeview/treeview',
+		'./detailsview/group_detailsview',
 		'../messaging_system/event_listener',
 		'./canvas/display_tree',
-		'./stateview/current_state_component'
+		'./stateview/current_state_component',
+		"../model/selection_tree",
+		"../model/selection_node"
 		]
 	, function(
-		MyCanvas, 
-		LoadStateComponent, 
-		TreeView, 
-		GroupDetailsView, 
+		MyCanvas,
+		LoadStateComponent,
+		TreeView,
+		GroupDetailsView,
 		EventListener,
 		DisplayTree,
-		CurrentStateComponent
+		CurrentStateComponent,
+		SelectionTree,
+		SelectionNode
 		){
 	//View represents the GUI
     var View = function(controller, target_view, messaging_system){
     	this.messaging_system = messaging_system;
         this.controller = controller;
+        this.official_selection_tree = new SelectionTree();
+        this.current_selection_tree = new SelectionTree();
 		this.element = target_view;
         this.element.html('');
         this.canvas_container_div = $('<div>').attr({
@@ -62,8 +68,8 @@ define([
         this.element.append(this.left_container_div)
         	.append(this.right_container_div);
 
-    	//the canvas    
-        this.canvas = new MyCanvas(this.canvas_container_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
+    	//the canvas
+        this.canvas = new MyCanvas(this, this.canvas_container_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
 		//the export field
 		this.current_state_component = new CurrentStateComponent(this.current_state_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
 		//the import field
@@ -73,9 +79,38 @@ define([
 
         this.messaging_system.addEventListener(this.messaging_system.events.GroupClicked, new EventListener(this,this.groupClicked));
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
+
+		this.messaging_system.addEventListener(this.messaging_system.events.SelectionAdded, new EventListener(this, this.selectionAdded));
+		this.messaging_system.addEventListener(this.messaging_system.events.SelectionRemoved, new EventListener(this, this.selectionRemoved));
+		this.messaging_system.addEventListener(this.messaging_system.events.SelectionToggled, new EventListener(this, this.selectionToggled));
+		this.messaging_system.addEventListener(this.messaging_system.events.SelectionSet, new EventListener(this, this.selectionSet));
+		this.messaging_system.addEventListener(this.messaging_system.events.SelectionReset, new EventListener(this, this.selectionReset));
+
         window.addEventListener('resize', function(){
             messaging_system.fire(messaging_system.events.WindowResized, null);
         });
+    };
+    View.prototype.getCurrentSelectionTree = function(){
+    	return this.current_selection_tree;
+    };
+    View.prototype.selectionAdded = function(signal, data){
+    	console.log("selection added: "+JSON.stringify(data));
+    };
+    View.prototype.selectionRemoved = function(signal, data){
+    	console.log("selection removed: "+JSON.stringify(data));
+    };
+    View.prototype.selectionToggled = function(signal, data){
+    	console.log("selection toggled: "+JSON.stringify(data));
+    };
+    View.prototype.selectionSet = function(signal, data){
+    	console.log("selection set: "+JSON.stringify(data));
+    	if(data.getTemporary()){
+    		this.current_selection_tree = data.getTree().clone();
+    		this.official_selection_tree = data.getTree().clone();
+    	}
+    };
+    View.prototype.selectionReset = function(signal, data){
+    	console.log("selection reset: "+JSON.stringify(data));
     };
     View.prototype.groupClicked = function(signal, data){
 		if(data.data_proxy.getType() == "group"){

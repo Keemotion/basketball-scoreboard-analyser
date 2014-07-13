@@ -2,6 +2,11 @@ define(["./selection_node"], function(SelectionNode){
 	var SelectionTree = function(){
 		this.root = new SelectionNode();
 	};
+	SelectionTree.prototype.clone = function(){
+		var tree = new SelectionTree();
+		tree.root = this.getRoot().clone();
+		return tree;
+	};
 	SelectionTree.prototype.addSelection = function(tree){
 		this.root.addSelection(tree.getRoot());
 	};
@@ -13,6 +18,9 @@ define(["./selection_node"], function(SelectionNode){
 	};
 	SelectionTree.prototype.getRoot = function(){
 		return this.root;
+	};
+	SelectionTree.prototype.cleanUp = function(){
+		this.getRoot().cleanUp();
 	};
 	return SelectionTree;
 });

@@ -1,4 +1,14 @@
-define(['./base_display', './group_display', '../../messaging_system/event_listener'], function(BaseDisplay, GroupDisplay, EventListener){
+define([
+	'./base_display',
+	'./group_display',
+	'../../messaging_system/event_listener',
+	"./dummy_display"
+	],
+	function(
+		BaseDisplay,
+		GroupDisplay,
+		EventListener,
+		DummyDisplay){
 	//represents the root node of all display objects
 	var DisplayTree = function(proxy, messaging_system){
 		this.init();
@@ -19,6 +29,7 @@ define(['./base_display', './group_display', '../../messaging_system/event_liste
 		this.sub_components.length = 0;
 		for(var i = 0; i < sub_proxies.length; ++i){
 			if(sub_proxies[i].getType() == "configuration_key"){
+				this.sub_components.push(new DummyDisplay(sub_proxies[i]));
 				continue;
 			}
 			this.sub_components.push(new GroupDisplay(this, sub_proxies[i], this.messaging_system));

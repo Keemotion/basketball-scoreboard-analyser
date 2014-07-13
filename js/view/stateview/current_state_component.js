@@ -1,4 +1,11 @@
-define(['../../messaging_system/event_listener'], function(EventListener){
+define([
+	'../../messaging_system/event_listener',
+	'../canvas/handlers/canvas_mouse_handler',
+	'../../messaging_system/events/mouse_mode_changed_event'
+	], function(
+		EventListener,
+		CanvasMouseHandler,
+		MouseModeChangedEvent){
 	//Provides buttons to export the current data
 	var CurrentStateComponent = function(target_view, state_proxy, messaging_system){
 		var self = this;
@@ -15,7 +22,18 @@ define(['../../messaging_system/event_listener'], function(EventListener){
 			var exported_string =  self.state_proxy.getExportedString();
 			self.download_prm_btn.attr('href', 'data:text/plain,'+encodeURIComponent(exported_string));
 		});
-		this.target_view.append(this.download_json_btn).append('<br>').append(this.download_prm_btn);
+		this.selection_tool_btn = $('<button>').text('Selection mode').click(function(){
+			self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.SelectionMode));
+		});
+		this.edit_view_tool_btn = $('<button>').text('View edit mode').click(function(){
+			self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.ViewEditMode));
+		});
+		this.target_view
+			.append(this.download_json_btn)
+			.append('<br>')
+			.append(this.download_prm_btn)
+			.append(this.selection_tool_btn)
+			.append(this.edit_view_tool_btn);
 	};
 	CurrentStateComponent.prototype.setProxy = function(proxy){
 		this.state_proxy = proxy;

@@ -1,6 +1,6 @@
 define([
-		"../../messaging_system/event_listener", 
-		"../../model/coordinate", 
+		"../../messaging_system/event_listener",
+		"../../model/coordinate",
 		"./transformation",
 		"../../messaging_system/events/canvas_scrolled_event",
 		"../../messaging_system/events/canvas_mouse_move_event",
@@ -10,15 +10,18 @@ define([
 		"./display_tree",
 		"../../messaging_system/events/canvas_image_click_event",
 		"../../messaging_system/events/submit_group_details_event",
-		"./handlers/canvas_drag_handler",
+	//	"./handlers/canvas_drag_handler",
 		"./handlers/display_changed_handler",
-		"./handlers/canvas_hover_handler",
+	//	"./handlers/canvas_hover_handler",
 		"../../messaging_system/events/canvas_keydown_event",
-		"../../messaging_system/events/canvas_image_double_click_event"
-		], 
+		"../../messaging_system/events/canvas_image_double_click_event",
+		"./handlers/canvas_mouse_handler",
+		"../../model/selection_tree",
+		"../../model/selection_node"
+		],
 	function(
-		EventListener, 
-		Coordinate, 
+		EventListener,
+		Coordinate,
 		Transformation,
 		CanvasScrolledEvent,
 		CanvasMouseMoveEvent,
@@ -28,14 +31,18 @@ define([
 		DisplayTree,
 		CanvasImageClickEvent,
 		SubmitGroupDetailsEvent,
-		CanvasDragHandler,
+		//CanvasDragHandler,
 		DisplayChangedHandler,
-		CanvasHoverHandler, 
+		//CanvasHoverHandler,
 		CanvasKeyDownEvent,
-		CanvasImageDoubleClickEvent
+		CanvasImageDoubleClickEvent,
+		CanvasMouseHandler,
+		SelectionTree,
+		SelectionNode
 		){
-	var MyCanvas = function(target_view, proxy, messaging_system){
+	var MyCanvas = function(view, target_view, proxy, messaging_system){
 		var self = this;
+		this.view = view;
 		this.selected = new Array();
 		this.messaging_system = messaging_system;
 		this.canvas_element = $('<canvas>').attr({
@@ -47,7 +54,8 @@ define([
 		this.context = this.canvas_element.getContext('2d');
 		this.container_element = target_view;
 		this.transformation = new Transformation(new Coordinate(0,0), 1,1,1, 1,1);
-		this.canvas_drag_handler = new CanvasDragHandler(this, this.transformation, this.messaging_system);
+		//this.canvas_drag_handler = new CanvasDragHandler(this, this.transformation, this.messaging_system);
+		this.canvas_mouse_handler = new CanvasMouseHandler(this, this.messaging_system);
 		this.display_objects = new Array();
 		$(this.container_element).append(this.canvas_element);
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.updateCanvas));
@@ -56,7 +64,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.ImageDisplayChanged, new EventListener(this, this.updateCanvas));
 		this.messaging_system.addEventListener(this.messaging_system.events.ResetCanvasView, new EventListener(this, this.resetCanvasView));
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.updateCanvas));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
+		//this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
 		this.windowResized(null, null);
 		var scrollF = function(e){
 			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
@@ -81,11 +89,13 @@ define([
 			messaging_system.fire(messaging_system.events.CanvasFocusOut, new CanvasFocusOutEvent(c, e));
 		});
 		$(this.canvas_element).click(function(e){
-			var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
+			//var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
+			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
 			messaging_system.fire(messaging_system.events.CanvasImageClick, new CanvasImageClickEvent(c, e));
 		});
 		$(this.canvas_element).dblclick(function(e){
-			var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
+			//var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
+			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
 			messaging_system.fire(messaging_system.events.CanvasImageDoubleClick, new CanvasImageDoubleClickEvent(c, e));
 		});
 		$('html').keydown(function(e){
@@ -96,14 +106,23 @@ define([
 		this.setProxy(proxy);
 		this.display_changed_handler = new DisplayChangedHandler(this);
 	};
-	
+
 	//one of the display objects has changed
 	MyCanvas.prototype.displayObjectsChanged = function(signal, data){
 		this.updateCanvas();
 	};
-	MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+	MyCanvas.prototype.getSelectionTree = function(selection_rectangle){
+		var tree = new SelectionTree();
+		var image_coordinates_rectangle = selection_rectangle.transformCanvasCoordinatesToRelativeImageCoordinates(this.getTransformation());
 		for(var i = 0; i < this.display_objects.length; ++i){
-			var res = this.display_objects[i].getObjectAroundCanvasCoordinate(coordinate);	
+			var tmp_tree = this.display_objects[i].getSelectionTree(image_coordinates_rectangle);
+			tree.getRoot().addChild(tmp_tree.getRoot());
+		}
+		return tree;
+	};
+	/*MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+		for(var i = 0; i < this.display_objects.length; ++i){
+			var res = this.display_objects[i].getObjectAroundCanvasCoordinate(coordinate);
 			if(res)
 				return res;
 		}
@@ -128,22 +147,11 @@ define([
 			res = this.display_objects[i].getObjectAtCanvasCoordinate(coordinate, this.transformation, obj);
 		}
 		return res;
-	};
+	};*/
 	//event handler for canvas croll
-	MyCanvas.prototype.canvasScrolled = function(signal, data){
-		var evt = data.event_data;
-		var delta = evt.wheelDelta?evt.wheelDelta/40:evt.detail?-evt.detail : 0;
-		var factor = 0;
-		if(delta > 0){
-			factor = 9/10;
-		}else{
-			factor = 10/9;
-		}
-		var mouse_coordinate = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
-		this.transformation.setScale(this.transformation.getScale()*factor, mouse_coordinate);
-		this.updateCanvas(signal, data);
-		return data.event_data.preventDefault() && false;
-	};
+	/*MyCanvas.prototype.canvasScrolled = function(signal, data){
+
+	};*/
 	//event handler for window resize
 	MyCanvas.prototype.windowResized = function(signal, data){
 		this.canvas_element.height = $(this.canvas_element).parent().height();
@@ -197,6 +205,12 @@ define([
 			this.display_objects[i].draw(this.context, this.transformation);
 		}
 	};
+	MyCanvas.prototype.drawSelectedDisplayObjects = function(){
+		var selected_objects = this.view.getCurrentSelectionTree().getRoot().getChildren();
+		for(var i = 0; i < selected_objects.length; ++i){
+			this.display_objects[selected_objects[i].getId()].drawSelected(selected_objects[i], this.context, this.transformation);
+		}
+	};
 	//something has changed on the canvas, warn displayChangedChandler (to prevent all display objects from being drawn every time -> lag)
 	MyCanvas.prototype.updateCanvas = function(signal, data){
 		this.getDisplayChangedHandler().fireEdited();
@@ -234,18 +248,28 @@ define([
 			this.context.mozImageSmoothingEnabled = false;
 			this.context.webkitImageSmoothingEnabled=false;
 			this.context.drawImage(this.image, 0,0, this.transformation.getImageWidth(), this.transformation.getImageHeight(), canvas_top_left.x, canvas_top_left.y, canvas_bottom_right.x-canvas_top_left.x, canvas_bottom_right.y-canvas_top_left.y);
+			var rect = this.canvas_mouse_handler.getSelectionRectangle();
+			if(rect.getActive()){
+				this.context.beginPath();
+				this.context.lineWidth = "1";
+				this.context.strokeStyle = "aqua";
+				this.context.rect(rect.getTopLeft().getX(), rect.getTopLeft().getY(), rect.getWidth(), rect.getHeight());
+				this.context.stroke();
+			}
 			if(this.getDisplayObjectsEnabled()){
 				this.drawDisplayObjects();
 			}else{
-				for(var i = 0; i < this.canvas_drag_handler.getSelected().length; ++i){
+				this.drawSelectedDisplayObjects();
+				/*for(var i = 0; i < this.canvas_drag_handler.getSelected().length; ++i){
 					this.canvas_drag_handler.getSelected()[i].drawChanging(this.context, this.getTransformation());
-				}
+				}*/
 			}
 		}
 	};
 	MyCanvas.prototype.getTransformation = function(){
 		return this.transformation;
 	};
+
 	return MyCanvas;
 }
 );

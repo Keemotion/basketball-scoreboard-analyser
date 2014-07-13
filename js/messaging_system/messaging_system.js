@@ -4,44 +4,44 @@ define([],function(){
 	};
 	MessagingSystem.prototype.events = new Object({
 		//A new tree was loaded
-		LoadState:'LoadState', 
+		LoadState:'LoadState',
 
         //Reset state
         ResetState:'ResetState',
-        
+
         //Clear state (empty all groups of digits/dots but keep empty groups)
         ClearState:'ClearState',
 
 		//Data in the current state changed
-        GroupChanged:'GroupChanged', 
+        GroupChanged:'GroupChanged',
 
 		//Something at the root level of the state tree changed
-        StateChanged:'StateChanged', 
+        StateChanged:'StateChanged',
 
 		//A new image was loaded
-        LoadImage:'LoadImage', 
+        LoadImage:'LoadImage',
 
 		//The browser window was resized
-        WindowResized:'WindowResized',  
+        WindowResized:'WindowResized',
 
 		//Something on the canvas changed
         ImageDisplayChanged:'ImageDisplayChanged',
-        
+
         //Reset Canvas View (zoom, translation)
         ResetCanvasView: 'ResetCanvasView',
 
 		//A group was clicked (request to show details)
-        GroupClicked: 'GroupClicked',		
+        GroupClicked: 'GroupClicked',
 
 		//An object was selected
 		ObjectSelected: 'ObjectSelected',
-		
+
 		//An object was unselected
 		ObjectUnSelected: 'ObjectUnSelected',
-		
+
 		//Try to select all objects in a rectangle on the canvas (canvas coordinate)
 		AreaSelect: 'AreaSelect',
-		
+
 		//Data was submitted in the GUI and needs to be applied to the model
 		SubmitGroupDetails: 'SubmitGroupDetails',
 		//An object or a group of objects has been moved
@@ -53,7 +53,7 @@ define([],function(){
 		CanvasMouseUp: 'CanvasMouseUp',
 		CanvasMouseDown: 'CanvasMouseDown',
 		CanvasFocusOut:'CanvasFocusOut',
-		CanvasImageClick:'CanvasClick',
+		CanvasImageClick:'CanvasImageClick',
 		CanvasImageDoubleClick:'CanvasImageDoubleClick',
 		CanvasKeyDown:'CanvasKeyDown',
 
@@ -67,10 +67,10 @@ define([],function(){
 		ToggleDisplayObject:'ToggleDisplayObject',
 
 		//A file has been submitted for loading
-		LoadStateFile:'LoadStateFile', 
+		LoadStateFile:'LoadStateFile',
 
 		//The order of the objects has changed in the GUI
-		ReOrdered: 'ReOrdered', 
+		ReOrdered: 'ReOrdered',
 
 		//A new element was added in the GUI
 		AddElement:'AddElement',
@@ -81,8 +81,16 @@ define([],function(){
 		//The user started dragging a display object, so don't do anything else with mouse dragging
 		StartObjectDragging:'StartObjectDragging',
 
-		//The user stopped dragging a display object, so mouse dragging can againb be processed
-		StopObjectDragging:'StopObjectDragging'
+		//The user stopped dragging a display object, so mouse dragging can again be processed
+		StopObjectDragging:'StopObjectDragging',
+
+		SelectionAdded:'SelectionAdded',
+		SelectionRemoved:'SelectionRemoved',
+		SelectionToggled:'SelectionToggled',
+		SelectionSet:'SelectionSet',
+		SelectionReset:'SelectionReset',
+
+		MouseModeChanged:'MouseModeChanged'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

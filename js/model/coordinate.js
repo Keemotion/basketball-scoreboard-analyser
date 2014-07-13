@@ -58,5 +58,8 @@ define([],function(){
 	Coordinate.prototype.scalarMultiply = function(l){
 		return new Coordinate(this.getX()*l, this.getY()*l);
 	};
+	Coordinate.prototype.clone = function(){
+		return new Coordinate(this.getX(), this.getY());
+	};
     return Coordinate;
 });
