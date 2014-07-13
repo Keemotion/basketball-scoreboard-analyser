@@ -9,18 +9,18 @@ define([
 		'./converter/exporter'
 		], function(Group, ConfigurationKey, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser, Exporter){
 	//represents root node in the hierarchy of objects
-    var State = function(messaging_system){
-    	this.id = 0;
-        this.messaging_system = messaging_system;
+	var State = function(messaging_system){
+		this.id = 0;
+		this.messaging_system = messaging_system;
 		this.init();
 		this.setProxy(new StateProxy(this));
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadState, new EventListener(this, this.loadState));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadStateFile, new EventListener(this, this.loadStateFile));
-        this.messaging_system.addEventListener(this.messaging_system.events.ResetState, new EventListener(this, this.reset));
-        this.messaging_system.addEventListener(this.messaging_system.events.ClearState, new EventListener(this, this.clearState));
-        this.messaging_system.addEventListener(this.messaging_system.events.ObjectsMoved, new EventListener(this, this.objectsMoved));
-    };
+		this.messaging_system.addEventListener(this.messaging_system.events.ResetState, new EventListener(this, this.reset));
+		this.messaging_system.addEventListener(this.messaging_system.events.ClearState, new EventListener(this, this.clearState));
+		this.messaging_system.addEventListener(this.messaging_system.events.ObjectsMoved, new EventListener(this, this.objectsMoved));
+	};
 	State.prototype = new DataBaseClass("state");
 	//load the state based on a JSON format
 	State.prototype.loadState = function(signal, data){
@@ -65,48 +65,48 @@ define([
 		this.stateChanged();
 	};
 	//generate a string based on the data this node and all its ancestors generated
-    State.prototype.stringify = function(){
-        return JSON.stringify(this.getStringifyData(), null, 2);
-    };
+	State.prototype.stringify = function(){
+		return JSON.stringify(this.getStringifyData(), null, 2);
+	};
 	//generate the original output format of all data this node and all its ancestors generated
-    State.prototype.getExportedString = function(){
-    	var data = this.getStringifyData();
-    	var exporter = new Exporter(data);
-    	return exporter.export();
-    };
+	State.prototype.getExportedString = function(){
+		var data = this.getStringifyData();
+		var exporter = new Exporter(data);
+		return exporter.export();
+	};
 	//parses a json object and loads it to the current state
 	//TODO: make this method!
 	//In a class (JSONParser -> generate()) -> recursive
-    State.prototype.parseJSON = function(json){
+	State.prototype.parseJSON = function(json){
 		this.clear();
-        try{
+		try{
 			console.log("json = "+json);
-            var data = JSON.parse(json);
+			var data = JSON.parse(json);
 			return this.parse(data);
-        }catch(err){
+		}catch(err){
 			alert("failed!");
 			this.stateChanged();
-        }
-    };
-    State.prototype.reset = function(){
-        this.lockNotification();
-        this.clearSubNodes();
-        this.unlockNotification();
-        this.stateChanged();
-    };
+		}
+	};
+	State.prototype.reset = function(){
+		this.lockNotification();
+		this.clearSubNodes();
+		this.unlockNotification();
+		this.stateChanged();
+	};
 	//load data in javascript Object format
-    State.prototype.parse = function(data){
-    	this.lockNotification();
-        this.reset();
-    	for(var i = 0; i < data.sub_nodes.length; ++i){
+	State.prototype.parse = function(data){
+		this.lockNotification();
+		this.reset();
+		for(var i = 0; i < data.sub_nodes.length; ++i){
 			this.addObject(data.sub_nodes[i], false);
 		}
 		this.unlockNotification();
-       	this.stateChanged();
-        return true;
-    };
+	   	this.stateChanged();
+		return true;
+	};
 	//add an empty sub group
-    State.prototype.addElement = function(signal, data){
+	State.prototype.addElement = function(signal, data){
 		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
 			var s = null;
 			switch(data.getType()){
@@ -127,8 +127,7 @@ define([
 	State.prototype.objectsMoved = function(signal, data){
 		var translation = data.getTranslation();
 		var tree = data.getTree();
-		console.log("translation = "+JSON.stringify(translation));
 		this.moveSelection(tree.getRoot(), translation);
 	};
-    return State;
+	return State;
 });

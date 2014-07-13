@@ -107,10 +107,6 @@ define([
 				break;
 			case CanvasMouseHandler.MouseModes.DragMode:
 				if(this.mouse_down){
-					//var mv = new Coordinate(
-					//	this.canvas.getTransformation().getCanvasWidth() / 2 - (data.getCoordinate().getX() - this.previous_mouse_coordinate.getX()),
-					//	this.canvas.getTransformation().getCanvasHeight() / 2 - (data.getCoordinate().getY() - this.previous_mouse_coordinate.getY())
-					//);
 					var mv = new Coordinate(data.getCoordinate().getX()-this.previous_mouse_coordinate.getX(), data.getCoordinate().getY()-this.previous_mouse_coordinate.getY());
 					var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(mv);
 					this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.canvas.view.getCurrentSelectionTree(), transformed));

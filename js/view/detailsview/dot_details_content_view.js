@@ -55,20 +55,20 @@ define(["../../model/coordinate",
 		this.target_view
 			.append(this.form);
 		this.loadContent();
-        messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
+		messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 	};
-    DotDetailsContentView.prototype.groupChanged = function(signal, data){
-        if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
-            this.loadContent();
-        }
-    };
+	DotDetailsContentView.prototype.groupChanged = function(signal, data){
+		if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
+			this.loadContent();
+		}
+	};
 	DotDetailsContentView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();
 		this.content_elements.length = 0;
 		this.content_element.empty();
 		this.title_span.text(this.data_proxy.getTitle());
 		this.content_element
-            .append(this.title_span)
+			.append(this.title_span)
 			.append(this.click_button)
 			.append(this.remove_button)
 			.append($('<br>'))

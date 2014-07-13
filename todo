@@ -1,18 +1,18 @@
 DisplayTree.prototype.loadSubComponents
-    on removal of items -> clear getSelected()
-    event notification for canvas?
-    recursively update/add elements, but don't replace them unless stateChangedEvent indicated so
+	on removal of items -> clear getSelected()
+	event notification for canvas?
+	recursively update/add elements, but don't replace them unless stateChangedEvent indicated so
 DisplayTree.prototype.stateChanged
-    StateChangedEvent -> parameter for update or remake. on update
-        
+	StateChangedEvent -> parameter for update or remake. on update
+		
 
 
 optimize exporter (group settings)
 x configuration keys in UI
 change configuration keys in UI
 TO ASK: 
-    default configuration keys?
-    objects grouped meaningfully vs optimally (for keys)
+	default configuration keys?
+	objects grouped meaningfully vs optimally (for keys)
 x export last number for digits
 x other color for current selected digit/group
 x show configuration values
@@ -42,6 +42,6 @@ select starting and end led -> auto find all leds in between by equal-spacing (n
 find center of led by recognizing
 
 first try digit recognizing: 
-    maximize variance in luminance by shearing -> greedy
+	maximize variance in luminance by shearing -> greedy
 second try: (if no success)
-    Fast Fourier/..?
+	Fast Fourier/..?

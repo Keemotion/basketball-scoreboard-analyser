@@ -12,25 +12,25 @@ define(["./digit",
 		Dot){
 	//represents a collection of digits/dots/groups
    	var Group = function(data, parent, messaging_system){
-        this.messaging_system = messaging_system;
+		this.messaging_system = messaging_system;
 		this.init();
-        this.setParent(parent);
-        this.setProxy(new GroupProxy(this));
-        this.lockNotification();
-        this.loadData(data);
-        this.unlockNotification();
-    };
+		this.setParent(parent);
+		this.setProxy(new GroupProxy(this));
+		this.lockNotification();
+		this.loadData(data);
+		this.unlockNotification();
+	};
 	Group.prototype = new DataBaseClass("group");
 	//the default configuration keys that are applied to a group in the configuration file
 	Group.default_configuration_keys = {
-        "parse_function": null,
-        "read_function": "digit_pattern_32",
-        "sync_function": "digit_pattern_32",
-        "first_digit_restricted": false,
-        "must_be_on": false,
-        "dtype": null,
-        "luminance_threshold": "190"
-      };
+		"parse_function": null,
+		"read_function": "digit_pattern_32",
+		"sync_function": "digit_pattern_32",
+		"first_digit_restricted": false,
+		"must_be_on": false,
+		"dtype": null,
+		"luminance_threshold": "190"
+	  };
 	//load the data for this group
 	//when no data is provided, an empty group is made and the default configuration keys are applied to it
 	Group.prototype.loadData = function(data){
@@ -46,20 +46,20 @@ define(["./digit",
 		}
 	};
 	//create subnodes based on subnode_info
-    Group.prototype.createSubNodes = function(subnode_info){
-        this.clearSubNodes();
-        for(var i = 0; i < subnode_info.length; ++i){
-            this.createSubNode(subnode_info[i]);
-        }
-    };
+	Group.prototype.createSubNodes = function(subnode_info){
+		this.clearSubNodes();
+		for(var i = 0; i < subnode_info.length; ++i){
+			this.createSubNode(subnode_info[i]);
+		}
+	};
 	//update the group properties (not its children)
 	Group.prototype.update = function(data){
 		this.name = data.name;
 		this.notifyGroupChanged();
 	};
 	//adds a subnode based on info
-    Group.prototype.createSubNode = function(info){
-    	var obj = null;
+	Group.prototype.createSubNode = function(info){
+		var obj = null;
 		if (info.type == "digit") {
 			obj = new Digit(this, info, this.messaging_system);
 		} else if(info.type == "dot"){
@@ -70,16 +70,16 @@ define(["./digit",
 		if(obj){
 			this.addSubNode(obj);
 		}
-    };
+	};
 	//loads the group data, including its sub nodes
-    Group.prototype.load = function(data){
-        this.name = data.name;
+	Group.prototype.load = function(data){
+		this.name = data.name;
 		this.id = data.id;
 		this.createSubNodes(data.digits);
 		this.notifyGroupChanged();
-    };
+	};
 	//adds an empty element to the sub nodes
-    Group.prototype.addElement = function(signal, data){
+	Group.prototype.addElement = function(signal, data){
 		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
 			var s = null;
 			switch(data.getType()){
@@ -96,5 +96,5 @@ define(["./digit",
 			this.addSubNode(s);
 		}
 	};
-    return Group;
+	return Group;
 });

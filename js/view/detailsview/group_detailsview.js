@@ -77,7 +77,7 @@ define([
 			.append(this.highlight_button.element)
 			.append(this.add_digit_button.element)
 			.append(this.add_dot_button.element)
-            .append($('<button>').text('Delete group').attr('type','button').click(function(){
+			.append($('<button>').text('Delete group').attr('type','button').click(function(){
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(self.data_proxy.getIdentification()));
 				return false;
 			}));

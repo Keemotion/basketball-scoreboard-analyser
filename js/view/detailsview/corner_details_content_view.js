@@ -46,13 +46,13 @@ define(["../../model/coordinate",
 			});
 		this.target_view.append(this.form);
 		this.loadContent();
-        messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
+		messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 	};
-    CornerDetailsContentView.prototype.groupChanged = function(signal, data){
-        if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
-            this.loadContent();
-        }
-    };
+	CornerDetailsContentView.prototype.groupChanged = function(signal, data){
+		if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
+			this.loadContent();
+		}
+	};
 	//setCoordinate can by used by the CanvasClickListener
 	CornerDetailsContentView.prototype.setCoordinate = function(x, y){
 		this.x_text.val(x);

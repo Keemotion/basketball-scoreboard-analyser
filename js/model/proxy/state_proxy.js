@@ -1,12 +1,12 @@
 define(['./proxy_base_class'], function(ProxyBaseClass){
 	//provides access to the state data the view can access
-    var StateProxy = function(state){
+	var StateProxy = function(state){
 		this.setObj(state);
-    };
+	};
 	StateProxy.prototype = new ProxyBaseClass();	
-    StateProxy.prototype.getTitle = function(){
-        return "State";
-    };
+	StateProxy.prototype.getTitle = function(){
+		return "State";
+	};
 	StateProxy.prototype.getParent = function(){
 		return undefined;
 	};
@@ -16,5 +16,5 @@ define(['./proxy_base_class'], function(ProxyBaseClass){
 	StateProxy.prototype.getExportedString = function(){
 		return this.obj.getExportedString();
 	};
-    return StateProxy;
+	return StateProxy;
 });

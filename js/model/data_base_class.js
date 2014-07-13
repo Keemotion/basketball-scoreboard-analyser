@@ -241,16 +241,16 @@ define([
 	//returns all data about this object and its children in an Object that can be converted to JSON by the export function
 	BaseDataClass.prototype.getStringifyData = function(){
 		var d = new Object();
-        d.name = this.name;
-        d.sub_nodes = new Array();
-        d.type = this.getType();
-        var sub_nodes = this.getSubNodes();
-        for(var i = 0; i < sub_nodes.length; ++i){
-            d.sub_nodes.push(sub_nodes[i].getStringifyData());
-        }
-        d.configuration_keys = this.getConfigurationKeys();
+		d.name = this.name;
+		d.sub_nodes = new Array();
+		d.type = this.getType();
+		var sub_nodes = this.getSubNodes();
+		for(var i = 0; i < sub_nodes.length; ++i){
+			d.sub_nodes.push(sub_nodes[i].getStringifyData());
+		}
+		d.configuration_keys = this.getConfigurationKeys();
 
-        return d;
+		return d;
 	};
 	BaseDataClass.prototype.reArrange = function(indices){
 		var good = false;

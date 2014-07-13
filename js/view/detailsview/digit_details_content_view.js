@@ -52,13 +52,13 @@ define(["./corner_details_content_view",
 		this.target_view
 			.append(this.form);
 		this.loadContent();
-        messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
+		messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 	};
-    DigitDetailsContentView.prototype.groupChanged = function(signal, data){
-        if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
-            this.loadContent();
-        }
-    };
+	DigitDetailsContentView.prototype.groupChanged = function(signal, data){
+		if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
+			this.loadContent();
+		}
+	};
 	//Loads the details about this digit and its four corners
 	DigitDetailsContentView.prototype.loadContent = function(){
 		var subnodes = this.data_proxy.getSubNodes();

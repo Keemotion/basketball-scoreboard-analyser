@@ -3,12 +3,12 @@ INPUT FORMAT:
 *original format
 *JSON
   main object: {type:'state', sub_nodes:[]}
-    sub_nodes is an array of group objects
+	sub_nodes is an array of group objects
   group: {name:'', type:'group', sub_nodes:[], configuration_keys:{} }
-    name is the name of the group
-    sub_nodes is an array of group/dot/digit objects
-    configuration_keys is a associative array of configuration keys (same keys/values as the original format)
+	name is the name of the group
+	sub_nodes is an array of group/dot/digit objects
+	configuration_keys is a associative array of configuration keys (same keys/values as the original format)
   dot: {type:'dot', coordinate:{x: "", y:""} }
-    coordinate contains the normalised coordinates of the led on the scoreboard
+	coordinate contains the normalised coordinates of the led on the scoreboard
   digit: {type:'digit', sub_nodes:[{coordinate:{x:"", y:""}}*4]}
-    sub_nodes contains the coordinates of the corners of the digit in clockwise order, starting topleft
+	sub_nodes contains the coordinates of the corners of the digit in clockwise order, starting topleft

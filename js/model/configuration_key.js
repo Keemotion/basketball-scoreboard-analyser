@@ -21,10 +21,10 @@ define(["./data_base_class",
 	};
 	ConfigurationKey.prototype.getStringifyData = function(){
 		var d = new Object();
-        d.type = this.getType();
-        d.key = this.getKey();
-        d.value = this.getValue();
-        return d;
+		d.type = this.getType();
+		d.key = this.getKey();
+		d.value = this.getValue();
+		return d;
 	};
 	return ConfigurationKey;
 });

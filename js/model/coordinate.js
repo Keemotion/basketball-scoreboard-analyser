@@ -1,9 +1,9 @@
 define([],function(){
 	//A few helper methods for working with coordinates
-    var Coordinate = function(x, y){
-        this.x = x;
-        this.y = y;
-    };
+	var Coordinate = function(x, y){
+		this.x = x;
+		this.y = y;
+	};
 	Coordinate.prototype.getX = function(){
 		if(this.x)
 			return parseFloat(this.x);
@@ -19,7 +19,7 @@ define([],function(){
 		//can we use this one? http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric?page=1&tab=votes#tab-top
 		return this.x && this.y;
 	};
-    Coordinate.prototype.type = "coordinate";
+	Coordinate.prototype.type = "coordinate";
 	//Calculates the center of the coordinates in an array (equal weights)
 	Coordinate.getMiddle = function(arr){
 		if(arr.length == 0)
@@ -61,5 +61,5 @@ define([],function(){
 	Coordinate.prototype.clone = function(){
 		return new Coordinate(this.getX(), this.getY());
 	};
-    return Coordinate;
+	return Coordinate;
 });

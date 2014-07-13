@@ -20,13 +20,13 @@ define(["../../messaging_system/event_listener"], function(EventListener){
 			}
 		}
 	};
-    CanvasMultipleClickListener.prototype.toggleListening = function(){
-        if(this.listening){
-            this.stopListening();
-        }else{
-            this.startListening();
-        }
-    };
+	CanvasMultipleClickListener.prototype.toggleListening = function(){
+		if(this.listening){
+			this.stopListening();
+		}else{
+			this.startListening();
+		}
+	};
 	CanvasMultipleClickListener.prototype.startListening = function(){
 		this.messaging_system.fire(this.messaging_system.events.CoordinateClickListenerStarted, null);
 		this.listening = true;
@@ -38,7 +38,7 @@ define(["../../messaging_system/event_listener"], function(EventListener){
 		this.parentView.stoppedListening();
 	};
 	CanvasMultipleClickListener.prototype.cleanUp = function(){
-        this.stopListening();
+		this.stopListening();
 		this.messaging_system.removeEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
 		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
 	};
