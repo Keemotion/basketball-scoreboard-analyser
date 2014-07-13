@@ -1,4 +1,6 @@
-define(['../../messaging_system/event_listener'], function(EventListener){
+define(['../../messaging_system/event_listener',
+	'../../messaging_system/events/selection_event'],
+	function(EventListener, SelectionEvent){
 	//Button to expand a subtree
 	var ExpandCommand = function(){
 		var element = $('<span>').attr({
@@ -54,12 +56,15 @@ return element;
 			.append(this.title_element)
 			.append(this.sub_nodes_element)
 			.click(function(){
-				var data = new Object();
+				/*var data = new Object();
 				data.data_proxy = data_proxy;
 				messaging_system.fire(messaging_system.events.GroupClicked, data);
 				if(data_proxy.getType() == "group"){
 					return false;
-				}
+				}*/
+				var e = new SelectionEvent(data_proxy.getSelectionTree());
+				messaging_system.fire(messaging_system.events.SelectionSet, e);
+				return false;
 			});
 		this.lock_depth = 0;
 		target_view.append(this.node_element);
@@ -80,7 +85,7 @@ return element;
 	};
 	TreeNode.prototype.updated = function(signal, data){
 		var identification = data.getTargetIdentification();
-		if(this.data_proxy.isPossiblyAboutThis(identification)){	
+		if(this.data_proxy.isPossiblyAboutThis(identification)){
 			this.update();
 		}
 	};
@@ -94,7 +99,7 @@ return element;
 	TreeNode.prototype.setTitle = function(title){
 		this.title = title;
 		if(title == null){
-			this.title_element.html("&nbsp;");	
+			this.title_element.html("&nbsp;");
 		}else{
 			this.title_element.html(title);
 		}

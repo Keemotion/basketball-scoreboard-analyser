@@ -1,12 +1,11 @@
 define([], function(){
-	var SelectionNode = function(id, type, selected){
+	var SelectionNode = function(proxy, selected){
 		this.children = [];
 		this.selected = selected;
-		this.id = id;
-		this.type = type;
+		this.proxy = proxy;
 	};
 	SelectionNode.prototype.clone = function(){
-		var node = new SelectionNode(this.getId(), this.getType(), this.getSelected());
+		var node = new SelectionNode(this.getProxy(), this.getSelected());
 		var children = this.getChildren();
 		for(var i = 0; i < children.length; ++i){
 			node.addChild(children[i].clone());
@@ -38,18 +37,24 @@ define([], function(){
 	SelectionNode.prototype.equals = function(node){
 		return (node.getType() == this.getType()) && (node.getId() == this.getId());
 	};
+	SelectionNode.prototype.getProxy = function(){
+		return this.proxy;
+	};
+	SelectionNode.prototype.setProxy = function(proxy){
+		this.proxy = proxy;
+	};
 	SelectionNode.prototype.getType = function(){
-		return this.type;
+		return this.getProxy().getType();
 	};
 	SelectionNode.prototype.getId = function(){
-		return this.id;
+		return this.getProxy().getId();
 	};
-	SelectionNode.prototype.setType = function(type){
+	/*SelectionNode.prototype.setType = function(type){
 		this.type = type;
 	};
 	SelectionNode.prototype.setId = function(id){
 		this.id = id;
-	};
+	};*/
 	SelectionNode.prototype.addSelection = function(node){
 		if(node.getSelected()){
 			this.setSelected(true);
@@ -111,6 +116,17 @@ define([], function(){
 				this.addChild(other_children[i]);
 			}
 		}
+	};
+	SelectionNode.prototype.getSelectedFlat = function(){
+		var result = [];
+		if(this.getSelected()){
+			result.push(this.getProxy());
+		}
+		var children = this.getChildren();
+		for(var i = 0; i < children.length; ++i){
+			result = result.concat(children[i].getSelectedFlat());
+		}
+		return result;
 	};
 	return SelectionNode;
 });

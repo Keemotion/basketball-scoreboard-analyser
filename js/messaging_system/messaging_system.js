@@ -90,6 +90,8 @@ define([],function(){
 		SelectionSet:'SelectionSet',
 		SelectionReset:'SelectionReset',
 
+		SelectionChanged: 'SelectionChanged',
+
 		MouseModeChanged:'MouseModeChanged'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();

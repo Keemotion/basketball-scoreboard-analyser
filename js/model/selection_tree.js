@@ -22,5 +22,8 @@ define(["./selection_node"], function(SelectionNode){
 	SelectionTree.prototype.cleanUp = function(){
 		this.getRoot().cleanUp();
 	};
+	SelectionTree.prototype.getSelectedFlat = function(){
+		return this.getRoot().getSelectedFlat();
+	};
 	return SelectionTree;
 });

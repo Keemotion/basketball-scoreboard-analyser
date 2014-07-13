@@ -1,4 +1,12 @@
-define(["../messaging_system/event_listener", "../messaging_system/events/group_changed_event"],function(EventListener, GroupChangedEvent){
+define([
+	"../messaging_system/event_listener",
+	"../messaging_system/events/group_changed_event",
+	"../model/selection_node",
+	"../model/selection_tree"],
+	function(EventListener,
+		GroupChangedEvent,
+		SelectionNode,
+		SelectionTree){
 	//Base class for groups/digits/corners/state
 	var BaseDataClass = function(type){
 		this.type = type;
@@ -36,7 +44,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 	//save changes that were submitted from the GUI
 	BaseDataClass.prototype.submitGroupDetails = function(signal, data){
 		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
-			this.update(data.getData());	
+			this.update(data.getData());
 		}
 	};
 	//sets whether this object should be displayed on the canvas
@@ -58,7 +66,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 	BaseDataClass.prototype.getConfigurationKeys = function(){
 		return this.configuration_keys;
 	};
-	//the proxy which the view can use to collect data about this object 
+	//the proxy which the view can use to collect data about this object
 	BaseDataClass.prototype.getProxy = function(){
 		return this.proxy;
 	};
@@ -241,7 +249,7 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
             d.sub_nodes.push(sub_nodes[i].getStringifyData());
         }
         d.configuration_keys = this.getConfigurationKeys();
-        
+
         return d;
 	};
 	BaseDataClass.prototype.reArrange = function(indices){
@@ -292,6 +300,20 @@ define(["../messaging_system/event_listener", "../messaging_system/events/group_
 		this.sub_nodes.length = 0;
 		this.configuration_keys = new Object();
 		this.notifyGroupChanged();
+	};
+	BaseDataClass.prototype.getSelectionTree = function(selected,child_tree){
+		if(selected == null)
+			selected = true;
+		var tree = new SelectionTree();
+		tree.getRoot().setProxy(this.getProxy());
+		tree.getRoot().setSelected(selected);
+		if(child_tree != null){
+			tree.getRoot().addChild(child_tree.getRoot());
+		}
+		if(this.getParent && this.getParent()){
+			return this.getParent().getSelectionTree(false, tree);
+		}
+		return tree;
 	};
 	return BaseDataClass;
 });

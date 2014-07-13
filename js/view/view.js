@@ -7,7 +7,9 @@ define([
 		'./canvas/display_tree',
 		'./stateview/current_state_component',
 		"../model/selection_tree",
-		"../model/selection_node"
+		"../model/selection_node",
+		"../messaging_system/events/selection_event",
+		"./detailsview/details_view"
 		]
 	, function(
 		MyCanvas,
@@ -18,7 +20,9 @@ define([
 		DisplayTree,
 		CurrentStateComponent,
 		SelectionTree,
-		SelectionNode
+		SelectionNode,
+		SelectionEvent,
+		DetailsView
 		){
 	//View represents the GUI
     var View = function(controller, target_view, messaging_system){
@@ -76,8 +80,10 @@ define([
         this.loadStateComponent = new LoadStateComponent(this.load_state_div, this.messaging_system);
 		//the tree
         this.tree_view = new TreeView(this.toolbox_tree_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
+        //details view
+        this.details_view = new DetailsView(this, this.toolbox_details_div, this.messaging_system);
 
-        this.messaging_system.addEventListener(this.messaging_system.events.GroupClicked, new EventListener(this,this.groupClicked));
+        //this.messaging_system.addEventListener(this.messaging_system.events.GroupClicked, new EventListener(this,this.groupClicked));
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
 
 		this.messaging_system.addEventListener(this.messaging_system.events.SelectionAdded, new EventListener(this, this.selectionAdded));
@@ -94,35 +100,40 @@ define([
     	return this.current_selection_tree;
     };
     View.prototype.selectionAdded = function(signal, data){
-    	console.log("selection added: "+JSON.stringify(data));
     	this.current_selection_tree = this.official_selection_tree.clone();
     	this.current_selection_tree.addSelection(data.getTree());
     	if(!data.getTemporary()){
     		this.official_selection_tree = this.current_selection_tree.clone();
     	}
+    	this.notifySelectionChanged();
     };
     View.prototype.selectionRemoved = function(signal, data){
-    	console.log("selection removed: "+JSON.stringify(data));
+    	console.log("TO BE IMPLEMENTED: selection removed: "+JSON.stringify(data));
+    	this.notifySelectionChanged();
     };
     View.prototype.selectionToggled = function(signal, data){
-    	console.log("selection toggled: "+JSON.stringify(data));
     	this.current_selection_tree = this.official_selection_tree.clone();
     	this.current_selection_tree.toggleSelection(data.getTree());
     	if(!data.getTemporary()){
     		this.official_selection_tree = this.current_selection_tree.clone();
     	}
+    	this.notifySelectionChanged();
     };
     View.prototype.selectionSet = function(signal, data){
-    	console.log("selection set: "+JSON.stringify(data));
 		this.current_selection_tree = data.getTree().clone();
 		this.official_selection_tree = data.getTree().clone();
+    	this.notifySelectionChanged();
     };
     View.prototype.selectionReset = function(signal, data){
     	console.log("selection reset: "+JSON.stringify(data));
     	this.current_selection_tree = new SelectionTree();
     	this.official_selection_tree = new SelectionTree();
+    	this.notifySelectionChanged();
     };
-    View.prototype.groupClicked = function(signal, data){
+    View.prototype.notifySelectionChanged = function(){
+    	this.messaging_system.fire(this.messaging_system.events.SelectionChanged, new SelectionEvent(this.getCurrentSelectionTree()));
+    };
+    /*View.prototype.groupClicked = function(signal, data){
 		if(data.data_proxy.getType() == "group"){
 	        this.loadGroupDetails(data.data_proxy);
 		}
@@ -136,12 +147,12 @@ define([
     View.prototype.loadGroupDetails = function(data_proxy){
 		this.clearGroupDetails();
         this.toolbox_details_content = new GroupDetailsView(this.toolbox_details_div,data_proxy, this.messaging_system);
-    };
+    };*/
 	View.prototype.stateChanged = function(signal, data){
 		this.canvas.setProxy(this.controller.getModel().getState().getProxy());
 		this.current_state_component.setProxy(this.controller.getModel().getState().getProxy());
 		this.tree_view.setProxy(this.controller.getModel().getState().getProxy());
-		this.clearGroupDetails();
+		//this.clearGroupDetails();
 	};
     return View;
 });

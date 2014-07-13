@@ -56,12 +56,14 @@ define([
 		this.transformation = new Transformation(new Coordinate(0,0), 1,1,1, 1,1);
 		//this.canvas_drag_handler = new CanvasDragHandler(this, this.transformation, this.messaging_system);
 		this.canvas_mouse_handler = new CanvasMouseHandler(this, this.messaging_system);
-		this.display_objects = new Array();
+		//this.display_objects = new Array();
+		this.display_tree = null;
 		$(this.container_element).append(this.canvas_element);
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.updateCanvas));
 		this.messaging_system.addEventListener(this.messaging_system.events.LoadImage, new EventListener(this, this.loadImage));
 		this.messaging_system.addEventListener(this.messaging_system.events.WindowResized, new EventListener(this, this.windowResized));
 		this.messaging_system.addEventListener(this.messaging_system.events.ImageDisplayChanged, new EventListener(this, this.updateCanvas));
+		this.messaging_system.addEventListener(this.messaging_system.events.SelectionChanged, new EventListener(this, this.updateCanvas));
 		this.messaging_system.addEventListener(this.messaging_system.events.ResetCanvasView, new EventListener(this, this.resetCanvasView));
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.updateCanvas));
 		//this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
@@ -114,10 +116,11 @@ define([
 	MyCanvas.prototype.getSelectionTree = function(selection_rectangle){
 		var tree = new SelectionTree();
 		var image_coordinates_rectangle = selection_rectangle.transformCanvasCoordinatesToRelativeImageCoordinates(this.getTransformation());
-		for(var i = 0; i < this.display_objects.length; ++i){
+		return this.display_tree.getSelectionTree(image_coordinates_rectangle);
+		/*for(var i = 0; i < this.display_objects.length; ++i){
 			var tmp_tree = this.display_objects[i].getSelectionTree(image_coordinates_rectangle);
 			tree.getRoot().addChild(tmp_tree.getRoot());
-		}
+		}*/
 		return tree;
 	};
 	/*MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
@@ -173,24 +176,32 @@ define([
 		this.transformation.reset();
 		this.updateCanvas();
 	};
-	MyCanvas.prototype.getDisplayObjects = function(){
-		return this.display_objects;
+	MyCanvas.prototype.getDisplayTree = function(){
+		return this.display_tree;
 	};
+	/*MyCanvas.prototype.getDisplayObjects = function(){
+		return this.display_objects;
+	};*/
 	MyCanvas.prototype.setProxy = function(proxy){
-//		if(this.state_display_object)
-//			this.removeDisplayObject(this.state_display_object);
+//		if(this.display_tree_object)
+//			this.removeDisplayObject(this.display_tree_object);
 		this.resetDisplayObjects();
 		this.proxy = proxy;
-		this.addDisplayObject(new DisplayTree(this.proxy, this.messaging_system));
+		//this.addDisplayObject(new DisplayTree(this.proxy, this.messaging_system));
+		this.display_tree = new DisplayTree(this.proxy, this.messaging_system);
 	};
-	MyCanvas.prototype.addDisplayObject = function(display_object){
+	/*MyCanvas.prototype.addDisplayObject = function(display_object){
 		this.display_objects.push(display_object);
-	};
-	MyCanvas.prototype.resetDisplayObjects = function(){
+	};*/
+	/*MyCanvas.prototype.resetDisplayObjects = function(){
 		this.display_objects.length = 0;
 		this.drawCanvas();
+	};*/
+	MyCanvas.prototype.resetDisplayObjects = function(){
+		this.display_tree = null;
+		this.drawCanvas();
 	};
-	MyCanvas.prototype.removeDisplayObject = function(display_object){
+	/*MyCanvas.prototype.removeDisplayObject = function(display_object){
 		for(var i = 0; i < this.display_objects.length-1; ++i){
 			if(this.display_objects[i] == display_object){
 				this.display_objects[i]=this.display_objects[this.display_objects.length-1];
@@ -198,9 +209,9 @@ define([
 			}
 		}
 		--this.display_objects.length;
-	};
+	};*/
 	//draw all display objects on the canvas
-	MyCanvas.prototype.drawDisplayObjects = function(){
+	/*MyCanvas.prototype.drawDisplayObjects = function(){
 		for(var i = 0; i < this.display_objects.length; ++i){
 			this.display_objects[i].draw(this.context, this.transformation);
 		}
@@ -210,8 +221,22 @@ define([
 		for(var i = 0; i < selected_objects.length; ++i){
 			this.display_objects[selected_objects[i].getId()].drawSelected(selected_objects[i], this.context, this.transformation);
 		}
-	};
+	};*/
 	//something has changed on the canvas, warn displayChangedChandler (to prevent all display objects from being drawn every time -> lag)
+	MyCanvas.prototype.drawTree = function(){
+		if(this.display_tree){
+			this.display_tree.draw(this.context, this.transformation);
+		}
+	};
+	MyCanvas.prototype.drawSelected = function(){
+		var selection_tree = this.view.getCurrentSelectionTree();
+		if(!selection_tree.getRoot().getProxy()){
+			return;
+		}
+		if(this.display_tree){
+			this.display_tree.drawSelected(this.view.getCurrentSelectionTree().getRoot(), this.context, this.transformation);
+		}
+	};
 	MyCanvas.prototype.updateCanvas = function(signal, data){
 		this.getDisplayChangedHandler().fireEdited();
 		this.drawCanvas();
@@ -229,9 +254,12 @@ define([
 		this.image.src = data;
 	};
 	//return whether all display objects have to be drawn
-	MyCanvas.prototype.getDisplayObjectsEnabled = function(){
+	MyCanvas.prototype.getDrawComplete = function(){
 		return this.getDisplayChangedHandler().canBeDrawn();
 	};
+	/*MyCanvas.prototype.getDisplayObjectsEnabled = function(){
+		return this.getDisplayChangedHandler().canBeDrawn();
+	};*/
 	//the displayChangedHandler prevents all display objects from being drawn every time the canvas is updated -> lag
 	//it waits until there haven't been any updates for a certain time to allow the display objects to be drawn
 	MyCanvas.prototype.getDisplayChangedHandler = function(){
@@ -256,10 +284,10 @@ define([
 				this.context.rect(rect.getTopLeft().getX(), rect.getTopLeft().getY(), rect.getWidth(), rect.getHeight());
 				this.context.stroke();
 			}
-			if(this.getDisplayObjectsEnabled()){
-				this.drawDisplayObjects();
+			if(this.getDrawComplete()){
+				this.drawTree();
 			}
-			this.drawSelectedDisplayObjects();
+			this.drawSelected();
 		}
 	};
 	MyCanvas.prototype.getTransformation = function(){

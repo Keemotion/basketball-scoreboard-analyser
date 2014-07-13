@@ -1,9 +1,9 @@
 define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	//provdes some basic methods all proxies need
 	var BaseProxy = function(){
-		
+
 	};
-	BaseProxy.prototype.update_events = [MessagingSystem.prototype.events.GroupChanged];	
+	BaseProxy.prototype.update_events = [MessagingSystem.prototype.events.GroupChanged];
 	BaseProxy.prototype.setObj = function(o){
 		this.obj = o;
 	};
@@ -49,6 +49,9 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	};
 	BaseProxy.prototype.isAboutThisOrAncestors = function(identifications){
 		return this.obj.isAboutThisOrAncestors(identifications);
+	};
+	BaseProxy.prototype.getSelectionTree = function(selected,child_tree){
+		return this.obj.getSelectionTree(selected, child_tree);
 	};
 	return BaseProxy;
 });
