@@ -182,12 +182,14 @@ define([
 	};
 
 	CanvasMouseHandler.prototype.mouseModeChanged = function(signal, data){
+		console.log("new mode = "+data.getMode());
 		if(data.getMode() == null){
 			this.current_mouse_mode = this.previous_mouse_mode;
 		}else{
 			this.previous_mouse_mode = this.current_mouse_mode;
 			this.current_mouse_mode = data.getMode();
 		}
+		console.log("current mode = "+this.current_mouse_mode);
 	};
 	return CanvasMouseHandler;
 });

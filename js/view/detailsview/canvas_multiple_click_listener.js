@@ -13,8 +13,10 @@ define(["../../messaging_system/event_listener",
 		this.messaging_system = messaging_system;
 		this.clickListener = new EventListener(this ,this.clickReceived);
 		this.otherListenerStartedListener = new EventListener(this, this.stopListening);
+		this.mouseModeChangedListener = new EventListener(this, this.mouseModeChanged);
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
 		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
+		this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, this.mouseModeChangedListener);
 	};
 	CanvasMultipleClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
@@ -33,6 +35,7 @@ define(["../../messaging_system/event_listener",
 		}
 	};
 	CanvasMultipleClickListener.prototype.startListening = function(){
+		console.log("start listening");
 		this.messaging_system.fire(this.messaging_system.events.CoordinateClickListenerStarted, null);
 		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CoordinateClickMode));
 
@@ -40,8 +43,23 @@ define(["../../messaging_system/event_listener",
 		this.index = 0;
 		this.parentView.startedListening();
 	};
-	CanvasMultipleClickListener.prototype.stopListening = function(){
-		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
+	CanvasMultipleClickListener.prototype.mouseModeChanged = function(signal, data){
+		switch(data.getMode()){
+			case CanvasMouseHandler.MouseModes.CoordinateClickMode:
+				return;
+			default:
+				this.stopListening(signal, data, true);
+		}
+	};
+	CanvasMultipleClickListener.prototype.stopListening = function(signal, data, mouse_mode_remotely_changed){
+		if(mouse_mode_remotely_changed == null){
+			mouse_mode_remotely_changed = false;
+		}
+		if(!mouse_mode_remotely_changed && this.listening){
+			console.log("remotely changed = "+mouse_mode_remotely_changed);
+			this.listening = false;
+			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
+		}
 		this.listening = false;
 		this.parentView.stoppedListening();
 	};
@@ -49,6 +67,7 @@ define(["../../messaging_system/event_listener",
 		this.stopListening();
 		this.messaging_system.removeEventListener(this.messaging_system.events.CanvasImageClick, this.clickListener);
 		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerStarted, this.otherListenerStartedListener);
+		this.messaging_system.removeEventListener(this.messaging_system.events.MouseModeChanged, this.mouseModeChangedListener);
 	};
 	return CanvasMultipleClickListener;
 });
