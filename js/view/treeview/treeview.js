@@ -16,7 +16,7 @@ define(["./treenode", "../../messaging_system/event_listener", "../../messaging_
 				'type':'button'
 			}).text('Add leds group')
 			.click(function(){
-				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElement('group', self.state_proxy.getIdentification(), 'dot'));
+				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('group', self.state_proxy.getIdentification(), 'dot'));
 			});
 		target_view.append(this.add_dot_element);
 		this.tree_element = $('<ul>')

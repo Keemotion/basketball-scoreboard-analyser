@@ -1,4 +1,9 @@
-define(["../../messaging_system/event_listener"], function(EventListener){
+define(["../../messaging_system/event_listener",
+	"../canvas/handlers/canvas_mouse_handler",
+	"../../messaging_system/events/mouse_mode_changed_event"],
+	function(EventListener,
+		CanvasMouseHandler,
+		MouseModeChangedEvent){
 	//Sets the coordinate of the parent view when the canvas is clicked
 	var CanvasSingleClickListener = function(parentView, messaging_system){
 		this.parentView = parentView;
@@ -12,15 +17,18 @@ define(["../../messaging_system/event_listener"], function(EventListener){
 	CanvasSingleClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
 			this.stopListening();
-			this.parentView.setCoordinate(data.getCoordinate().getX(), data.getCoordinate().getY());
+			this.parentView.setCoordinate(data.getRelativeImageCoordinate().getX(), data.getRelativeImageCoordinate().getY());
 		}
 	};
 	CanvasSingleClickListener.prototype.startListening = function(){
+		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CoordinateClickMode));
 		this.messaging_system.fire(this.messaging_system.events.CoordinateClickListenerStarted, null);
+
 		this.listening = true;
 		this.parentView.startedListening();
 	};
 	CanvasSingleClickListener.prototype.stopListening = function(){
+		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 		this.listening = false;
 		this.parentView.stoppedListening();
 	};

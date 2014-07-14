@@ -1,4 +1,9 @@
-define(["../../messaging_system/event_listener"], function(EventListener){
+define(["../../messaging_system/event_listener",
+	"../canvas/handlers/canvas_mouse_handler",
+	"../../messaging_system/events/mouse_mode_changed_event"],
+	function(EventListener,
+		CanvasMouseHandler,
+		MouseModeChangedEvent){
 	//sets coordinates for consecutive clicks on the canvas
 	var CanvasMultipleClickListener = function(parentView, messaging_system, clicks_amount){
 		this.clicks_amount = clicks_amount;
@@ -13,7 +18,7 @@ define(["../../messaging_system/event_listener"], function(EventListener){
 	};
 	CanvasMultipleClickListener.prototype.clickReceived = function(signal, data){
 		if(this.listening == true){
-			this.parentView.content_elements[this.index].setCoordinate(data.getCoordinate().getX(), data.getCoordinate().getY());
+			this.parentView.content_elements[this.index].setCoordinate(data.getRelativeImageCoordinate().getX(), data.getRelativeImageCoordinate().getY());
 			++this.index;
 			if(this.index== this.clicks_amount){
 				this.stopListening();
@@ -29,11 +34,14 @@ define(["../../messaging_system/event_listener"], function(EventListener){
 	};
 	CanvasMultipleClickListener.prototype.startListening = function(){
 		this.messaging_system.fire(this.messaging_system.events.CoordinateClickListenerStarted, null);
+		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CoordinateClickMode));
+
 		this.listening = true;
 		this.index = 0;
 		this.parentView.startedListening();
 	};
 	CanvasMultipleClickListener.prototype.stopListening = function(){
+		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 		this.listening = false;
 		this.parentView.stoppedListening();
 	};

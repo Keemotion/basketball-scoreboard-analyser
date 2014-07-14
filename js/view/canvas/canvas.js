@@ -2,43 +2,45 @@ define([
 		"../../messaging_system/event_listener",
 		"../../model/coordinate",
 		"./transformation",
-		"../../messaging_system/events/canvas_scrolled_event",
-		"../../messaging_system/events/canvas_mouse_move_event",
-		"../../messaging_system/events/canvas_mouse_up_event",
-		"../../messaging_system/events/canvas_mouse_down_event",
-		"../../messaging_system/events/canvas_focus_out_event",
+	//	"../../messaging_system/events/canvas_scrolled_event",
+	//	"../../messaging_system/events/canvas_mouse_move_event",
+	//	"../../messaging_system/events/canvas_mouse_up_event",
+	//	"../../messaging_system/events/canvas_mouse_down_event",
+	//	"../../messaging_system/events/canvas_focus_out_event",
 		"./display_tree",
-		"../../messaging_system/events/canvas_image_click_event",
+	//	"../../messaging_system/events/canvas_image_click_event",
 		"../../messaging_system/events/submit_group_details_event",
 	//	"./handlers/canvas_drag_handler",
 		"./handlers/display_changed_handler",
 	//	"./handlers/canvas_hover_handler",
 		"../../messaging_system/events/canvas_keydown_event",
-		"../../messaging_system/events/canvas_image_double_click_event",
+	//	"../../messaging_system/events/canvas_image_double_click_event",
 		"./handlers/canvas_mouse_handler",
 		"../../model/selection_tree",
-		"../../model/selection_node"
+		"../../model/selection_node",
+		"../../messaging_system/events/mouse_event"
 		],
 	function(
 		EventListener,
 		Coordinate,
 		Transformation,
-		CanvasScrolledEvent,
+		/*CanvasScrolledEvent,
 		CanvasMouseMoveEvent,
 		CanvasMouseUpEvent,
 		CanvasMouseDownEvent,
-		CanvasFocusOutEvent,
+		CanvasFocusOutEvent,*/
 		DisplayTree,
-		CanvasImageClickEvent,
+		//CanvasImageClickEvent,
 		SubmitGroupDetailsEvent,
 		//CanvasDragHandler,
 		DisplayChangedHandler,
 		//CanvasHoverHandler,
 		CanvasKeyDownEvent,
-		CanvasImageDoubleClickEvent,
+		//CanvasImageDoubleClickEvent,
 		CanvasMouseHandler,
 		SelectionTree,
-		SelectionNode
+		SelectionNode,
+		MouseEvent
 		){
 	var MyCanvas = function(view, target_view, proxy, messaging_system){
 		var self = this;
@@ -69,36 +71,27 @@ define([
 		//this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
 		this.windowResized(null, null);
 		var scrollF = function(e){
-			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasScrolled, new CanvasScrolledEvent(c, e));
+			self.fireMouseEvent(self.messaging_system.events.CanvasScrolled, e);
 		};
 		this.canvas_element.addEventListener('DOMMouseScroll', scrollF, false);
 		this.canvas_element.addEventListener('mousewheel', scrollF, false);
 		$(this.canvas_element).mousemove(function(e){
-			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasMouseMove, new CanvasMouseMoveEvent(c, e));
+			self.fireMouseEvent(self.messaging_system.events.CanvasMouseMove, e);
 		});
 		$(this.canvas_element).mousedown(function(e){
-			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasMouseDown, new CanvasMouseDownEvent(c, e));
+			self.fireMouseEvent(self.messaging_system.events.CanvasMouseDown, e);
 		});
 		$(this.canvas_element).mouseup(function(e){
-			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasMouseUp, new CanvasMouseUpEvent(c, e));
+			self.fireMouseEvent(self.messaging_system.events.CanvasMouseUp, e);
 		});
 		$(this.canvas_element).focusout(function(e){
-			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasFocusOut, new CanvasFocusOutEvent(c, e));
+			self.fireMouseEvent(self.messaging_system.events.CanvasFocusOut, e);
 		});
 		$(this.canvas_element).click(function(e){
-			//var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
-			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasImageClick, new CanvasImageClickEvent(c, e));
+			self.fireMouseEvent(self.messaging_system.events.CanvasImageClick, e);
 		});
 		$(this.canvas_element).dblclick(function(e){
-			//var c = self.transformation.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop));
-			var c = new Coordinate(e.pageX-self.canvas_element.offsetLeft, e.pageY-self.canvas_element.offsetTop);
-			messaging_system.fire(messaging_system.events.CanvasImageDoubleClick, new CanvasImageDoubleClickEvent(c, e));
+			self.fireMouseEvent(self.messaging_system.events.CanvasImageDoubleClick, e);
 		});
 		$('html').keydown(function(e){
 			messaging_system.fire(messaging_system.events.CanvasKeyDown, new CanvasKeyDownEvent(e));
@@ -108,7 +101,10 @@ define([
 		this.setProxy(proxy);
 		this.display_changed_handler = new DisplayChangedHandler(this);
 	};
-
+	MyCanvas.prototype.fireMouseEvent = function(event_type, event_data){
+		var coordinate = new Coordinate(event_data.pageX-this.canvas_element.offsetLeft, event_data.pageY-this.canvas_element.offsetTop);
+		this.messaging_system.fire(event_type, new MouseEvent(coordinate, event_data, this.getTransformation()));
+	};
 	//one of the display objects has changed
 	MyCanvas.prototype.displayObjectsChanged = function(signal, data){
 		this.updateCanvas();

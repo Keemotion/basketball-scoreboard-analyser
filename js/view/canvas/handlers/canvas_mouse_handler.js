@@ -54,6 +54,7 @@ define([
 		this.mouse_down = false;
 
 		this.current_mouse_mode = CanvasMouseHandler.MouseModes.SelectionMode;
+		this.previous_mouse_mode = CanvasMouseHandler.MouseModes.SelectionMode;
 		//this.current_mouse_mode = CanvasMouseHandler.MouseModes.ViewEditMode;
 		this.selection_rectangle = new SelectionRectangle;
 
@@ -71,7 +72,8 @@ define([
 	CanvasMouseHandler.MouseModes = {
 		SelectionMode:"SelectionMode",
 		ViewEditMode:"ViewEditMode",
-		DragMode:"DragMode"
+		DragMode:"DragMode",
+		CoordinateClickMode:"CoordinateClickMode"
 	};
 	CanvasMouseHandler.prototype.canvasScrolled = function(signal, data){
 		var evt = data.event_data;
@@ -180,7 +182,12 @@ define([
 	};
 
 	CanvasMouseHandler.prototype.mouseModeChanged = function(signal, data){
-		this.current_mouse_mode = data.getMode();
+		if(data.getMode() == null){
+			this.current_mouse_mode = this.previous_mouse_mode;
+		}else{
+			this.previous_mouse_mode = this.current_mouse_mode;
+			this.current_mouse_mode = data.getMode();
+		}
 	};
 	return CanvasMouseHandler;
 });

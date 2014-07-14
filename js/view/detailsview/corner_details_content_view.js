@@ -1,9 +1,9 @@
-define(["../../model/coordinate", 
-	'../../messaging_system/event_listener', 
+define(["../../model/coordinate",
+	'../../messaging_system/event_listener',
 	'../../messaging_system/events/submit_group_details_event',
-	'./canvas_single_click_listener'], 
-	function(Coordinate, 
-		EventListener, 
+	'./canvas_single_click_listener'],
+	function(Coordinate,
+		EventListener,
 		SubmitGroupDetailsEvent,
 		CanvasSingleClickListener){
 	//Groups the coordinate of a corner together with a button to set the coordinate by clicking on the canvas
@@ -12,7 +12,7 @@ define(["../../model/coordinate",
 		this.target_view = target_view;
 		this.data_proxy = data_proxy;
 		this.messaging_system = messaging_system;
-		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerAdded, new EventListener(self, self.stopListening));
+		//this.messaging_system.addEventListener(this.messaging_system.events.CoordinateClickListenerAdded, new EventListener(self, self.stopListening));
 		this.canvasClickListener = new CanvasSingleClickListener(this, this.messaging_system);
 		this.x_text = $('<input>')
 			.val('');
@@ -26,8 +26,9 @@ define(["../../model/coordinate",
 				'class':'button_corner_coordinate_click'
 			})
 			.click(function(e){
-				e.preventDefault();
+				//e.preventDefault();
 				self.canvasClickListener.toggleListening();
+				return false;
 			});
 		this.content_element = $('<div>')
 			.append(this.x_label)
@@ -37,14 +38,17 @@ define(["../../model/coordinate",
 			.append(this.y_text)
 			.append(this.click_button);
 		this.form = $('<form>')
-			.append(this.content_element)
-			.submit(function(){
+			.append(this.content_element);
+		this.target_view.append(this.form);
+		this.form
+			.submit(function(e){
 				var data = self.collectFormData();
 				var identification = self.data_proxy.getIdentification();
 				self.messaging_system.fire(self.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, data));
+				e.preventDefault();
+				e.stopPropagation();
 				return false;
 			});
-		this.target_view.append(this.form);
 		this.loadContent();
 		messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 	};
@@ -53,13 +57,13 @@ define(["../../model/coordinate",
 			this.loadContent();
 		}
 	};
-	//setCoordinate can by used by the CanvasClickListener
+	//setCoordinate can be used by the CanvasClickListener
 	CornerDetailsContentView.prototype.setCoordinate = function(x, y){
 		this.x_text.val(x);
 		this.y_text.val(y);
-		this.content_element.closest('form').submit();
+		this.form.submit();
 	};
-	CornerDetailsContentView.prototype.stoppedListening = function(){		
+	CornerDetailsContentView.prototype.stoppedListening = function(){
 		this.click_button.removeClass('active');
 	};
 	CornerDetailsContentView.prototype.startedListening = function(){
@@ -82,7 +86,7 @@ define(["../../model/coordinate",
 	};
 	CornerDetailsContentView.prototype.cleanUp = function(){
 		this.canvasClickListener.cleanUp();
-		this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerAdded, new EventListener(self, self.stopListening));
+		//this.messaging_system.removeEventListener(this.messaging_system.events.CoordinateClickListenerAdded, new EventListener(self, self.stopListening));
 	};
 	return CornerDetailsContentView;
 });

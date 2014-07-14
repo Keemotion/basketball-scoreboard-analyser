@@ -43,6 +43,10 @@ define(["../../messaging_system/event_listener",
 		}
 	};
 	DetailsView.prototype.clearView = function(){
+		if(this.details_view_element){
+			this.details_view_element.cleanUp();
+			this.details_view_element = null;
+		}
 		this.element.empty();
 	};
 	return DetailsView;
