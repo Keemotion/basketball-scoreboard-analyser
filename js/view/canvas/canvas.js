@@ -68,6 +68,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.SelectionChanged, new EventListener(this, this.updateCanvas));
 		this.messaging_system.addEventListener(this.messaging_system.events.ResetCanvasView, new EventListener(this, this.resetCanvasView));
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.updateCanvas));
+		this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
 		//this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
 		this.windowResized(null, null);
 		var scrollF = function(e){
@@ -289,7 +290,25 @@ define([
 	MyCanvas.prototype.getTransformation = function(){
 		return this.transformation;
 	};
-
+	MyCanvas.prototype.mouseModeChanged = function(signal, data){
+		$(this.canvas_element).removeClass('mouse-mode-selection mouse-mode-view-edit mouse-mode-drag mouse-mode-coordinate-click');
+		switch(data.getMode()){
+			case CanvasMouseHandler.MouseModes.SelectionMode:
+				$(this.canvas_element).addClass('mouse-mode-selection');
+				break;
+			case CanvasMouseHandler.MouseModes.ViewEditMode:
+				$(this.canvas_element).addClass('mouse-mode-view-edit');
+				break;
+			case CanvasMouseHandler.MouseModes.DragMode:
+				$(this.canvas_element).addClass('mouse-mode-drag');
+				break;
+			case CanvasMouseHandler.MouseModes.CoordinateClickMode:
+				$(this.canvas_element).addClass('mouse-mode-coordinate-click');
+				break;
+			default:
+				break;
+		}
+	};
 	return MyCanvas;
 }
 );

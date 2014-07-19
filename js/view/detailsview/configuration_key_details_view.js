@@ -1,4 +1,5 @@
-define(["../../messaging_system/events/submit_group_details_event"],function(SubmitGroupDetailsEvent){
+define(["../../messaging_system/events/submit_group_details_event",
+	"../../messaging_system/event_listener"],function(SubmitGroupDetailsEvent, EventListener){
 	var ConfigurationKeyDetailsView = function(target_view, data_proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
