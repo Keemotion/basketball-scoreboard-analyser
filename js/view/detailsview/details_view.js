@@ -2,13 +2,15 @@ define(["../../messaging_system/event_listener",
 	"./group_detailsview",
 	"./dot_details_content_view",
 	"./digit_details_content_view",
-	"./corner_details_content_view"],
+	"./corner_details_content_view",
+	"./configuration_key_details_view"],
 	function(
 		EventListener,
 		GroupDetailsView,
 		DotDetailsContentView,
 		DigitDetailsContentView,
-		CornerDetailsContentView){
+		CornerDetailsContentView,
+		ConfigurationKeyDetailsView){
 	var DetailsView = function(view, dom_element, messaging_system){
 		this.view = view;
 		this.messaging_system = messaging_system;
@@ -34,6 +36,9 @@ define(["../../messaging_system/event_listener",
 					break;
 				case "corner":
 					this.details_view_element = new CornerDetailsContentView(this.element, selected_proxy, this.messaging_system);
+					break;
+				case "configuration_key":
+					this.details_view_element = new ConfigurationKeyDetailsView(this.element, selected_proxy, this.messaging_system);
 					break;
 			}
 		}else if(selected_proxies.length == 0){

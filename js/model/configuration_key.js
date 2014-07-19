@@ -1,6 +1,6 @@
 define(["./data_base_class",
-	"./proxy/configuration_key_proxy"], 
-	function(DataBaseClass, 
+	"./proxy/configuration_key_proxy"],
+	function(DataBaseClass,
 		ConfigurationKeyProxy){
 	var ConfigurationKey = function(key, value, messaging_system){
 		this.messaging_system = messaging_system;
@@ -26,5 +26,8 @@ define(["./data_base_class",
 		d.value = this.getValue();
 		return d;
 	};
+	ConfigurationKey.prototype.getTitle = function(){
+		return "Configuration key: "+this.getKey()+" = "+this.getValue();
+	}
 	return ConfigurationKey;
 });
