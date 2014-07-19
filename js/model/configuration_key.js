@@ -28,6 +28,11 @@ define(["./data_base_class",
 	};
 	ConfigurationKey.prototype.getTitle = function(){
 		return "Configuration key: "+this.getKey()+" = "+this.getValue();
-	}
+	};
+	ConfigurationKey.prototype.update = function(data){
+		this.key = data.key;
+		this.value = data.value;
+		this.notifyGroupChanged();
+	};
 	return ConfigurationKey;
 });
