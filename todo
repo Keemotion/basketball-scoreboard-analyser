@@ -1,39 +1,40 @@
-DisplayTree.prototype.loadSubComponents
-	on removal of items -> clear getSelected()
-	event notification for canvas?
-	recursively update/add elements, but don't replace them unless stateChangedEvent indicated so
 DisplayTree.prototype.stateChanged
 	StateChangedEvent -> parameter for update or remake. on update
 		
 
 
-optimize exporter (group settings)
-x configuration keys in UI
+configuration keys in UI
 change configuration keys in UI
 TO ASK: 
 	default configuration keys?
 	objects grouped meaningfully vs optimally (for keys)
-x export last number for digits
-x other color for current selected digit/group
-x show configuration values
 display pattern functions 
-optimize: minimize number of lines
-configuration keys after the definition (digits/leds)
-x move whole digit at once
-x move whole group of leds at once
-x select a set of groups and move it at once
-x selecting by square selection + selecting/deselecting by shift+click
 debug: add digit for new configuration
-
-x default: don't display green circles, only when working on that one (selected digits: all info)
-x selecting by clicking inside the digit
-
+selecting by double-clicking inside the digit
 mouse pointer change: over edge -> move digit, on corner -> move corner, else: drag canvas
-
 hovering in toggle mode for patterns -> display RGB/grayscale values of current pixel
-
-validate JS-code
-display object movement more efficiently
+---CURRENT---
+mouse pointer depending on mode
+x mouse mode enabled button color
+clear configuration -> clear selection tree
+delete element -> remove from selection tree 
+add configuration keys to tree
+add configuration keys to group at a certain index (draggable)
+change global configuration keys (details view)
+	*type with corresponding list of values
+	*type depending on context
+clear configuration -> don't remove configuration keys at root level
+group-configuration-keys details view (details view)
+	collapsed div containing all inherited/default values
+	list of select(type) and select(value) + remove-button
+	add-button to add a new key
+double-click to select surrounding element
+drag mode enabled when approaching a selected object
+---AUTOMATISATION---
+right click inside digit -> finds surrounding digit
+	*max variance shears
+	*per max variance shear, find direction of line through
+---
 
 -------
 automisation

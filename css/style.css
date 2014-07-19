@@ -53,6 +53,9 @@ div#div_current_state {
 	background-color: yellow;
 	height: 100%;
 }
+.btn-view-mode.active{
+	background-color:blue;
+}
 /*Import field*/
 div#div_load_state {
 	width: 50%;

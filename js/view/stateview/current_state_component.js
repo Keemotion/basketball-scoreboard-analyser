@@ -22,13 +22,13 @@ define([
 			var exported_string =  self.state_proxy.getExportedString();
 			self.download_prm_btn.attr('href', 'data:text/plain,'+encodeURIComponent(exported_string));
 		});
-		this.selection_tool_btn = $('<button>').text('Selection mode').click(function(){
+		this.selection_tool_btn = $('<button>').text('Selection mode').addClass('btn-view-mode').click(function(){
 			self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.SelectionMode));
 		});
-		this.edit_view_tool_btn = $('<button>').text('View edit mode').click(function(){
+		this.edit_view_tool_btn = $('<button>').text('View edit mode').addClass('btn-view-mode').click(function(){
 			self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.ViewEditMode));
 		});
-		this.drag_tool_btn = $('<button>').text('Drag mode').click(function(){
+		this.drag_tool_btn = $('<button>').text('Drag mode').addClass('btn-view-mode').click(function(){
 			self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.DragMode));
 		});
 		this.target_view
@@ -38,9 +38,28 @@ define([
 			.append(this.selection_tool_btn)
 			.append(this.edit_view_tool_btn)
 			.append(this.drag_tool_btn);
+		self.messaging_system.addEventListener(self.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
 	};
 	CurrentStateComponent.prototype.setProxy = function(proxy){
 		this.state_proxy = proxy;
+	};
+	CurrentStateComponent.prototype.mouseModeChanged = function(signal, data){
+		this.selection_tool_btn.removeClass('active');
+		this.edit_view_tool_btn.removeClass('active');
+		this.drag_tool_btn.removeClass('active');
+		switch(data.getMode()){
+			case CanvasMouseHandler.MouseModes.SelectionMode:
+				this.selection_tool_btn.addClass('active');
+				break;
+			case CanvasMouseHandler.MouseModes.ViewEditMode:
+				this.edit_view_tool_btn.addClass('active');
+				break;
+			case CanvasMouseHandler.MouseModes.DragMode:
+				this.drag_tool_btn.addClass('active');
+				break;
+			default:
+				break;
+		}
 	};
 	return CurrentStateComponent;
 });
