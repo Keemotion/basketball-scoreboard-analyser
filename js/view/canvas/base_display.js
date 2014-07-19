@@ -46,10 +46,6 @@ define([
 		this.drawMyself(context, transformation);
 	};
 	BaseDisplay.prototype.drawSelected = function(selection_node, context, transformation){
-		if(selection_node.getType() != this.getProxy().getType() || selection_node.getId() != this.getProxy().getId()){
-			console.log("own type = "+this.getProxy().getType()+", selection_node type = "+selection_node.getType());
-			console.log("own id = "+this.getProxy().getId()+", selection_node type = "+selection_node.getId());
-		}
 		if(selection_node.getSelected()){
 			this.drawMyselfSelected(context, transformation);
 		}

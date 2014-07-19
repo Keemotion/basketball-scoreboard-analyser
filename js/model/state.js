@@ -34,6 +34,7 @@ define([
 				--i;
 				continue;
 			}
+			this.sub_nodes[i].setId(i);
 			this.sub_nodes[i].clear();
 		}
 		this.unlockNotification();
