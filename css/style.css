@@ -27,24 +27,24 @@ div#div_image {
 	height: 75%;
 	background-color: blue;
 }
+div#div_image.mouse-mode-view-edit *{
+	cursor:move;
+}
+div#div_image.mouse-mode-selection *{
+	cursor:cell;
+}
+div#div_image.mouse-mode-drag *{
+	cursor:move;
+}
+div#div_image.mouse-mode-coordinate-click *{
+	cursor:crosshair;
+}
 
 /*Canvas*/
 div#div_image canvas.canvas_image {
 	background-color: orange;
 	width: 100%;
 	height: 100%;
-}
-div#div_image canvas.canvas_image.mouse-mode-view-edit{
-	cursor:move;
-}
-div#div_image canvas.canvas_image.mouse-mode-selection{
-	cursor:cell;
-}
-div#div_image canvas.canvas_image.mouse-mode-drag{
-	cursor:move;
-}
-div#div_image canvas.canvas_image.mouse-mode-coordinate-click{
-	cursor:crosshair;
 }
 /*Toolbox, containing tree and details view*/
 div#div_toolbox {

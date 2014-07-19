@@ -14,9 +14,9 @@ define(["./data_base_class",
 		"parse_function":"text",
 		"read_function":"text",
 		"sync_function":"text",
-		"first_digit_restricted":[0,1],
+		"first_digit_restricted":["0","1"],
 		"must_be_on":["true", "false"],
-		"dtype":[1,2,3],
+		"dtype":["1","2","3"],
 		"luminance_threshold":"numeric",
 		"requested_stability_ms":"numeric",
 		"luminance_differential_threshold":"numeric"
@@ -29,6 +29,15 @@ define(["./data_base_class",
 			}
 		}
 		return res;
+	};
+	ConfigurationKey.prototype.getKeyOptions = function(){
+		return ConfigurationKey.getKeyOptions();
+	};
+	ConfigurationKey.getPossibleValues = function(key){
+		return ConfigurationKey.KeyValues[key];
+	};
+	ConfigurationKey.prototype.getPossibleValues = function(key){
+		return ConfigurationKey.getPossibleValues(key);
 	};
 	ConfigurationKey.prototype.getKey = function(){
 		return this.key;

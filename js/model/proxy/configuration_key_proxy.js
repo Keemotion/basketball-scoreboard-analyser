@@ -9,5 +9,11 @@ define(["./proxy_base_class"], function(ProxyBaseClass){
 	ConfigurationKeyProxy.prototype.getValue = function(){
 		return this.obj.getValue();
 	};
+	ConfigurationKeyProxy.prototype.getKeyOptions = function(){
+		return this.obj.getKeyOptions();
+	};
+	ConfigurationKeyProxy.prototype.getPossibleValues = function(key){
+		return this.obj.getPossibleValues(key);
+	};
 	return ConfigurationKeyProxy;
 });

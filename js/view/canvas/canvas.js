@@ -291,19 +291,20 @@ define([
 		return this.transformation;
 	};
 	MyCanvas.prototype.mouseModeChanged = function(signal, data){
-		$(this.canvas_element).removeClass('mouse-mode-selection mouse-mode-view-edit mouse-mode-drag mouse-mode-coordinate-click');
+		$(this.canvas_element).parent().removeClass('mouse-mode-selection mouse-mode-view-edit mouse-mode-drag mouse-mode-coordinate-click');
+		console.log("mouse-mode-drag = "+data.getMode());
 		switch(data.getMode()){
 			case CanvasMouseHandler.MouseModes.SelectionMode:
-				$(this.canvas_element).addClass('mouse-mode-selection');
+				$(this.canvas_element).parent().addClass('mouse-mode-selection');
 				break;
 			case CanvasMouseHandler.MouseModes.ViewEditMode:
-				$(this.canvas_element).addClass('mouse-mode-view-edit');
+				$(this.canvas_element).parent().addClass('mouse-mode-view-edit');
 				break;
 			case CanvasMouseHandler.MouseModes.DragMode:
-				$(this.canvas_element).addClass('mouse-mode-drag');
+				$(this.canvas_element).parent().addClass('mouse-mode-drag');
 				break;
 			case CanvasMouseHandler.MouseModes.CoordinateClickMode:
-				$(this.canvas_element).addClass('mouse-mode-coordinate-click');
+				$(this.canvas_element).parent().addClass('mouse-mode-coordinate-click');
 				break;
 			default:
 				break;
