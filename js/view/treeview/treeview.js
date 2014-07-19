@@ -19,6 +19,14 @@ define(["./treenode", "../../messaging_system/event_listener", "../../messaging_
 				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('group', self.state_proxy.getIdentification(), 'dot'));
 			});
 		target_view.append(this.add_dot_element);
+		this.add_configuration_key_element = $('<button>')
+			.attr({
+				'type':'button'
+			}).text('Add configuration key')
+			.click(function(){
+				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('configuration_key', self.state_proxy.getIdentification()));
+			});
+		target_view.append(this.add_configuration_key_element);
 		this.tree_element = $('<ul>')
 			.attr({
 				'class':'list_toolbox_objects_tree'

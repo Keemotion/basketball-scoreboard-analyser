@@ -18,7 +18,7 @@ mouse pointer depending on mode
 x mouse mode enabled button color
 x clear configuration -> clear selection tree
 delete element -> remove from selection tree 
-add configuration keys to tree
+x add configuration keys to tree
 add configuration keys to group at a certain index (draggable)
 change global configuration keys (details view)
 	*type with corresponding list of values

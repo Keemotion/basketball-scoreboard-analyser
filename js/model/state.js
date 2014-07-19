@@ -114,6 +114,9 @@ define([
 				case 'group':
 					s = new Group(null, data.getExtraData(), this, this.messaging_system);
 					break;
+				case 'configuration_key':
+					s = new ConfigurationKey("EMPTY", "EMPTY", this.messaging_system);
+					break;
 			}
 			this.addSubNode(s);
 			this.stateChanged();
