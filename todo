@@ -16,7 +16,7 @@ hovering in toggle mode for patterns -> display RGB/grayscale values of current 
 ---CURRENT---
 mouse pointer depending on mode
 x mouse mode enabled button color
-clear configuration -> clear selection tree
+x clear configuration -> clear selection tree
 delete element -> remove from selection tree 
 add configuration keys to tree
 add configuration keys to group at a certain index (draggable)

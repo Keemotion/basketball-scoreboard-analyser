@@ -2,12 +2,14 @@ define([
 	"../../../messaging_system/event_listener",
 	"../../../model/coordinate",
 	"../../../messaging_system/events/selection_event",
-	"../../../messaging_system/events/objects_moved_event"]
+	"../../../messaging_system/events/objects_moved_event",
+	"../../../messaging_system/events/mouse_mode_changed_event"]
 	, function(
 		EventListener,
 		Coordinate,
 		SelectionEvent,
-		ObjectsMovedEvent
+		ObjectsMovedEvent,
+		MouseModeChangedEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -183,12 +185,16 @@ define([
 
 	CanvasMouseHandler.prototype.mouseModeChanged = function(signal, data){
 		if(data.getMode() == null){
+			data.setMode(this.previous_mouse_mode);
 			this.current_mouse_mode = this.previous_mouse_mode;
 		}else{
+			if(this.current_mouse_mode == data.getMode()){
+				return;
+			}
 			this.previous_mouse_mode = this.current_mouse_mode;
 			this.current_mouse_mode = data.getMode();
 		}
-		console.log("current mode = "+this.current_mouse_mode);
+		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(this.current_mouse_mode));
 	};
 	return CanvasMouseHandler;
 });
