@@ -151,6 +151,7 @@ define([
 		this.canvas.setProxy(this.controller.getModel().getState().getProxy());
 		this.current_state_component.setProxy(this.controller.getModel().getState().getProxy());
 		this.tree_view.setProxy(this.controller.getModel().getState().getProxy());
+		this.selectionReset(signal, data);
 		//this.clearGroupDetails();
 	};
 	return View;
