@@ -19,12 +19,12 @@ x mouse mode enabled button color
 x clear configuration -> clear selection tree
 delete element -> remove from selection tree 
 x add configuration keys to tree
-add configuration keys to group at a certain index (draggable)
+TO CHECK: add configuration keys to group at a certain index (draggable)
 change global configuration keys (details view)
 	*type with corresponding list of values
 	*type depending on context
 group-configuration-keys details view (details view)
-	collapsed div containing all inherited/default values
+	x collapsed div containing all inherited/default values
 	list of select(type) and select(value) + remove-button
 	add-button to add a new key
 double-click to select surrounding element
