@@ -53,5 +53,8 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.getSelectionTree = function(selected,child_tree){
 		return this.obj.getSelectionTree(selected, child_tree);
 	};
+	BaseProxy.prototype.getGlobalConfiguration = function(current_configuration, end_index){
+		return this.obj.getGlobalConfiguration(current_configuration, end_index);
+	};
 	return BaseProxy;
 });

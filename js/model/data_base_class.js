@@ -330,5 +330,24 @@ define([
 			this.sub_nodes[i].move(translation);
 		}
 	};
+	BaseDataClass.prototype.getGlobalConfiguration = function(current_configuration, end_index){
+		if(current_configuration == null){
+			current_configuration = new Object();
+		}
+		if(this.getParent()){
+			current_configuration = this.getParent().getGlobalConfiguration(current_configuration, this.getId());
+		}
+		if(end_index === null){
+			end_index = this.sub_nodes.length;
+		}
+		for(var i = 0; i < end_index; ++i){
+			if(this.sub_nodes[i].getType() == "configuration_key"){
+				current_configuration[this.sub_nodes[i].getKey()] = this.sub_nodes[i].getValue();
+			}else{
+				this.sub_nodes[i].getGlobalConfiguration(current_configuration);
+			}
+		}
+		return current_configuration;
+	};
 	return BaseDataClass;
 });

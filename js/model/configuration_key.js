@@ -10,6 +10,26 @@ define(["./data_base_class",
 		this.setProxy(new ConfigurationKeyProxy(this));
 	};
 	ConfigurationKey.prototype = new DataBaseClass("configuration_key");
+	ConfigurationKey.KeyValues = {
+		"parse_function":"text",
+		"read_function":"text",
+		"sync_function":"text",
+		"first_digit_restricted":[0,1],
+		"must_be_on":["true", "false"],
+		"dtype":[1,2,3],
+		"luminance_threshold":"numeric",
+		"requested_stability_ms":"numeric",
+		"luminance_differential_threshold":"numeric"
+	};
+	ConfigurationKey.getKeyOptions = function(){
+		var res = new Array();
+		for(var k in ConfigurationKey.KeyValues){
+			if(ConfigurationKey.KeyValues.hasOwnProperty(k)){
+				res.push(k);
+			}
+		}
+		return res;
+	};
 	ConfigurationKey.prototype.getKey = function(){
 		return this.key;
 	};
