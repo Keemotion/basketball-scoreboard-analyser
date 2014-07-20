@@ -8,7 +8,7 @@ The input file corresponding to the default image can be found at: http://fkint.
 <ul>
 <li>Load a prm-file containing the current data using the "Load file" button.
 <li>Load a scoreboard image using the "Load image" button.
-<li>Add groups to the current configuration using the "Add group" button.
+<li>Add groups to the current configuration using the "Add (dots/digits) group" button.
 <li>Click on a group in the tree view to view its details at the bottom right corner of the screen.
 <li>Adding digits and dots to a group can be done with the corresponding buttons in the details view.
 <li>Toggle highlighting of a group on the canvas by clicking on the highlight button in the details view.
@@ -17,12 +17,17 @@ The input file corresponding to the default image can be found at: http://fkint.
 <li>Delete groups/digits/dots with the corresponding buttons in the details view.
 <li>Drag-and-drop groups in the tree to re-order them.
 <li>Use the arrow buttons in the tree to expand/collapse groups with children.
-<li>Click-and-drag the canvas to reposition it.
 <li>Scroll to zoom the canvas.
-<li>Control-drag to move corners/dots.
-<li>Shift-click drag to select all corners/dots in an area
 <li>Download JSON/PRM using the corresponding buttons in the bottom left corner of the screen.
-<li>Reset the canvas view using the button at the bottom middle of the screen.
+<li>Reset the configuration using the 'reset configuration' button
+<li>Clear the configuration (remove all child nodes)
+<li>Switch between the following mouse modes:
+<ul>
+<li>View edit mode: drag the canvas
+<li>Drag mode: move the selected objects
+<li>Selection mode: draw a rectangle to select all objects inside it
+</ul>
+<li>Double-click inside a digit to select it
 </ul>
 
 
