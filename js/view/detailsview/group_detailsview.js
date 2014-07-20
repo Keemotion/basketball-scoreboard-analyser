@@ -6,7 +6,8 @@ define([
 	"../../messaging_system/events/submit_group_details_event",
 	"../../messaging_system/events/toggle_display_object_event",
 	"../../messaging_system/events/add_element_event",
-	"../../messaging_system/events/remove_group_event"],
+	"../../messaging_system/events/remove_group_event",
+	"../../model/configuration_key"],
 	function(
 		DigitDetailsContentView,
 		DotDetailsContentView,
@@ -15,7 +16,8 @@ define([
 		SubmitGroupDetailsEvent,
 		ToggleDisplayObjectEvent,
 		AddElementEvent,
-		RemoveGroupEvent){
+		RemoveGroupEvent,
+		ConfigurationKey){
 	//Button to toggle display on canvas for this group object
 	var HighlightButton = function(data_proxy, messaging_system){
 		var self = this;
@@ -60,11 +62,16 @@ define([
 		this.title_form = $('<form>')
 			.append($('<span>').text('Name: '))
 			.append(this.title_input)
+			.append($('<button>').attr({'type':'button'}).text('add label configuration').click(function(){
+				self.add_configuration(null, null);
+				//self.submit();
+			}))
 			.append($('<button>').attr({'type':'button'}).text('submit').click(function(){self.title_form.submit();}))
 			.submit(function(e){
-				var identification = data_proxy.getIdentification();
-				var data = self.collectFormData();
-				messaging_system.fire(messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, data));
+				self.submit();
+				//var identification = data_proxy.getIdentification();
+				//var data = self.collectFormData();
+				//messaging_system.fire(messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, data));
 				return false;
 			});
 		this.highlight_button = new HighlightButton(this.data_proxy, this.messaging_system);
@@ -103,9 +110,54 @@ define([
 		d.name = this.title_input.val();
 		return d;
 	};
+	GroupDetailsView.prototype.add_configuration = function(key, value){
+		var self = this;
+		var key_element = $('<select>').addClass('key-element').change(function(){self.submit();});
+		var value_element;
+		var keys = ConfigurationKey.getKeyOptions();
+		for(var i = 0; i < keys.length; ++i){
+			key_element.append($('<option>').attr('value', keys[i]).text(keys[i]));
+		}
+		if(key != null){
+			key_element.val(key);
+			var options = ConfigurationKey.getPossibleValues(key);
+			if(options instanceof Array){
+				value_element = $('<select>');
+				for(var i = 0; i < options.length; ++i){
+					value_element.append($('<option>').text(options[i]).attr('value', options[i]));
+				}
+			}else if(options == "numeric" || options == "text"){
+				value_element = $('<input>');
+			}else{
+				value_element = $('<input>');
+			}
+		}else{
+			value = "";
+			value_element = $('<input>');
+		}
+		value_element
+			.change(function(){self.submit();})
+			.addClass('value-element')
+			.val(value);
+		var li = $('<li>')
+			//.text('configuration key: ')
+			.append(key_element)
+			.append(value_element)
+			.append($('<button>')
+				.text('x')
+				.click(function(){
+					li.remove();
+					self.submit();
+				}
+			)
+		);
+		this.configuration_element.append(li);
+		console.log(this.configuration_element.html());
+	};
 	//loads the details div
 	//Only direct children are shown (children of subgroups are NOT shown)
 	GroupDetailsView.prototype.loadContent = function(){
+		var self = this;
 		var subnodes = this.data_proxy.getSubNodes();
 		this.content_element.empty();
 		this.title_input.val(this.data_proxy.getTitle());
@@ -128,8 +180,18 @@ define([
 		var configuration_keys = this.data_proxy.getConfigurationKeys();
 		this.configuration_element.empty();
 		for(var k in configuration_keys){
-			this.configuration_element.append($('<li>').text('configuration key: '+k+" = "+configuration_keys[k]));
+			this.add_configuration(k, configuration_keys[k]);
 		}
+	};
+	GroupDetailsView.prototype.submit = function(){
+		var identification = this.data_proxy.getIdentification();
+		var data = this.collectFormData();
+		var configuration_keys = new Object();
+		this.configuration_element.children('li').each(function(){
+			configuration_keys[$(this).find('.key-element').val()] = $(this).find('.value-element').val();
+		});
+		data.configuration_keys = configuration_keys;
+		this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, data));
 	};
 	//updates the content of the div when data about this group has changed
 	GroupDetailsView.prototype.groupChanged = function(signal, data){

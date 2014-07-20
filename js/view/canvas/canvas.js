@@ -292,7 +292,6 @@ define([
 	};
 	MyCanvas.prototype.mouseModeChanged = function(signal, data){
 		$(this.canvas_element).parent().removeClass('mouse-mode-selection mouse-mode-view-edit mouse-mode-drag mouse-mode-coordinate-click');
-		console.log("mouse-mode-drag = "+data.getMode());
 		switch(data.getMode()){
 			case CanvasMouseHandler.MouseModes.SelectionMode:
 				$(this.canvas_element).parent().addClass('mouse-mode-selection');
