@@ -22,6 +22,7 @@ define([], function(){
 	ConfigurationDetailsOverview.prototype.loadContent = function(){
 		this.list_element.empty();
 		var configuration = this.data_proxy.getGlobalConfiguration();
+		console.log("new configuration details overview!");
 		for(var k in configuration){
 			if(configuration.hasOwnProperty(k)){
 				this.list_element.append($('<li>').text(k+" = "+configuration[k]));

@@ -63,5 +63,8 @@ define(["./data_base_class",
 		this.value = data.value;
 		this.notifyGroupChanged();
 	};
+	ConfigurationKey.prototype.applyGlobalConfiguration = function(current_configuration, end_index){
+		current_configuration[this.getKey()] = this.getValue();
+	};
 	return ConfigurationKey;
 });

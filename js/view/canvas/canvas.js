@@ -120,14 +120,12 @@ define([
 		}*/
 		return tree;
 	};
-	/*MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
-		for(var i = 0; i < this.display_objects.length; ++i){
-			var res = this.display_objects[i].getObjectAroundCanvasCoordinate(coordinate);
-			if(res)
-				return res;
-		}
+	MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+		var res = this.display_tree.getObjectAroundCoordinate(this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(coordinate));
+		if(res)
+			return res;
 		return null;
-	};
+	};/*
 	MyCanvas.prototype.getObjectsInRectangle = function(start_coordinate, end_coordinate){
 		var res = new Array();
 		for(var i = 0; i < this.display_objects.length; ++i){

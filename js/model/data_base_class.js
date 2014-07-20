@@ -316,17 +316,40 @@ define([
 			this.sub_nodes[i].move(translation);
 		}
 	};
+	BaseDataClass.prototype.applyGlobalConfiguration = function(current_configuration, end_index){
+		if(typeof end_index === 'undefined'){
+			end_index = this.sub_nodes.length;
+		}
+		for(var i = 0; i < end_index; ++i){
+			current_configuration = this.sub_nodes[i].applyGlobalConfiguration(current_configuration);
+		}
+		return current_configuration;
+	};
 	BaseDataClass.prototype.getGlobalConfiguration = function(current_configuration, end_index){
+		if(this.getParent()){
+			current_configuration = this.getParent().getGlobalConfiguration(current_configuration, this.getId());
+		}
+		current_configuration = this.applyGlobalConfiguration(current_configuration, end_index);
+		return current_configuration;
+	};
+	/*BaseDataClass.prototype.getGlobalConfiguration = function(current_configuration, end_index){
+		//console.log("global configuration: at "+this.getType()+" " +this.getId()+ " until "+ end_index);
 		if(current_configuration == null){
 			current_configuration = new Object();
 		}
 		if(this.getParent()){
 			current_configuration = this.getParent().getGlobalConfiguration(current_configuration, this.getId());
 		}
-		if(end_index === null){
+		if(typeof end_index === 'undefined'){
+			//console.log("undefined!");
 			end_index = this.sub_nodes.length;
 		}
+		console.log("final end_index = "+end_index);
 		for(var i = 0; i < end_index; ++i){
+			if(this.sub_nodes[i].getId() != i){
+				console.log("id = "+this.sub_nodes[i].getId()+" index = "+i);
+				return current_configuration;
+			}
 			if(this.sub_nodes[i].getType() == "configuration_key"){
 				current_configuration[this.sub_nodes[i].getKey()] = this.sub_nodes[i].getValue();
 			}else{
@@ -334,6 +357,6 @@ define([
 			}
 		}
 		return current_configuration;
-	};
+	};*/
 	return BaseDataClass;
 });

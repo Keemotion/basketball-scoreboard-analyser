@@ -132,7 +132,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		}
 		return intersection_amount%2 == 1;
 	};
-	/*DigitDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+	DigitDisplay.prototype.getObjectAroundCoordinate = function(coordinate){
 		var points = Array();
 		for(var i = 0; i < this.sub_components.length; ++i){
 			points.push(this.sub_components[i].getProxy().getCoordinate());
@@ -144,6 +144,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 			return this;
 		}
 		return null;
-	};*/
+	};
 	return DigitDisplay;
 });

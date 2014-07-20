@@ -32,7 +32,9 @@ define(["../../messaging_system/event_listener",
 		this.clearView();
 		if(selected_proxies.length == 1){
 			var selected_proxy = selected_proxies[0];
-			this.configuration_details_overview = new ConfigurationDetailsOverview(selected_proxy, this.configuration_overview_element);
+			if(!data.getTemporary()){
+				this.configuration_details_overview = new ConfigurationDetailsOverview(selected_proxy, this.configuration_overview_element);
+			}
 			switch(selected_proxy.getType()){
 				case "group":
 					this.details_view_element = new GroupDetailsView(this.content_element, selected_proxy, this.messaging_system);

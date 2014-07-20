@@ -1,4 +1,4 @@
-define(["./base_display", 
+define(["./base_display",
 	"./digit_display",
 	"./dot_display",
 	"../../messaging_system/event_listener"], function(BaseDisplay, DigitDisplay, DotDisplay, EventListener){
@@ -19,7 +19,7 @@ define(["./base_display",
 	};
 	GroupDisplay.prototype.drawMyself = function(context, transformation){
 	};
-	GroupDisplay.prototype.loadSubComponents = function(){ 
+	GroupDisplay.prototype.loadSubComponents = function(){
 		var sub_proxies = this.getProxy().getSubNodes();
 		this.sub_components.length = 0;
 		for(var i = 0; i < sub_proxies.length; ++i){

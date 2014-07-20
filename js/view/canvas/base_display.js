@@ -116,13 +116,15 @@ define([
 	BaseDisplay.prototype.setSelected = function(selected){
 		this.selected = selected;
 	};*/
-	/*BaseDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+	BaseDisplay.prototype.getObjectAroundCoordinate = function(coordinate){
+		//console.log("around: "+JSON.stringify(coordinate));
+		console.log("basedisplay method called by type = "+this.getProxy().getType());
 		for(var i = 0; i < this.sub_components.length; ++i){
-			var res = this.sub_components[i].getObjectAroundCanvasCoordinate(coordinate);
+			var res = this.sub_components[i].getObjectAroundCoordinate(coordinate);
 			if(res)
 				return res;
 		}
-	};*/
+	};
 	BaseDisplay.prototype.isInRectangle = function(rectangle){
 		return false;
 	};

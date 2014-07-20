@@ -144,6 +144,15 @@ define([
 	CanvasMouseHandler.prototype.click = function(signal, data){
 	};
 	CanvasMouseHandler.prototype.doubleClick = function(signal, data){
+		var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
+		//inside digit -> select
+		if(res){
+			//this.toggleSelected(res);
+			var e = new SelectionEvent(res.getProxy().getSelectionTree());
+			this.messaging_system.fire(this.messaging_system.events.SelectionSet, e);
+		}else{
+		}
+		//inside dot
 	};
 	CanvasMouseHandler.prototype.keyDown = function(signal, data){
 		if(data.getEventData().which == 27){//escape
