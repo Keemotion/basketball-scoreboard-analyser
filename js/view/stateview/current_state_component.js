@@ -39,6 +39,7 @@ define([
 			.append(this.edit_view_tool_btn)
 			.append(this.drag_tool_btn);
 		self.messaging_system.addEventListener(self.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
+		this.selection_tool_btn.click();
 	};
 	CurrentStateComponent.prototype.setProxy = function(proxy){
 		this.state_proxy = proxy;

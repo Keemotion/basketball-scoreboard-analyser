@@ -7,10 +7,9 @@ selecting by double-clicking inside the digit
 mouse pointer change: over edge -> move digit, on corner -> move corner, else: drag canvas
 hovering in toggle mode for patterns -> display RGB/grayscale values of current pixel
 ---CURRENT---
-delete element -> remove from selection tree 
+WON'T HAPPEN: delete element -> remove from selection tree 
 TO CHECK: add configuration keys to group at a certain index (draggable)
-double-click to select surrounding element
-drag mode enabled when approaching a selected object
+TO CHECK: drag mode enabled when approaching a selected object
 documentation
 ---AUTOMATISATION---
 right click inside digit -> finds surrounding digit
