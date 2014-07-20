@@ -1,5 +1,5 @@
 define(['../../messaging_system/events/load_state_event'],function(LoadStateEvent){
-	//Provides the GUI to import data 
+	//Provides the GUI to import data
 	var LoadStateComponent = function(view_target, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
@@ -30,7 +30,7 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 		var file_div = $('<div>').append($('<span>').html('Load file:')).append(this.file_btn).append($('<span>').html('<br>Load image: ')).append(this.img_btn);
 		this.containerElement
 			.append(file_div);
-		
+
 		this.reset_view_btn = $('<button>').text('Reset Canvas View').click(function(){
 			self.messaging_system.fire(self.messaging_system.events.ResetCanvasView, null);
 		});
@@ -54,6 +54,11 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 			self.messaging_system.fire(self.messaging_system.events.LoadStateFile, new LoadStateEvent(e.target.result));
 		};
 		reader.readAsText(f);
+		var tmp = this.file_btn;
+		this.file_btn = $('<input>').attr('type', 'file')
+			.change(function(){self.fileChanged();})
+			.attr('id', 'btnLoadFile');
+		tmp.replaceWith(this.file_btn);
 	};
 	LoadStateComponent.prototype.imageChanged = function(evt){
 		var self = this;
