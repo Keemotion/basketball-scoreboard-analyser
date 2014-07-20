@@ -64,6 +64,8 @@ define(["../../messaging_system/events/submit_group_details_event",
 			console.log(this.data_proxy.getValue());
 		}else if(possible_values == "text" || possible_values == "numeric"){
 			this.value_element = $('<input>');
+		}else{
+			this.value_element = $('<input>');
 		}
 		this.value_element.val(this.data_proxy.getValue());
 		this.content_element.find('button').before(this.value_element);

@@ -325,9 +325,10 @@ define([
 		}
 		return current_configuration;
 	};
-	BaseDataClass.prototype.getGlobalConfiguration = function(current_configuration, end_index){
+	BaseDataClass.prototype.getGlobalConfiguration = function(end_index){
+		var current_configuration = new Object();
 		if(this.getParent()){
-			current_configuration = this.getParent().getGlobalConfiguration(current_configuration, this.getId());
+			current_configuration = this.getParent().getGlobalConfiguration(this.getId());
 		}
 		current_configuration = this.applyGlobalConfiguration(current_configuration, end_index);
 		return current_configuration;
