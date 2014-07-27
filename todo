@@ -10,7 +10,9 @@ hovering in toggle mode for patterns -> display RGB/grayscale values of current 
 WON'T HAPPEN: delete element -> remove from selection tree 
 TO CHECK: add configuration keys to group at a certain index (draggable)
 TO CHECK: drag mode enabled when approaching a selected object
-documentation
+click in tree: collapse others
+show ancestors in details view
+focus object when single-selecting not temporary
 ---AUTOMATISATION---
 right click inside digit -> finds surrounding digit
 	max variance shears
