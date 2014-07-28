@@ -38,7 +38,8 @@ function start() {
 			imageData.data[index + 2] = y;
 		}
 	}
-	digit_corners(grayscale_data);
+	var result = digit_corners(grayscale_data);
+	console.log("result = "+JSON.stringify(result));
 	//context.putImageData(imageData, 0, 0, 0, 0, imageData.width, imageData.height);
 	//$('body').append(canvas);
 	/*
@@ -159,13 +160,34 @@ function array_max(arr, start_index, end_index, key){
 	}
 	return arr[max_index];
 }
+function determinant(a, b, c, d){
+	return a*d-b*c;
+}
+
+function intersection(horizontal_line, vertical_line, cols, rows){
+	var D = determinant(vertical_line.shear, -cols, rows, -horizontal_line.shear);
+	var lambda = determinant(-vertical_line.shear, -cols, horizontal_line.top_col, -horizontal_line.shear)/D;
+	var mu = determinant(vertical_line.shear, -vertical_line.top_col, rows, horizontal_line.top_col)/D;
+	var x = vertical_line.top_col + lambda*vertical_line.shear;
+	var y = horizontal_line.top_col + mu*horizontal_line.shear;
+	//console.log("x = "+x+ " y = "+y);
+	return {"x":x, "y":y};
+}
 function digit_corners(grayscale_image){
+	var cols = grayscale_image[0].length;
+	var rows = grayscale_image.length;
 	var horizontal_lines = horizontal_digit_lines(grayscale_image);
 	var vertical_lines = vertical_digit_lines(grayscale_image);
-	
+	//console.log("horizontal: "+JSON.stringify(horizontal_lines));
+	//console.log("vertical: "+JSON.stringify(vertical_lines));
+	var topleft = intersection(horizontal_lines[0], vertical_lines[0], cols, rows);
+	var topright = intersection(horizontal_lines[0], vertical_lines[1], cols, rows);
+	var bottomleft = intersection(horizontal_lines[1], vertical_lines[0], cols, rows);
+	var bottomright = intersection(horizontal_lines[1], vertical_lines[1], cols, rows);
 	//delete middle horizontal line
 	//find intersections of other two lines
 	//return those coordinates
+	return [topleft, topright, bottomright, bottomleft];
 }
 function horizontal_digit_lines(grayscale_image){
 	var all_variances = horizontal_variances(grayscale_image);
@@ -195,16 +217,30 @@ function get_highest_vertical_luminance_lines(grayscale_image, peaks){
 }
 function get_vertical_lines(grayscale_image, peaks){
 	var all_luminances = get_highest_vertical_luminance_lines(grayscale_image, peaks);
-	var result = [all_luminances[0], all_luminances[1]];
-	console.log(JSON.stringify(result));
+	
+	var result = null;
+	if(all_luminances[0].top_col < all_luminances[1].top_col){
+		result = [all_luminances[0], all_luminances[1]];
+	}else{
+		result = [all_luminances[1], all_luminances[0]];
+	}
 	return result;
 }
 function get_horizontal_lines(grayscale_image, peaks){
 	var transposed_image = transpose_image(grayscale_image);
 	var all_luminances = get_highest_vertical_luminance_lines(transposed_image, peaks);
 	var result = [all_luminances[0], all_luminances[1], all_luminances[2]];
-	console.log(JSON.stringify(result));
-	return result;
+	var heighest = result[0];
+	var lowest = result[0];
+	for(var i = 1; i < 3; ++i){
+		if(result[i].top_col > heighest.top_col){
+			heighest = result[i];
+		}
+		if(result[i].top_col < lowest.top_col){
+			lowest = result[i];
+		}
+	}
+	return [lowest, heighest];
 }
 function array_key_value(array, key){
 	var res = [];
