@@ -2,12 +2,14 @@ define(["./corner_details_content_view",
 	"../../messaging_system/event_listener",
 	"../../messaging_system/events/submit_group_details_event",
 	"../../messaging_system/events/remove_group_event",
-	"./canvas_multiple_click_listener"],
+	"./canvas_multiple_click_listener",
+	"./digit_detect_listener"],
 	function(CornerDetailsContentView,
 		EventListener,
 		SubmitGroupDetailsEvent,
 		RemoveGroupEvent,
-		CanvasMultipleClickListener){
+		CanvasMultipleClickListener,
+		DigitDetectListener){
 	//Groups all data about this digit
 	var DigitDetailsContentView = function(target_view, data_proxy, messaging_system){
 		var self = this;
@@ -22,6 +24,7 @@ define(["./corner_details_content_view",
 			.text('');
 		this.canvasClickListener = null;
 		this.canvasClickListener = new CanvasMultipleClickListener(this, this.messaging_system, 4);
+		this.digit_detect_listener = new DigitDetectListener(this, this.messaging_system);
 		this.click_button = $('<button>')
 			.text('Click to set digit')
 			.attr({
@@ -30,6 +33,16 @@ define(["./corner_details_content_view",
 			.click(function(e){
 				e.preventDefault();
 				self.canvasClickListener.toggleListening();
+				return false;
+			});
+		this.detect_button = $('<button>')
+			.text('Click to auto-detect digit corners')
+			.attr({
+				'class':'button_digit_detect'
+			})
+			.click(function(e){
+				e.preventDefault();
+				self.startDetecting();
 				return false;
 			});
 		this.remove_button = $('<button>')
@@ -54,6 +67,13 @@ define(["./corner_details_content_view",
 		this.loadContent();
 		messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 	};
+	DigitDetailsContentView.prototype.startDetecting = function(){
+		this.digit_detect_listener.startListening();
+		this.detect_button.addClass('active');
+	};
+	DigitDetailsContentView.prototype.stopDetecting = function(){
+		this.detect_button.removeClass('active');
+	};
 	DigitDetailsContentView.prototype.groupChanged = function(signal, data){
 		if(this.data_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
 			this.loadContent();
@@ -68,6 +88,7 @@ define(["./corner_details_content_view",
 		this.content_element.append(this.title_span);
 		this.content_element.append(this.click_button);
 		this.content_element.append(this.remove_button);
+		this.content_element.append(this.detect_button);
 		this.configuration_element.empty();
 		var configuration_keys = this.data_proxy.getConfigurationKeys();
 //		for(var i = 0; i < configuration_keys.length; ++i){
@@ -109,6 +130,7 @@ define(["./corner_details_content_view",
 			this.content_elements[i].cleanUp();
 		}
 		this.canvasClickListener.cleanUp();
+		this.digit_detect_listener.cleanUp();
 	};
 	return DigitDetailsContentView;
 });

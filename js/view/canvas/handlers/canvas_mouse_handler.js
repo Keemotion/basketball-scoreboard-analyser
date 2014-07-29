@@ -3,13 +3,15 @@ define([
 	"../../../model/coordinate",
 	"../../../messaging_system/events/selection_event",
 	"../../../messaging_system/events/objects_moved_event",
-	"../../../messaging_system/events/mouse_mode_changed_event"]
+	"../../../messaging_system/events/mouse_mode_changed_event",
+	"../../../messaging_system/events/auto_detect_digit_area_selected_event"]
 	, function(
 		EventListener,
 		Coordinate,
 		SelectionEvent,
 		ObjectsMovedEvent,
-		MouseModeChangedEvent
+		MouseModeChangedEvent,
+		AutoDetectDigitAreaSelectedEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -75,7 +77,8 @@ define([
 		SelectionMode:"SelectionMode",
 		ViewEditMode:"ViewEditMode",
 		DragMode:"DragMode",
-		CoordinateClickMode:"CoordinateClickMode"
+		CoordinateClickMode:"CoordinateClickMode",
+		AutoDetectDigitMode:"AutoDetectDigitMode"
 	};
 	CanvasMouseHandler.prototype.canvasScrolled = function(signal, data){
 		var evt = data.event_data;
@@ -116,6 +119,11 @@ define([
 					this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.canvas.view.getCurrentSelectionTree(), transformed));
 				}
 				break;
+			case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+				if(this.mouse_down){
+					this.selection_rectangle.updateSelection(data.getCoordinate());
+				}
+				break;
 		}
 		this.previous_mouse_coordinate = data.getCoordinate();
 	};
@@ -124,6 +132,39 @@ define([
 		switch(this.current_mouse_mode){
 			case CanvasMouseHandler.MouseModes.SelectionMode:
 				this.stopSelection(data);
+				break;
+			case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+				this.selection_rectangle.updateSelection(data.getCoordinate());
+				//TODO: get right part of image
+				var img = this.canvas.getImage();
+				var top_left = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(this.selection_rectangle.getTopLeft());
+				var bottom_right = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(this.selection_rectangle.getBottomRight());
+				top_left.round();
+				bottom_right.round();
+				var image_part = new Array();
+				var canvas = $('<canvas>')[0];
+				var context = canvas.getContext("2d");
+				canvas.width = img.width;
+				canvas.height = img.height;
+				context.mozImageSmoothingEnabled = false;
+				context.webkitImageSmoothingEnabled = false;
+				context.drawImage(img, 0, 0);
+				var imageData = context.getImageData(0, 0, img.width, img.height);
+				//console.log("imagedata = "+JSON.stringify(imageData));
+				for(var i = top_left.getY(); i <= bottom_right.getY(); ++i){
+					image_part.push(new Array());
+					for(var j = top_left.getX(); j <= bottom_right.getX(); ++j){
+						var index = (i * 4) * imageData.width + (j * 4);
+						var r = imageData.data[index];
+						var g = imageData.data[index + 1];
+						var b = imageData.data[index + 2];
+						//var y = 0.2126*r+0.7152*g+0.0722*b;
+						var y = (r + g + b) / 3.0;
+						image_part[parseInt(i-top_left.getY())].push(y);
+					}
+				}
+				this.messaging_system.fire(this.messaging_system.events.AutoDetectDigitAreaSelected, new AutoDetectDigitAreaSelectedEvent(image_part, top_left, this.canvas.getTransformation()));
+				this.selection_rectangle.stopSelection();
 				break;
 		}
 	};
@@ -135,6 +176,9 @@ define([
 					this.messaging_system.fire(this.messaging_system.events.SelectionReset, null);
 				}
 				this.startSelection(data.getCoordinate());
+				break;
+			case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+				this.selection_rectangle.startSelection(data.getCoordinate());
 				break;
 		}
 	};

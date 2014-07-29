@@ -307,6 +307,9 @@ define([
 				break;
 		}
 	};
+	MyCanvas.prototype.getImage = function(){
+		return this.image;
+	};
 	return MyCanvas;
 }
 );

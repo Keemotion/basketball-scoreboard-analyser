@@ -4,8 +4,9 @@ img.onload = function() {
 	start();
 };
 //img.src = "../chalon-2.png";
-img.src = "../digit2g.png";
+//img.src = "../digit2g.png";
 //img.src = "../digit4-blue-pink-sm.png";
+img.src = "../digit6-blue-pink.png";
 //img.src = "../digit4-blue-pink.png";
 //img.src = "../leds-28.png";
 //img.src = "../leds-34.png";
@@ -215,9 +216,28 @@ function get_highest_vertical_luminance_lines(grayscale_image, peaks){
 	});
 	return all_luminances;
 }
+function get_highest_distinct(all_luminances, amount, interval){
+	var current = [all_luminances[0]];
+	for(var i = 1; i < all_luminances.length; ++i){
+		var good = true;
+		for(var j = 0; j < current.length; ++j){
+			if(Math.abs(all_luminances[i].top_col - current[j].top_col) < interval){
+				good = false;
+				break;
+			}
+		}
+		if(good){
+			current.push(all_luminances[i]);
+			if(current.length == amount)
+				break;
+		}
+	}
+	return current;
+}
 function get_vertical_lines(grayscale_image, peaks){
+	var INTERVAL = 5;
 	var all_luminances = get_highest_vertical_luminance_lines(grayscale_image, peaks);
-	
+	all_luminances = get_highest_distinct(all_luminances, 2, INTERVAL);
 	var result = null;
 	if(all_luminances[0].top_col < all_luminances[1].top_col){
 		result = [all_luminances[0], all_luminances[1]];
@@ -227,8 +247,10 @@ function get_vertical_lines(grayscale_image, peaks){
 	return result;
 }
 function get_horizontal_lines(grayscale_image, peaks){
+	var INTERVAL = 5;
 	var transposed_image = transpose_image(grayscale_image);
 	var all_luminances = get_highest_vertical_luminance_lines(transposed_image, peaks);
+	all_luminances = get_highest_distinct(all_luminances, 3, INTERVAL);
 	var result = [all_luminances[0], all_luminances[1], all_luminances[2]];
 	var heighest = result[0];
 	var lowest = result[0];
@@ -252,9 +274,9 @@ function array_key_value(array, key){
 function get_peaks(arr){
 	var average_variance = average(array_key_value(arr, "variance"));
 	var in_high_area = false;
-	var high_area_start = 0;
-	var high_values = new Array();
 	var INTERVAL = 5;
+	var high_area_start = -INTERVAL;
+	var high_values = new Array();
 	//console.log("looking for peaks in: "+JSON.stringify(arr));
 	for(var i = 0; i < arr.length; ++i){
 		if(arr[i].variance > average_variance){
