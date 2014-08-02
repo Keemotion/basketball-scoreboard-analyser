@@ -1,11 +1,13 @@
 define(["../../messaging_system/event_listener",
 	"../canvas/handlers/canvas_mouse_handler",
 	"../../messaging_system/events/mouse_mode_changed_event",
-	"../../image_processing/digit_detector"],
+	"../../image_processing/digit_detector",
+	"../../model/coordinate"],
 	function(EventListener,
 		CanvasMouseHandler,
 		MouseModeChangedEvent,
-		DigitDetector){
+		DigitDetector,
+		Coordinate){
 	var DigitDetectListener = function(parent, messaging_system){
 		this.parent = parent;
 		this.messaging_system = messaging_system;
@@ -38,8 +40,20 @@ define(["../../messaging_system/event_listener",
 		this.stopListening();
 	};
 	DigitDetectListener.prototype.areaSelected = function(signal, data){
-		//console.log(JSON.stringify(data.getImage()));
-		console.log(DigitDetector.digit_corners(data.getImage()));
+		var corners = DigitDetector.digit_corners(data.getImage());
+		console.log(JSON.stringify(corners));
+		//console.log("topleft = "+JSON.stringify(data.getTopLeft()));
+		//console.log("generated transformed topleft = "+JSON.stringify(data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(data.getTopLeft())));
+		//console.log("generated transformed bottom right = "+JSON.stringify(data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(data.getTopLeft().add(new Coordinate(data.getImage()[0].length, data.getImage().length)))));
+		
+		for(var index = 0; index < 4; ++index){
+			var x = corners[index].x + data.getTopLeft().getX();
+			var y = corners[index].y + data.getTopLeft().getY();
+			//console.log("absolute image coordinate: x = "+x+" y = "+y);
+			var coord = data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(x, y));
+			//console.log("relative image coordinate: "+JSON.stringify(coord));
+			this.parent.content_elements[index].setCoordinate(coord.getX(), coord.getY());
+		}
 		this.stopListening();
 	};
 	DigitDetectListener.prototype.mouseModeChanged = function(signal, data){
