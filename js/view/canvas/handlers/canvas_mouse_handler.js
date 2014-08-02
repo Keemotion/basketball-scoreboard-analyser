@@ -101,9 +101,6 @@ define([
 		return data.event_data.preventDefault() && false;
 	};
 	CanvasMouseHandler.prototype.mouseMove = function(signal, data){
-		//console.log("canvas coordinate:              "+JSON.stringify(data.getCoordinate()));
-		//console.log("image coordinate: "+JSON.stringify(this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(data.getCoordinate())));
-		//console.log("re-converted canvas coordinate: "+JSON.stringify(this.canvas.getTransformation().transformAbsoluteImageCoordinateToCanvasCoordinate(this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(data.getCoordinate()))));
 		switch(this.current_mouse_mode){
 			case CanvasMouseHandler.MouseModes.ViewEditMode:
 				if(this.mouse_down){
@@ -131,10 +128,12 @@ define([
 			case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
 				if(this.mouse_down){
 					this.selection_rectangle.updateSelection(data.getCoordinate());
+					this.canvas.updateCanvas();
 				}
 				break;
 		}
 		this.previous_mouse_coordinate = data.getCoordinate();
+		
 	};
 	CanvasMouseHandler.prototype.mouseUp = function(signal, data){
 		this.mouse_down = false;
@@ -146,18 +145,11 @@ define([
 				this.selection_rectangle.updateSelection(data.getCoordinate());
 				//TODO: get right part of image
 				var selection_rectangle = this.selection_rectangle.transformCanvasCoordinatesToAbsoluteCoordinates(this.canvas.getTransformation());
-				console.log("transformed selection rectangle: "+JSON.stringify(selection_rectangle));
 				var img = this.canvas.getImage();
 				var top_left = selection_rectangle.getTopLeft();
 				var bottom_right = selection_rectangle.getBottomRight();
 				top_left.round();
 				bottom_right.round();
-				console.log("original top_left: "+JSON.stringify(this.canvas.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(top_left)));
-				console.log("original bottom_right: "+JSON.stringify(this.canvas.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(bottom_right)));
-				//var top_left = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(this.selection_rectangle.getTopLeft());
-				//var bottom_right = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(this.selection_rectangle.getBottomRight());
-				//top_left.round();
-				//bottom_right.round();
 				var image_part = new Array();
 				var canvas = $('<canvas>')[0];
 				var context = canvas.getContext("2d");
@@ -167,23 +159,20 @@ define([
 				context.webkitImageSmoothingEnabled = false;
 				context.drawImage(img, 0, 0);
 				var imageData = context.getImageData(0, 0, img.width, img.height);
-				//console.log("imagedata = "+JSON.stringify(imageData));
-				//for(var i = Math.round(top_left.getY()); i <= Math.round(bottom_right.getY()); ++i){
 				for(var i = top_left.getY(); i <= bottom_right.getY(); ++i){
 					image_part.push(new Array());
-					//for(var j = Math.round(top_left.getX()); j <= Math.round(bottom_right.getX()); ++j){
 					for(var j = top_left.getX(); j <= bottom_right.getX(); ++j){
 						var index = (i * 4) * imageData.width + (j * 4);
 						var r = imageData.data[index];
 						var g = imageData.data[index + 1];
 						var b = imageData.data[index + 2];
-						//var y = 0.2126*r+0.7152*g+0.0722*b;
 						var y = (r + g + b) / 3.0;
 						image_part[parseInt(i-top_left.getY())].push(y);
 					}
 				}
 				this.messaging_system.fire(this.messaging_system.events.AutoDetectDigitAreaSelected, new AutoDetectDigitAreaSelectedEvent(image_part, top_left, this.canvas.getTransformation()));
 				this.selection_rectangle.stopSelection();
+				this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 				break;
 		}
 	};
