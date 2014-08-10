@@ -26,6 +26,7 @@ define([], function(){
 		for(var i = start_index+1; i < end_index; ++i){
 			if(arr[max_index][key] < arr[i][key]){
 				max_index = i;
+				console.log("max_index is now "+max_index);
 			}
 		}
 		return arr[max_index];

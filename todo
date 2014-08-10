@@ -24,8 +24,3 @@ automatisation
 ------
 select starting and end led -> auto find all leds in between by equal-spacing (not recognizing)
 find center of led by recognizing
-
-first try digit recognizing: 
-	maximize variance in luminance by shearing -> greedy
-second try: (if no success)
-	Fast Fourier/..?
