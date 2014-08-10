@@ -17,14 +17,20 @@ div.div_horizontal {
 
 /*Div containing the import/export fields*/
 div.div_horizontal#div_state_container {
-	height: 25%;
+	/*height: 25%;*/
+	height:30px;
+	margin-top:-30px;
+	top:100%;
+	position:absolute;
 }
 
 /*Div containing the canvas*/
 div#div_image {
 	display: block;
 	float: left;
-	height: 75%;
+	/*height: 75%;*/
+	height:100%;
+	padding-bottom:30px;
 	background-color: blue;
 }
 div#div_image.mouse-mode-view-edit *{
