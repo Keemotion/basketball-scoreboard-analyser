@@ -10,6 +10,7 @@ hovering in toggle mode for patterns -> display RGB/grayscale values of current 
 WON'T HAPPEN: delete element -> remove from selection tree 
 TO CHECK: add configuration keys to group at a certain index (draggable)
 TO CHECK: drag mode enabled when approaching a selected object
+always draw children of selected element + auto-select parent if all children have been selected
 click in tree: collapse others
 show ancestors in details view
 focus object when single-selecting not temporary

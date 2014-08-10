@@ -41,6 +41,9 @@ define(["../../messaging_system/event_listener",
 	};
 	DigitDetectListener.prototype.areaSelected = function(signal, data){
 		var corners = DigitDetector.digit_corners(data.getImage());
+		if(corners == null){
+			return;
+		}
 		console.log(JSON.stringify(corners));
 		//console.log("topleft = "+JSON.stringify(data.getTopLeft()));
 		//console.log("generated transformed topleft = "+JSON.stringify(data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(data.getTopLeft())));
@@ -54,7 +57,7 @@ define(["../../messaging_system/event_listener",
 			//console.log("relative image coordinate: "+JSON.stringify(coord));
 			this.parent.content_elements[index].setCoordinate(coord.getX(), coord.getY());
 		}
-		this.stopListening();
+		//this.stopListening();
 	};
 	DigitDetectListener.prototype.mouseModeChanged = function(signal, data){
 		this.stopListening();

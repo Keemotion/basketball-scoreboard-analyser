@@ -39,7 +39,9 @@ div#div_image.mouse-mode-drag *{
 div#div_image.mouse-mode-coordinate-click *{
 	cursor:crosshair;
 }
-
+div#div_image.mouse-mode-auto-detect-digit *{
+	cursor:crosshair;
+}
 /*Canvas*/
 div#div_image canvas.canvas_image {
 	background-color: orange;

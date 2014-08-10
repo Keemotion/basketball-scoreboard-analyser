@@ -128,12 +128,43 @@ define([
 			case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
 				if(this.mouse_down){
 					this.selection_rectangle.updateSelection(data.getCoordinate());
+					this.autoDetectDigit(signal, data);
 					this.canvas.updateCanvas();
 				}
 				break;
 		}
 		this.previous_mouse_coordinate = data.getCoordinate();
 		
+	};
+	CanvasMouseHandler.prototype.autoDetectDigit = function(signal, data){
+		//TODO: get right part of image
+		var selection_rectangle = this.selection_rectangle.transformCanvasCoordinatesToAbsoluteCoordinates(this.canvas.getTransformation());
+		var img = this.canvas.getImage();
+		var top_left = selection_rectangle.getTopLeft();
+		var bottom_right = selection_rectangle.getBottomRight();
+		top_left.round();
+		bottom_right.round();
+		var image_part = new Array();
+		var canvas = $('<canvas>')[0];
+		var context = canvas.getContext("2d");
+		canvas.width = img.width;
+		canvas.height = img.height;
+		context.mozImageSmoothingEnabled = false;
+		context.webkitImageSmoothingEnabled = false;
+		context.drawImage(img, 0, 0);
+		var imageData = context.getImageData(0, 0, img.width, img.height);
+		for(var i = top_left.getY(); i <= bottom_right.getY(); ++i){
+			image_part.push(new Array());
+			for(var j = top_left.getX(); j <= bottom_right.getX(); ++j){
+				var index = (i * 4) * imageData.width + (j * 4);
+				var r = imageData.data[index];
+				var g = imageData.data[index + 1];
+				var b = imageData.data[index + 2];
+				var y = (r + g + b) / 3.0;
+				image_part[parseInt(i-top_left.getY())].push(y);
+			}
+		}
+		this.messaging_system.fire(this.messaging_system.events.AutoDetectDigitAreaSelected, new AutoDetectDigitAreaSelectedEvent(image_part, top_left, this.canvas.getTransformation()));
 	};
 	CanvasMouseHandler.prototype.mouseUp = function(signal, data){
 		this.mouse_down = false;
@@ -143,34 +174,7 @@ define([
 				break;
 			case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
 				this.selection_rectangle.updateSelection(data.getCoordinate());
-				//TODO: get right part of image
-				var selection_rectangle = this.selection_rectangle.transformCanvasCoordinatesToAbsoluteCoordinates(this.canvas.getTransformation());
-				var img = this.canvas.getImage();
-				var top_left = selection_rectangle.getTopLeft();
-				var bottom_right = selection_rectangle.getBottomRight();
-				top_left.round();
-				bottom_right.round();
-				var image_part = new Array();
-				var canvas = $('<canvas>')[0];
-				var context = canvas.getContext("2d");
-				canvas.width = img.width;
-				canvas.height = img.height;
-				context.mozImageSmoothingEnabled = false;
-				context.webkitImageSmoothingEnabled = false;
-				context.drawImage(img, 0, 0);
-				var imageData = context.getImageData(0, 0, img.width, img.height);
-				for(var i = top_left.getY(); i <= bottom_right.getY(); ++i){
-					image_part.push(new Array());
-					for(var j = top_left.getX(); j <= bottom_right.getX(); ++j){
-						var index = (i * 4) * imageData.width + (j * 4);
-						var r = imageData.data[index];
-						var g = imageData.data[index + 1];
-						var b = imageData.data[index + 2];
-						var y = (r + g + b) / 3.0;
-						image_part[parseInt(i-top_left.getY())].push(y);
-					}
-				}
-				this.messaging_system.fire(this.messaging_system.events.AutoDetectDigitAreaSelected, new AutoDetectDigitAreaSelectedEvent(image_part, top_left, this.canvas.getTransformation()));
+				this.autoDetectDigit(signal, data);
 				this.selection_rectangle.stopSelection();
 				this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 				break;

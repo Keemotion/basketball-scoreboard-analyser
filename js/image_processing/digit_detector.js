@@ -26,7 +26,6 @@ define([], function(){
 		for(var i = start_index+1; i < end_index; ++i){
 			if(arr[max_index][key] < arr[i][key]){
 				max_index = i;
-				console.log("max_index is now "+max_index);
 			}
 		}
 		return arr[max_index];
@@ -47,6 +46,9 @@ define([], function(){
 	DigitDetector.digit_corners = function(grayscale_image){
 		var cols = grayscale_image[0].length;
 		var rows = grayscale_image.length;
+		if(cols < 10 || rows < 10){
+			return null;
+		}
 		var horizontal_lines = horizontal_digit_lines(grayscale_image);
 		var vertical_lines = vertical_digit_lines(grayscale_image);
 		//console.log("horizontal: "+JSON.stringify(horizontal_lines));
