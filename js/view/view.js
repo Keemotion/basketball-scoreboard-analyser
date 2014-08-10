@@ -1,28 +1,30 @@
 define([
 		'./canvas/canvas',
-		'./stateview/load_state_component',
+		//'./stateview/load_state_component',
 		'./treeview/treeview',
 		'./detailsview/group_detailsview',
 		'../messaging_system/event_listener',
 		'./canvas/display_tree',
-		'./stateview/current_state_component',
+		//'./stateview/current_state_component',
 		"../model/selection_tree",
 		"../model/selection_node",
 		"../messaging_system/events/selection_event",
-		"./detailsview/details_view"
+		"./detailsview/details_view",
+		"./toolbar/toolbar"
 		]
 	, function(
 		MyCanvas,
-		LoadStateComponent,
+		//LoadStateComponent,
 		TreeView,
 		GroupDetailsView,
 		EventListener,
 		DisplayTree,
-		CurrentStateComponent,
+		//CurrentStateComponent,
 		SelectionTree,
 		SelectionNode,
 		SelectionEvent,
-		DetailsView
+		DetailsView,
+		ToolBar
 		){
 	//View represents the GUI
 	var View = function(controller, target_view, messaging_system){
@@ -36,20 +38,20 @@ define([
 				class: 'div_horizontal',
 				id: 'div_image'
 			});
-		this.current_state_div = $('<div>').attr({
+		/*this.current_state_div = $('<div>').attr({
 				class:'div_state',
 				id: 'div_current_state'
 			});
-	  	this.load_state_div = $('<div>').attr({
-  				class:'div_state',
-  				id:'div_load_state'
-  			});
+		this.load_state_div = $('<div>').attr({
+				class:'div_state',
+				id:'div_load_state'
+			});*/
+		this.toolbar_div = $('<div>');
 		this.state_container_div = $('<div>').attr({
 				class: 'div_horizontal',
 				id: 'div_state_container'
 			})
-			.append(this.current_state_div)
-			.append(this.load_state_div);
+			.append(this.toolbar_div);
 		this.left_container_div = $('<div>').attr({
 				class: 'div_vertical',
 				id:'div_main_container'
@@ -75,10 +77,11 @@ define([
 		//the canvas
 		this.canvas = new MyCanvas(this, this.canvas_container_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
 		//the export field
-		this.current_state_component = new CurrentStateComponent(this.current_state_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
+		//this.current_state_component = new CurrentStateComponent(this.current_state_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
 		//the import field
-		this.loadStateComponent = new LoadStateComponent(this.load_state_div, this.messaging_system);
+		//this.loadStateComponent = new LoadStateComponent(this.load_state_div, this.messaging_system);
 		//the tree
+		this.toolbar_component = new ToolBar(this.toolbar_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
 		this.tree_view = new TreeView(this.toolbox_tree_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
 		//details view
 		this.details_view = new DetailsView(this, this.toolbox_details_div, this.messaging_system);
@@ -149,7 +152,8 @@ define([
 	};*/
 	View.prototype.stateChanged = function(signal, data){
 		this.canvas.setProxy(this.controller.getModel().getState().getProxy());
-		this.current_state_component.setProxy(this.controller.getModel().getState().getProxy());
+		//this.current_state_component.setProxy(this.controller.getModel().getState().getProxy());
+		this.toolbar_component.setProxy(this.controller.getModel().getState().getProxy());
 		this.tree_view.setProxy(this.controller.getModel().getState().getProxy());
 		this.selectionReset(signal, data);
 		//this.clearGroupDetails();
