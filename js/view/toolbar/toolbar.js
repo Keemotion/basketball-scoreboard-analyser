@@ -37,7 +37,7 @@ define(['../../messaging_system/events/load_state_event',
 			.addClass('btn-view-mode')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.DragMode));
-		});
+			});
 		self.messaging_system.addEventListener(self.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
 		this.selection_tool_btn.click();
 		this.target_div
@@ -45,28 +45,72 @@ define(['../../messaging_system/events/load_state_event',
 			.append(this.edit_view_tool_btn)
 			.append(this.drag_tool_btn);
 		//load JSON
-		this.load_json_btn = $('<input>').attr('type', 'file')
-			.change(function(){self.jsonFileChanged();})
-			.attr('id', 'btnLoadJSONFile');
+		this.load_json_btn = $('<button>')
+			.attr('title', 'Import JSON file')
+			.append($('<i>').addClass('fa fa-upload'))
+			.append($('<span>').text('JSON'))
+			.click(function(){
+				var input = document.createElement('input');
+				input.type = "file";
+				$(input).change(function(){
+					self.jsonFileChanged(input);
+				});
+				input.click();
+			});
 		//load PRM
-		this.load_prm_btn = $('<input>').attr('type', 'file')
-			.change(function(){self.prmFileChanged();})
-			.attr('id', 'btnLoadPRMFile');
+		this.load_prm_btn = $('<button>')
+			.attr('title', 'Import PRM file')
+			.append($('<i>').addClass('fa fa-upload'))
+			.append($('<span>').text('PRM'))
+			.click(function(){
+				var input = document.createElement('input');
+				input.type = "file";
+				$(input).change(function(){
+					self.prmFileChanged(input);
+				});
+				input.click();
+			})
 		//export JSON
-		this.download_json_btn = $('<a>').attr('download', 'config.json').attr('href', '#').text('Download JSON').click(function(){
-			var state_string = self.state_proxy.getStateString();
-			self.download_json_btn.attr('href', 'data:application/json,'+encodeURIComponent(state_string));
-		});
+		this.download_json_btn = $('<button>')
+			.append($('<i>').addClass('fa fa-download'))
+			.append($('<span>').text('JSON'))
+			.attr('title', 'Download JSON')
+			.click(function(){
+				var state_string = self.state_proxy.getStateString();
+				var link = document.createElement('a');
+				link.download = 'config.json';
+				link.href = 'data:application/json,'+encodeURIComponent(state_string);
+				link.click();
+			});
 		//export PRM
-		this.download_prm_btn = $('<a>').attr('download', 'config.prm').attr('href', '#').text('Download PRM').click(function(){
-			var exported_string =  self.state_proxy.getExportedString();
-			self.download_prm_btn.attr('href', 'data:text/plain,'+encodeURIComponent(exported_string));
+		this.download_prm_btn = $('<button>')
+			.attr('title', 'Download PRM')
+			.append($('<i>').addClass('fa fa-download'))
+			.append($('<span>').text('PRM'))
+			.click(function(){
+				var exported_string =  self.state_proxy.getExportedString();
+				var link = document.createElement('a');
+				link.download = 'config.prm';
+				link.href = 'data:text/plain,'+encodeURIComponent(exported_string);
+				link.click();
 		});
 		//load other image
-		this.img_btn = $('<input>').attr('type', 'file')
-			.change(function(){self.imageChanged();})
-			.attr('id', 'btnLoadImage');
+		//this.img_btn = $('<input>').attr('type', 'file')
+		//	.change(function(){self.imageChanged();})
+		//	.attr('id', 'btnLoadImage');
+		this.img_btn = $('<button>')
+			.attr('title', 'Import a new image')
+			.append($('<i>').addClass('fa fa-image'))
+			.click(function(){
+				var link = document.createElement('input');
+				link.type = "file";
+				$(link).change(function(){
+					self.imageChanged(link);
+				});
+				link.click();
+			})
 		this.target_div
+			.append(this.load_json_btn)
 			.append(this.load_prm_btn)
 			.append(this.download_json_btn)
 			.append(this.download_prm_btn)
@@ -108,9 +152,9 @@ define(['../../messaging_system/events/load_state_event',
 				break;
 		}
 	};
-	ToolBar.prototype.imageChanged = function(evt){
+	ToolBar.prototype.imageChanged = function(component){
 		var self = this;
-		var files = $('#btnLoadImage')[0].files;
+		var files = component.files;
 		var f = files[0];
 		var reader = new FileReader();
 		reader.onload = function(e){
@@ -118,35 +162,25 @@ define(['../../messaging_system/events/load_state_event',
 		};
 		reader.readAsDataURL(f);
 	};
-	ToolBar.prototype.prmFileChanged = function(evt){
+	ToolBar.prototype.prmFileChanged = function(component){
 		var self = this;
-		var files = $('#btnLoadPRMFile')[0].files;
+		var files = component.files;
 		var f = files[0];
 		var reader = new FileReader();
 		reader.onload = function(e){
 			self.messaging_system.fire(self.messaging_system.events.LoadStateFile, new LoadStateEvent(e.target.result));
 		};
 		reader.readAsText(f);
-		var tmp = this.load_prm_btn;
-		this.load_prm_btn = $('<input>').attr('type', 'file')
-			.change(function(){self.fileChanged();})
-			.attr('id', 'btnLoadPRMFile');
-		tmp.replaceWith(this.load_prm_btn);
 	};
-	ToolBar.prototype.jsonFileChanged = function(evt){
+	ToolBar.prototype.jsonFileChanged = function(component){
 		var self = this;
-		var files = $('#btnLoadJSONFile')[0].files;
+		var files = component.files;
 		var f = files[0];
 		var reader = new FileReader();
 		reader.onload = function(e){
 			self.messaging_system.fire(self.messaging_system.events.LoadState, new LoadStateEvent(e.target.result));
 		};
 		reader.readAsText(f);
-		var tmp = this.load_json_btn;
-		this.load_json_btn = $('<input>').attr('type', 'file')
-			.change(function(){self.fileChanged();})
-			.attr('id', 'btnLoadJSONFile');
-		tmp.replaceWith(this.load_json_btn);
 	};
 	ToolBar.prototype.setProxy = function(proxy){
 		this.state_proxy = proxy;
