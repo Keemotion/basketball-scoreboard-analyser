@@ -3,42 +3,44 @@ define(["./treenode", "../../messaging_system/event_listener", "../../messaging_
 	var TreeView = function(target_view, state_proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
+		this.btns = $('<div>').addClass('btn-group');
 		this.add_digit_element = $('<button>')
 			.attr({
 				'type':'button',
 				'data-toggle':'tooltip',
 				'title':"Add digits group"
 			})
-			.addClass('button')
+			.addClass('btn btn-default')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('group', self.state_proxy.getIdentification(), 'digit'));
 			}).append($('<span>').addClass('glyphicon glyphicon-plus'))
 			.append($('<span>').text('Digits'));
-		target_view.append(this.add_digit_element);
+		this.btns.append(this.add_digit_element);
 		this.add_dot_element = $('<button>')
 			.attr({
 				'type':'button',
 				'data-toggle':'tooltip',
 				'title':"Add leds group"
 			})
-			.addClass('button')
+			.addClass('btn btn-default')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('group', self.state_proxy.getIdentification(), 'dot'));
 			}).append($('<span>').addClass('glyphicon glyphicon-plus'))
 			.append($('<span>').text('Leds'));
-		target_view.append(this.add_dot_element);
+		this.btns.append(this.add_dot_element);
 		this.add_configuration_key_element = $('<button>')
 			.attr({
 				'type':'button',
 				'data-toggle':'tooltip',
 				'title':"Add configuration key"
 			})
-			.addClass('button')
+			.addClass('btn btn-default')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent('configuration_key', self.state_proxy.getIdentification()));
 			}).append($('<span>').addClass('glyphicon glyphicon-plus'))
 			.append($('<span>').text('Configuration'));
-		target_view.append(this.add_configuration_key_element);
+		this.btns.append(this.add_configuration_key_element);
+		target_view.append($('<div>').addClass('btn-toolbar').append(this.btns));
 		this.tree_element = $('<ul>')
 			.attr({
 				'class':'list_toolbox_objects_tree'
