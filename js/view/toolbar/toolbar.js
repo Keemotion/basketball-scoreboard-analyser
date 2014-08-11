@@ -12,43 +12,58 @@ define(['../../messaging_system/events/load_state_event',
 		this.target_div = target_div;
 		this.messaging_system = messaging_system;
 		this.state_proxy = state_proxy;
+		
 		//Mouse Mode: selection mode
 		//Mouse Mode: view edit mode
 		//Mouse Mode: drag mode
-		this.selection_tool_btn = $('<button>')
-			.attr('title', 'Add or remove objects to selection')
+		this.target_div.addClass('btn-toolbar');
+		this.selection_tool_btn = $('<label>')
+			.attr({'title': 'Add or remove objects to selection',
+				'data-toggle':'button'
+			})
 			.append($('<i>').addClass('fa fa-crosshairs'))
-			.addClass('btn-view-mode')
+			.addClass('btn btn-default btn-view-mode')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.SelectionMode));
-			});
-		this.edit_view_tool_btn = $('<button>')
-			.attr('title', 'Move the image on the canvas')
+			}).button();
+		this.edit_view_tool_btn = $('<label>')
+			.attr({
+				'title': 'Move the image on the canvas',
+				'data-toggle':'button'
+			})
 			.append($('<i>').addClass('fa fa-hand-o-up'))
-			.addClass('btn-view-mode')
+			.addClass('btn btn-default btn-view-mode')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.ViewEditMode));
-			});
-		this.drag_tool_btn = $('<button>')
+			}).button();
+		this.drag_tool_btn = $('<label>')
 			.append($('<i>').addClass('fa fa-arrows'))
 			.attr({
-				'title':'Move selected objects'
+				'title':'Move selected objects',
+				'data-toggle':'button'
 			})
-			.addClass('btn-view-mode')
+			.addClass('btn btn-default btn-view-mode')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.DragMode));
-			});
-		self.messaging_system.addEventListener(self.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
-		this.selection_tool_btn.click();
-		this.target_div
+			}).button();
+		this.mouse_mode_btns = $('<div>')
+			.addClass('btn-group')
+			.attr('data-toggle', 'buttons')
 			.append(this.selection_tool_btn)
 			.append(this.edit_view_tool_btn)
 			.append(this.drag_tool_btn);
+		self.messaging_system.addEventListener(self.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
+		this.selection_tool_btn.click();
+		this.target_div
+			.append(this.mouse_mode_btns);
+		
+		this.import_export_btns = $('<div>').addClass('btn-group');
 		//load JSON
 		this.load_json_btn = $('<button>')
 			.attr('title', 'Import JSON file')
 			.append($('<i>').addClass('fa fa-upload'))
 			.append($('<span>').text('JSON'))
+			.addClass('btn btn-default')
 			.click(function(){
 				var input = document.createElement('input');
 				input.type = "file";
@@ -62,6 +77,7 @@ define(['../../messaging_system/events/load_state_event',
 			.attr('title', 'Import PRM file')
 			.append($('<i>').addClass('fa fa-upload'))
 			.append($('<span>').text('PRM'))
+			.addClass('btn btn-default')
 			.click(function(){
 				var input = document.createElement('input');
 				input.type = "file";
@@ -75,6 +91,7 @@ define(['../../messaging_system/events/load_state_event',
 			.append($('<i>').addClass('fa fa-download'))
 			.append($('<span>').text('JSON'))
 			.attr('title', 'Download JSON')
+			.addClass('btn btn-default')
 			.click(function(){
 				var state_string = self.state_proxy.getStateString();
 				var link = document.createElement('a');
@@ -87,6 +104,7 @@ define(['../../messaging_system/events/load_state_event',
 			.attr('title', 'Download PRM')
 			.append($('<i>').addClass('fa fa-download'))
 			.append($('<span>').text('PRM'))
+			.addClass('btn btn-default')
 			.click(function(){
 				var exported_string =  self.state_proxy.getExportedString();
 				var link = document.createElement('a');
@@ -101,6 +119,7 @@ define(['../../messaging_system/events/load_state_event',
 		this.img_btn = $('<button>')
 			.attr('title', 'Import a new image')
 			.append($('<i>').addClass('fa fa-image'))
+			.addClass('btn btn-default')
 			.click(function(){
 				var link = document.createElement('input');
 				link.type = "file";
@@ -109,38 +128,45 @@ define(['../../messaging_system/events/load_state_event',
 				});
 				link.click();
 			})
-		this.target_div
+		this.import_export_btns
 			.append(this.load_json_btn)
 			.append(this.load_prm_btn)
 			.append(this.download_json_btn)
 			.append(this.download_prm_btn)
-			.append(this.img_btn);
+		this.target_div
+			.append(this.import_export_btns)
+			.append($('<div>').addClass('btn-group').append(this.img_btn));
 		
 		//reset canvas view
 		//clear configuration
 		//reset configuration
+		this.reset_btns = $('<div>').addClass('btn-group');
 		this.reset_view_btn = $('<button>')
 			.attr('title', 'Reset Canvas View')
 			.append($('<i>').addClass('fa fa-eye'))
+			.addClass('btn btn-default')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.ResetCanvasView, null);
 			});
 		this.reset_state_btn = $('<button>')
 			.attr('title', 'Reset configuration')
 			.append($('<i>').addClass('fa fa-file-o'))
+			.addClass('btn btn-default')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.ResetState, null);
 			});
 		this.clear_state_btn = $('<button>')
 			.attr('title', 'Clear configuration')
 			.append($('<i>').addClass('fa fa-refresh'))
+			.addClass('btn btn-default')
 			.click(function(){
 				self.messaging_system.fire(self.messaging_system.events.ClearState, null);
 			});
-		this.target_div
+		this.reset_btns
 			.append(this.reset_view_btn)
 			.append(this.reset_state_btn)
 			.append(this.clear_state_btn);
+		this.target_div.append(this.reset_btns);
 	};
 	
 	ToolBar.prototype.mouseModeChanged = function(signal, data){
