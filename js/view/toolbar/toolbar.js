@@ -119,15 +119,24 @@ define(['../../messaging_system/events/load_state_event',
 		//reset canvas view
 		//clear configuration
 		//reset configuration
-		this.reset_view_btn = $('<button>').text('Reset Canvas View').click(function(){
-			self.messaging_system.fire(self.messaging_system.events.ResetCanvasView, null);
-		});
-		this.reset_state_btn = $('<button>').text('Reset configuration').click(function(){
-			self.messaging_system.fire(self.messaging_system.events.ResetState, null);
-		});
-		this.clear_state_btn = $('<button>').text('Clear configuration').click(function(){
-			self.messaging_system.fire(self.messaging_system.events.ClearState, null);
-		});
+		this.reset_view_btn = $('<button>')
+			.attr('title', 'Reset Canvas View')
+			.append($('<i>').addClass('fa fa-eye'))
+			.click(function(){
+				self.messaging_system.fire(self.messaging_system.events.ResetCanvasView, null);
+			});
+		this.reset_state_btn = $('<button>')
+			.attr('title', 'Reset configuration')
+			.append($('<i>').addClass('fa fa-file-o'))
+			.click(function(){
+				self.messaging_system.fire(self.messaging_system.events.ResetState, null);
+			});
+		this.clear_state_btn = $('<button>')
+			.attr('title', 'Clear configuration')
+			.append($('<i>').addClass('fa fa-refresh'))
+			.click(function(){
+				self.messaging_system.fire(self.messaging_system.events.ClearState, null);
+			});
 		this.target_div
 			.append(this.reset_view_btn)
 			.append(this.reset_state_btn)
