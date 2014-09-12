@@ -190,7 +190,7 @@ define([
 		}else{
 			identification = new Array();
 		}
-		identification.push({'type':this.getType(), 'id':this.getId()});
+		identification.push({'type':this.getType(), 'id':this.getId(), 'title':this.getTitle()});
 		return identification;
 	};
 	BaseDataClass.prototype.clear = function(){

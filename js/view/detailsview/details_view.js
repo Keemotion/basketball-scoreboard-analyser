@@ -13,6 +13,43 @@ define(["../../messaging_system/event_listener",
 		CornerDetailsContentView,
 		ConfigurationKeyDetailsView,
 		ConfigurationDetailsOverview){
+	var HierarchyView = function(dom_element, messaging_system){
+		this.element = dom_element;
+		this.messaging_system = messaging_system;
+		this.groupChangedEventListener = new EventListener(this, this.groupChanged);
+		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, this.groupChangedEventListener);
+	};
+	HierarchyView.prototype.setProxy = function(proxy){
+		this.data_proxy = proxy;
+		this.update();
+	};
+	HierarchyView.prototype.groupChanged = function(signal, data){
+		this.update();
+	};
+	HierarchyView.prototype.getProxy = function(){
+		return this.data_proxy;
+	};
+	HierarchyView.prototype.cleanUp = function(){
+		this.messaging_system.removeEventListener(this.messaging_system.events.GroupChanged, this.groupChangedEventListener);
+	}
+	HierarchyView.prototype.update = function(){
+		this.element.empty();
+		if(this.getProxy()){
+			var identification = this.getProxy().getIdentification();
+			var text = "";
+			for(var i = 0; i < identification.length; ++i){
+				if(i == 0)
+					continue;
+				if(i > 1){
+					text += " &gt; ";
+				}
+				//console.log(JSON.stringify(identification));
+				//text += identification[i].type+" #"+identification[i].id;
+				text += identification[i].title;
+			}
+			this.element.html(text);
+		}
+	};
 	var DetailsView = function(view, dom_element, messaging_system){
 		this.view = view;
 		this.messaging_system = messaging_system;
@@ -21,6 +58,10 @@ define(["../../messaging_system/event_listener",
 		this.content_element = $('<div>');
 		this.configuration_overview_element = $('<div>');
 		this.configuration_details_overview = null;
+		this.hierarchy_element = $('<div>');
+		this.hierarchy_view = new HierarchyView(this.hierarchy_element, this.messaging_system);
+		this.element.append(this.hierarchy_element);
+		this.element.append($('<br>'));
 		this.element.append(this.configuration_overview_element);
 		this.element.append(this.content_element);
 		this.details_view_element = null;
@@ -35,6 +76,7 @@ define(["../../messaging_system/event_listener",
 			if(!data.getTemporary()){
 				this.configuration_details_overview = new ConfigurationDetailsOverview(selected_proxy, this.configuration_overview_element);
 			}
+			this.hierarchy_view.setProxy(selected_proxy);
 			switch(selected_proxy.getType()){
 				case "group":
 					this.details_view_element = new GroupDetailsView(this.content_element, selected_proxy, this.messaging_system);
