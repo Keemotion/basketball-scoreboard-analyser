@@ -23,7 +23,10 @@ define(["../../messaging_system/events/submit_group_details_event",
 			.append($('<br>'))
 			.append($('<label>').text('Value: '))
 			.append(this.value_element)
-			.append($('<button>').text('submit').click(function(){
+			.append($('<button>').attr('title', 'submit')
+					.addClass('btn btn-sm btn-default')
+					.append($('<i>').addClass('fa fa-save'))
+					.click(function(){
 				self.form_element.submit();
 				return false;
 			}))

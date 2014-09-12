@@ -21,10 +21,9 @@ define(["../../model/coordinate",
 		this.x_label = $('<label>').text('X');
 		this.y_label = $('<label>').text('Y');
 		this.click_button = $('<button>')
-			.text('Click')
-			.attr({
-				'class':'button_corner_coordinate_click'
-			})
+			.addClass('btn btn-sm btn-default')
+			.attr('title', 'Click on the image to set the corner coordinate')
+			.append($('<i>').addClass('fa fa-crosshairs'))
 			.click(function(e){
 				//e.preventDefault();
 				self.canvasClickListener.toggleListening();

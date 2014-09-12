@@ -26,33 +26,37 @@ define(["./corner_details_content_view",
 		this.canvasClickListener = new CanvasMultipleClickListener(this, this.messaging_system, 4);
 		this.digit_detect_listener = new DigitDetectListener(this, this.messaging_system);
 		this.click_button = $('<button>')
-			.text('Click to set digit')
-			.attr({
-				'class':'button_digit_coordinate_click'
-			})
+			.addClass('btn btn-sm btn-default')
+			.attr('title', 'Set digit by clicking on consecutive points on the image')
+			.append($('<i>').addClass('fa fa-crosshairs'))
 			.click(function(e){
 				e.preventDefault();
 				self.canvasClickListener.toggleListening();
 				return false;
 			});
 		this.detect_button = $('<button>')
-			.text('Click to auto-detect digit corners')
-			.attr({
-				'class':'button_digit_detect'
-			})
+			.addClass('btn btn-sm btn-default')
+			.attr('title', 'Auto-detect digit corners in selected area')
+			.append($('<i>').addClass('fa fa-search'))
 			.click(function(e){
 				e.preventDefault();
 				self.startDetecting();
 				return false;
 			});
 		this.remove_button = $('<button>')
-			.text('Delete digit')
+			.addClass('btn btn-sm btn-default')
+			.attr('title', 'Delete digit')
+			.append($('<i>').addClass('fa fa-times'))
 			.attr({'type':'button'})
 			.click(function(){
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(data_proxy.getIdentification()));
 				return false;
 			});
-
+		this.toolbar = $('<div>').addClass('btn-group');
+		this.toolbar
+			.append(this.click_button)
+			.append(this.detect_button)
+			.append(this.remove_button);
 		this.form = $('<form>')
 			.append(this.content_element)
 			.append(this.configuration_element)
@@ -86,9 +90,8 @@ define(["./corner_details_content_view",
 		this.content_element.empty();
 		this.title_span.text(this.data_proxy.getTitle());
 		this.content_element.append(this.title_span);
-		this.content_element.append(this.click_button);
-		this.content_element.append(this.remove_button);
-		this.content_element.append(this.detect_button);
+		
+		this.content_element.append(this.toolbar);
 		this.configuration_element.empty();
 		var configuration_keys = this.data_proxy.getConfigurationKeys();
 //		for(var i = 0; i < configuration_keys.length; ++i){

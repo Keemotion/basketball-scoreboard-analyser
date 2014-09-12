@@ -22,21 +22,26 @@ define(["../../model/coordinate",
 		this.canvasClickListener = null;
 		this.canvasClickListener = new CanvasSingleClickListener(this, this.messaging_system);
 		this.click_button = $('<button>')
-			.text('Click')
-			.attr({
-				'class':'button_dot_coordinate_click'
-			})
+			.addClass('btn btn-sm btn-default')
+			.append($('<i>').addClass('fa fa-crosshairs'))
+			.attr('title', 'Click on the image to set the led coordinate')
 			.click(function(e){
 				self.canvasClickListener.toggleListening();
 				return false;
 			});
 		this.remove_button = $('<button>')
-			.text('Delete dot')
+			.addClass('btn btn-sm btn-default')
+			.attr('title', 'Delete dot')
+			.append($('<i>').addClass('fa fa-times'))
 			.attr('type', 'button')
 			.click(function(){
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(data_proxy.getIdentification()));
 				return false;
 			});
+		this.toolbar = $('<div>')
+			.addClass('btn-group')
+			.append(this.click_button)
+			.append(this.remove_button)
 		this.x_text = $('<input>')
 			.val('');
 		this.y_text = $('<input>')
@@ -69,8 +74,7 @@ define(["../../model/coordinate",
 		this.title_span.text(this.data_proxy.getTitle());
 		this.content_element
 			.append(this.title_span)
-			.append(this.click_button)
-			.append(this.remove_button)
+			.append(this.toolbar)
 			.append($('<br>'))
 			.append(this.x_label)
 			.append(this.x_text)
