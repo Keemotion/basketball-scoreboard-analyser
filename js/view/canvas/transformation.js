@@ -124,11 +124,26 @@ define(["../../model/coordinate"], function(Coordinate){
 		if(rectangle.getLeft() == null || rectangle.getRight() == null || rectangle.getTop() == null || rectangle.getBottom() == null){
 			return;
 		}
-		if(rectangle.getLeft() >= rectangle.getRight() || rectangle.getTop() >= rectangle.getBottom()){
+		if(rectangle.getLeft() > rectangle.getRight() || rectangle.getTop() > rectangle.getBottom()){
 			return;
 		}
 		this.setCanvasCenter(new Coordinate((rectangle.getLeft()+rectangle.getRight())/2.0, (rectangle.getTop()+rectangle.getBottom())/2.0));
-		this.setScale(Math.min(this.getCanvasWidth()/this.getDisplayRatio()/(this.getCanvasCenter().getX()-rectangle.getLeft()), this.getCanvasHeight()/this.getDisplayRatio()/(this.getCanvasCenter().getY()-rectangle.getTop())));
+		var horizontal = null;
+		if(rectangle.getLeft() == rectangle.getRight()){
+			horizontal = Number.MAX_VALUE;
+		}else{
+			horizontal = this.getCanvasWidth()/this.getDisplayRatio()/(this.getCanvasCenter().getX()-rectangle.getLeft());
+		}
+		var vertical = null;
+		if(rectangle.getTop() == rectangle.getBottom()){
+			vertical = Number.MAX_VALUE;
+		}else{
+			vertical = this.getCanvasHeight()/this.getDisplayRatio()/(this.getCanvasCenter().getY()-rectangle.getTop());
+		}
+		if(vertical == horizontal && horizontal == Number.MAX_VALUE){
+			return;
+		}
+		this.setScale(Math.min(horizontal, vertical));
 	};
 	return Transformation;
 });
