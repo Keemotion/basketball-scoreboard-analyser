@@ -32,12 +32,12 @@ define([ '../../messaging_system/event_listener',
 		this.sub_nodes_element = $('<ul>').attr({
 			'class' : 'tree_node_subnodes_list'
 		}).collapse().on('show.bs.collapse', function() {
-			console.log("event handler! will be shown");
+			//console.log("event handler! will be shown");
 			self.collapse_button_expand_icon.hide();
 			self.collapse_button_collapse_icon.show();
 			//return false;
 		}).on('hide.bs.collapse', function() {
-			console.log("event handler! will be collapsed");
+			//console.log("event handler! will be collapsed");
 			self.collapse_button_collapse_icon.hide();
 			self.collapse_button_expand_icon.show();
 			//return false;
@@ -94,12 +94,12 @@ define([ '../../messaging_system/event_listener',
 		// console.log("selected:
 		// "+tree.isSelected(this.data_proxy.getIdentification()));
 		if (tree.isSelected(this.data_proxy.getIdentification())) {
-			 console.log("expand!")
+			//console.log("expand!")
 			// this.node_element.addClass('expanded').removeClass(
 			// 'collapsed');
 			this.expand();
 		} else {
-			console.log("collapse");
+			//console.log("collapse");
 			this.collapse();
 			// this.node_element.addClass('collapsed').removeClass('expanded');
 		}

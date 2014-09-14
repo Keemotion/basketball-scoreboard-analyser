@@ -359,5 +359,12 @@ define([
 		}
 		return current_configuration;
 	};*/
+	BaseDataClass.prototype.getBoundingRectangle = function(rectangle){
+		var sub_nodes = this.getSubNodes();
+		for(var i = 0; i < sub_nodes.length; ++i){
+			sub_nodes[i].getBoundingRectangle(rectangle);
+		}
+		return rectangle;
+	};
 	return BaseDataClass;
 });

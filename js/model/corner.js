@@ -43,5 +43,9 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
 	Corner.prototype.move = function(translation){
 		this.setCoordinate(this.getCoordinate().add(translation));
 	};
+	Corner.prototype.getBoundingRectangle = function(rectangle){
+		rectangle.updateCoordinate(this.getCoordinate());
+		return rectangle;
+	};
 	return Corner;
 });

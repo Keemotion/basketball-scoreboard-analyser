@@ -99,6 +99,9 @@ define([
 		});
 		this.displayObjectsChangedListener = new EventListener(this, this.displayObjectsChanged);
 		this.messaging_system.addEventListener(this.messaging_system.events.DisplayObjectsChanged, this.displayObjectsChangedListener);
+		
+		this.autoFocusListener = new EventListener(this, this.autoFocus);
+		this.messaging_system.addEventListener(this.messaging_system.events.AutoFocusSelection, this.autoFocusListener);
 		this.setProxy(proxy);
 		this.display_changed_handler = new DisplayChangedHandler(this);
 	};
@@ -312,6 +315,13 @@ define([
 	};
 	MyCanvas.prototype.getImage = function(){
 		return this.image;
+	};
+	MyCanvas.prototype.autoFocus = function(signal, data){
+		var tree = this.view.getCurrentSelectionTree();
+		var bounding_rectangle = tree.getBoundingRectangle();
+		console.log("bounding rectangle = "+JSON.stringify(bounding_rectangle));
+		this.transformation.updateToContainRectangle(bounding_rectangle);
+		this.updateCanvas();
 	};
 	return MyCanvas;
 }

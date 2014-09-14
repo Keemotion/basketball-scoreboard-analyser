@@ -92,7 +92,9 @@ define([], function() {
 
 		SelectionChanged : 'SelectionChanged',
 
-		MouseModeChanged : 'MouseModeChanged'
+		MouseModeChanged : 'MouseModeChanged',
+		
+		AutoFocusSelection: 'AutoFocusSelection'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data) {

@@ -28,5 +28,8 @@ define(["./selection_node"], function(SelectionNode){
 	SelectionTree.prototype.isSelected = function(identification){
 		return this.getRoot().isSelected(identification.slice(1));
 	};
+	SelectionTree.prototype.getBoundingRectangle = function(){
+		return this.getRoot().getBoundingRectangle();
+	};
 	return SelectionTree;
 });

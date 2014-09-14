@@ -56,5 +56,8 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.getGlobalConfiguration = function(current_configuration, end_index){
 		return this.obj.getGlobalConfiguration(current_configuration, end_index);
 	};
+	BaseProxy.prototype.getBoundingRectangle = function(rectangle){
+		return this.obj.getBoundingRectangle(rectangle);
+	};
 	return BaseProxy;
 });

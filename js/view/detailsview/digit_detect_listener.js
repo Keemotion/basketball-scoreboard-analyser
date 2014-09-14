@@ -44,7 +44,7 @@ define(["../../messaging_system/event_listener",
 		if(corners == null){
 			return;
 		}
-		console.log(JSON.stringify(corners));
+		//console.log(JSON.stringify(corners));
 		//console.log("topleft = "+JSON.stringify(data.getTopLeft()));
 		//console.log("generated transformed topleft = "+JSON.stringify(data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(data.getTopLeft())));
 		//console.log("generated transformed bottom right = "+JSON.stringify(data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(data.getTopLeft().add(new Coordinate(data.getImage()[0].length, data.getImage().length)))));
