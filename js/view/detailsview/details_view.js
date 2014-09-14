@@ -71,6 +71,7 @@ define(["../../messaging_system/event_listener",
 		var tree = data.getTree();
 		var selected_proxies = tree.getSelectedFlat();
 		this.clearView();
+		this.hierarchy_view.setProxy(null);
 		if(selected_proxies.length == 1){
 			var selected_proxy = selected_proxies[0];
 			if(!data.getTemporary()){

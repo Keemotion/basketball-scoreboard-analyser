@@ -17,14 +17,27 @@ define(["./corner_details_content_view",
 		this.target_view = target_view;
 		this.content_elements = new Array();
 		this.data_proxy = data_proxy;
-		this.content_element= $('<div>')
-			.append($('<span>').text(''));
-		this.configuration_element = $('<ul>');
+		
+		this.title_div = $('<div>');
+		this.collapse_button_collapse_icon = $('<i>').addClass('fa fa-toggle-up');
+		this.collapse_button_expand_icon = $('<i>').addClass('fa fa-toggle-down').hide();
+		this.collapse_button = $('<button>').addClass('btn btn-sm btn-default').click(function(){
+			self.form.collapse('toggle');
+		}).append(this.collapse_button_expand_icon)
+			.append(this.collapse_button_collapse_icon);
 		this.title_span = $('<span>')
 			.text('');
+		this.title_div.append(this.collapse_button)
+			.append(this.title_span);
+		
+		this.content_element= $('<div>')
+			.append($('<span>').text(''));
+		
+		this.configuration_element = $('<ul>');
 		this.canvasClickListener = null;
 		this.canvasClickListener = new CanvasMultipleClickListener(this, this.messaging_system, 4);
 		this.digit_detect_listener = new DigitDetectListener(this, this.messaging_system);
+		
 		this.click_button = $('<button>')
 			.addClass('btn btn-sm btn-default')
 			.attr('title', 'Set digit by clicking on consecutive points on the image')
@@ -57,6 +70,8 @@ define(["./corner_details_content_view",
 			.append(this.click_button)
 			.append(this.detect_button)
 			.append(this.remove_button);
+		this.title_div.append(this.toolbar);
+		
 		this.form = $('<form>')
 			.append(this.content_element)
 			.append(this.configuration_element)
@@ -65,8 +80,17 @@ define(["./corner_details_content_view",
 				var target = self.data_proxy.getIdentification();
 				self.messaging_system.fire(self.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(target, data));
 				return false;
+			}).collapse()
+			.on('hide.bs.collapse', function(){
+				self.collapse_button_collapse_icon.hide();
+				self.collapse_button_expand_icon.show();
+			})
+			.on('show.bs.collapse', function(){
+				self.collapse_button_collapse_icon.show();
+				self.collapse_button_expand_icon.hide();
 			});
 		this.target_view
+			.append(this.title_div)
 			.append(this.form);
 		this.loadContent();
 		messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
@@ -89,12 +113,10 @@ define(["./corner_details_content_view",
 		this.content_elements.length = 0;
 		this.content_element.empty();
 		this.title_span.text(this.data_proxy.getTitle());
-		this.content_element.append(this.title_span);
 		
-		this.content_element.append(this.toolbar);
 		this.configuration_element.empty();
 		var configuration_keys = this.data_proxy.getConfigurationKeys();
-//		for(var i = 0; i < configuration_keys.length; ++i){
+		
 		for(var k in configuration_keys){
 			this.configuration_element.append($('<li>').text('configuration_key: '+k+" = "+configuration_keys[k]));
 		}
