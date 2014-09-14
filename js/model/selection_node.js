@@ -128,5 +128,18 @@ define([], function(){
 		}
 		return result;
 	};
+	SelectionNode.prototype.isSelected = function(identification){
+		if(identification.length == 0){
+			return true;
+		}
+		var children = this.getChildren();
+		for(var i = 0; i < children.length; ++i){
+			if(children[i].getType() == identification[0].type && children[i].getId() == identification[0].id){
+				return children[i].isSelected(identification.slice(1));
+			}
+		}
+		return false;
+		console.log(JSON.stringify(identification));
+	};
 	return SelectionNode;
 });

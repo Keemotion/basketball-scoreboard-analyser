@@ -25,5 +25,8 @@ define(["./selection_node"], function(SelectionNode){
 	SelectionTree.prototype.getSelectedFlat = function(){
 		return this.getRoot().getSelectedFlat();
 	};
+	SelectionTree.prototype.isSelected = function(identification){
+		return this.getRoot().isSelected(identification.slice(1));
+	};
 	return SelectionTree;
 });
