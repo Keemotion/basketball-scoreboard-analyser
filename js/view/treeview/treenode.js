@@ -2,33 +2,21 @@ define([ '../../messaging_system/event_listener',
 		'../../messaging_system/events/selection_event' ], function(
 		EventListener, SelectionEvent) {
 	// Button to expand a subtree
-	var ExpandCommand = function() {
-		var element = $('<span>').attr({
-			'class' : 'command expand_command'
-		}).html('&gt;&nbsp;').click(
-				function(e) {
-					$(this).closest('li').removeClass('collapsed').addClass(
-							'expanded');
-					return false;
-				});
-		return element;
-	};
-	// Button to collapse a subtree
-	var CollapseCommand = function() {
-		var element = $('<span>').attr({
-			'class' : 'command collapse_command'
-		}).html('v&nbsp;').click(
-				function(e) {
-					$(this).closest('li').removeClass('expanded').addClass(
-							'collapsed');
-					return false;
-				});
-		return element;
-	};
+	/*
+	 * var ExpandCommand = function() { var element = $('<span>').attr({
+	 * 'class' : 'command expand_command' }).html('&gt;&nbsp;').click(
+	 * function(e) { $(this).closest('li').removeClass('collapsed').addClass(
+	 * 'expanded'); return false; }); return element; }; // Button to collapse a
+	 * subtree var CollapseCommand = function() { var element = $('<span>').attr({
+	 * 'class' : 'command collapse_command' }).html('v&nbsp;').click(
+	 * function(e) { $(this).closest('li').removeClass('expanded').addClass(
+	 * 'collapsed'); return false; }); return element; };
+	 */
 	// Groups the data about the current node and its children
 	// the children's list is collapsed by default
 	var TreeNode = function(target_view, data_proxy, messaging_system,
 			on_root_level) {
+		var self = this;
 		this.on_root_level = on_root_level;
 		this.messaging_system = messaging_system;
 		this.data_proxy = data_proxy;
@@ -43,12 +31,33 @@ define([ '../../messaging_system/event_listener',
 		});
 		this.sub_nodes_element = $('<ul>').attr({
 			'class' : 'tree_node_subnodes_list'
+		}).collapse().on('show.bs.collapse', function() {
+			console.log("event handler! will be shown");
+			self.collapse_button_expand_icon.hide();
+			self.collapse_button_collapse_icon.show();
+			//return false;
+		}).on('hide.bs.collapse', function() {
+			console.log("event handler! will be collapsed");
+			self.collapse_button_collapse_icon.hide();
+			self.collapse_button_expand_icon.show();
+			//return false;
 		});
-		this.tree_controls_element = $('<div>').attr({
-			'class' : 'tree_controls_container'
-		}).append(new ExpandCommand()).append(new CollapseCommand());
+		this.collapse_button_collapse_icon = $('<i>').addClass(
+				'fa fa-toggle-up').hide();
+		this.collapse_button_expand_icon = $('<i>').addClass(
+				'fa fa-toggle-down');
+		this.collapse_button = $('<button>').addClass('btn btn-xs').click(
+				function() {
+					self.sub_nodes_element.collapse('toggle');
+					console.log("collapse toggle finished!");
+					return false;
+				}).append(this.collapse_button_collapse_icon).append(
+				this.collapse_button_expand_icon);
+		
+		this.tree_controls_element = $('<span>').attr({
+			//'class' : 'tree_controls_container'
+		}).append(this.collapse_button);
 		this.node_element = $('<li>').attr({
-			'class' : 'collapsed',
 			'draggable' : this.on_root_level
 		}).append(this.id_element).append(this.tree_controls_element).append(
 				this.title_element).append(this.sub_nodes_element).click(
@@ -58,6 +67,7 @@ define([ '../../messaging_system/event_listener',
 					 * messaging_system.fire(messaging_system.events.GroupClicked,
 					 * data); if(data_proxy.getType() == "group"){ return false; }
 					 */
+					console.log("selected!");
 					var e = new SelectionEvent(data_proxy.getSelectionTree());
 					messaging_system.fire(messaging_system.events.SelectionSet,
 							e);
@@ -67,18 +77,31 @@ define([ '../../messaging_system/event_listener',
 		target_view.append(this.node_element);
 		this.loadData();
 		this.setUpdateListeners(this.data_proxy.getUpdateEvents());
-		this.selectionSetEventListener = new EventListener(this, this.selectionSet);
-		this.messaging_system.addEventListener(this.messaging_system.events.SelectionSet, this.selectionSetEventListener);
+		this.selectionSetEventListener = new EventListener(this,
+				this.selectionSet);
+		this.messaging_system.addEventListener(
+				this.messaging_system.events.SelectionSet,
+				this.selectionSetEventListener);
 	};
-	TreeNode.prototype.selectionSet = function(signal, data){
+	TreeNode.prototype.expand = function() {
+		this.sub_nodes_element.collapse('show');
+	};
+	TreeNode.prototype.collapse = function() {
+		this.sub_nodes_element.collapse('hide');
+	};
+	TreeNode.prototype.selectionSet = function(signal, data) {
 		var tree = data.getTree();
-		//console.log("selected: "+tree.isSelected(this.data_proxy.getIdentification()));
-		if(tree.isSelected(this.data_proxy.getIdentification())){
-			console.log("expand!")
-			this.node_element.addClass('expanded').removeClass(
-			'collapsed');
-		}else{
-			this.node_element.addClass('collapsed').removeClass('expanded');
+		// console.log("selected:
+		// "+tree.isSelected(this.data_proxy.getIdentification()));
+		if (tree.isSelected(this.data_proxy.getIdentification())) {
+			 console.log("expand!")
+			// this.node_element.addClass('expanded').removeClass(
+			// 'collapsed');
+			this.expand();
+		} else {
+			console.log("collapse");
+			this.collapse();
+			// this.node_element.addClass('collapsed').removeClass('expanded');
 		}
 	};
 	// sets all events that cause the current node to be updated

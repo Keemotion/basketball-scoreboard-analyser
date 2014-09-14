@@ -124,7 +124,7 @@ div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.expanded > div.tree
 	display: inline;
 }
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li > span.span_li_title {
-	display: block;
+	display: inline;
 	overflow: hidden;
 }
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li > span.span_li_title:hover {
