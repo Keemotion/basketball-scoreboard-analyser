@@ -121,6 +121,12 @@ define(["../../model/coordinate"], function(Coordinate){
 		this.setCanvasCenter(new Coordinate(0,0));
 	};
 	Transformation.prototype.updateToContainRectangle = function(rectangle){
+		if(rectangle.getLeft() == null || rectangle.getRight() == null || rectangle.getTop() == null || rectangle.getBottom() == null){
+			return;
+		}
+		if(rectangle.getLeft() >= rectangle.getRight() || rectangle.getTop() >= rectangle.getBottom()){
+			return;
+		}
 		this.setCanvasCenter(new Coordinate((rectangle.getLeft()+rectangle.getRight())/2.0, (rectangle.getTop()+rectangle.getBottom())/2.0));
 		this.setScale(Math.min(this.getCanvasWidth()/this.getDisplayRatio()/(this.getCanvasCenter().getX()-rectangle.getLeft()), this.getCanvasHeight()/this.getDisplayRatio()/(this.getCanvasCenter().getY()-rectangle.getTop())));
 	};
