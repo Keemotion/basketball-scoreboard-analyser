@@ -88,6 +88,9 @@ define([
 		$(this.canvas_element).focusout(function(e){
 			self.fireMouseEvent(self.messaging_system.events.CanvasFocusOut, e);
 		});
+		$(this.canvas_element).mouseleave(function(e){
+			self.fireMouseEvent(self.messaging_system.events.CanvasFocusOut, e);
+		});
 		$(this.canvas_element).click(function(e){
 			self.fireMouseEvent(self.messaging_system.events.CanvasImageClick, e);
 		});
@@ -107,6 +110,9 @@ define([
 	};
 	MyCanvas.prototype.fireMouseEvent = function(event_type, event_data){
 		var coordinate = new Coordinate(event_data.pageX-this.canvas_element.offsetLeft, event_data.pageY-this.canvas_element.offsetTop);
+		if(event_type == this.messaging_system.events.CanvasFocusOut){
+			this.messaging_system.fire(this.messaging_system.events.CanvasMouseUp, new MouseEvent(coordinate, event_data, this.getTransformation));
+		}
 		this.messaging_system.fire(event_type, new MouseEvent(coordinate, event_data, this.getTransformation()));
 	};
 	//one of the display objects has changed

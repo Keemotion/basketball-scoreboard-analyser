@@ -167,6 +167,9 @@ define([
 		this.messaging_system.fire(this.messaging_system.events.AutoDetectDigitAreaSelected, new AutoDetectDigitAreaSelectedEvent(image_part, top_left, this.canvas.getTransformation()));
 	};
 	CanvasMouseHandler.prototype.mouseUp = function(signal, data){
+		if(!this.mouse_down){
+			return;
+		}
 		this.mouse_down = false;
 		switch(this.current_mouse_mode){
 			case CanvasMouseHandler.MouseModes.SelectionMode:

@@ -60,4 +60,4 @@ click outside digit -> create a new digit
 BUGS:
 x remove digit and add a new one
 x remove digit -> remove from details view
-leave canvas -> release button
+x leave canvas -> release button
