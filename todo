@@ -40,7 +40,6 @@ leave text field -> save value
 middle high instead of maximal high
 delete key to remove selected objects
 default names digit-group and led-group
-fix autofocus!
 combine tree and details view? (try to implement all features of the details view in the tree)
 click-drag only for complete digit combinations, not for single corners
 always show blue circles
@@ -61,3 +60,4 @@ BUGS:
 x remove digit and add a new one
 x remove digit -> remove from details view
 x leave canvas -> release button
+autofocus

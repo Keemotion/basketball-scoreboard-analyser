@@ -89,6 +89,7 @@ define([
 			self.fireMouseEvent(self.messaging_system.events.CanvasFocusOut, e);
 		});
 		$(this.canvas_element).mouseleave(function(e){
+			console.log("leave!");
 			self.fireMouseEvent(self.messaging_system.events.CanvasFocusOut, e);
 		});
 		$(this.canvas_element).click(function(e){

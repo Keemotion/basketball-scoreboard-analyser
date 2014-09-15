@@ -102,6 +102,7 @@ define([
 	};
 	CanvasMouseHandler.prototype.mouseMove = function(signal, data){
 		switch(this.current_mouse_mode){
+		
 			case CanvasMouseHandler.MouseModes.ViewEditMode:
 				if(this.mouse_down){
 					var mv = new Coordinate(
@@ -198,7 +199,7 @@ define([
 		}
 	};
 	CanvasMouseHandler.prototype.focusOut = function(signal, data){
-		this.mouse_down = true;
+		this.mouse_down = false;
 	};
 	CanvasMouseHandler.prototype.click = function(signal, data){
 	};
