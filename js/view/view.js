@@ -111,7 +111,12 @@ define([
 		this.notifySelectionChanged();
 	};
 	View.prototype.selectionRemoved = function(signal, data){
-		console.log("TO BE IMPLEMENTED: selection removed: "+JSON.stringify(data));
+		//console.log("TO BE IMPLEMENTED: selection removed: "+JSON.stringify(data));
+		this.current_selection_tree = this.official_selection_tree.clone();
+		this.current_selection_tree.removeSelection(data.getTree());
+		if(!data.getTemporary()){
+			this.official_selection_tree = this.current_selection_tree.clone();
+		}
 		this.notifySelectionChanged();
 	};
 	View.prototype.selectionToggled = function(signal, data){

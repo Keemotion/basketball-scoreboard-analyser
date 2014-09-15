@@ -2,11 +2,13 @@ define([
 	"../messaging_system/event_listener",
 	"../messaging_system/events/group_changed_event",
 	"../model/selection_node",
-	"../model/selection_tree"],
+	"../model/selection_tree",
+	"../messaging_system/events/selection_event"],
 	function(EventListener,
 		GroupChangedEvent,
 		SelectionNode,
-		SelectionTree){
+		SelectionTree,
+		SelectionEvent){
 	//Base class for groups/digits/corners/state
 	var BaseDataClass = function(type){
 		this.type = type;
@@ -37,6 +39,7 @@ define([
 			if(this.getParent()){
 				this.getParent().removeSubNode(this.getId());
 			}
+			this.messaging_system.fire(this.messaging_system.events.SelectionRemoved, new SelectionEvent(this.getSelectionTree(true, null),false));
 			data.setHandled(true);
 		}
 	};
