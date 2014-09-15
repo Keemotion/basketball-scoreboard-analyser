@@ -60,4 +60,4 @@ BUGS:
 x remove digit and add a new one
 x remove digit -> remove from details view
 x leave canvas -> release button
-autofocus
+x autofocus
