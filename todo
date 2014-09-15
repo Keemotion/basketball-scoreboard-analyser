@@ -13,7 +13,7 @@ TO CHECK: drag mode enabled when approaching a selected object
 always draw children of selected element + auto-select parent if all children have been selected
 x click in tree: collapse others
 x show ancestors in details view
-focus object when single-selecting not temporary
+x focus object when single-selecting not temporary
 ---AUTOMATISATION---
 right click inside digit -> finds surrounding digit
 	max variance shears
@@ -25,3 +25,39 @@ automatisation
 ------
 select starting and end led -> auto find all leds in between by equal-spacing (not recognizing)
 find center of led by recognizing
+
+
+buttons: shift/.. -> mouse mode
+autocollapse digit (show which digits have been set)
+IMPORTANT add new digits group -> autoselect 
+	set to add digits by rectangle
+default mouse mode: drag canvas
+close to corner click -> automatically change to drag mode and select that corner
+digits not collapsible
+leds always per 5 (click->drag->release)
+control + double-click (add complete digit to selection)
+leave text field -> save value
+middle high instead of maximal high
+delete key to remove selected objects
+default names digit-group and led-group
+fix autofocus!
+combine tree and details view? (try to implement all features of the details view in the tree)
+click-drag only for complete digit combinations, not for single corners
+always show blue circles
+
+configuration values (load configuration file)
+
+last tool: select bunch of digits, next click inside region -> move, next click outside region -> reselect digits
+
+PRIORITY!
+Efficiency on creating new groups (less clicks)
+ADD GROUP -> select it and autofocus text input, after pressing enter
+
+click inside digit -> select
+click outside digit -> create a new digit
+
+
+BUGS:
+x remove digit and add a new one
+remove digit -> remove from details view
+leave canvas -> release button

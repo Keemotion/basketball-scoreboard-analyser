@@ -210,6 +210,9 @@ define(
 				var subnodes = this.data_proxy.getSubNodes();
 				this.content_element.empty();
 				this.title_input.val(this.data_proxy.getTitle());
+				for(var i = 0; i < this.content_elements.length; ++i){
+					this.content_elements[i].cleanUp();
+				}
 				this.content_elements.length = 0;
 				for (var i = 0; i < subnodes.length; ++i) {
 					var el;

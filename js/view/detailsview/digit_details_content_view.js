@@ -93,7 +93,8 @@ define(["./corner_details_content_view",
 			.append(this.title_div)
 			.append(this.form);
 		this.loadContent();
-		messaging_system.addEventListener(messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
+		this.groupChangedListener = new EventListener(this, this.groupChanged);
+		messaging_system.addEventListener(messaging_system.events.GroupChanged, this.groupChangedListener);
 	};
 	DigitDetailsContentView.prototype.startDetecting = function(){
 		this.digit_detect_listener.startListening();
@@ -156,6 +157,7 @@ define(["./corner_details_content_view",
 		}
 		this.canvasClickListener.cleanUp();
 		this.digit_detect_listener.cleanUp();
+		this.messaging_system.removeEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
 	};
 	return DigitDetailsContentView;
 });
