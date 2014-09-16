@@ -1,6 +1,7 @@
 define(["./base_tree_node",
         "./corner_tree_node",
-        "../../messaging_system/events/group_changed_event"], function(BaseTreeNode, CornerTreeNode, GroupChangedEvent){
+        "../../messaging_system/events/group_changed_event",
+        "../../messaging_system/events/remove_group_event"], function(BaseTreeNode, CornerTreeNode, GroupChangedEvent, RemoveGroupEvent){
 	var DigitTreeNode = function(parent_node, data_proxy, messaging_system){
 		this.init(parent_node, data_proxy, messaging_system);
 		this.reset_button = $('<button>')
@@ -35,7 +36,7 @@ define(["./base_tree_node",
 			.attr('title', 'Remove digit')
 			.append($('<i>').addClass('fa fa-times'))
 			.click(function(){
-				console.log("TODO: remove digit");
+				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(data_proxy.getIdentification()));
 			});
 		this.addCommand(this.remove_digit_button);
 		

@@ -1,8 +1,9 @@
 define([ "./treenode", "../../messaging_system/event_listener",
 		"../../messaging_system/events/re_ordered_event",
 		"../../messaging_system/events/add_element_event",
-		"./group_tree_node"], function(TreeNode,
-		EventListener, ReOrderedEvent, AddElementEvent, GroupTreeNode) {
+		"./group_tree_node",
+		"./configuration_tree_node"], function(TreeNode,
+		EventListener, ReOrderedEvent, AddElementEvent, GroupTreeNode, ConfigurationTreeNode) {
 	// Manages the whole tree
 	var TreeView = function(target_view, state_proxy, messaging_system) {
 		var self = this;
@@ -61,7 +62,16 @@ define([ "./treenode", "../../messaging_system/event_listener",
 		//var tree_node = new TreeNode(this.tree_element, null, dataProxy,
 		//		this.messaging_system, true);
 		//tree_node.setId(id);
-		var tree_node = new GroupTreeNode(null, dataProxy, this.messaging_system);
+		
+		var tree_node;
+		switch(dataProxy.getType()){
+		case "group":
+			tree_node = new GroupTreeNode(null, dataProxy, this.messaging_system);
+			break;
+		case "configuration_key":
+			tree_node = new ConfigurationTreeNode(null, dataProxy, this.messaging_system);
+			break;
+		}
 		this.nodes.push(tree_node);
 	};
 	TreeView.prototype.setProxy = function(proxy) {

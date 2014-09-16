@@ -37,7 +37,7 @@ define(["./digit",
 	Group.prototype.loadData = function(data){
 		if(data == null){
 			//default
-			this.name = "group";
+			this.name = this.getGroupType() + " group";
 			//this.setConfigurationKeys(Group.default_configuration_keys);
 			this.setConfigurationKeys(new Object());
 			this.clearSubNodes();
