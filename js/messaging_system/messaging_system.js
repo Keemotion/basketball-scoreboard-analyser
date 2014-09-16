@@ -14,6 +14,7 @@ define([], function() {
 
 		//Data in the current state changed
 		GroupChanged : 'GroupChanged',
+		GroupReset : 'GroupReset',
 
 		//Something at the root level of the state tree changed
 		StateChanged : 'StateChanged',

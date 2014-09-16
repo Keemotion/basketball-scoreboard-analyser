@@ -26,6 +26,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
 		this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, new EventListener(this, this.removeElement));
+		this.messaging_system.addEventListener(this.messaging_system.events.GroupReset, new EventListener(this, this.resetGroup));
 		if(this.addElement){
 			this.addElementListener = new EventListener(this, this.addElement);
 			this.messaging_system.addEventListener(this.messaging_system.events.AddElement, this.addElementListener);
@@ -380,6 +381,16 @@ define([
 			}
 		}
 		return true;
+	};
+	BaseDataClass.prototype.reset = function(){
+		console.log("implement reset for: "+this.getType());
+	};
+	BaseDataClass.prototype.resetGroup = function(signal, data){
+		if(!this.isPossiblyAboutThis(data.getTargetIdentification())){
+			return;
+		}
+		this.reset();
+		this.notifyGroupChanged();
 	};
 	return BaseDataClass;
 });

@@ -14,6 +14,9 @@ define(["../../messaging_system/events/selection_event",
 	BaseTreeNode.prototype.addCommand = function(command) {
 		this.commands.push(command);
 	};
+	BaseTreeNode.prototype.clearCommands = function(){
+		this.commands.length = 0;
+	};
 	BaseTreeNode.prototype.loadContent = function(element) {
 		var self = this;
 		this.element = element;
@@ -26,6 +29,11 @@ define(["../../messaging_system/events/selection_event",
 					return false;
 				});
 
+		this.commands_div = $('<div>').addClass('btn-group');
+		for (var i = 0; i < this.commands.length; ++i) {
+			this.commands[i].detach();
+			this.commands_div.append(this.commands[i]);
+		}
 		this.element.empty();
 
 		this.collapse_button_collapse_icon = $('<i>').addClass(
@@ -43,10 +51,6 @@ define(["../../messaging_system/events/selection_event",
 		this.title_span = $('<span>');
 		this.title_div.append(this.title_span);
 
-		this.commands_div = $('<div>').addClass('btn-group');
-		for (var i = 0; i < this.commands.length; ++i) {
-			this.commands_div.append(this.commands[i]);
-		}
 		this.title_div.append(this.commands_div);
 		this.element.append(this.title_div);
 
@@ -76,7 +80,6 @@ define(["../../messaging_system/events/selection_event",
 		}
 	};
 	BaseTreeNode.prototype.loadSubNodesContent = function() {
-		console.log("loading sub nodes content");
 		this.sub_nodes_list = $('<ul>');
 		for (var i = 0; i < this.sub_tree_nodes.length; ++i) {
 			var li = $('<li>');
@@ -88,7 +91,6 @@ define(["../../messaging_system/events/selection_event",
 	// sets all events that cause the current node to be updated
 	BaseTreeNode.prototype.setUpdateListeners = function(events) {
 		for (var i = 0; i < events.length; ++i) {
-			console.log("event: "+events[i]);
 			this.messaging_system.addEventListener(events[i],
 					new EventListener(this, this.updated));
 		}
@@ -104,17 +106,14 @@ define(["../../messaging_system/events/selection_event",
 	};
 	BaseTreeNode.prototype.childUpdated = function(){
 		this.updateContent();
-		console.log("child updated");
 		if(this.parent_node){
 			this.parent_node.childUpdated();
 		}
 	};
 	BaseTreeNode.prototype.updated = function(signal, data) {
-		console.log("updated!");
 		var identification = data.getTargetIdentification();
 		if (this.data_proxy.isPossiblyAboutThis(identification)) {
 			if(data.isStructuralChange()){
-				console.log("structural!");
 				this.loadSubNodes();
 				this.loadContent(this.element);
 			}

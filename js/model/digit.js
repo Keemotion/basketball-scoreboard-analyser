@@ -104,5 +104,10 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			this.notifyGroupChanged();
 		}
 	};
+	Digit.prototype.reset = function(){
+		for(var i = 0; i < this.sub_nodes.length; ++i){
+			this.sub_nodes[i].reset();
+		}
+	};
 	return Digit;
 });

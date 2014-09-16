@@ -1,13 +1,14 @@
 define(["./base_tree_node",
-        "./corner_tree_node"], function(BaseTreeNode, CornerTreeNode){
+        "./corner_tree_node",
+        "../../messaging_system/events/group_changed_event"], function(BaseTreeNode, CornerTreeNode, GroupChangedEvent){
 	var DigitTreeNode = function(parent_node, data_proxy, messaging_system){
 		this.init(parent_node, data_proxy, messaging_system);
 		this.reset_button = $('<button>')
 			.addClass('btn btn-xs btn-default')
 			.attr('title', 'Reset')
-			.append($('<i>').addClass('fa fa-eye'))
+			.append($('<i>').addClass('fa fa-refresh'))
 			.click(function(){
-				console.log("TODO: implement reset digit");
+				messaging_system.fire(messaging_system.events.GroupReset, new GroupChangedEvent(data_proxy.getIdentification()));
 			});
 		this.addCommand(this.reset_button);
 		
@@ -28,6 +29,15 @@ define(["./base_tree_node",
 				console.log("TODO: implement manually set digit");
 			});
 		this.addCommand(this.manually_set_digit_button);
+		
+		this.remove_digit_button = $('<button>')
+			.addClass('btn btn-xs btn-default')
+			.attr('title', 'Remove digit')
+			.append($('<i>').addClass('fa fa-times'))
+			.click(function(){
+				console.log("TODO: remove digit");
+			});
+		this.addCommand(this.remove_digit_button);
 		
 		this.loadSubNodes();
 	};

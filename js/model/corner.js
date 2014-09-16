@@ -50,5 +50,8 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
 	Corner.prototype.isComplete = function(){
 		return this.getCoordinate().isValid();
 	};
+	Corner.prototype.reset = function(){
+		this.setCoordinate(new Coordinate());
+	};
 	return Corner;
 });

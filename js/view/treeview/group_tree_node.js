@@ -1,7 +1,8 @@
-define(["./base_tree_node", "./digit_tree_node", "./dot_tree_node"], function(BaseTreeNode, DigitTreeNode, DotTreeNode){
+define(["./base_tree_node", "./digit_tree_node", "./dot_tree_node", "../../messaging_system/events/add_element_event"], function(BaseTreeNode, DigitTreeNode, DotTreeNode, AddElementEvent){
 	var GroupTreeNode = function(parent_node, data_proxy, messaging_system){
 		this.init(parent_node, data_proxy, messaging_system);
-		
+		var self = this;
+		this.clearCommands();
 		this.add_configuration_button = $('<button>')
 			.addClass('btn btn-xs btn-default')
 			.attr('title', 'Add configuration to current group')
@@ -16,7 +17,7 @@ define(["./base_tree_node", "./digit_tree_node", "./dot_tree_node"], function(Ba
 			.attr('title', 'Add ' + this.data_proxy.getGroupType()+ ' to this group.')
 			.append($('<i>').addClass('fa fa-plus'))
 			.click(function(){
-				
+				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent(self.data_proxy.getGroupType(), self.data_proxy.getIdentification()));
 			});
 		this.addCommand(this.add_sub_node_button);
 		
@@ -28,10 +29,10 @@ define(["./base_tree_node", "./digit_tree_node", "./dot_tree_node"], function(Ba
 				
 			});
 		this.addCommand(this.remove_button);
-		
 		this.loadSubNodes();
 	};
 	GroupTreeNode.prototype = new BaseTreeNode();
+
 	GroupTreeNode.prototype.loadSubNodes = function(){
 		var sub_nodes = this.data_proxy.getSubNodes();
 		this.sub_tree_nodes = new Array();
