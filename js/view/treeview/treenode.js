@@ -123,7 +123,7 @@ define([ '../../messaging_system/event_listener',
 		this.sub_nodes_element.empty();
 		if (this.data_proxy.getType() == "group"
 				|| this.data_proxy.getType() == "state"
-				|| this.data_proxy.getType() == "digit") {
+				/*|| this.data_proxy.getType() == "digit"*/) {
 			for (var i = 0; i < sub_nodes.length; ++i) {
 				this.addSubNode(sub_nodes[i], i);
 			}
