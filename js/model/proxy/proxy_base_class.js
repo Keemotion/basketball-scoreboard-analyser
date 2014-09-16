@@ -59,5 +59,8 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.getBoundingRectangle = function(rectangle){
 		return this.obj.getBoundingRectangle(rectangle);
 	};
+	BaseProxy.prototype.isComplete = function(){
+		return this.obj.isComplete();
+	};
 	return BaseProxy;
 });

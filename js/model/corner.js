@@ -47,5 +47,8 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
 		rectangle.updateCoordinate(this.getCoordinate());
 		return rectangle;
 	};
+	Corner.prototype.isComplete = function(){
+		return this.getCoordinate().isValid();
+	};
 	return Corner;
 });

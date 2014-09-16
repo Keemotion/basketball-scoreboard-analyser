@@ -90,5 +90,9 @@ define([ "./proxy/dot_proxy", './coordinate', './data_base_class' ], function(
 		rectangle.updateCoordinate(this.getCoordinate());
 		return rectangle;
 	};
+
+	Dot.prototype.isComplete = function(){
+		return this.getCoordinate().isValid();
+	};
 	return Dot;
 });

@@ -369,5 +369,17 @@ define([
 		}
 		return rectangle;
 	};
+
+	BaseDataClass.prototype.isComplete = function(){
+		if(this.sub_nodes.length == 0){
+			return false;
+		}
+		for(var i = 0; i < this.sub_nodes.length; ++i){
+			if(!this.sub_nodes[i].isComplete()){
+				return false;
+			}
+		}
+		return true;
+	};
 	return BaseDataClass;
 });

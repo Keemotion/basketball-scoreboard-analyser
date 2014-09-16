@@ -4,10 +4,11 @@ define([ '../../messaging_system/event_listener',
 	// Button to expand a subtree
 	// Groups the data about the current node and its children
 	// the children's list is collapsed by default
-	var TreeNode = function(target_view, data_proxy, messaging_system,
+	var TreeNode = function(target_view, parent_node, data_proxy, messaging_system,
 			on_root_level) {
 		var self = this;
 		this.on_root_level = on_root_level;
+		this.parent_node = parent_node;
 		this.messaging_system = messaging_system;
 		this.data_proxy = data_proxy;
 		this.sub_nodes = new Array();
@@ -88,6 +89,16 @@ define([ '../../messaging_system/event_listener',
 		for (var i = 0; i < this.sub_nodes.length; ++i) {
 			this.sub_nodes[i].update();
 		}
+		if(this.parent_node){
+			this.parent_node.childUpdated();
+		}
+	};
+	TreeNode.prototype.childUpdated = function(){
+		this.update_title_style();
+		console.log("child updated");
+		if(this.parent_node){
+			this.parent_node.childUpdated();
+		}
 	};
 	TreeNode.prototype.updated = function(signal, data) {
 		var identification = data.getTargetIdentification();
@@ -97,7 +108,7 @@ define([ '../../messaging_system/event_listener',
 	};
 	// adds a sub node (which can have subnodes as well)
 	TreeNode.prototype.addSubNode = function(data, id) {
-		var tree_node = new TreeNode(this.sub_nodes_element, data,
+		var tree_node = new TreeNode(this.sub_nodes_element, this, data,
 				this.messaging_system, false);
 		this.sub_nodes.push(tree_node);
 		tree_node.setId(id);
@@ -139,8 +150,18 @@ define([ '../../messaging_system/event_listener',
 		} else {
 			this.tree_controls_element.hide();
 		}
+		this.update_title_style();
+	};
+	TreeNode.prototype.update_title_style = function(){
+		if(!this.data_proxy.isComplete()){
+			this.title_element.css('font-weight', 'bold');
+		}else{
+			this.title_element.css('font-weight', 'normal');
+		}
 	};
 	TreeNode.prototype.loadData = function() {
+		this.update_title_style();
+		
 		this.setTitle(this.data_proxy.getTitle());
 		this.setId(this.data_proxy.getId());
 		this.setSubNodes(this.data_proxy.getSubNodes());
