@@ -61,5 +61,8 @@ define([],function(){
 	Coordinate.prototype.clone = function(){
 		return new Coordinate(this.getX(), this.getY());
 	};
+	Coordinate.prototype.equals = function(c){
+		return c.getX() == this.getX() && c.getY() == this.getY();
+	};
 	return Coordinate;
 });

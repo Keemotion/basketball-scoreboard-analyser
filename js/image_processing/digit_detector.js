@@ -54,6 +54,7 @@ define(
 				};
 			}
 			DigitDetector.digit_corners = function(grayscale_image) {
+				console.log("in digit corners!");
 				var cols = grayscale_image[0].length;
 				var rows = grayscale_image.length;
 				if (cols < 10 || rows < 10) {
@@ -74,7 +75,8 @@ define(
 				// delete middle horizontal line
 				// find intersections of other two lines
 				// return those coordinates
-				return [ topleft, topright, bottomright, bottomleft ];
+				var result =[ topleft, topright, bottomright, bottomleft ]; 
+				return result;
 			};
 			function horizontal_digit_lines(grayscale_image) {
 				var all_variances = horizontal_variances(grayscale_image);

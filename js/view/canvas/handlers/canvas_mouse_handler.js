@@ -4,14 +4,16 @@ define([
 	"../../../messaging_system/events/selection_event",
 	"../../../messaging_system/events/objects_moved_event",
 	"../../../messaging_system/events/mouse_mode_changed_event",
-	"../../../messaging_system/events/auto_detect_digit_area_selected_event"]
+	"../../../messaging_system/events/auto_detect_digit_area_selected_event",
+	"../../../image_processing/digit_detector"]
 	, function(
 		EventListener,
 		Coordinate,
 		SelectionEvent,
 		ObjectsMovedEvent,
 		MouseModeChangedEvent,
-		AutoDetectDigitAreaSelectedEvent
+		AutoDetectDigitAreaSelectedEvent,
+		DigitDetector
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -61,10 +63,11 @@ define([
 		this.messaging_system = messaging_system;
 
 		this.previous_mouse_coordinate = new Coordinate();
+		this.mouse_down_time = 0;
 		this.mouse_down = false;
 
-		this.current_mouse_mode = CanvasMouseHandler.MouseModes.SelectionMode;
-		this.previous_mouse_mode = CanvasMouseHandler.MouseModes.SelectionMode;
+		this.current_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
+		this.previous_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
 		//this.current_mouse_mode = CanvasMouseHandler.MouseModes.ViewEditMode;
 		this.selection_rectangle = new SelectionRectangle;
 
@@ -79,12 +82,18 @@ define([
 
 		this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
 	};
-	CanvasMouseHandler.MouseModes = {
+	/*CanvasMouseHandler.MouseModes = {
 		SelectionMode:"SelectionMode",
 		ViewEditMode:"ViewEditMode",
 		DragMode:"DragMode",
 		CoordinateClickMode:"CoordinateClickMode",
 		AutoDetectDigitMode:"AutoDetectDigitMode"
+	};*/
+	CanvasMouseHandler.MouseModes = {
+		EditMode: "EditMode",
+		CanvasMode: "CanvasMode",
+		MoveMode: "MoveMode",
+		Other: "Other"
 	};
 	CanvasMouseHandler.prototype.canvasScrolled = function(signal, data){
 		var evt = data.event_data;
@@ -101,8 +110,29 @@ define([
 		return data.event_data.preventDefault() && false;
 	};
 	CanvasMouseHandler.prototype.mouseMove = function(signal, data){
+		console.log("move!");
+		if(this.mouse_down){
+			this.mouse_dragged = true;
+		}
 		switch(this.current_mouse_mode){
-		
+		case CanvasMouseHandler.MouseModes.EditMode:
+			if(this.mouse_down){
+				//check if inside a digit -> select that digit
+				//if not inside digit, but near the selected digit -> select nearest corner of that digit and drag it (only if mouse has been down for more than 0.5 s)
+				//else: try to add a new digit to the currently selected digit group (if none is selected, don't do anything)
+			}
+			break;
+		case CanvasMouseHandler.MouseModes.CanvasMode:
+			//move canvas
+			break;
+		case CanvasMouseHandler.MouseModes.MoveMode:
+			//move selected digits at once
+			
+			break;
+		case CanvasMouseHandler.MouseModes.Other:
+			//let another handler handle these events
+			break;
+		/*
 			case CanvasMouseHandler.MouseModes.ViewEditMode:
 				if(this.mouse_down){
 					var mv = new Coordinate(
@@ -132,13 +162,12 @@ define([
 					this.autoDetectDigit(signal, data);
 					this.canvas.updateCanvas();
 				}
-				break;
+				break;*/
 		}
 		this.previous_mouse_coordinate = data.getCoordinate();
 		
 	};
 	CanvasMouseHandler.prototype.autoDetectDigit = function(signal, data){
-		//TODO: get right part of image
 		var selection_rectangle = this.selection_rectangle.transformCanvasCoordinatesToAbsoluteCoordinates(this.canvas.getTransformation());
 		var img = this.canvas.getImage();
 		var top_left = selection_rectangle.getTopLeft();
@@ -165,14 +194,62 @@ define([
 				image_part[parseInt(i-top_left.getY())].push(y);
 			}
 		}
-		this.messaging_system.fire(this.messaging_system.events.AutoDetectDigitAreaSelected, new AutoDetectDigitAreaSelectedEvent(image_part, top_left, this.canvas.getTransformation()));
+		//this.messaging_system.fire(this.messaging_system.events.AutoDetectDigitAreaSelected, new AutoDetectDigitAreaSelectedEvent(image_part, top_left, this.canvas.getTransformation()));
+		var corners = DigitDetector.digit_corners(image_part);
+		console.log("corners: "+JSON.stringify(corners));
+		if(corners == null){
+			return;
+		}
+		//console.log(JSON.stringify(corners));
+		//console.log("topleft = "+JSON.stringify(data.getTopLeft()));
+		//console.log("generated transformed topleft = "+JSON.stringify(data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(data.getTopLeft())));
+		//console.log("generated transformed bottom right = "+JSON.stringify(data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(data.getTopLeft().add(new Coordinate(data.getImage()[0].length, data.getImage().length)))));
+		
+		for(var index = 0; index < 4; ++index){
+			var x = corners[index].x + top_left.getX();
+			var y = corners[index].y + top_left.getY();
+			//console.log("absolute image coordinate: x = "+x+" y = "+y);
+			var coord = data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(x, y));
+			//console.log("relative image coordinate: "+JSON.stringify(coord));
+			//this.parent.content_elements[index].setCoordinate(coord.getX(), coord.getY());
+			
+		}
+		//TODO: collect those four corners and send an event to add this digit to the selected group
+		console.log("TODO: collect those four corners and send an event to add this digit to the selected group");
 	};
 	CanvasMouseHandler.prototype.mouseUp = function(signal, data){
 		if(!this.mouse_down){
 			return;
 		}
 		this.mouse_down = false;
+		var mouse_release_time = new Date();
+		var time_down = mouse_release_time.getTime() - this.mouse_down_time.getTime();
 		switch(this.current_mouse_mode){
+		case CanvasMouseHandler.MouseModes.EditMode:
+			this.selection_rectangle.updateSelection(data.getCoordinate());
+			console.log("edit mode, down time = " + time_down);
+			var DOWN_TIME = 100;
+			if(!this.mouse_dragged || time_down <= DOWN_TIME){
+				console.log("first!");
+				var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
+				if(res){
+					var e = new SelectionEvent(res.getProxy().getSelectionTree());
+					this.messaging_system.fire(this.messaging_system.events.SelectionSet, e);
+				}
+				//pretend it was a click -> if inside digit -> select it
+			}else{
+				console.log("tried to move a corner of a digit, a dot or tried to auto-detect a digit/a series of dots in a region");
+				this.autoDetectDigit(signal, data);
+				this.selection_rectangle.stopSelection();
+				//this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
+			}
+			break;
+		case CanvasMouseHandler.MouseModes.CanvasMode:
+			break;
+		case CanvasMouseHandler.MouseModes.MoveMode:
+			break;
+		case CanvasMouseHandler.MouseModes.Other:
+			break;
 			case CanvasMouseHandler.MouseModes.SelectionMode:
 				this.stopSelection(data);
 				break;
@@ -186,16 +263,23 @@ define([
 	};
 	CanvasMouseHandler.prototype.mouseDown = function(signal, data){
 		this.mouse_down = true;
+		this.mouse_dragged = false;
+		this.mouse_down_time = new Date();
+		this.previous_mouse_coordinate = data.getCoordinate();
 		switch(this.current_mouse_mode){
-			case CanvasMouseHandler.MouseModes.SelectionMode:
-				if(!data.getEventData().shiftKey && !data.getEventData().ctrlKey){
-					this.messaging_system.fire(this.messaging_system.events.SelectionReset, null);
-				}
-				this.startSelection(data.getCoordinate());
-				break;
-			case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
-				this.selection_rectangle.startSelection(data.getCoordinate());
-				break;
+		case CanvasMouseHandler.MouseModes.EditMode:
+			this.selection_rectangle.startSelection(data.getCoordinate());
+			console.log("edit mode!");
+			break;
+		case CanvasMouseHandler.MouseModes.SelectionMode:
+			if(!data.getEventData().shiftKey && !data.getEventData().ctrlKey){
+				this.messaging_system.fire(this.messaging_system.events.SelectionReset, null);
+			}
+			this.startSelection(data.getCoordinate());
+			break;
+		case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+			this.selection_rectangle.startSelection(data.getCoordinate());
+			break;
 		}
 	};
 	CanvasMouseHandler.prototype.focusOut = function(signal, data){
