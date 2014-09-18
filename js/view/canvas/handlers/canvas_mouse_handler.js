@@ -6,7 +6,9 @@ define([
 	"../../../messaging_system/events/mouse_mode_changed_event",
 	"../../../messaging_system/events/auto_detect_digit_area_selected_event",
 	"../../../image_processing/digit_detector",
-	"../../../messaging_system/events/digit_added_event"]
+	"../../../messaging_system/events/digit_added_event",
+	"../../../messaging_system/events/edit_mode_selection_event",
+	"../../../messaging_system/events/submit_group_details_event"]
 	, function(
 		EventListener,
 		Coordinate,
@@ -15,7 +17,9 @@ define([
 		MouseModeChangedEvent,
 		AutoDetectDigitAreaSelectedEvent,
 		DigitDetector,
-		DigitAddedEvent
+		DigitAddedEvent,
+		EditModeSelectionEvent,
+		SubmitGroupDetailsEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -212,7 +216,9 @@ define([
 		var group_identification = this.getEditModeSelectedGroupIdentification();
 		this.messaging_system.fire(this.messaging_system.events.DigitAdded, new DigitAddedEvent(group_identification, result));
 	};
-	
+	CanvasMouseHandler.prototype.getEditModeSelectedGroupProxy = function(){
+		return this.edit_mode_selected_proxy;
+	};
 	CanvasMouseHandler.prototype.getEditModeSelectedGroupIdentification = function(){
 		return this.edit_mode_selected_proxy.getParentOfTypeIdentification("group");
 	};
@@ -238,13 +244,21 @@ define([
 				console.log("first!");
 				var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 				if(res){
-					var e = new SelectionEvent(res.getProxy().getSelectionTree());
-					this.messaging_system.fire(this.messaging_system.events.SelectionSet, e);
+					var e = new EditModeSelectionEvent(res.getProxy());
+					this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
 				}
 				//pretend it was a click -> if inside digit -> select it
 			}else{
 				console.log("tried to move a corner of a digit, a dot or tried to auto-detect a digit/a series of dots in a region");
-				this.autoDetectDigit(signal, data);
+				if(this.current_drag_corner_move){
+					var corner_data = this.current_drag_corner_move_corner.getData();
+					corner_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+					this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(this.current_drag_corner_move_corner.getIdentification(), corner_data));
+				}else if(this.current_drag_dot_move){
+					console.log("TODO: implement dot move");
+				}else{
+					this.autoDetectDigit(signal, data);
+				}
 				this.selection_rectangle.stopSelection();
 				//this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 			}
@@ -273,7 +287,29 @@ define([
 		this.previous_mouse_coordinate = data.getCoordinate();
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.EditMode:
+			var MAX_DISTANCE = 20;//px
 			this.selection_rectangle.startSelection(data.getCoordinate());
+			this.current_drag_corner_move = false;
+			if(this.getEditModeSelectedGroupProxy().getType() == "digit"){
+				//find if closest corner of selected digit (canvas coordinate) is within MAX_DISTANCE of data.getCoordinate()
+				var sub_nodes = this.getEditModeSelectedGroupProxy().getSubNodes();
+				var closest_sub_node = null;
+				var closest_distance = MAX_DISTANCE*MAX_DISTANCE;
+				for(var i = 0; i < sub_nodes.length; ++i){
+					var distance = Coordinate.getSquareDistance(data.getCoordinate(), this.canvas.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(sub_nodes[i].getCoordinate()));
+					if(distance <= closest_distance){
+						closest_sub_node = sub_nodes[i];
+						closest_distance = distance;
+					}
+				}
+				this.current_drag_corner_move_corner = closest_sub_node;
+				if(this.current_drag_corner_move_corner == null){
+					this.current_drag_corner_move = false;
+				}else{
+					this.current_drag_corner_move = true;
+				}
+			}
+			this.current_drag_dot_move = false;
 			console.log("edit mode!");
 			break;
 		case CanvasMouseHandler.MouseModes.SelectionMode:
