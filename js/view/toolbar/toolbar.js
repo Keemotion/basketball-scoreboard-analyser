@@ -11,16 +11,16 @@ define(
 				this.messaging_system = messaging_system;
 				this.state_proxy = state_proxy;
 
-				// Mouse Mode: selection mode
+				// Mouse Mode: edit mode
 				// Mouse Mode: view edit mode
 				// Mouse Mode: drag mode
 				this.target_div.addClass('btn-toolbar');
-				this.selection_tool_btn = $('<label>')
+				this.edit_tool_btn = $('<button>')
 						.attr({
-							'title' : 'Add or remove objects to selection',
+							'title' : 'Edit/add digits and leds on the canvas',
 							'data-toggle' : 'button'
 						})
-						.append($('<i>').addClass('fa fa-crosshairs'))
+						.append($('<i>').addClass('fa fa-pencil-square-o'))
 						.addClass('btn btn-default btn-view-mode')
 						.click(
 								function() {
@@ -28,9 +28,9 @@ define(
 											.fire(
 													self.messaging_system.events.MouseModeChanged,
 													new MouseModeChangedEvent(
-															CanvasMouseHandler.MouseModes.SelectionMode));
+															CanvasMouseHandler.MouseModes.EditMode));
 								}).button();
-				this.edit_view_tool_btn = $('<label>')
+				this.edit_view_tool_btn = $('<button>')
 						.attr({
 							'title' : 'Move the image on the canvas',
 							'data-toggle' : 'button'
@@ -43,9 +43,9 @@ define(
 											.fire(
 													self.messaging_system.events.MouseModeChanged,
 													new MouseModeChangedEvent(
-															CanvasMouseHandler.MouseModes.ViewEditMode));
+															CanvasMouseHandler.MouseModes.CanvasMode));
 								}).button();
-				this.drag_tool_btn = $('<label>')
+				this.drag_tool_btn = $('<button>')
 						.append($('<i>').addClass('fa fa-arrows'))
 						.attr({
 							'title' : 'Move selected objects',
@@ -58,17 +58,17 @@ define(
 											.fire(
 													self.messaging_system.events.MouseModeChanged,
 													new MouseModeChangedEvent(
-															CanvasMouseHandler.MouseModes.DragMode));
+															CanvasMouseHandler.MouseModes.MoveMode));
 								}).button();
 				this.mouse_mode_btns = $('<div>').addClass('btn-group').attr(
 						'data-toggle', 'buttons').append(
-						this.selection_tool_btn)
+						this.edit_tool_btn)
 						.append(this.edit_view_tool_btn).append(
 								this.drag_tool_btn);
 				self.messaging_system.addEventListener(
 						self.messaging_system.events.MouseModeChanged,
 						new EventListener(this, this.mouseModeChanged));
-				this.selection_tool_btn.click();
+				this.edit_tool_btn.click();
 				this.target_div.append(this.mouse_mode_btns);
 
 				this.import_export_btns = $('<div>').addClass('btn-group');
@@ -201,7 +201,7 @@ define(
 			};
 
 			ToolBar.prototype.mouseModeChanged = function(signal, data) {
-				this.selection_tool_btn.removeClass('active');
+				this.edit_tool_btn.removeClass('active');
 				this.edit_view_tool_btn.removeClass('active');
 				this.drag_tool_btn.removeClass('active');
 				switch (data.getMode()) {

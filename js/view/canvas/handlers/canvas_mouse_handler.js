@@ -87,6 +87,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageClick, new EventListener(this, this.click));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageDoubleClick, new EventListener(this, this.doubleClick));
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasKeyDown, new EventListener(this, this.keyDown));
+		this.messaging_system.addEventListener(this.messaging_system.events.CanvasKeyUp, new EventListener(this, this.keyUp));
 
 		this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, new EventListener(this, this.editModeSelectionSet));
@@ -132,6 +133,15 @@ define([
 			break;
 		case CanvasMouseHandler.MouseModes.CanvasMode:
 			//move canvas
+			if(this.mouse_down){
+				var mv = new Coordinate(
+					this.canvas.getTransformation().getCanvasWidth() / 2 - (data.getCoordinate().getX() - this.previous_mouse_coordinate.getX()),
+					this.canvas.getTransformation().getCanvasHeight() / 2 - (data.getCoordinate().getY() - this.previous_mouse_coordinate.getY())
+				);
+				var transformed = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(mv);
+				this.canvas.getTransformation().setCanvasCenter(transformed);
+				this.canvas.updateCanvas(signal, data);
+			}
 			break;
 		case CanvasMouseHandler.MouseModes.MoveMode:
 			//move selected digits at once
@@ -340,8 +350,20 @@ define([
 		//inside dot
 	};
 	CanvasMouseHandler.prototype.keyDown = function(signal, data){
-		if(data.getEventData().which == 27){//escape
+		switch(data.getEventData().which){
+		case 27://escape
 			this.messaging_system.fire(this.messaging_system.events.SelectionReset, null);
+			break;
+		case 17:
+			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CanvasMode));
+			break;
+		}
+	};
+	CanvasMouseHandler.prototype.keyUp = function(signal, data){
+		switch(data.getEventData().which){
+		case 17:
+			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
+			break;
 		}
 	};
 	CanvasMouseHandler.prototype.startSelection = function(coordinate){

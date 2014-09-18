@@ -3,13 +3,13 @@ define(
 				"./transformation", "./display_tree",
 				"../../messaging_system/events/submit_group_details_event",
 				"./handlers/display_changed_handler",
-				"../../messaging_system/events/canvas_keydown_event",
+				"../../messaging_system/events/canvas_key_event",
 				"./handlers/canvas_mouse_handler",
 				"../../model/selection_tree", "../../model/selection_node",
 				"../../messaging_system/events/mouse_event" ],
 		function(EventListener, Coordinate, Transformation, DisplayTree,
 				SubmitGroupDetailsEvent, DisplayChangedHandler,
-				CanvasKeyDownEvent, CanvasMouseHandler, SelectionTree,
+				CanvasKeyEvent, CanvasMouseHandler, SelectionTree,
 				SelectionNode, MouseEvent) {
 			var MyCanvas = function(view, target_view, proxy, messaging_system) {
 				var self = this;
@@ -121,7 +121,10 @@ define(
 						function(e) {
 							messaging_system.fire(
 									messaging_system.events.CanvasKeyDown,
-									new CanvasKeyDownEvent(e));
+									new CanvasKeyEvent(e));
+						})
+						.keyup(function(e){
+							messaging_system.fire(messaging_system.events.CanvasKeyUp, new CanvasKeyEvent(e));
 						});
 				this.displayObjectsChangedListener = new EventListener(this,
 						this.displayObjectsChanged);

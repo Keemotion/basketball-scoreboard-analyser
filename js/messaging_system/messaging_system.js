@@ -57,6 +57,7 @@ define([], function() {
 		CanvasImageClick : 'CanvasImageClick',
 		CanvasImageDoubleClick : 'CanvasImageDoubleClick',
 		CanvasKeyDown : 'CanvasKeyDown',
+		CanvasKeyUp : 'CanvasKeyUp',
 
 		//User started clicking in the canvas to set coordinates (so don't do anything else with the clicks
 		CoordinateClickListenerStarted : 'CoordinateClickListenerStarted',
