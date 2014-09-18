@@ -75,6 +75,8 @@ define([], function() {
 
 		//A new element was added in the GUI
 		AddElement : 'AddElement',
+		
+		DigitAdded : 'DigitAdded',
 
 		//A group was deleted in the GUI
 		RemoveGroup : 'RemoveGroup',
@@ -95,7 +97,8 @@ define([], function() {
 
 		MouseModeChanged : 'MouseModeChanged',
 		
-		AutoFocusSelection: 'AutoFocusSelection'
+		AutoFocusSelection: 'AutoFocusSelection',
+		EditModeSelectionSet: 'EditModeSelectionSet'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data) {

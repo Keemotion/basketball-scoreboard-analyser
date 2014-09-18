@@ -1,5 +1,6 @@
 define(["../../messaging_system/events/selection_event",
-        "../../messaging_system/event_listener"], function(SelectionEvent, EventListener) {
+        "../../messaging_system/event_listener",
+        "../../messaging_system/events/edit_mode_selection_event"], function(SelectionEvent, EventListener, EditModeSelectionEvent) {
 	var BaseTreeNode = function() {
 	};
 	BaseTreeNode.prototype.init = function(parent_node, data_proxy,
@@ -26,6 +27,8 @@ define(["../../messaging_system/events/selection_event",
 							.getSelectionTree());
 					self.messaging_system.fire(
 							self.messaging_system.events.SelectionSet, e);
+					var e2 = new EditModeSelectionEvent(self.data_proxy);
+					self.messaging_system.fire(self.messaging_system.events.EditModeSelectionSet, e2);
 					return false;
 				});
 

@@ -5,7 +5,8 @@ define([
 	"../../../messaging_system/events/objects_moved_event",
 	"../../../messaging_system/events/mouse_mode_changed_event",
 	"../../../messaging_system/events/auto_detect_digit_area_selected_event",
-	"../../../image_processing/digit_detector"]
+	"../../../image_processing/digit_detector",
+	"../../../messaging_system/events/digit_added_event"]
 	, function(
 		EventListener,
 		Coordinate,
@@ -13,7 +14,8 @@ define([
 		ObjectsMovedEvent,
 		MouseModeChangedEvent,
 		AutoDetectDigitAreaSelectedEvent,
-		DigitDetector
+		DigitDetector,
+		DigitAddedEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -65,6 +67,8 @@ define([
 		this.previous_mouse_coordinate = new Coordinate();
 		this.mouse_down_time = 0;
 		this.mouse_down = false;
+		
+		this.edit_mode_selected_proxy = null;
 
 		this.current_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
 		this.previous_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
@@ -81,6 +85,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.CanvasKeyDown, new EventListener(this, this.keyDown));
 
 		this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
+		this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, new EventListener(this, this.editModeSelectionSet));
 	};
 	/*CanvasMouseHandler.MouseModes = {
 		SelectionMode:"SelectionMode",
@@ -110,7 +115,6 @@ define([
 		return data.event_data.preventDefault() && false;
 	};
 	CanvasMouseHandler.prototype.mouseMove = function(signal, data){
-		console.log("move!");
 		if(this.mouse_down){
 			this.mouse_dragged = true;
 		}
@@ -194,28 +198,29 @@ define([
 				image_part[parseInt(i-top_left.getY())].push(y);
 			}
 		}
-		//this.messaging_system.fire(this.messaging_system.events.AutoDetectDigitAreaSelected, new AutoDetectDigitAreaSelectedEvent(image_part, top_left, this.canvas.getTransformation()));
 		var corners = DigitDetector.digit_corners(image_part);
-		console.log("corners: "+JSON.stringify(corners));
 		if(corners == null){
 			return;
 		}
-		//console.log(JSON.stringify(corners));
-		//console.log("topleft = "+JSON.stringify(data.getTopLeft()));
-		//console.log("generated transformed topleft = "+JSON.stringify(data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(data.getTopLeft())));
-		//console.log("generated transformed bottom right = "+JSON.stringify(data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(data.getTopLeft().add(new Coordinate(data.getImage()[0].length, data.getImage().length)))));
-		
+		var result = new Array();
 		for(var index = 0; index < 4; ++index){
 			var x = corners[index].x + top_left.getX();
 			var y = corners[index].y + top_left.getY();
-			//console.log("absolute image coordinate: x = "+x+" y = "+y);
-			var coord = data.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(x, y));
-			//console.log("relative image coordinate: "+JSON.stringify(coord));
-			//this.parent.content_elements[index].setCoordinate(coord.getX(), coord.getY());
-			
+			var coord = this.canvas.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(x, y));
+			result.push(coord);
 		}
-		//TODO: collect those four corners and send an event to add this digit to the selected group
-		console.log("TODO: collect those four corners and send an event to add this digit to the selected group");
+		var group_identification = this.getEditModeSelectedGroupIdentification();
+		this.messaging_system.fire(this.messaging_system.events.DigitAdded, new DigitAddedEvent(group_identification, result));
+	};
+	
+	CanvasMouseHandler.prototype.getEditModeSelectedGroupIdentification = function(){
+		return this.edit_mode_selected_proxy.getParentOfTypeIdentification("group");
+	};
+	CanvasMouseHandler.prototype.setEditModeSelectedObjectProxy = function(proxy){
+		this.edit_mode_selected_proxy = proxy;
+	};
+	CanvasMouseHandler.prototype.editModeSelectionSet = function(signal, data){
+		this.setEditModeSelectedObjectProxy(data.getProxy());
 	};
 	CanvasMouseHandler.prototype.mouseUp = function(signal, data){
 		if(!this.mouse_down){

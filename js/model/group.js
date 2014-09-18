@@ -3,13 +3,15 @@ define(["./digit",
 	"../messaging_system/event_listener",
 	"./data_base_class",
 	'../messaging_system/events/group_changed_event',
-	'./dot'],function(
+	'./dot',
+	"../messaging_system/event_listener"],function(
 		Digit,
 		GroupProxy,
 		EventListener,
 		DataBaseClass,
 		GroupChangedEvent,
-		Dot){
+		Dot,
+		EventListener){
 	//represents a collection of digits/dots/groups
 	var Group = function(data, group_type, parent, messaging_system){
 		this.messaging_system = messaging_system;
@@ -20,6 +22,8 @@ define(["./digit",
 		this.lockNotification();
 		this.loadData(data);
 		this.unlockNotification();
+		this.digitAddedListener = new EventListener(this, this.digitAdded);
+		this.messaging_system.addEventListener(this.messaging_system.events.DigitAdded, this.digitAddedListener);
 	};
 	Group.prototype = new DataBaseClass("group");
 	//the default configuration keys that are applied to a group in the configuration file
@@ -52,6 +56,18 @@ define(["./digit",
 		this.clearSubNodes();
 		for(var i = 0; i < subnode_info.length; ++i){
 			this.createSubNode(subnode_info[i]);
+		}
+	};
+	Group.prototype.digitAdded = function(signal, data){
+		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
+			var digit_data = new Object();
+			digit_data.type = "digit";
+			digit_data.corners = new Array();
+			for(var i = 0; i < data.getCorners().length; ++i){
+				digit_data.corners.push({"coordinate":(data.getCorners())[i]});
+			}
+			digit_data.extra_value = 0.0033333334;
+			this.createSubNode(digit_data);
 		}
 	};
 	//update the group properties (not its children)

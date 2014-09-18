@@ -392,5 +392,14 @@ define([
 		this.reset();
 		this.notifyGroupChanged();
 	};
+	BaseDataClass.prototype.getParentOfTypeIdentification = function(type){
+		if(type == this.getType()){
+			return this.getIdentification();
+		}
+		if(this.getParent()){
+			return this.getParent().getParentOfTypeIdentification(type);
+		}
+		return null;
+	};
 	return BaseDataClass;
 });
