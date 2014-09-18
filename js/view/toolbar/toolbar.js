@@ -29,7 +29,8 @@ define(
 													self.messaging_system.events.MouseModeChanged,
 													new MouseModeChangedEvent(
 															CanvasMouseHandler.MouseModes.EditMode));
-								}).button();
+								}).button()
+						.mouseup(function(){$(this).blur();});
 				this.edit_view_tool_btn = $('<button>')
 						.attr({
 							'title' : 'Move the image on the canvas',
@@ -44,7 +45,8 @@ define(
 													self.messaging_system.events.MouseModeChanged,
 													new MouseModeChangedEvent(
 															CanvasMouseHandler.MouseModes.CanvasMode));
-								}).button();
+								}).button()
+								.mouseup(function(){$(this).blur();});
 				this.drag_tool_btn = $('<button>')
 						.append($('<i>').addClass('fa fa-arrows'))
 						.attr({
@@ -59,7 +61,8 @@ define(
 													self.messaging_system.events.MouseModeChanged,
 													new MouseModeChangedEvent(
 															CanvasMouseHandler.MouseModes.MoveMode));
-								}).button();
+								}).button()
+								.mouseup(function(){$(this).blur();});
 				this.mouse_mode_btns = $('<div>').addClass('btn-group').attr(
 						'data-toggle', 'buttons').append(
 						this.edit_tool_btn)
@@ -205,13 +208,13 @@ define(
 				this.edit_view_tool_btn.removeClass('active');
 				this.drag_tool_btn.removeClass('active');
 				switch (data.getMode()) {
-				case CanvasMouseHandler.MouseModes.SelectionMode:
-					this.selection_tool_btn.addClass('active');
+				case CanvasMouseHandler.MouseModes.EditMode:
+					this.edit_tool_btn.addClass('active');
 					break;
-				case CanvasMouseHandler.MouseModes.ViewEditMode:
+				case CanvasMouseHandler.MouseModes.CanvasMode:
 					this.edit_view_tool_btn.addClass('active');
 					break;
-				case CanvasMouseHandler.MouseModes.DragMode:
+				case CanvasMouseHandler.MouseModes.MoveMode:
 					this.drag_tool_btn.addClass('active');
 					break;
 				default:
