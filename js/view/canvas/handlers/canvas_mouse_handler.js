@@ -320,8 +320,9 @@ define([
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.EditMode:
 			var MAX_DISTANCE = 20;//px
-			this.selection_rectangle.startSelection(data.getCoordinate());
+			
 			this.current_drag_corner_move = false;
+			this.current_drag_digit_detect = false;
 			if(this.getEditModeSelectedGroupProxy().getType() == "digit"){
 				//find if closest corner of selected digit (canvas coordinate) is within MAX_DISTANCE of data.getCoordinate()
 				var sub_nodes = this.getEditModeSelectedGroupProxy().getSubNodes();
@@ -337,12 +338,20 @@ define([
 				this.current_drag_corner_move_corner = closest_sub_node;
 				if(this.current_drag_corner_move_corner == null){
 					this.current_drag_corner_move = false;
+				
 				}else{
 					this.current_drag_corner_move = true;
 				}
 			}
+			if(!this.current_drag_corner_move && this.getSelectedGroupType() == "digit"){
+				this.current_drag_digit_detect = true;
+			}
 			this.current_drag_dot_move = false;
-			console.log("edit mode!");
+			
+			
+			if(this.current_drag_digit_detect){
+				this.selection_rectangle.startSelection(data.getCoordinate());
+			}
 			break;
 		case CanvasMouseHandler.MouseModes.SelectionMode:
 			if(!data.getEventData().shiftKey && !data.getEventData().ctrlKey){
