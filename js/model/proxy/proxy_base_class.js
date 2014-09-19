@@ -65,5 +65,8 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.getParentOfTypeIdentification = function(type){
 		return this.obj.getParentOfTypeIdentification(type);
 	};
+	BaseProxy.prototype.isAncestorOf = function(other_element){
+		return this.obj.isAncestorOf(other_element.getIdentification());
+	}
 	return BaseProxy;
 });

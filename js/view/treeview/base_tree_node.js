@@ -10,14 +10,67 @@ define(["../../messaging_system/events/selection_event",
 		this.messaging_system = messaging_system;
 		this.commands = new Array();
 		this.sub_tree_nodes = new Array();
+		this.is_selected = false;
 		this.setUpdateListeners(data_proxy.getUpdateEvents());
-		
+		this.editModeSelectionSetListener = new EventListener(this, this.editModeSelectionSet);
+		this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, this.editModeSelectionSetListener);
 	};
 	BaseTreeNode.prototype.addCommand = function(command) {
 		this.commands.push(command);
 	};
 	BaseTreeNode.prototype.clearCommands = function(){
 		this.commands.length = 0;
+	};
+	BaseTreeNode.prototype.collapse = function(){
+		//this.sub_nodes_element.collapse('hide');
+		this.collapse_button_collapse_icon.hide();
+		this.collapse_button_expand_icon.show();
+		this.sub_nodes_element.removeClass('in');
+	};
+	BaseTreeNode.prototype.expand = function(){
+		if(this.parent_node){
+			this.parent_node.expand();
+		}
+		//this.sub_nodes_element.collapse('show');
+		this.sub_nodes_element.addClass('in');
+		this.collapse_button_expand_icon.hide();
+		this.collapse_button_collapse_icon.show();
+	};
+	
+	BaseTreeNode.prototype.editModeSelectionSet = function(signal, data){
+		//if data.getProxy() is about this.data_proxy or one of its (grand..)children
+		//console.log("edit mode selection set");
+		this.is_selected = false;
+		if(data.getProxy() == null){
+			//console.log("proxy = null");
+			this.collapse();
+		}else if(this.data_proxy.isPossiblyAboutThis(data.getProxy().getIdentification())){
+			this.expand();
+			this.is_selected = true;
+		}else{
+			if(!this.data_proxy.isAncestorOf(data.getProxy())){
+				this.collapse();
+			}else{
+				this.expand();
+			}
+		}
+		this.updateContent();
+		/*if(this.data_proxy.getType() != 'corner'){
+			console.log("own identification = "+JSON.stringify(this.data_proxy.getIdentification()));
+			console.log("selection's identification = "+JSON.stringify(data.getProxy().getIdentification()));
+		}
+		if(this.data_proxy.isAncestorOf(data.getProxy())){
+			console.log("ancestor!");
+			if(this.data_proxy.getType() == "digit"){
+				console.log("hide digit!");
+				this.sub_nodes_element.collapse('hide');
+			}else{
+				this.sub_nodes_element.collapse('show');
+			}
+		}else{
+			console.log("no ancestor!");
+			this.sub_nodes_element.collapse('hide');
+		}*/
 	};
 	BaseTreeNode.prototype.loadContent = function(element) {
 		var self = this;
@@ -63,6 +116,7 @@ define(["../../messaging_system/events/selection_event",
 					self.collapse_button_expand_icon.hide();
 					self.collapse_button_collapse_icon.show();
 				}).on('hide.bs.collapse', function() {
+					console.log("hidden!");
 					self.collapse_button_collapse_icon.hide();
 					self.collapse_button_expand_icon.show();
 				});
@@ -76,6 +130,11 @@ define(["../../messaging_system/events/selection_event",
 			this.title_span.css('font-weight', 'normal');
 		}else{
 			this.title_span.css('font-weight', 'bold');
+		}
+		if(this.is_selected){
+			this.title_span.css('text-decoration', 'underline');
+		}else{
+			this.title_span.css('text-decoration', 'none');
 		}
 		if(this.sub_tree_nodes.length > 0){
 			this.collapse_button.show();

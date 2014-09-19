@@ -226,6 +226,8 @@ define(
 				}
 			};
 			MyCanvas.prototype.drawSelected = function() {
+				if(this.display_tree == null)
+					return;
 				if(this.edit_mode_selected_proxy != null){
 					this.display_tree.drawSelected(this.edit_mode_selected_proxy.getSelectionTree().getRoot(), this.context, this.transformation);
 				}

@@ -189,7 +189,7 @@ define([
 		
 	};
 	CanvasMouseHandler.prototype.getSelectedGroupType = function(){
-		if(this.getEditModeSelectedGroupProxy() == null)
+		if(this.getEditModeSelectedProxy() == null)
 			return null;
 		var selected_group_identification = this.getEditModeSelectedGroupIdentification(); 
 		return selected_group_identification[selected_group_identification.length-1]["group_type"];
@@ -238,7 +238,7 @@ define([
 		var group_identification = this.getEditModeSelectedGroupIdentification();
 		this.messaging_system.fire(this.messaging_system.events.DigitAdded, new DigitAddedEvent(group_identification, result));
 	};
-	CanvasMouseHandler.prototype.getEditModeSelectedGroupProxy = function(){
+	CanvasMouseHandler.prototype.getEditModeSelectedProxy = function(){
 		return this.edit_mode_selected_proxy;
 	};
 	CanvasMouseHandler.prototype.getEditModeSelectedGroupIdentification = function(){
@@ -276,7 +276,12 @@ define([
 				console.log("first!");
 				var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 				if(res){
+					console.log("selected something!");
 					var e = new EditModeSelectionEvent(res.getProxy());
+					this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
+				}else{
+					console.log("didn't select anything");
+					var e = new EditModeSelectionEvent(null);
 					this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
 				}
 				//pretend it was a click -> if inside digit -> select it
@@ -312,6 +317,9 @@ define([
 				break;*/
 		}
 	};
+	CanvasMouseHandler.prototype.getEditModeSomethingSelected = function(){
+		return this.getEditModeSelectedProxy() != null;
+	};
 	CanvasMouseHandler.prototype.mouseDown = function(signal, data){
 		this.mouse_down = true;
 		this.mouse_dragged = false;
@@ -323,9 +331,9 @@ define([
 			
 			this.current_drag_corner_move = false;
 			this.current_drag_digit_detect = false;
-			if(this.getEditModeSelectedGroupProxy().getType() == "digit"){
+			if(this.getEditModeSomethingSelected() && this.getEditModeSelectedProxy().getType() == "digit"){
 				//find if closest corner of selected digit (canvas coordinate) is within MAX_DISTANCE of data.getCoordinate()
-				var sub_nodes = this.getEditModeSelectedGroupProxy().getSubNodes();
+				var sub_nodes = this.getEditModeSelectedProxy().getSubNodes();
 				var closest_sub_node = null;
 				var closest_distance = MAX_DISTANCE*MAX_DISTANCE;
 				for(var i = 0; i < sub_nodes.length; ++i){

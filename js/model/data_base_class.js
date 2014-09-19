@@ -410,5 +410,20 @@ define([
 		}
 		return null;
 	};
+	BaseDataClass.prototype.isAncestorOf = function(other_identification){
+		var own_identification = this.getIdentification();
+		if(own_identification.length > other_identification.length){
+			return false;
+		}
+		for(var i = 0; i < own_identification.length; ++i){
+			if(own_identification[i].type != other_identification[i].type){
+				return false;
+			}
+			if(own_identification[i].id != other_identification[i].id){
+				return false;
+			}
+		}
+		return true;
+	};
 	return BaseDataClass;
 });
