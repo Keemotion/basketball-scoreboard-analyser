@@ -97,7 +97,9 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 				context.stroke();
 			}
 		}
-
+		for(var i = 0; i < this.sub_components.length; ++i){
+			this.sub_components[i].drawMyselfSelected(context, transformation);
+		}
 	};
 	DigitDisplay.prototype.loadSubComponents = function(){
 		var sub_proxies = this.getProxy().getSubNodes();

@@ -136,8 +136,10 @@ define(
 				this.messaging_system.addEventListener(
 						this.messaging_system.events.AutoFocusSelection,
 						this.autoFocusListener);
+				this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, new EventListener(this, this.editModeSelectionSet));
 				this.setProxy(proxy);
 				this.display_changed_handler = new DisplayChangedHandler(this);
+				this.edit_mode_selected_proxy = null;
 			};
 			MyCanvas.prototype.fireMouseEvent = function(event_type, event_data) {
 				var coordinate = new Coordinate(event_data.pageX
@@ -193,6 +195,10 @@ define(
 					this.transformation.setImageHeight(this.image.height);
 				}
 			};
+			MyCanvas.prototype.editModeSelectionSet = function(signal, data){
+				this.edit_mode_selected_proxy = data.getProxy();
+				this.updateCanvas(signal, data);
+			};
 			MyCanvas.prototype.resetCanvasView = function() {
 				this.updateTransformation();
 				this.transformation.reset();
@@ -220,7 +226,10 @@ define(
 				}
 			};
 			MyCanvas.prototype.drawSelected = function() {
-				var selection_tree = this.view.getCurrentSelectionTree();
+				if(this.edit_mode_selected_proxy != null){
+					this.display_tree.drawSelected(this.edit_mode_selected_proxy.getSelectionTree().getRoot(), this.context, this.transformation);
+				}
+				/*var selection_tree = this.view.getCurrentSelectionTree();
 				if (!selection_tree.getRoot().getProxy()) {
 					return;
 				}
@@ -228,7 +237,7 @@ define(
 					this.display_tree.drawSelected(this.view
 							.getCurrentSelectionTree().getRoot(), this.context,
 							this.transformation);
-				}
+				}*/
 			};
 			MyCanvas.prototype.updateCanvas = function(signal, data) {
 				this.getDisplayChangedHandler().fireEdited();
