@@ -108,7 +108,6 @@ define([ "./treenode", "../../messaging_system/event_listener",
 							new ReOrderedEvent(new_order, self.state_proxy
 									.getIdentification()));
 				});
-		this.messaging_system.fire(this.messaging_system.events.RequestEditModeSelection, null);
 	};
 	return TreeView;
 });

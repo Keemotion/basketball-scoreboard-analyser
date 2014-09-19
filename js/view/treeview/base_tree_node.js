@@ -39,10 +39,8 @@ define(["../../messaging_system/events/selection_event",
 	
 	BaseTreeNode.prototype.editModeSelectionSet = function(signal, data){
 		//if data.getProxy() is about this.data_proxy or one of its (grand..)children
-		//console.log("edit mode selection set");
 		this.is_selected = false;
 		if(data.getProxy() == null){
-			//console.log("proxy = null");
 			this.collapse();
 		}else if(this.data_proxy.isPossiblyAboutThis(data.getProxy().getIdentification())){
 			this.expand();

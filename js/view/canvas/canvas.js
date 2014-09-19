@@ -209,13 +209,14 @@ define(
 			};
 			MyCanvas.prototype.setProxy = function(proxy) {
 				this.resetDisplayObjects();
+				this.edit_mode_selected_proxy = null;
 				this.proxy = proxy;
 				this.display_tree = new DisplayTree(this.proxy,
 						this.messaging_system);
 			};
 			MyCanvas.prototype.resetDisplayObjects = function() {
 				this.display_tree = null;
-				this.drawCanvas();
+				//this.drawCanvas();
 			};
 			// something has changed on the canvas, warn displayChangedChandler
 			// (to prevent all display objects from being drawn every time ->

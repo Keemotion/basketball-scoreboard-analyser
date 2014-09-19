@@ -117,8 +117,6 @@ define([
 		this.selected = selected;
 	};*/
 	BaseDisplay.prototype.getObjectAroundCoordinate = function(coordinate){
-		//console.log("around: "+JSON.stringify(coordinate));
-		console.log("basedisplay method called by type = "+this.getProxy().getType());
 		for(var i = 0; i < this.sub_components.length; ++i){
 			var res = this.sub_components[i].getObjectAroundCoordinate(coordinate);
 			if(res)

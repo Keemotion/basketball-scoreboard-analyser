@@ -10,7 +10,8 @@ define([
 		"../model/selection_node",
 		"../messaging_system/events/selection_event",
 		"./detailsview/details_view",
-		"./toolbar/toolbar"
+		"./toolbar/toolbar",
+		"../messaging_system/events/edit_mode_selection_event"
 		]
 	, function(
 		MyCanvas,
@@ -24,7 +25,8 @@ define([
 		SelectionNode,
 		SelectionEvent,
 		DetailsView,
-		ToolBar
+		ToolBar,
+		EditModeSelectionEvent
 		){
 	//View represents the GUI
 	var View = function(controller, target_view, messaging_system){
@@ -136,6 +138,7 @@ define([
 		this.current_selection_tree = new SelectionTree();
 		this.official_selection_tree = new SelectionTree();
 		this.notifySelectionChanged();
+		this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, new EditModeSelectionEvent(null));
 	};
 	View.prototype.notifySelectionChanged = function(){
 		this.messaging_system.fire(this.messaging_system.events.SelectionChanged, new SelectionEvent(this.getCurrentSelectionTree()));
@@ -161,6 +164,8 @@ define([
 		this.toolbar_component.setProxy(this.controller.getModel().getState().getProxy());
 		this.tree_view.setProxy(this.controller.getModel().getState().getProxy());
 		this.selectionReset(signal, data);
+
+		//this.messaging_system.fire(this.messaging_system.events.RequestEditModeSelection, null);
 		//this.clearGroupDetails();
 	};
 	return View;
