@@ -75,6 +75,7 @@ define(["../../messaging_system/events/selection_event",
 	BaseTreeNode.prototype.loadContent = function(element) {
 		var self = this;
 		this.element = element;
+		this.id_element = $('<input>').attr('type', 'hidden').attr('name', 'id');
 		this.title_div = $('<div>').click(
 				function() {
 					var e = new SelectionEvent(self.data_proxy
@@ -92,6 +93,7 @@ define(["../../messaging_system/events/selection_event",
 			this.commands_div.append(this.commands[i]);
 		}
 		this.element.empty();
+		this.element.append(this.id_element);
 
 		this.collapse_button_collapse_icon = $('<i>').addClass(
 				'fa fa-toggle-up').hide();
@@ -125,6 +127,7 @@ define(["../../messaging_system/events/selection_event",
 		this.updateContent();
 	};
 	BaseTreeNode.prototype.updateContent = function() {
+		this.id_element.val(this.data_proxy.getId());
 		this.title_span.text(this.data_proxy.getTitle());
 		if(this.data_proxy.isComplete()){
 			this.title_span.css('font-weight', 'normal');
