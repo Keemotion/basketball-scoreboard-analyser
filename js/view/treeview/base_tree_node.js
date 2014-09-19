@@ -46,6 +46,7 @@ define(["../../messaging_system/events/selection_event",
 			this.collapse();
 		}else if(this.data_proxy.isPossiblyAboutThis(data.getProxy().getIdentification())){
 			this.expand();
+			this.collapse();
 			this.is_selected = true;
 		}else{
 			if(!this.data_proxy.isAncestorOf(data.getProxy())){
@@ -118,7 +119,6 @@ define(["../../messaging_system/events/selection_event",
 					self.collapse_button_expand_icon.hide();
 					self.collapse_button_collapse_icon.show();
 				}).on('hide.bs.collapse', function() {
-					console.log("hidden!");
 					self.collapse_button_collapse_icon.hide();
 					self.collapse_button_expand_icon.show();
 				});

@@ -17,7 +17,7 @@ define(["./base_tree_node", "./digit_tree_node", "./dot_tree_node", "../../messa
 			.attr('title', 'Add ' + this.data_proxy.getGroupType()+ ' to this group.')
 			.append($('<i>').addClass('fa fa-plus'))
 			.click(function(){
-				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent(self.data_proxy.getGroupType(), self.data_proxy.getIdentification()));
+				self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent(self.data_proxy.getGroupType(), self.data_proxy.getIdentification(), null, true));
 			});
 		this.addCommand(this.add_sub_node_button);
 		
