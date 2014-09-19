@@ -1,5 +1,5 @@
 define(['../../messaging_system/messaging_system'], function(MessagingSystem){
-	//provdes some basic methods all proxies need
+	//provides some basic methods all proxies need
 	var BaseProxy = function(){
 
 	};

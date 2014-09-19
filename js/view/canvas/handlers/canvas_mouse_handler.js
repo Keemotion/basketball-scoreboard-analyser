@@ -92,6 +92,8 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, new EventListener(this, this.editModeSelectionSet));
 		this.messaging_system.addEventListener(this.messaging_system.events.RequestEditModeSelection, new EventListener(this, this.editModeSelectionRequested));
+		
+		this.messaging_system.addEventListener(this.messaging_system.events.AutoDetectDigit, new EventListener(this, this.autoDetectDigitRequested));
 	};
 	/*CanvasMouseHandler.MouseModes = {
 		SelectionMode:"SelectionMode",
@@ -104,6 +106,7 @@ define([
 		EditMode: "EditMode",
 		CanvasMode: "CanvasMode",
 		MoveMode: "MoveMode",
+		AutoDetectDigitMode: "AutoDetectDigitMode",
 		Other: "Other"
 	};
 	CanvasMouseHandler.prototype.canvasScrolled = function(signal, data){
@@ -143,6 +146,12 @@ define([
 				);
 				var transformed = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(mv);
 				this.canvas.getTransformation().setCanvasCenter(transformed);
+				this.canvas.updateCanvas(signal, data);
+			}
+			break;
+		case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+			if(this.mouse_down){
+				this.selection_rectangle.updateSelection(data.getCoordinate());
 				this.canvas.updateCanvas(signal, data);
 			}
 			break;
@@ -194,7 +203,11 @@ define([
 		var selected_group_identification = this.getEditModeSelectedGroupIdentification(); 
 		return selected_group_identification[selected_group_identification.length-1]["group_type"];
 	};
-	CanvasMouseHandler.prototype.autoDetectDigit = function(signal, data){
+	CanvasMouseHandler.prototype.autoDetectDigitRequested = function(signal, data){
+		this.auto_detect_digit_proxy = data.getProxy();
+		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.AutoDetectDigitMode));
+	};
+	CanvasMouseHandler.prototype.autoDetectDigit = function(proxy){
 		if(this.getSelectedGroupType() != "digit"){
 			return;
 		}
@@ -235,8 +248,18 @@ define([
 			var coord = this.canvas.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(x, y));
 			result.push(coord);
 		}
-		var group_identification = this.getEditModeSelectedGroupIdentification();
-		this.messaging_system.fire(this.messaging_system.events.DigitAdded, new DigitAddedEvent(group_identification, result));
+		if(this.current_mouse_mode == CanvasMouseHandler.MouseModes.AutoDetectDigitMode){
+			var data = new Object();
+			data.name = proxy.getTitle();
+			for(var i = 0; i < result.length; ++i){
+				result[i] = {coordinate:{"x":result[i].x, "y":result[i].y}};
+			}
+			data.corners = result;
+			this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(proxy.getIdentification(), data));
+		}else{
+			var group_identification = this.getEditModeSelectedGroupIdentification();
+			this.messaging_system.fire(this.messaging_system.events.DigitAdded, new DigitAddedEvent(group_identification, result));
+		}
 	};
 	CanvasMouseHandler.prototype.getEditModeSelectedProxy = function(){
 		return this.edit_mode_selected_proxy;
@@ -290,12 +313,17 @@ define([
 				}else if(this.current_drag_dot_move){
 					console.log("TODO: implement dot move");
 				}else{
-					this.autoDetectDigit(signal, data);
+					this.autoDetectDigit();
 				}
 			}
 			this.selection_rectangle.stopSelection();
 			break;
 		case CanvasMouseHandler.MouseModes.CanvasMode:
+			break;
+		case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+			this.autoDetectDigit(this.auto_detect_digit_proxy);
+			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
+			this.selection_rectangle.stopSelection();
 			break;
 		case CanvasMouseHandler.MouseModes.MoveMode:
 			break;

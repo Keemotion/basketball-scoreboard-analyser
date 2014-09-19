@@ -1,7 +1,8 @@
 define(["./base_tree_node",
         "./corner_tree_node",
         "../../messaging_system/events/group_changed_event",
-        "../../messaging_system/events/remove_group_event"], function(BaseTreeNode, CornerTreeNode, GroupChangedEvent, RemoveGroupEvent){
+        "../../messaging_system/events/remove_group_event",
+        "../../messaging_system/events/auto_detect_digit_event"], function(BaseTreeNode, CornerTreeNode, GroupChangedEvent, RemoveGroupEvent, AutoDetectDigitEvent){
 	var DigitTreeNode = function(parent_node, data_proxy, messaging_system){
 		this.init(parent_node, data_proxy, messaging_system);
 		this.reset_button = $('<button>')
@@ -19,6 +20,7 @@ define(["./base_tree_node",
 			.append($('<i>').addClass('fa fa-search'))
 			.click(function(){
 				console.log("TODO: implement auto detect digit");
+				messaging_system.fire(messaging_system.events.AutoDetectDigit, new AutoDetectDigitEvent(data_proxy));
 			});
 		this.addCommand(this.auto_detect_button);
 		
