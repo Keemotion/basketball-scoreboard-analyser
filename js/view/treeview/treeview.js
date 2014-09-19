@@ -18,7 +18,7 @@ define([ "./treenode", "../../messaging_system/event_listener",
 					self.messaging_system.fire(
 							self.messaging_system.events.AddElement,
 							new AddElementEvent('group', self.state_proxy
-									.getIdentification(), 'digit'));
+									.getIdentification(), 'digit', true));
 				}).append($('<span>').addClass('glyphicon glyphicon-plus'))
 				.append($('<span>').text('Digits'));
 		this.btns.append(this.add_digit_element);
@@ -108,6 +108,7 @@ define([ "./treenode", "../../messaging_system/event_listener",
 							new ReOrderedEvent(new_order, self.state_proxy
 									.getIdentification()));
 				});
+		this.messaging_system.fire(this.messaging_system.events.RequestEditModeSelection, null);
 	};
 	return TreeView;
 });

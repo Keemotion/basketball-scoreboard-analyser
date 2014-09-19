@@ -3,12 +3,14 @@ define([
 	"../messaging_system/events/group_changed_event",
 	"../model/selection_node",
 	"../model/selection_tree",
-	"../messaging_system/events/selection_event"],
+	"../messaging_system/events/selection_event",
+	"../messaging_system/events/edit_mode_selection_event"],
 	function(EventListener,
 		GroupChangedEvent,
 		SelectionNode,
 		SelectionTree,
-		SelectionEvent){
+		SelectionEvent,
+		EditModeSelectionEvent){
 	//Base class for groups/digits/corners/state
 	var BaseDataClass = function(type){
 		this.type = type;
@@ -222,11 +224,15 @@ define([
 		this.sub_nodes.length = 0;
 		this.notifyGroupChanged();
 	};
-	BaseDataClass.prototype.addSubNode = function(sub_node){
+	BaseDataClass.prototype.addSubNode = function(sub_node, auto_select){
 		sub_node.setId(this.sub_nodes.length);
 		this.sub_nodes.push(sub_node);
 		sub_node.setParent(this);
 		this.notifyGroupChanged();
+		if(auto_select){
+			console.log("auto select!");
+			this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, new EditModeSelectionEvent(sub_node.getProxy()))
+		}
 	};
 	BaseDataClass.prototype.removeSubNode = function(index){
 		this.lockNotification();

@@ -99,7 +99,8 @@ define([], function() {
 		MouseModeChanged : 'MouseModeChanged',
 		
 		AutoFocusSelection: 'AutoFocusSelection',
-		EditModeSelectionSet: 'EditModeSelectionSet'
+		EditModeSelectionSet: 'EditModeSelectionSet',
+		RequestEditModeSelection: 'RequestEditModeSelection'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data) {

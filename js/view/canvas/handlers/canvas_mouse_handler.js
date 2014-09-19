@@ -91,6 +91,7 @@ define([
 
 		this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
 		this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, new EventListener(this, this.editModeSelectionSet));
+		this.messaging_system.addEventListener(this.messaging_system.events.RequestEditModeSelection, new EventListener(this, this.editModeSelectionRequested));
 	};
 	/*CanvasMouseHandler.MouseModes = {
 		SelectionMode:"SelectionMode",
@@ -126,9 +127,11 @@ define([
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.EditMode:
 			if(this.mouse_down){
+				this.selection_rectangle.updateSelection(data.getCoordinate());
 				//check if inside a digit -> select that digit
 				//if not inside digit, but near the selected digit -> select nearest corner of that digit and drag it (only if mouse has been down for more than 0.5 s)
 				//else: try to add a new digit to the currently selected digit group (if none is selected, don't do anything)
+				this.canvas.updateCanvas(signal, data);
 			}
 			break;
 		case CanvasMouseHandler.MouseModes.CanvasMode:
@@ -247,6 +250,16 @@ define([
 	CanvasMouseHandler.prototype.editModeSelectionSet = function(signal, data){
 		this.setEditModeSelectedObjectProxy(data.getProxy());
 	};
+	CanvasMouseHandler.prototype.editModeSelectionRequested = function(signal, data){
+		this.sendEditModeSelection();
+	};
+	CanvasMouseHandler.prototype.sendEditModeSelection = function(){
+		console.log("send edit mode selection");
+		if(this.edit_mode_selected_proxy == null)
+			return;
+		//this.messaging_system.fire(this.messaging_system.events.SelectionSet, new SelectionEvent(this.edit_mode_selected_proxy.getSelectionTree()));
+		this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, new EditModeSelectionEvent(this.edit_mode_selected_proxy));
+	};
 	CanvasMouseHandler.prototype.mouseUp = function(signal, data){
 		if(!this.mouse_down){
 			return;
@@ -288,7 +301,7 @@ define([
 			break;
 		case CanvasMouseHandler.MouseModes.Other:
 			break;
-			case CanvasMouseHandler.MouseModes.SelectionMode:
+			/*case CanvasMouseHandler.MouseModes.SelectionMode:
 				this.stopSelection(data);
 				break;
 			case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
@@ -296,7 +309,7 @@ define([
 				this.autoDetectDigit(signal, data);
 				this.selection_rectangle.stopSelection();
 				this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
-				break;
+				break;*/
 		}
 	};
 	CanvasMouseHandler.prototype.mouseDown = function(signal, data){

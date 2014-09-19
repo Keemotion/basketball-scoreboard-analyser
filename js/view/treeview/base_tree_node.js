@@ -11,6 +11,7 @@ define(["../../messaging_system/events/selection_event",
 		this.commands = new Array();
 		this.sub_tree_nodes = new Array();
 		this.setUpdateListeners(data_proxy.getUpdateEvents());
+		
 	};
 	BaseTreeNode.prototype.addCommand = function(command) {
 		this.commands.push(command);

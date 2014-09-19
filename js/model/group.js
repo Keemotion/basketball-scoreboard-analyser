@@ -100,7 +100,6 @@ define(["./digit",
 	//adds an empty element to the sub nodes
 	Group.prototype.addElement = function(signal, data){
 		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
-			console.log("event reached!");
 			var s = null;
 			switch(data.getType()){
 				case 'group':
@@ -113,7 +112,7 @@ define(["./digit",
 					s = new Dot(this, null, this.messaging_system);
 					break;
 			}
-			this.addSubNode(s);
+			this.addSubNode(s, data.getAutoSelect());
 		}
 	};
 	Group.prototype.getGroupType = function(){

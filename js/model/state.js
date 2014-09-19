@@ -118,8 +118,8 @@ define([
 					s = new ConfigurationKey("EMPTY", "EMPTY", this.messaging_system);
 					break;
 			}
-			this.addSubNode(s);
-			this.stateChanged();
+			this.addSubNode(s, data.getAutoSelect());
+			//this.stateChanged();
 		}
 	};
 	State.prototype.notifyGroupChanged = function(){
