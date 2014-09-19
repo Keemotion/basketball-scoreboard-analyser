@@ -186,6 +186,7 @@ define([
 			this.messaging_system.fire(this.messaging_system.DisplayObjectsChanged, null);
 		}
 	};
+	BaseDataClass.prototype.getCustomIdentification = function(identification){ return identification;};
 	//generate an object containing all identification data about this object and its ancestors
 	BaseDataClass.prototype.getIdentification = function(){
 		var identification;
@@ -194,7 +195,9 @@ define([
 		}else{
 			identification = new Array();
 		}
-		identification.push({'type':this.getType(), 'id':this.getId(), 'title':this.getTitle()});
+		var id = {'type':this.getType(), 'id':this.getId(), 'title':this.getTitle()};
+		this.getCustomIdentification(id);
+		identification.push(id);
 		return identification;
 	};
 	BaseDataClass.prototype.clear = function(){

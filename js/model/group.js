@@ -125,5 +125,8 @@ define(["./digit",
 		}
 		this.sub_nodes.length = 0;
 	};
+	Group.prototype.getCustomIdentification = function(identification){
+		identification["group_type"] = this.getGroupType();
+	};
 	return Group;
 });

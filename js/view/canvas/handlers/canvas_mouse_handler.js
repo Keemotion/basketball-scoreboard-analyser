@@ -185,7 +185,16 @@ define([
 		this.previous_mouse_coordinate = data.getCoordinate();
 		
 	};
+	CanvasMouseHandler.prototype.getSelectedGroupType = function(){
+		if(this.getEditModeSelectedGroupProxy() == null)
+			return null;
+		var selected_group_identification = this.getEditModeSelectedGroupIdentification(); 
+		return selected_group_identification[selected_group_identification.length-1]["group_type"];
+	};
 	CanvasMouseHandler.prototype.autoDetectDigit = function(signal, data){
+		if(this.getSelectedGroupType() != "digit"){
+			return;
+		}
 		var selection_rectangle = this.selection_rectangle.transformCanvasCoordinatesToAbsoluteCoordinates(this.canvas.getTransformation());
 		var img = this.canvas.getImage();
 		var top_left = selection_rectangle.getTopLeft();
