@@ -1,6 +1,7 @@
 define(["../../messaging_system/events/selection_event",
         "../../messaging_system/event_listener",
-        "../../messaging_system/events/edit_mode_selection_event"], function(SelectionEvent, EventListener, EditModeSelectionEvent) {
+        "../../messaging_system/events/edit_mode_selection_event",
+        "../../messaging_system/events/submit_group_details_event"], function(SelectionEvent, EventListener, EditModeSelectionEvent, SubmitGroupDetailsEvent) {
 	var BaseTreeNode = function() {
 	};
 	BaseTreeNode.prototype.init = function(parent_node, data_proxy,
@@ -46,6 +47,9 @@ define(["../../messaging_system/events/selection_event",
 			this.expand();
 			this.collapse();
 			this.is_selected = true;
+			if(this.nameEditable()){
+				this.title_span.select();
+			}
 		}else{
 			if(!this.data_proxy.isAncestorOf(data.getProxy())){
 				this.collapse();
@@ -105,8 +109,29 @@ define(["../../messaging_system/events/selection_event",
 				}).append(this.collapse_button_collapse_icon).append(
 				this.collapse_button_expand_icon);
 		this.title_div.append(this.collapse_button);
-
-		this.title_span = $('<span>');
+		console.log("new title span");
+		this.title_span = $('<input>').change(function(){
+			var data = new Object();
+			data.name = $(this).val();
+			self.messaging_system.fire(self.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(self.data_proxy.getIdentification(), data, true));
+		}).focus(function(){$(this).select();}).prop('readonly', !this.nameEditable());
+		/*this.title_span = $('<a>').editable({
+			type: 'text',
+			title: 'Name',
+			mode:'inline',
+			name:'name',
+			pk:1,
+			send:"never",
+			url:'/index.html',
+			success:function(response, new_value){
+				console.log("success");
+				var data = new Object();
+				data.name = new_value;
+				self.messaging_system.fire(self.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(self.data_proxy, data, true));
+			}
+		}).on('save', function(){
+			console.log("saved!");
+		});*/
 		this.title_div.append(this.title_span);
 
 		this.title_div.append(this.commands_div);
@@ -126,7 +151,7 @@ define(["../../messaging_system/events/selection_event",
 	};
 	BaseTreeNode.prototype.updateContent = function() {
 		this.id_element.val(this.data_proxy.getId());
-		this.title_span.text(this.data_proxy.getTitle());
+		this.title_span.val(this.data_proxy.getTitle());
 		if(this.data_proxy.isComplete()){
 			this.title_span.css('font-weight', 'normal');
 		}else{
@@ -138,9 +163,9 @@ define(["../../messaging_system/events/selection_event",
 			this.title_span.css('text-decoration', 'none');
 		}
 		if(this.sub_tree_nodes.length > 0){
-			this.collapse_button.show();
+			this.collapse_button.css('visibility', 'visible');
 		}else{
-			this.collapse_button.hide();
+			this.collapse_button.css('visibility', 'hidden');
 		}
 	};
 	BaseTreeNode.prototype.loadSubNodesContent = function() {
@@ -183,6 +208,9 @@ define(["../../messaging_system/events/selection_event",
 			}
 			this.update();
 		}
+	};
+	BaseTreeNode.prototype.nameEditable = function(){
+		return false;
 	};
 	BaseTreeNode.prototype.loadSubNodes = function(){};
 	return BaseTreeNode;

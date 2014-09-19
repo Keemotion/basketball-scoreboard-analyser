@@ -41,7 +41,8 @@ define(["./digit",
 	Group.prototype.loadData = function(data){
 		if(data == null){
 			//default
-			this.name = this.getGroupType() + " group";
+			//this.name = this.getGroupType() + " group";
+			this.name = " ";
 			//this.setConfigurationKeys(Group.default_configuration_keys);
 			this.setConfigurationKeys(new Object());
 			this.clearSubNodes();
@@ -126,6 +127,13 @@ define(["./digit",
 	};
 	Group.prototype.getCustomIdentification = function(identification){
 		identification["group_type"] = this.getGroupType();
+	};
+	Group.prototype.partialUpdate = function(data){
+		if(data.hasOwnProperty('name')){
+			this.name = $.trim(data.name);
+		}
+		
+		this.notifyGroupChanged();
 	};
 	return Group;
 });

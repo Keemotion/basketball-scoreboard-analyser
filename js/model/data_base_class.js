@@ -49,7 +49,11 @@ define([
 	//save changes that were submitted from the GUI
 	BaseDataClass.prototype.submitGroupDetails = function(signal, data){
 		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
-			this.update(data.getData());
+			if(data.getPartial()){
+				this.partialUpdate(data.getData());
+			}else{
+				this.update(data.getData());
+			}
 		}
 	};
 	//sets whether this object should be displayed on the canvas

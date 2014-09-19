@@ -46,5 +46,8 @@ define(["./base_tree_node", "./digit_tree_node", "./dot_tree_node", "../../messa
 			this.sub_tree_nodes.push(sub_tree_node);
 		}
 	};
+	GroupTreeNode.prototype.nameEditable = function(){
+		return true;
+	};
 	return GroupTreeNode;
 });
