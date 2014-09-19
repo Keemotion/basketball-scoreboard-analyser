@@ -94,6 +94,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.RequestEditModeSelection, new EventListener(this, this.editModeSelectionRequested));
 		
 		this.messaging_system.addEventListener(this.messaging_system.events.AutoDetectDigit, new EventListener(this, this.autoDetectDigitRequested));
+		this.messaging_system.addEventListener(this.messaging_system.events.DigitCornersListen, new EventListener(this, this.digitCornersListenRequested));
 	};
 	/*CanvasMouseHandler.MouseModes = {
 		SelectionMode:"SelectionMode",
@@ -107,6 +108,8 @@ define([
 		CanvasMode: "CanvasMode",
 		MoveMode: "MoveMode",
 		AutoDetectDigitMode: "AutoDetectDigitMode",
+		SingleCoordinateListenMode: "SingleCoordinateListenMode",
+		DigitCornersListenMode : "DigitCornersListenMode",
 		Other: "Other"
 	};
 	CanvasMouseHandler.prototype.canvasScrolled = function(signal, data){
@@ -202,6 +205,11 @@ define([
 			return null;
 		var selected_group_identification = this.getEditModeSelectedGroupIdentification(); 
 		return selected_group_identification[selected_group_identification.length-1]["group_type"];
+	};
+	CanvasMouseHandler.prototype.digitCornersListenRequested = function(signal, data){
+		this.digit_corners_proxy = data.getProxy();
+		this.current_digit_corner_index = 0;
+		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.DigitCornersListenMode));
 	};
 	CanvasMouseHandler.prototype.autoDetectDigitRequested = function(signal, data){
 		this.auto_detect_digit_proxy = data.getProxy();
@@ -399,6 +407,22 @@ define([
 		this.mouse_down = false;
 	};
 	CanvasMouseHandler.prototype.click = function(signal, data){
+		switch(this.current_mouse_mode){
+		case CanvasMouseHandler.MouseModes.SingleCoordinateListenMode:
+			break;
+		case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
+			var corner_data = new Object();
+			var transformation = this.canvas.getTransformation();
+			
+			corner_data.coordinate = transformation.transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+			var identification = this.digit_corners_proxy.getSubNodes()[this.current_digit_corner_index].getIdentification();
+			this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, corner_data));
+			this.current_digit_corner_index ++;
+			if(this.current_digit_corner_index >= this.digit_corners_proxy.getSubNodes().length){
+				this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
+			}
+			break;
+		}
 	};
 	CanvasMouseHandler.prototype.doubleClick = function(signal, data){
 		var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
