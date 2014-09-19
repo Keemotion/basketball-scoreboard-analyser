@@ -93,7 +93,7 @@ define([
 	};
 	//Default title generation: type + id
 	BaseDataClass.prototype.getTitle = function(){
-		if(this.name)
+		if(this.name != null)
 			return this.name;
 		return this.getType()+" #"+(this.getId()+1);
 	};

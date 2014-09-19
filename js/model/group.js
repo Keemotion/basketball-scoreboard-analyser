@@ -42,7 +42,7 @@ define(["./digit",
 		if(data == null){
 			//default
 			//this.name = this.getGroupType() + " group";
-			this.name = " ";
+			this.name = "";
 			//this.setConfigurationKeys(Group.default_configuration_keys);
 			this.setConfigurationKeys(new Object());
 			this.clearSubNodes();
