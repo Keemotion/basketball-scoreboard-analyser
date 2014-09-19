@@ -273,20 +273,16 @@ define([
 			console.log("edit mode, down time = " + time_down);
 			var DOWN_TIME = 100;
 			if(!this.mouse_dragged || time_down <= DOWN_TIME){
-				console.log("first!");
 				var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 				if(res){
-					console.log("selected something!");
 					var e = new EditModeSelectionEvent(res.getProxy());
 					this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
 				}else{
-					console.log("didn't select anything");
 					var e = new EditModeSelectionEvent(null);
 					this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
 				}
 				//pretend it was a click -> if inside digit -> select it
 			}else{
-				console.log("tried to move a corner of a digit, a dot or tried to auto-detect a digit/a series of dots in a region");
 				if(this.current_drag_corner_move){
 					var corner_data = this.current_drag_corner_move_corner.getData();
 					corner_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
@@ -296,9 +292,8 @@ define([
 				}else{
 					this.autoDetectDigit(signal, data);
 				}
-				this.selection_rectangle.stopSelection();
-				//this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 			}
+			this.selection_rectangle.stopSelection();
 			break;
 		case CanvasMouseHandler.MouseModes.CanvasMode:
 			break;
