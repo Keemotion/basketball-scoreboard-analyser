@@ -1,4 +1,4 @@
-define(["./base_tree_node"], function(BaseTreeNode){
+define(["./base_tree_node", "../../messaging_system/events/coordinate_listen_event"], function(BaseTreeNode, CoordinateListenEvent){
 	var DotTreeNode = function(parent_node, data_proxy, messaging_system){
 		this.init(parent_node, data_proxy, messaging_system);
 		this.set_corner_button = $('<button>')
@@ -6,7 +6,7 @@ define(["./base_tree_node"], function(BaseTreeNode){
 			.attr('title', 'Set corner coordinate')
 			.append($('<i>').addClass('fa fa-crosshairs'))
 			.click(function(){
-				
+				messaging_system.fire(messaging_system.events.CoordinateListen, new CoordinateListenEvent(data_proxy));
 			});
 		this.addCommand(this.set_corner_button);
 		
