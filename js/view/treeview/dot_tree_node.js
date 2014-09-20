@@ -1,4 +1,6 @@
-define(["./base_tree_node", "../../messaging_system/events/coordinate_listen_event"], function(BaseTreeNode, CoordinateListenEvent){
+define(["./base_tree_node", "../../messaging_system/events/coordinate_listen_event", 
+        "../../messaging_system/events/submit_group_details_event",
+        "../../model/coordinate"], function(BaseTreeNode, CoordinateListenEvent, SubmitGroupDetailsEvent, Coordinate){
 	var DotTreeNode = function(parent_node, data_proxy, messaging_system){
 		this.init(parent_node, data_proxy, messaging_system);
 		this.set_corner_button = $('<button>')
@@ -15,7 +17,10 @@ define(["./base_tree_node", "../../messaging_system/events/coordinate_listen_eve
 			.attr('title', 'Reset corner coordinate')
 			.append($('<i>').addClass('fa fa-refresh'))
 			.click(function(){
-				
+				var coordinate_data = new Object();
+				coordinate_data.coordinate = new Coordinate();
+				var identification = data_proxy.getIdentification();
+				messaging_system.fire(messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, coordinate_data));
 			});
 		this.addCommand(this.reset_corner_button);
 	};
