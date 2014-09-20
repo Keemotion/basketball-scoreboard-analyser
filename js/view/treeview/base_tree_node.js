@@ -109,7 +109,6 @@ define(["../../messaging_system/events/selection_event",
 				}).append(this.collapse_button_collapse_icon).append(
 				this.collapse_button_expand_icon);
 		this.title_div.append(this.collapse_button);
-		console.log("new title span");
 		this.title_span = $('<input>').change(function(){
 			var data = new Object();
 			data.name = $(this).val();

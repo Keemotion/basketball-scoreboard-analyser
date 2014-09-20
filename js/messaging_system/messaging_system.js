@@ -101,7 +101,10 @@ define([], function() {
 		AutoFocusSelection: 'AutoFocusSelection',
 		EditModeSelectionSet: 'EditModeSelectionSet',
 		RequestEditModeSelection: 'RequestEditModeSelection',
-		AutoDetectDigit: 'AutoDetectDigit'
+		AutoDetectDigit: 'AutoDetectDigit',
+		
+		DigitCornersListen : 'DigitCornersListen',
+		CoordinateListen: 'CoordinateListen'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data) {

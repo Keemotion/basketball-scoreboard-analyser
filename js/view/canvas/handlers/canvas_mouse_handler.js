@@ -95,6 +95,7 @@ define([
 		
 		this.messaging_system.addEventListener(this.messaging_system.events.AutoDetectDigit, new EventListener(this, this.autoDetectDigitRequested));
 		this.messaging_system.addEventListener(this.messaging_system.events.DigitCornersListen, new EventListener(this, this.digitCornersListenRequested));
+		this.messaging_system.addEventListener(this.messaging_system.events.CoordinateListen, new EventListener(this, this.coordinateListenRequested));
 	};
 	/*CanvasMouseHandler.MouseModes = {
 		SelectionMode:"SelectionMode",
@@ -206,6 +207,10 @@ define([
 		var selected_group_identification = this.getEditModeSelectedGroupIdentification(); 
 		return selected_group_identification[selected_group_identification.length-1]["group_type"];
 	};
+	CanvasMouseHandler.prototype.coordinateListenRequested = function(signal, data){
+		this.coordinate_proxy = data.getProxy();
+		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.SingleCoordinateListenMode));
+	}
 	CanvasMouseHandler.prototype.digitCornersListenRequested = function(signal, data){
 		this.digit_corners_proxy = data.getProxy();
 		this.current_digit_corner_index = 0;
@@ -409,6 +414,11 @@ define([
 	CanvasMouseHandler.prototype.click = function(signal, data){
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.SingleCoordinateListenMode:
+			var coordinate_data = new Object();
+			coordinate_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+			var identification = this.coordinate_proxy.getIdentification();
+			this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, coordinate_data));
+			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 			break;
 		case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
 			var corner_data = new Object();
@@ -496,6 +506,7 @@ define([
 			this.previous_mouse_mode = this.current_mouse_mode;
 			this.current_mouse_mode = data.getMode();
 		}
+		console.log("mouse mode set to: "+this.current_mouse_mode);
 		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(this.current_mouse_mode));
 	};
 	return CanvasMouseHandler;

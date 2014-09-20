@@ -20,7 +20,6 @@ define(["./base_tree_node",
 			.attr('title', 'Auto-detect corners')
 			.append($('<i>').addClass('fa fa-search'))
 			.click(function(){
-				console.log("TODO: implement auto detect digit");
 				messaging_system.fire(messaging_system.events.AutoDetectDigit, new AutoDetectDigitEvent(data_proxy));
 			});
 		this.addCommand(this.auto_detect_button);
@@ -30,7 +29,6 @@ define(["./base_tree_node",
 			.attr('title', 'Manually set digit')
 			.append($('<i>').addClass('fa fa-crosshairs'))
 			.click(function(){
-				console.log("TODO: implement manually set digit");
 				messaging_system.fire(messaging_system.events.DigitCornersListen, new DigitCornersListenEvent(data_proxy));
 			});
 		this.addCommand(this.manually_set_digit_button);
