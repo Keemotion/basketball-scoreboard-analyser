@@ -211,6 +211,9 @@ define(["../../messaging_system/events/selection_event",
 	BaseTreeNode.prototype.nameEditable = function(){
 		return false;
 	};
+	BaseTreeNode.prototype.getProxy = function(){
+		return this.data_proxy;
+	};
 	BaseTreeNode.prototype.loadSubNodes = function(){};
 	return BaseTreeNode;
 });
