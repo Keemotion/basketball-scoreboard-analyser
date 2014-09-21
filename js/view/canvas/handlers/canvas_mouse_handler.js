@@ -290,7 +290,6 @@ define([
 		this.sendEditModeSelection();
 	};
 	CanvasMouseHandler.prototype.sendEditModeSelection = function(){
-		console.log("send edit mode selection");
 		if(this.edit_mode_selected_proxy == null)
 			return;
 		//this.messaging_system.fire(this.messaging_system.events.SelectionSet, new SelectionEvent(this.edit_mode_selected_proxy.getSelectionTree()));
@@ -325,6 +324,9 @@ define([
 					this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(this.current_drag_corner_move_corner.getIdentification(), corner_data));
 				}else if(this.current_drag_dot_move){
 					console.log("TODO: implement dot move");
+					var dot_data = this.current_drag_dot_move_dot.getData();
+					dot_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+					this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(this.current_drag_dot_move_dot.getIdentification(), dot_data));
 				}else{
 					this.autoDetectDigit();
 				}
@@ -367,6 +369,8 @@ define([
 			
 			this.current_drag_corner_move = false;
 			this.current_drag_digit_detect = false;
+			this.current_drag_dot_move = false;
+			
 			if(this.getEditModeSomethingSelected() && this.getEditModeSelectedProxy().getType() == "digit"){
 				//find if closest corner of selected digit (canvas coordinate) is within MAX_DISTANCE of data.getCoordinate()
 				var sub_nodes = this.getEditModeSelectedProxy().getSubNodes();
@@ -386,13 +390,31 @@ define([
 				}else{
 					this.current_drag_corner_move = true;
 				}
+			}else if(this.getEditModeSomethingSelected() && this.getSelectedGroupType() == "dot"){
+				var proxy = this.getEditModeSelectedProxy();
+				while(proxy.getType() != "group"){
+					proxy = proxy.getParent();
+				}
+				var sub_nodes = proxy.getSubNodes();
+				var closest_sub_node = null;
+				var closest_distance = MAX_DISTANCE*MAX_DISTANCE;
+				for(var i = 0; i < sub_nodes.length; ++i){
+					var distance = Coordinate.getSquareDistance(data.getCoordinate(), this.canvas.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(sub_nodes[i].getCoordinate()));
+					if(distance <= closest_distance){
+						closest_sub_node = sub_nodes[i];
+						closest_distance = distance;
+					}
+				}
+				this.current_drag_dot_move_dot = closest_sub_node;
+				if(this.current_drag_dot_move_dot == null){
+					this.current_drag_dot_move = false;
+				}else{
+					this.current_drag_dot_move = true;
+				}
 			}
-			if(!this.current_drag_corner_move && this.getSelectedGroupType() == "digit"){
+			if(!this.current_drag_corner_move && !this.current_drag_dot_move && this.getSelectedGroupType() == "digit"){
 				this.current_drag_digit_detect = true;
 			}
-			this.current_drag_dot_move = false;
-			
-			
 			if(this.current_drag_digit_detect){
 				this.selection_rectangle.startSelection(data.getCoordinate());
 			}
