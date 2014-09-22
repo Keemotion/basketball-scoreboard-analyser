@@ -131,13 +131,32 @@ define([
 		if(this.mouse_down){
 			this.mouse_dragged = true;
 		}
+
+		
+		
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.EditMode:
+			var DOWN_TIME = 100;
 			if(this.mouse_down){
 				this.selection_rectangle.updateSelection(data.getCoordinate());
 				//check if inside a digit -> select that digit
 				//if not inside digit, but near the selected digit -> select nearest corner of that digit and drag it (only if mouse has been down for more than 0.5 s)
 				//else: try to add a new digit to the currently selected digit group (if none is selected, don't do anything)
+
+				var mouse_release_time = new Date();
+				var time_down = mouse_release_time.getTime() - this.mouse_down_time.getTime();
+				if(time_down > DOWN_TIME){
+					if(this.current_drag_corner_move){
+						var corner_data = this.current_drag_corner_move_corner.getData();
+						corner_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+						this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(this.current_drag_corner_move_corner.getIdentification(), corner_data));
+					}else if(this.current_drag_dot_move){
+						var dot_data = this.current_drag_dot_move_dot.getData();
+						dot_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+						this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(this.current_drag_dot_move_dot.getIdentification(), dot_data));
+					}
+				}
+				
 				this.canvas.updateCanvas(signal, data);
 			}
 			break;
