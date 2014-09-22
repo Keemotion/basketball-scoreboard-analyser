@@ -8,7 +8,8 @@ define([
 	"../../../image_processing/digit_detector",
 	"../../../messaging_system/events/digit_added_event",
 	"../../../messaging_system/events/edit_mode_selection_event",
-	"../../../messaging_system/events/submit_group_details_event"]
+	"../../../messaging_system/events/submit_group_details_event",
+	"../../../messaging_system/events/remove_group_event"]
 	, function(
 		EventListener,
 		Coordinate,
@@ -19,7 +20,8 @@ define([
 		DigitDetector,
 		DigitAddedEvent,
 		EditModeSelectionEvent,
-		SubmitGroupDetailsEvent
+		SubmitGroupDetailsEvent,
+		RemoveGroupEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -491,9 +493,15 @@ define([
 		case 27://escape
 			this.messaging_system.fire(this.messaging_system.events.SelectionReset, null);
 			break;
-		case 17:
+		case 17://control
 			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CanvasMode));
 			break;
+		case 46://delete
+			if(this.getEditModeSelectedProxy() != null){
+				var identification = this.getEditModeSelectedProxy().getIdentification();
+				this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, new EditModeSelectionEvent(null));
+				this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(identification));
+			}
 		}
 	};
 	CanvasMouseHandler.prototype.keyUp = function(signal, data){
