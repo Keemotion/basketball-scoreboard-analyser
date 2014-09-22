@@ -12,7 +12,7 @@ define([ "./treenode", "../../messaging_system/event_listener",
 		this.add_digit_element = $('<button>').attr({
 			'type' : 'button',
 			'data-toggle' : 'tooltip',
-			'title' : "Add digits group"
+			'title' : "Add number"
 		}).addClass('btn btn-default').click(
 				function() {
 					self.messaging_system.fire(
@@ -20,7 +20,7 @@ define([ "./treenode", "../../messaging_system/event_listener",
 							new AddElementEvent('group', self.state_proxy
 									.getIdentification(), 'digit', true));
 				}).append($('<span>').addClass('glyphicon glyphicon-plus'))
-				.append($('<span>').text('Digits'));
+				.append($('<span>').text('Number'));
 		this.btns.append(this.add_digit_element);
 		this.add_dot_element = $('<button>').attr({
 			'type' : 'button',
