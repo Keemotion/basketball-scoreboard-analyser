@@ -20,7 +20,7 @@ define(
 					class : 'canvas_image',
 					width : '1024',
 					height : '768'
-				});
+				}).on('selectstart', function(){return false;});
 				this.canvas_element = this.canvas_element[0];
 				this.context = this.canvas_element.getContext('2d');
 				this.container_element = target_view;
