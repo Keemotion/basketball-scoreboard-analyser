@@ -46,12 +46,15 @@ define([
 		this.drawMyself(context, transformation);
 	};
 	BaseDisplay.prototype.drawSelected = function(selection_node, context, transformation){
-		if(selection_node.getSelected()){
+		//if(selection_node.getSelected()){
 			this.drawMyselfSelected(context, transformation);
-		}
-		var children = selection_node.getChildren();
-		for(var i = 0; i < children.length; ++i){
-			this.sub_components[children[i].getId()].drawSelected(children[i], context, transformation);
+		//}
+		//var children = selection_node.getChildren();
+		
+		//for(var i = 0; i < children.length; ++i){
+		//	this.sub_components[children[i].getId()].drawSelected(children[i], context, transformation);
+		for(var i = 0; i < this.sub_components.length; ++i){
+			this.sub_components[i].drawSelected(null, context, transformation);
 		}
 	};
 	BaseDisplay.prototype.getProxy = function(){

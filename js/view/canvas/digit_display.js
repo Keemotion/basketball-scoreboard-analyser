@@ -33,7 +33,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.lineTo(coordinates[3].getX(), coordinates[3].getY());
 		context.lineTo(coordinates[2].getX(), coordinates[2].getY());
 		context.lineTo(right_middle.getX(), right_middle.getY());
-		context.strokeStyle = "#00ff00";
+		context.strokeStyle = "#00aa00";
 		context.stroke();
 	};
 	DigitDisplay.prototype.drawMyselfSelected = function(context, transformation){
@@ -62,7 +62,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.lineTo(coordinates[3].getX(), coordinates[3].getY());
 		context.lineTo(coordinates[2].getX(), coordinates[2].getY());
 		context.lineTo(right_middle.getX(), right_middle.getY());
-		context.strokeStyle = "#0000ff";
+		context.strokeStyle = "#00ff00";
 		context.stroke();
 		//sampling points:
 		var sampling_points = new Array();
