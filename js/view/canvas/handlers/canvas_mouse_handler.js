@@ -355,6 +355,7 @@ define([
 			this.selection_rectangle.stopSelection();
 			break;
 		case CanvasMouseHandler.MouseModes.CanvasMode:
+			this.canvas.getElement().css('cursor', '-webkit-grab');
 			break;
 		case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
 			this.autoDetectDigit(this.auto_detect_digit_proxy);
@@ -439,6 +440,9 @@ define([
 			if(this.current_drag_digit_detect){
 				this.selection_rectangle.startSelection(data.getCoordinate());
 			}
+			break;
+		case CanvasMouseHandler.MouseModes.CanvasMode:
+			this.canvas.getElement().css('cursor', '-webkit-grabbing');
 			break;
 		case CanvasMouseHandler.MouseModes.SelectionMode:
 			if(!data.getEventData().shiftKey && !data.getEventData().ctrlKey){
@@ -555,7 +559,16 @@ define([
 			this.previous_mouse_mode = this.current_mouse_mode;
 			this.current_mouse_mode = data.getMode();
 		}
-		console.log("mouse mode set to: "+this.current_mouse_mode);
+		switch(this.current_mouse_mode){
+		case CanvasMouseHandler.MouseModes.EditMode:
+			this.canvas.getElement().css('cursor', 'crosshair');
+			break;
+		case CanvasMouseHandler.MouseModes.CanvasMode:
+			this.canvas.getElement().css('cursor', '-webkit-grab');
+			break;
+		default:
+			this.canvas.getElement().css('cursor', 'auto');
+		}
 		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(this.current_mouse_mode));
 	};
 	return CanvasMouseHandler;

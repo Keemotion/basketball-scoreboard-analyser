@@ -51,9 +51,9 @@ define(
 				this.messaging_system.addEventListener(
 						this.messaging_system.events.GroupChanged,
 						new EventListener(this, this.updateCanvas));
-				this.messaging_system.addEventListener(
-						this.messaging_system.events.MouseModeChanged,
-						new EventListener(this, this.mouseModeChanged));
+				//this.messaging_system.addEventListener(
+				//		this.messaging_system.events.MouseModeChanged,
+				//		new EventListener(this, this.mouseModeChanged));
 				this.windowResized(null, null);
 				var scrollF = function(e) {
 					self.fireMouseEvent(
@@ -204,6 +204,9 @@ define(
 				this.transformation.reset();
 				this.updateCanvas();
 			};
+			MyCanvas.prototype.getElement = function(){
+				return $(this.canvas_element);
+			};
 			MyCanvas.prototype.getDisplayTree = function() {
 				return this.display_tree;
 			};
@@ -310,17 +313,17 @@ define(
 			MyCanvas.prototype.getTransformation = function() {
 				return this.transformation;
 			};
-			MyCanvas.prototype.mouseModeChanged = function(signal, data) {
+			/*MyCanvas.prototype.mouseModeChanged = function(signal, data) {
 				$(this.canvas_element)
 						.parent()
 						.removeClass(
 								'mouse-mode-auto-detect-digit mouse-mode-selection mouse-mode-view-edit mouse-mode-drag mouse-mode-coordinate-click');
 				switch (data.getMode()) {
-				case CanvasMouseHandler.MouseModes.SelectionMode:
-					$(this.canvas_element).parent().addClass(
-							'mouse-mode-selection');
+				case CanvasMouseHandler.MouseModes.EditMode:
+					//$(this.canvas_element).parent().addClass(
+					//		'mouse-mode-selection');
 					break;
-				case CanvasMouseHandler.MouseModes.ViewEditMode:
+				case CanvasMouseHandler.MouseModes.CanvasMode:
 					$(this.canvas_element).parent().addClass(
 							'mouse-mode-view-edit');
 					break;
@@ -338,7 +341,7 @@ define(
 				default:
 					break;
 				}
-			};
+			};*/
 			MyCanvas.prototype.getImage = function() {
 				return this.image;
 			};
