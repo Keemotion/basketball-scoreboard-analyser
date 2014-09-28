@@ -17,6 +17,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			//default
 			this.resetCorners();
 			this.setConfigurationKeys(Digit.default_configuration_keys);
+			this.extra_value = 0.0033333334;
 		}else{
 			this.setCorners(data.corners);
 			this.setConfigurationKeys(data.configuration_keys);
