@@ -316,6 +316,14 @@ define([
 		//this.messaging_system.fire(this.messaging_system.events.SelectionSet, new SelectionEvent(this.edit_mode_selected_proxy.getSelectionTree()));
 		this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, new EditModeSelectionEvent(this.edit_mode_selected_proxy));
 	};
+	CanvasMouseHandler.prototype.cancelDragging = function(){
+		if(this.mouse_down){
+			this.mouse_down = false;
+			this.selection_rectangle.stopSelection();
+			this.canvas.updateCanvas(null, null);
+		}
+		
+	};
 	CanvasMouseHandler.prototype.mouseUp = function(signal, data){
 		if(!this.mouse_down){
 			return;
@@ -495,7 +503,11 @@ define([
 	CanvasMouseHandler.prototype.keyDown = function(signal, data){
 		switch(data.getEventData().which){
 		case 27://escape
-			this.messaging_system.fire(this.messaging_system.events.SelectionReset, null);
+			if(this.current_mouse_mode == CanvasMouseHandler.MouseModes.EditMode && this.mouse_down){
+				this.cancelDragging();
+			}else{
+				this.messaging_system.fire(this.messaging_system.events.SelectionReset, null);
+			}
 			break;
 		case 17://control
 			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CanvasMode));
