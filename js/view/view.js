@@ -1,30 +1,26 @@
 define([
 		'./canvas/canvas',
-		//'./stateview/load_state_component',
 		'./treeview/treeview',
 		'./detailsview/group_detailsview',
 		'../messaging_system/event_listener',
 		'./canvas/display_tree',
-		//'./stateview/current_state_component',
 		"../model/selection_tree",
 		"../model/selection_node",
 		"../messaging_system/events/selection_event",
-		"./detailsview/details_view",
+//		"./detailsview/details_view",
 		"./toolbar/toolbar",
 		"../messaging_system/events/edit_mode_selection_event"
 		]
 	, function(
 		MyCanvas,
-		//LoadStateComponent,
 		TreeView,
 		GroupDetailsView,
 		EventListener,
 		DisplayTree,
-		//CurrentStateComponent,
 		SelectionTree,
 		SelectionNode,
 		SelectionEvent,
-		DetailsView,
+//		DetailsView,
 		ToolBar,
 		EditModeSelectionEvent
 		){
@@ -86,7 +82,7 @@ define([
 		this.toolbar_component = new ToolBar(this.toolbar_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
 		this.tree_view = new TreeView(this.toolbox_tree_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
 		//details view
-		this.details_view = new DetailsView(this, this.toolbox_details_div, this.messaging_system);
+		//this.details_view = new DetailsView(this, this.toolbox_details_div, this.messaging_system);
 
 		//this.messaging_system.addEventListener(this.messaging_system.events.GroupClicked, new EventListener(this,this.groupClicked));
 		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));

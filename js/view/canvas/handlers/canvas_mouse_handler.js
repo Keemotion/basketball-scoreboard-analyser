@@ -334,7 +334,6 @@ define([
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.EditMode:
 			this.selection_rectangle.updateSelection(data.getCoordinate());
-			console.log("edit mode, down time = " + time_down);
 			var DOWN_TIME = 100;
 			if(!this.mouse_dragged || time_down <= DOWN_TIME){
 				var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());

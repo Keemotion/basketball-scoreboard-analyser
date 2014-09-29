@@ -94,7 +94,7 @@ div.div_state div.div_state_buttons {
 /*Div containing the tree of all objects to be displayed*/
 div#div_toolbox_objects_tree {
 	overflow: auto;
-	height: 50%;
+	height: 100%;
 }
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree {
 	list-style-type: none;
