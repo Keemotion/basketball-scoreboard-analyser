@@ -138,12 +138,19 @@ define([
 		return data.event_data.preventDefault() && false;
 	};
 	CanvasMouseHandler.prototype.mouseMove = function(signal, data){
+		/*var canvas_coordinate = data.getCoordinate();
+		var relative_coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+		var rel_canvas_coordinate = this.canvas.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(relative_coordinate);
+		var absolute_coordinate = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(data.getCoordinate());
+		var abs_canvas_coordinate = this.canvas.getTransformation().transformAbsoluteImageCoordinateToCanvasCoordinate(absolute_coordinate);
+		console.log("canvas:                   "+JSON.stringify(canvas_coordinate));
+		console.log("relative:                 "+JSON.stringify(relative_coordinate));
+		console.log("canvas based on relative: "+JSON.stringify(rel_canvas_coordinate));
+		console.log("absolute:                 "+JSON.stringify(absolute_coordinate));
+		console.log("canvas based on absolute: "+JSON.stringify(abs_canvas_coordinate));*/
 		if(this.mouse_down){
 			this.mouse_dragged = true;
 		}
-
-		
-		
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.EditMode:
 			var DOWN_TIME = 100;
@@ -173,12 +180,21 @@ define([
 		case CanvasMouseHandler.MouseModes.CanvasMode:
 			//move canvas
 			if(this.mouse_down){
-				var mv = new Coordinate(
-					this.canvas.getTransformation().getCanvasWidth() / 2 - (data.getCoordinate().getX() - this.previous_mouse_coordinate.getX()),
-					this.canvas.getTransformation().getCanvasHeight() / 2 - (data.getCoordinate().getY() - this.previous_mouse_coordinate.getY())
-				);
-				var transformed = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(mv);
-				this.canvas.getTransformation().setCanvasCenter(transformed);
+				//var mv = new Coordinate(
+				//	this.canvas.getTransformation().getCanvasWidth() / 2 - (data.getCoordinate().getX() - this.previous_mouse_coordinate.getX()),
+				//	this.canvas.getTransformation().getCanvasHeight() / 2 - (data.getCoordinate().getY() - this.previous_mouse_coordinate.getY())
+				//);
+				//var transformed = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(mv);
+				//var mv = new Coordinate(this.previous_mouse_coordinate.getX()-data.getCoordinate().getX(), this.previous_mouse_coordinate.getY()-data.getCoordinate().getY());
+				var old_center = this.canvas.getTransformation().getCanvasCenter();
+				//var new_center = old_center.add(this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(mv));
+				//console.log("mv = "+JSON.stringify(mv));
+				//console.log("old center = "+JSON.stringify(old_center));
+				//console.log("new center = " + JSON.stringify(new_center));
+				//this.canvas.getTransformation().setCanvasCenter(new_center);
+				var old_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(this.previous_mouse_coordinate);
+				var new_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+				this.canvas.getTransformation().setCanvasCenter(old_center.add(new Coordinate(old_relative.getX()-new_relative.getX(), -old_relative.getY() + new_relative.getY())));
 				this.canvas.updateCanvas(signal, data);
 			}
 			break;
