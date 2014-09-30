@@ -3,6 +3,12 @@ define([],function(){
 	var Coordinate = function(x, y){
 		this.x = x;
 		this.y = y;
+		if(this.x){
+			this.x = parseFloat(x).toPrecision(8);
+		}
+		if(this.y){
+			this.y = parseFloat(y).toPrecision(8);
+		}
 	};
 	Coordinate.prototype.getX = function(){
 		if(this.x)

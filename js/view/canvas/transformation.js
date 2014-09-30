@@ -15,10 +15,11 @@ define(["../../model/coordinate"], function(Coordinate){
 		this.scale = scale;
 		this.scale = Math.max(this.scale, 1);
 		if(zoom_coordinate != null){
-			var factor = this.getScale()/old_scale;
+			var factor = old_scale / this.getScale();
 			var center_coordinate = this.getCanvasCenter();
-			var new_canvas_center = zoom_coordinate.scalarMultiply(factor-1).add(center_coordinate).scalarMultiply(1/factor);
-			this.setCanvasCenter(new_canvas_center);
+			var new_center = new Coordinate(zoom_coordinate.getX() - factor*(zoom_coordinate.getX()-center_coordinate.getX()),
+					-zoom_coordinate.getY() + (zoom_coordinate.getY() + center_coordinate.getY())*factor);
+			this.setCanvasCenter(new_center);
 		}
 	};
 	Transformation.prototype.setCanvasWidth = function(width){
