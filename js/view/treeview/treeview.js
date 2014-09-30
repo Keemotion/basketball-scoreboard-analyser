@@ -31,7 +31,7 @@ define([ "./treenode", "../../messaging_system/event_listener",
 					self.messaging_system.fire(
 							self.messaging_system.events.AddElement,
 							new AddElementEvent('group', self.state_proxy
-									.getIdentification(), 'dot'));
+									.getIdentification(), 'dot', true));
 				}).append($('<span>').addClass('glyphicon glyphicon-plus'))
 				.append($('<span>').text('Leds'));
 		this.btns.append(this.add_dot_element);
