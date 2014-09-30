@@ -247,7 +247,13 @@ define(
 					this.context.stroke();
 				}
 				if(this.edit_mode_selected_proxy != null){
-					this.display_tree.drawSelected(this.edit_mode_selected_proxy.getSelectionTree().getRoot(), this.context, this.transformation);
+					//this.display_tree.drawSelected(this.edit_mode_selected_proxy.getSelectionTree().getRoot(), this.context, this.transformation);
+					console.log("identification = "+JSON.stringify(this.edit_mode_selected_proxy.getIdentification()));
+					console.log("tree identific = "+JSON.stringify(this.display_tree.getProxy().getIdentification()));
+					var child =this.display_tree.findChild(this.edit_mode_selected_proxy.getIdentification().slice(1));
+					if(child != null){
+						child.drawSelected(null, this.context, this.transformation);
+					}
 				}
 				/*var selection_tree = this.view.getCurrentSelectionTree();
 				if (!selection_tree.getRoot().getProxy()) {

@@ -8,9 +8,9 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 	};
 	DigitDisplay.prototype = new BaseDisplay();
 	DigitDisplay.prototype.drawMyself = function(context, transformation){
-		if(!this.getProxy().getSimulating()){
-			return;
-		}
+		//if(!this.getProxy().getSimulating()){
+		//	return;
+		//}
 		var sub_proxies = this.getProxy().getSubNodes();
 		if(sub_proxies.length != 4)
 			return;
@@ -37,9 +37,9 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.stroke();
 	};
 	DigitDisplay.prototype.drawMyselfSelected = function(context, transformation){
-		if(!this.getProxy().getSimulating()){
-			return;
-		}
+		//if(!this.getProxy().getSimulating()){
+		//	return;
+		//}
 		var sub_proxies = this.getProxy().getSubNodes();
 		if(sub_proxies.length != 4)
 			return;
