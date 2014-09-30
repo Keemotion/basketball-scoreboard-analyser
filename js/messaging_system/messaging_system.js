@@ -78,6 +78,7 @@ define([], function() {
 		AddElement : 'AddElement',
 		
 		DigitAdded : 'DigitAdded',
+		DotAdded : 'DotAdded',
 
 		//A group was deleted in the GUI
 		RemoveGroup : 'RemoveGroup',

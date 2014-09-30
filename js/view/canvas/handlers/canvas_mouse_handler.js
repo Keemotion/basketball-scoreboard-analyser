@@ -9,7 +9,8 @@ define([
 	"../../../messaging_system/events/digit_added_event",
 	"../../../messaging_system/events/edit_mode_selection_event",
 	"../../../messaging_system/events/submit_group_details_event",
-	"../../../messaging_system/events/remove_group_event"]
+	"../../../messaging_system/events/remove_group_event",
+	"../../../messaging_system/events/dot_added_event"]
 	, function(
 		EventListener,
 		Coordinate,
@@ -21,7 +22,8 @@ define([
 		DigitAddedEvent,
 		EditModeSelectionEvent,
 		SubmitGroupDetailsEvent,
-		RemoveGroupEvent
+		RemoveGroupEvent,
+		DotAddedEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -222,7 +224,7 @@ define([
 		this.previous_mouse_coordinate = data.getCoordinate();
 		
 	};
-	CanvasMouseHandler.prototype.getSelectedGroupType = function(){
+	CanvasMouseHandler.prototype.getEditModeSelectedGroupType = function(){
 		if(this.getEditModeSelectedProxy() == null)
 			return null;
 		var selected_group_identification = this.getEditModeSelectedGroupIdentification(); 
@@ -242,7 +244,7 @@ define([
 		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.AutoDetectDigitMode));
 	};
 	CanvasMouseHandler.prototype.autoDetectDigit = function(proxy){
-		if(this.getSelectedGroupType() != "digit"){
+		if(this.getEditModeSelectedGroupType() != "digit"){
 			return;
 		}
 		var selection_rectangle = this.selection_rectangle.transformCanvasCoordinatesToAbsoluteCoordinates(this.canvas.getTransformation());
@@ -298,6 +300,10 @@ define([
 	CanvasMouseHandler.prototype.getEditModeSelectedProxy = function(){
 		return this.edit_mode_selected_proxy;
 	};
+	/*CanvasMouseHandler.prototype.getEditModeSelectedGroupType = function(){
+		var identification = this.getEditModeSelectedGroupIdentification();
+		return identification[identification.length-1]['group_type'];
+	};*/
 	CanvasMouseHandler.prototype.getEditModeSelectedGroupIdentification = function(){
 		return this.edit_mode_selected_proxy.getParentOfTypeIdentification("group");
 	};
@@ -341,8 +347,29 @@ define([
 					var e = new EditModeSelectionEvent(res.getProxy());
 					this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
 				}else{
-					var e = new EditModeSelectionEvent(null);
-					this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
+					//var e = new EditModeSelectionEvent(null);
+					//this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
+					//add digit or dot to currently selected group
+					if(this.getEditModeSomethingSelected()){
+						
+						switch(this.getEditModeSelectedGroupType()){
+						case 'digit':
+							console.log("digit group");
+							break;
+						case 'dot':
+							console.log("dot group");
+							var coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+							this.messaging_system.fire(this.messaging_system.events.DotAdded, new DotAddedEvent(this.getEditModeSelectedGroupIdentification(), coordinate));
+							/*var coordinate_data = new Object();
+							coordinate_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+							var identification = this.coordinate_proxy.getIdentification();
+							this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, coordinate_data));*/
+							break;
+						default:
+							console.log("editmodeselectedgroupidentification = "+JSON.stringify(this.getEditModeSelectedGroupIdentification()));
+							break;
+						}
+					}
 				}
 				//pretend it was a click -> if inside digit -> select it
 			}else{
@@ -419,7 +446,7 @@ define([
 				}else{
 					this.current_drag_corner_move = true;
 				}
-			}else if(this.getEditModeSomethingSelected() && this.getSelectedGroupType() == "dot"){
+			}else if(this.getEditModeSomethingSelected() && this.getEditModeSelectedGroupType() == "dot"){
 				var proxy = this.getEditModeSelectedProxy();
 				while(proxy.getType() != "group"){
 					proxy = proxy.getParent();
@@ -441,7 +468,7 @@ define([
 					this.current_drag_dot_move = true;
 				}
 			}
-			if(!this.current_drag_corner_move && !this.current_drag_dot_move && this.getSelectedGroupType() == "digit"){
+			if(!this.current_drag_corner_move && !this.current_drag_dot_move && this.getEditModeSelectedGroupType() == "digit"){
 				this.current_drag_digit_detect = true;
 			}
 			if(this.current_drag_digit_detect){

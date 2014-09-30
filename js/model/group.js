@@ -24,6 +24,8 @@ define(["./digit",
 		this.unlockNotification();
 		this.digitAddedListener = new EventListener(this, this.digitAdded);
 		this.messaging_system.addEventListener(this.messaging_system.events.DigitAdded, this.digitAddedListener);
+		this.dotAddedListener = new EventListener(this, this.dotAdded);
+		this.messaging_system.addEventListener(this.messaging_system.events.DotAdded, this.dotAddedListener);
 	};
 	Group.prototype = new DataBaseClass("group");
 	//the default configuration keys that are applied to a group in the configuration file
@@ -71,6 +73,14 @@ define(["./digit",
 			this.createSubNode(digit_data);
 		}
 	};
+	Group.prototype.dotAdded = function(signal, data){
+		if(this.isPossiblyAboutThis(data.getTargetIdentification())){
+			var dot_data = new Object();
+			dot_data.type = "dot";
+			dot_data.coordinate = data.getCoordinate();
+			this.createSubNode(dot_data);
+		}
+	}
 	//update the group properties (not its children)
 	Group.prototype.update = function(data){
 		this.name = data.name;
