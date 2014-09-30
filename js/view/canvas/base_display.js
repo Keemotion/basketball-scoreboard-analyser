@@ -151,16 +151,10 @@ define([
 	BaseDisplay.prototype.findChild = function(identification){
 		if(identification.length == 0)
 			return this;
-		console.log("findChild with identification = "+JSON.stringify(identification));
-		console.log("finChild with own identification = "+JSON.stringify(this.getProxy().getIdentification()));
 		for(var i = 0; i < this.sub_components.length; ++i){
-			console.log("try sub_component");
-			
 			if(this.sub_components[i].getProxy().getType() == identification[0]['type'] && this.sub_components[i].getProxy().getId() == identification[0]['id']){
 				return this.sub_components[i].findChild(identification.slice(1));
 			}
-			console.log("type = "+this.sub_components[i].getProxy().getType());
-			console.log("id = "+this.sub_components[i].getProxy().getId());
 		}
 		return null;
 	};
