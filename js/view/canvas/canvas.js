@@ -232,6 +232,20 @@ define(
 			MyCanvas.prototype.drawSelected = function() {
 				if(this.display_tree == null)
 					return;
+				var temporary_coordinates = this.canvas_mouse_handler.getTemporaryDigitCoordinates();
+				if(temporary_coordinates != null && temporary_coordinates.length > 0){
+					for(var i = 0; i < temporary_coordinates.length; ++i){
+						temporary_coordinates[i] = this.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(temporary_coordinates[i]);
+					}
+					var prev_coordinate = temporary_coordinates[0];
+					temporary_coordinates.push(this.canvas_mouse_handler.getPreviousMouseCoordinate());
+					this.context.beginPath();
+					this.context.moveTo(temporary_coordinates[0].getX(), temporary_coordinates[0].getY());
+					for(var i = 1; i < temporary_coordinates.length; ++i){
+						this.context.lineTo(temporary_coordinates[i].getX(), temporary_coordinates[i].getY());
+					}
+					this.context.stroke();
+				}
 				if(this.edit_mode_selected_proxy != null){
 					this.display_tree.drawSelected(this.edit_mode_selected_proxy.getSelectionTree().getRoot(), this.context, this.transformation);
 				}

@@ -10,7 +10,8 @@ define([
 	"../../../messaging_system/events/edit_mode_selection_event",
 	"../../../messaging_system/events/submit_group_details_event",
 	"../../../messaging_system/events/remove_group_event",
-	"../../../messaging_system/events/dot_added_event"]
+	"../../../messaging_system/events/dot_added_event",
+	"../../../messaging_system/events/group_changed_event"]
 	, function(
 		EventListener,
 		Coordinate,
@@ -23,7 +24,8 @@ define([
 		EditModeSelectionEvent,
 		SubmitGroupDetailsEvent,
 		RemoveGroupEvent,
-		DotAddedEvent
+		DotAddedEvent,
+		GroupChangedEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -186,6 +188,9 @@ define([
 			//move selected digits at once
 			
 			break;
+		case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
+			this.canvas.updateCanvas(signal, data);
+			break;
 		case CanvasMouseHandler.MouseModes.Other:
 			//let another handler handle these events
 			break;
@@ -234,9 +239,23 @@ define([
 		this.coordinate_proxy = data.getProxy();
 		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.SingleCoordinateListenMode));
 	}
+	CanvasMouseHandler.prototype.getTemporaryDigitCoordinates = function(){
+		if(this.current_mouse_mode != CanvasMouseHandler.MouseModes.DigitCornersListenMode){
+			return null;
+		}
+		var coordinates = new Array();
+		var sub_nodes = this.digit_corners_proxy.getSubNodes();
+		for(var i = 0; i < sub_nodes.length; ++i){
+			if(sub_nodes[i].getCoordinate().isValid()){
+				coordinates.push(sub_nodes[i].getCoordinate());
+			}
+		}
+		return coordinates;
+	};
 	CanvasMouseHandler.prototype.digitCornersListenRequested = function(signal, data){
 		this.digit_corners_proxy = data.getProxy();
 		this.current_digit_corner_index = 0;
+		this.messaging_system.fire(this.messaging_system.events.GroupReset, new GroupChangedEvent(this.digit_corners_proxy.getIdentification()));
 		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.DigitCornersListenMode));
 	};
 	CanvasMouseHandler.prototype.autoDetectDigitRequested = function(signal, data){
@@ -360,10 +379,6 @@ define([
 							console.log("dot group");
 							var coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
 							this.messaging_system.fire(this.messaging_system.events.DotAdded, new DotAddedEvent(this.getEditModeSelectedGroupIdentification(), coordinate));
-							/*var coordinate_data = new Object();
-							coordinate_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
-							var identification = this.coordinate_proxy.getIdentification();
-							this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, coordinate_data));*/
 							break;
 						default:
 							console.log("editmodeselectedgroupidentification = "+JSON.stringify(this.getEditModeSelectedGroupIdentification()));
@@ -410,6 +425,9 @@ define([
 				this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 				break;*/
 		}
+	};
+	CanvasMouseHandler.prototype.getPreviousMouseCoordinate = function(){
+		return this.previous_mouse_coordinate;
 	};
 	CanvasMouseHandler.prototype.getEditModeSomethingSelected = function(){
 		return this.getEditModeSelectedProxy() != null;
