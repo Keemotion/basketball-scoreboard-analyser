@@ -572,6 +572,9 @@ define([
 		case 27://escape
 			if(this.current_mouse_mode == CanvasMouseHandler.MouseModes.EditMode && this.mouse_down){
 				this.cancelDragging();
+			}else if(this.current_mouse_mode == CanvasMouseHandler.MouseModes.DigitCornersListenMode){
+				this.messaging_system.fire(this.messaging_system.events.GroupReset, new GroupChangedEvent(this.digit_corners_proxy.getIdentification()));
+				this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 			}else{
 				this.messaging_system.fire(this.messaging_system.events.SelectionReset, null);
 			}
