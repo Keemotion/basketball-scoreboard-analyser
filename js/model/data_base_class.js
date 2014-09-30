@@ -414,6 +414,15 @@ define([
 		}
 		return null;
 	};
+	BaseDataClass.prototype.getParentOfTypeProxy = function(type){
+		if(type == this.getType()){
+			return this.getProxy();
+		}
+		if(this.getParent()){
+			return this.getParent().getParentOfTypeProxy(type);
+		}
+		return null;
+	};
 	BaseDataClass.prototype.isAncestorOf = function(other_identification){
 		var own_identification = this.getIdentification();
 		if(own_identification.length > other_identification.length){

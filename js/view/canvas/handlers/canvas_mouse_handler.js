@@ -11,7 +11,9 @@ define([
 	"../../../messaging_system/events/submit_group_details_event",
 	"../../../messaging_system/events/remove_group_event",
 	"../../../messaging_system/events/dot_added_event",
-	"../../../messaging_system/events/group_changed_event"]
+	"../../../messaging_system/events/group_changed_event",
+	"../../../messaging_system/events/digit_corners_listen_event",
+	"../../../messaging_system/events/add_element_event"]
 	, function(
 		EventListener,
 		Coordinate,
@@ -25,7 +27,9 @@ define([
 		SubmitGroupDetailsEvent,
 		RemoveGroupEvent,
 		DotAddedEvent,
-		GroupChangedEvent
+		GroupChangedEvent,
+		DigitCornersListenEvent,
+		AddElementEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -229,6 +233,7 @@ define([
 		this.previous_mouse_coordinate = data.getCoordinate();
 		
 	};
+	
 	CanvasMouseHandler.prototype.getEditModeSelectedGroupType = function(){
 		if(this.getEditModeSelectedProxy() == null)
 			return null;
@@ -323,6 +328,9 @@ define([
 		var identification = this.getEditModeSelectedGroupIdentification();
 		return identification[identification.length-1]['group_type'];
 	};*/
+	CanvasMouseHandler.prototype.getEditModeSelectedGroupProxy = function(){
+		return this.edit_mode_selected_proxy.getParentOfTypeProxy("group");
+	};
 	CanvasMouseHandler.prototype.getEditModeSelectedGroupIdentification = function(){
 		return this.edit_mode_selected_proxy.getParentOfTypeIdentification("group");
 	};
@@ -366,17 +374,16 @@ define([
 					var e = new EditModeSelectionEvent(res.getProxy());
 					this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
 				}else{
-					//var e = new EditModeSelectionEvent(null);
-					//this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, e);
 					//add digit or dot to currently selected group
 					if(this.getEditModeSomethingSelected()){
 						
 						switch(this.getEditModeSelectedGroupType()){
 						case 'digit':
-							console.log("digit group");
+							this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("digit", this.getEditModeSelectedGroupIdentification(), null, true));
+							var data2 = new DigitCornersListenEvent(this.getEditModeSelectedProxy());
+							this.digitCornersListenRequested(signal, data2);
 							break;
 						case 'dot':
-							console.log("dot group");
 							var coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
 							this.messaging_system.fire(this.messaging_system.events.DotAdded, new DotAddedEvent(this.getEditModeSelectedGroupIdentification(), coordinate));
 							break;
