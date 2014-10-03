@@ -29,6 +29,7 @@ define([
 		this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
 		this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, new EventListener(this, this.removeElement));
 		this.messaging_system.addEventListener(this.messaging_system.events.GroupReset, new EventListener(this, this.resetGroup));
+		this.messaging_system.addEventListener(this.messaging_system.events.MoveModeObjectsMoved, new EventListener(this, this.moveModeMoved));
 		if(this.addElement){
 			this.addElementListener = new EventListener(this, this.addElement);
 			this.messaging_system.addEventListener(this.messaging_system.events.AddElement, this.addElementListener);
@@ -437,6 +438,15 @@ define([
 			}
 		}
 		return true;
+	};
+	BaseDataClass.prototype.moveModeMoved = function(signal, data){
+		var targets = data.getTargets();
+		for(var i = 0; i < targets.length; ++i){
+			if(this.isPossiblyAboutThis(targets[i])){
+				this.move(data.getTranslation());
+				break;
+			}
+		}
 	};
 	return BaseDataClass;
 });

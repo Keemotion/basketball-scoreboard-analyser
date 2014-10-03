@@ -13,7 +13,8 @@ define([
 	"../../../messaging_system/events/dot_added_event",
 	"../../../messaging_system/events/group_changed_event",
 	"../../../messaging_system/events/digit_corners_listen_event",
-	"../../../messaging_system/events/add_element_event"]
+	"../../../messaging_system/events/add_element_event",
+	"../../../messaging_system/events/move_mode_objects_moved_event"]
 	, function(
 		EventListener,
 		Coordinate,
@@ -29,7 +30,8 @@ define([
 		DotAddedEvent,
 		GroupChangedEvent,
 		DigitCornersListenEvent,
-		AddElementEvent
+		AddElementEvent,
+		MoveModeObjectsMovedEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -83,6 +85,7 @@ define([
 		this.mouse_down = false;
 		
 		this.edit_mode_selected_proxy = null;
+		this.move_mode_selected_digits = new Array();
 
 		this.current_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
 		this.previous_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
@@ -206,7 +209,13 @@ define([
 			break;
 		case CanvasMouseHandler.MouseModes.MoveMode:
 			//move selected digits at once
-			
+			if(this.mouse_down && this.moving){
+
+				var old_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(this.previous_mouse_coordinate);
+				var new_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
+				var transformed = new Coordinate(new_relative.getX()-old_relative.getX(), new_relative.getY()-old_relative.getY());
+				this.messaging_system.fire(this.messaging_system.events.MoveModeObjectsMoved, new MoveModeObjectsMovedEvent(this.getMoveModeSelectedDigitsIdentifications(), transformed));
+			}
 			break;
 		case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
 			this.canvas.updateCanvas(signal, data);
@@ -435,6 +444,7 @@ define([
 			this.selection_rectangle.stopSelection();
 			break;
 		case CanvasMouseHandler.MouseModes.MoveMode:
+			this.moving = false;
 			break;
 		case CanvasMouseHandler.MouseModes.Other:
 			break;
@@ -528,6 +538,20 @@ define([
 		case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
 			this.selection_rectangle.startSelection(data.getCoordinate());
 			break;
+		case CanvasMouseHandler.MouseModes.MoveMode:
+			this.moving = false;
+			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
+			if(res){
+				res = res.getProxy().getParentOfTypeProxy("digit");
+				if(res){
+					console.log("selected clicked!");
+					if(this.isMoveModeSelected(res)){
+						console.log("moving = true");
+						this.moving = true;
+					}
+				}
+			}
+			break;
 		}
 	};
 	CanvasMouseHandler.prototype.focusOut = function(signal, data){
@@ -535,6 +559,21 @@ define([
 	};
 	CanvasMouseHandler.prototype.click = function(signal, data){
 		switch(this.current_mouse_mode){
+		case CanvasMouseHandler.MouseModes.MoveMode:
+			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
+			if(res){
+				res = res.getProxy().getParentOfTypeProxy("digit");
+				if(res){
+					if(data.getEventData().ctrlKey){
+						//add res to currently selected MoveModeDigits
+						this.addMoveModeSelectedDigit(res);
+					}else{
+						//apply res to currently selectd MoveModeDigits
+						this.setMoveModeSelectedDigits([res]);
+					}
+				}
+			}
+			break;
 		case CanvasMouseHandler.MouseModes.SingleCoordinateListenMode:
 			var coordinate_data = new Object();
 			coordinate_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
@@ -580,7 +619,9 @@ define([
 			}
 			break;
 		case 17://control
-			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CanvasMode));
+			if(this.current_mouse_mode != CanvasMouseHandler.MouseModes.MoveMode){
+				this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CanvasMode));
+			}
 			break;
 		case 46://delete
 			if(this.getEditModeSelectedProxy() != null){
@@ -592,8 +633,10 @@ define([
 	};
 	CanvasMouseHandler.prototype.keyUp = function(signal, data){
 		switch(data.getEventData().which){
-		case 17:
-			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
+		case 17://control
+			if(this.current_mouse_mode != CanvasMouseHandler.MouseModes.MoveMode){
+				this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
+			}
 			break;
 		}
 	};
@@ -629,7 +672,48 @@ define([
 	CanvasMouseHandler.prototype.getSelectionRectangle = function(){
 		return this.selection_rectangle;
 	};
-
+	CanvasMouseHandler.prototype.getMoveModeSelectedDigitsIdentifications = function(){
+		var identifications = new Array();
+		var digits = this.getMoveModeSelectedDigits();
+		for(var i = 0; i < digits.length; ++i){
+			identifications.push(digits[i].getIdentification());
+		}
+		return identifications;
+	};
+	CanvasMouseHandler.prototype.getMoveModeSelectedDigits = function(){
+		return this.move_mode_selected_digits;
+	};
+	CanvasMouseHandler.prototype.isMoveModeSelected = function(digit){
+		for(var i = 0; i < this.move_mode_selected_digits.length; ++i){
+			if(digit.isPossiblyAboutThis(this.move_mode_selected_digits[i].getIdentification())){
+				return true;
+			}
+		}
+		return false;
+	};
+	CanvasMouseHandler.prototype.addMoveModeSelectedDigit = function(digit){
+		if(this.isMoveModeSelected(digit)){
+			return;
+		}
+		this.move_mode_selected_digits.push(digit);
+		this.moveModeSelectionChanged();
+	};
+	CanvasMouseHandler.prototype.setMoveModeSelectedDigits = function(digits){
+		this.resetMoveModeSelectedDigits();
+		this.addMoveModeSelectedDigits(digits);
+	};
+	CanvasMouseHandler.prototype.resetMoveModeSelectedDigits = function(){
+		this.move_mode_selected_digits.length = 0;
+		this.moveModeSelectionChanged();
+	};
+	CanvasMouseHandler.prototype.addMoveModeSelectedDigits = function(digits){
+		for(var i = 0; i < digits.length; ++i){
+			this.addMoveModeSelectedDigit(digits[i]);
+		}
+	};
+	CanvasMouseHandler.prototype.moveModeSelectionChanged = function(){
+		this.canvas.updateCanvas();
+	};
 	CanvasMouseHandler.prototype.mouseModeChanged = function(signal, data){
 		if(data.getMode() == null){
 			data.setMode(this.previous_mouse_mode);
@@ -652,6 +736,9 @@ define([
 			this.canvas.getElement().css('cursor', 'auto');
 		}
 		this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(this.current_mouse_mode));
+	};
+	CanvasMouseHandler.prototype.getMouseMode = function(){
+		return this.current_mouse_mode;
 	};
 	return CanvasMouseHandler;
 });

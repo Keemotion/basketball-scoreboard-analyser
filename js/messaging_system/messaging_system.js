@@ -47,6 +47,7 @@ define([], function() {
 		SubmitGroupDetails : 'SubmitGroupDetails',
 		//An object or a group of objects has been moved
 		ObjectsMoved : 'ObjectsMoved',
+		MoveModeObjectsMoved: 'MoveModeObjectsMoved',
 
 		//Canvas events
 		CanvasScrolled : 'CanvasScrolled',

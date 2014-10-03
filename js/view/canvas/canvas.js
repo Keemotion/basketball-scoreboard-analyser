@@ -246,10 +246,18 @@ define(
 					}
 					this.context.stroke();
 				}
-				if(this.edit_mode_selected_proxy != null){
+				if(this.canvas_mouse_handler.getMouseMode() == CanvasMouseHandler.MouseModes.EditMode && this.edit_mode_selected_proxy != null){
 					var child =this.display_tree.findChild(this.edit_mode_selected_proxy.getIdentification().slice(1));
 					if(child != null){
 						child.drawSelected(null, this.context, this.transformation);
+					}
+				}else if(this.canvas_mouse_handler.getMouseMode() == CanvasMouseHandler.MouseModes.MoveMode){
+					var selected = this.canvas_mouse_handler.getMoveModeSelectedDigits();
+					for(var i = 0; i < selected.length; ++i){
+						var child = this.display_tree.findChild(selected[i].getIdentification().slice(1));
+						if(child != null){
+							child.drawSelected(null, this.context, this.transformation);
+						}
 					}
 				}
 				/*var selection_tree = this.view.getCurrentSelectionTree();
