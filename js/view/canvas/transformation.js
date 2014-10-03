@@ -15,10 +15,12 @@ define(["../../model/coordinate"], function(Coordinate){
 		this.scale = scale;
 		this.scale = Math.max(this.scale, 1);
 		if(zoom_coordinate != null){
-			var factor = old_scale / this.getScale();
+			var factor = old_scale *1.0/ this.getScale();
 			var center_coordinate = this.getCanvasCenter();
 			var new_center = new Coordinate(zoom_coordinate.getX() - factor*(zoom_coordinate.getX()-center_coordinate.getX()),
-					-zoom_coordinate.getY() + (zoom_coordinate.getY() + center_coordinate.getY())*factor);
+			//		-zoom_coordinate.getY() + (zoom_coordinate.getY() + center_coordinate.getY())*factor);
+			zoom_coordinate.getY() - factor*(zoom_coordinate.getY() - center_coordinate.getY()));
+			console.log("new center = "+JSON.stringify(new_center));
 			this.setCanvasCenter(new_center);
 		}
 	};
@@ -99,7 +101,7 @@ define(["../../model/coordinate"], function(Coordinate){
 	Transformation.prototype.transformRelativeImageCoordinateToCanvasCoordinate = function(coordinate){
 		var canvas_center = this.getCanvasCenter();
 		return new Coordinate((coordinate.getX()-canvas_center.getX())*this.getScalingFactor()+this.getCanvasWidth()/2.0, 
-				(-coordinate.getY()-canvas_center.getY())*this.getScalingFactor() + this.getCanvasHeight()/2.0);
+				(-coordinate.getY()+canvas_center.getY())*this.getScalingFactor() + this.getCanvasHeight()/2.0);
 	};
 	// returns the width of the image over the minimum of the image width/height
 	Transformation.prototype.getHorizontalRatio = function(){
@@ -111,17 +113,21 @@ define(["../../model/coordinate"], function(Coordinate){
 		return this.getImageHeight()/this.getImageRatio();
 	};
 	Transformation.prototype.getScalingFactor = function(){
-		return this.getScale() * Math.min(3.0/8.0*this.getCanvasWidth(), 1.0/2.0*this.getCanvasHeight());
+		return this.getScale() * this.getScalingRatioFactor();
+	};
+	Transformation.prototype.getScalingRatioFactor = function(){
+		return Math.min(3.0/8.0*this.getCanvasWidth(), 1.0/2.0*this.getCanvasHeight());
 	};
 	// converts a canvas coordinate to a relative image coordinate
 	Transformation.prototype.transformCanvasCoordinateToRelativeImageCoordinate = function(coordinate){
 		var canvas_center = this.getCanvasCenter();
 		return new Coordinate((coordinate.getX()-this.getCanvasWidth()/2.0)/this.getScalingFactor()+canvas_center.getX(), 
-				-(coordinate.getY()-this.getCanvasHeight()/2.0)/this.getScalingFactor()-canvas_center.getY());
+				-(coordinate.getY()-this.getCanvasHeight()/2.0)/this.getScalingFactor()+canvas_center.getY());
 	};
 	Transformation.prototype.transformCanvasTranslationToRelativeImageTranslation = function(coordinate){
 		//TODO: verify the formula below
-		return new Coordinate(3.0/8.0/this.getImageWidth()*coordinate.getX(), .5/this.getImageHeight()*coordinate.getY()).scalarMultiply(1.0/this.getScalingFactor());
+		console.log("translation vector = "+JSON.stringify(coordinate));
+		//return new Coordinate(3.0/8.0/this.getImageWidth()*coordinate.getX(), .5/this.getImageHeight()*coordinate.getY()).scalarMultiply(1.0/this.getScalingFactor());
 	};
 	Transformation.prototype.reset = function(){
 		this.setScale(1);
@@ -134,23 +140,26 @@ define(["../../model/coordinate"], function(Coordinate){
 		if(rectangle.getLeft() > rectangle.getRight() || rectangle.getTop() > rectangle.getBottom()){
 			return;
 		}
+		console.log("rectangle: "+JSON.stringify(rectangle));
 		this.setCanvasCenter(new Coordinate((rectangle.getLeft()+rectangle.getRight())/2.0, (rectangle.getTop()+rectangle.getBottom())/2.0));
 		var horizontal = null;
 		if(rectangle.getLeft() == rectangle.getRight()){
 			horizontal = Number.MAX_VALUE;
 		}else{
-			horizontal = this.getCanvasWidth()/this.getDisplayRatio()/(this.getCanvasCenter().getX()-rectangle.getLeft());
+			//horizontal = this.getCanvasWidth()/this.getDisplayRatio()/(this.getCanvasCenter().getX()-rectangle.getLeft());
+			horizontal = this.getCanvasWidth()/(rectangle.getRight()-rectangle.getLeft());
 		}
 		var vertical = null;
 		if(rectangle.getTop() == rectangle.getBottom()){
 			vertical = Number.MAX_VALUE;
 		}else{
-			vertical = this.getCanvasHeight()/this.getDisplayRatio()/(this.getCanvasCenter().getY()-rectangle.getTop());
+			//vertical = this.getCanvasHeight()/this.getDisplayRatio()/(this.getCanvasCenter().getY()-rectangle.getTop());
+			vertical = this.getCanvasHeight()/(rectangle.getBottom()-rectangle.getTop());
 		}
 		if(vertical == horizontal && horizontal == Number.MAX_VALUE){
 			return;
 		}
-		this.setScale(Math.min(horizontal, vertical));
+		this.setScale(Math.min(horizontal, vertical)/this.getScalingRatioFactor());
 	};
 	return Transformation;
 });

@@ -197,7 +197,9 @@ define([
 				//this.canvas.getTransformation().setCanvasCenter(new_center);
 				var old_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(this.previous_mouse_coordinate);
 				var new_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
-				this.canvas.getTransformation().setCanvasCenter(old_center.add(new Coordinate(old_relative.getX()-new_relative.getX(), -old_relative.getY() + new_relative.getY())));
+				this.canvas.getTransformation().setCanvasCenter(old_center.add(new Coordinate(old_relative.getX()-new_relative.getX(), old_relative.getY() - new_relative.getY())));
+				//var mv = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
+				//this.canvas.getTransformation().setCanvasCenter(old_center.add(mv));
 				this.canvas.updateCanvas(signal, data);
 			}
 			break;
@@ -745,6 +747,14 @@ define([
 	};
 	CanvasMouseHandler.prototype.getMouseMode = function(){
 		return this.current_mouse_mode;
+	};
+	CanvasMouseHandler.prototype.getSelectedObjects = function(){
+		switch(this.current_mouse_mode){
+		case CanvasMouseHandler.MouseModes.EditMode:
+			return [this.getEditModeSelectedProxy()];
+		case CanvasMouseHandler.MouseModes.MoveMode:
+			return this.getMoveModeSelectedDigits();
+		}
 	};
 	return CanvasMouseHandler;
 });

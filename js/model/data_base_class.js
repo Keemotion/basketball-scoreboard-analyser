@@ -378,6 +378,9 @@ define([
 		return current_configuration;
 	};*/
 	BaseDataClass.prototype.getBoundingRectangle = function(rectangle){
+		if(rectangle == null){
+			rectangle = new BoundingRectangle();
+		}
 		var sub_nodes = this.getSubNodes();
 		for(var i = 0; i < sub_nodes.length; ++i){
 			sub_nodes[i].getBoundingRectangle(rectangle);

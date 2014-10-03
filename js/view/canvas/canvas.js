@@ -6,11 +6,12 @@ define(
 				"../../messaging_system/events/canvas_key_event",
 				"./handlers/canvas_mouse_handler",
 				"../../model/selection_tree", "../../model/selection_node",
-				"../../messaging_system/events/mouse_event" ],
+				"../../messaging_system/events/mouse_event",
+				"../../model/bounding_rectangle"],
 		function(EventListener, Coordinate, Transformation, DisplayTree,
 				SubmitGroupDetailsEvent, DisplayChangedHandler,
 				CanvasKeyEvent, CanvasMouseHandler, SelectionTree,
-				SelectionNode, MouseEvent) {
+				SelectionNode, MouseEvent, BoundingRectangle) {
 			var MyCanvas = function(view, target_view, proxy, messaging_system) {
 				var self = this;
 				this.view = view;
@@ -371,8 +372,13 @@ define(
 				return this.image;
 			};
 			MyCanvas.prototype.autoFocus = function(signal, data) {
-				var tree = this.view.getCurrentSelectionTree();
-				var bounding_rectangle = tree.getBoundingRectangle();
+				//var tree = this.view.getCurrentSelectionTree();
+				//var bounding_rectangle = tree.getBoundingRectangle();
+				var bounding_rectangle = new BoundingRectangle();
+				var selected_elements = this.canvas_mouse_handler.getSelectedObjects();
+				for(var i = 0; i < selected_elements.length; ++i){
+					selected_elements[i].getBoundingRectangle(bounding_rectangle);
+				}
 				this.transformation
 						.updateToContainRectangle(bounding_rectangle);
 				this.updateCanvas();
