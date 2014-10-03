@@ -183,23 +183,9 @@ define([
 		case CanvasMouseHandler.MouseModes.CanvasMode:
 			//move canvas
 			if(this.mouse_down){
-				//var mv = new Coordinate(
-				//	this.canvas.getTransformation().getCanvasWidth() / 2 - (data.getCoordinate().getX() - this.previous_mouse_coordinate.getX()),
-				//	this.canvas.getTransformation().getCanvasHeight() / 2 - (data.getCoordinate().getY() - this.previous_mouse_coordinate.getY())
-				//);
-				//var transformed = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(mv);
-				//var mv = new Coordinate(this.previous_mouse_coordinate.getX()-data.getCoordinate().getX(), this.previous_mouse_coordinate.getY()-data.getCoordinate().getY());
 				var old_center = this.canvas.getTransformation().getCanvasCenter();
-				//var new_center = old_center.add(this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(mv));
-				//console.log("mv = "+JSON.stringify(mv));
-				//console.log("old center = "+JSON.stringify(old_center));
-				//console.log("new center = " + JSON.stringify(new_center));
-				//this.canvas.getTransformation().setCanvasCenter(new_center);
-				var old_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(this.previous_mouse_coordinate);
-				var new_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
-				this.canvas.getTransformation().setCanvasCenter(old_center.add(new Coordinate(old_relative.getX()-new_relative.getX(), old_relative.getY() - new_relative.getY())));
-				//var mv = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
-				//this.canvas.getTransformation().setCanvasCenter(old_center.add(mv));
+				var mv = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0))).scalarMultiply(-1.0);
+				this.canvas.getTransformation().setCanvasCenter(old_center.add(mv));
 				this.canvas.updateCanvas(signal, data);
 			}
 			break;
@@ -212,10 +198,7 @@ define([
 		case CanvasMouseHandler.MouseModes.MoveMode:
 			//move selected digits at once
 			if(this.mouse_down && this.moving){
-
-				var old_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(this.previous_mouse_coordinate);
-				var new_relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
-				var transformed = new Coordinate(new_relative.getX()-old_relative.getX(), new_relative.getY()-old_relative.getY());
+				var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
 				this.messaging_system.fire(this.messaging_system.events.MoveModeObjectsMoved, new MoveModeObjectsMovedEvent(this.getMoveModeSelectedDigitsIdentifications(), transformed));
 			}
 			break;

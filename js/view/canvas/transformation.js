@@ -18,9 +18,7 @@ define(["../../model/coordinate"], function(Coordinate){
 			var factor = old_scale *1.0/ this.getScale();
 			var center_coordinate = this.getCanvasCenter();
 			var new_center = new Coordinate(zoom_coordinate.getX() - factor*(zoom_coordinate.getX()-center_coordinate.getX()),
-			//		-zoom_coordinate.getY() + (zoom_coordinate.getY() + center_coordinate.getY())*factor);
 			zoom_coordinate.getY() - factor*(zoom_coordinate.getY() - center_coordinate.getY()));
-			console.log("new center = "+JSON.stringify(new_center));
 			this.setCanvasCenter(new_center);
 		}
 	};
@@ -125,9 +123,7 @@ define(["../../model/coordinate"], function(Coordinate){
 				-(coordinate.getY()-this.getCanvasHeight()/2.0)/this.getScalingFactor()+canvas_center.getY());
 	};
 	Transformation.prototype.transformCanvasTranslationToRelativeImageTranslation = function(coordinate){
-		//TODO: verify the formula below
-		console.log("translation vector = "+JSON.stringify(coordinate));
-		//return new Coordinate(3.0/8.0/this.getImageWidth()*coordinate.getX(), .5/this.getImageHeight()*coordinate.getY()).scalarMultiply(1.0/this.getScalingFactor());
+		return new Coordinate(coordinate.getX()/this.getScalingFactor(), -coordinate.getY()/this.getScalingFactor());
 	};
 	Transformation.prototype.reset = function(){
 		this.setScale(1);
@@ -140,20 +136,17 @@ define(["../../model/coordinate"], function(Coordinate){
 		if(rectangle.getLeft() > rectangle.getRight() || rectangle.getTop() > rectangle.getBottom()){
 			return;
 		}
-		console.log("rectangle: "+JSON.stringify(rectangle));
 		this.setCanvasCenter(new Coordinate((rectangle.getLeft()+rectangle.getRight())/2.0, (rectangle.getTop()+rectangle.getBottom())/2.0));
 		var horizontal = null;
 		if(rectangle.getLeft() == rectangle.getRight()){
 			horizontal = Number.MAX_VALUE;
 		}else{
-			//horizontal = this.getCanvasWidth()/this.getDisplayRatio()/(this.getCanvasCenter().getX()-rectangle.getLeft());
 			horizontal = this.getCanvasWidth()/(rectangle.getRight()-rectangle.getLeft());
 		}
 		var vertical = null;
 		if(rectangle.getTop() == rectangle.getBottom()){
 			vertical = Number.MAX_VALUE;
 		}else{
-			//vertical = this.getCanvasHeight()/this.getDisplayRatio()/(this.getCanvasCenter().getY()-rectangle.getTop());
 			vertical = this.getCanvasHeight()/(rectangle.getBottom()-rectangle.getTop());
 		}
 		if(vertical == horizontal && horizontal == Number.MAX_VALUE){
