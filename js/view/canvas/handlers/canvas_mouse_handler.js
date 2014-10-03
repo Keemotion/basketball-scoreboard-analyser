@@ -544,9 +544,7 @@ define([
 			if(res){
 				res = res.getProxy().getParentOfTypeProxy("digit");
 				if(res){
-					console.log("selected clicked!");
 					if(this.isMoveModeSelected(res)){
-						console.log("moving = true");
 						this.moving = true;
 					}
 				}
@@ -560,17 +558,24 @@ define([
 	CanvasMouseHandler.prototype.click = function(signal, data){
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.MoveMode:
+			if(this.mouse_dragged){
+				return;
+			}
 			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 			if(res){
 				res = res.getProxy().getParentOfTypeProxy("digit");
-				if(res){
-					if(data.getEventData().ctrlKey){
-						//add res to currently selected MoveModeDigits
-						this.addMoveModeSelectedDigit(res);
-					}else{
-						//apply res to currently selectd MoveModeDigits
-						this.setMoveModeSelectedDigits([res]);
-					}
+			}
+			if(res){
+				if(data.getEventData().ctrlKey){
+					//add res to currently selected MoveModeDigits
+					this.addMoveModeSelectedDigit(res);
+				}else{
+					//apply res to currently selectd MoveModeDigits
+					this.setMoveModeSelectedDigits([res]);
+				}
+			}else{
+				if(!data.getEventData().ctrlKey){
+					this.resetMoveModeSelectedDigits();
 				}
 			}
 			break;
@@ -725,6 +730,7 @@ define([
 			this.previous_mouse_mode = this.current_mouse_mode;
 			this.current_mouse_mode = data.getMode();
 		}
+		this.resetMoveModeSelectedDigits();
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.EditMode:
 			this.canvas.getElement().css('cursor', 'crosshair');
