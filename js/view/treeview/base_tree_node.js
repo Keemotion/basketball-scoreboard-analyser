@@ -217,7 +217,6 @@ define(["../../messaging_system/events/selection_event",
 		}else{
 			this.collapse_button.css('visibility', 'hidden');
 		}
-		this.loadConfigurationContent();
 	};
 	BaseTreeNode.prototype.loadConfigurationContent = function(){
 		this.configuration_element.empty();
@@ -231,11 +230,12 @@ define(["../../messaging_system/events/selection_event",
 	};
 	BaseTreeNode.prototype.add_configuration = function(key, value) {
 		var self = this;
+		var value_element;
 		var key_element = $('<select>').attr('id', 'key').addClass('key-element').change(
 				function() {
+					value_element.val('');
 					self.submitConfigurationKeys();
 				});
-		var value_element;
 		var keys = ConfigurationKey.getKeyOptions();
 		for (var i = 0; i < keys.length; ++i) {
 			key_element.append($('<option>').attr('value', keys[i])
@@ -270,6 +270,9 @@ define(["../../messaging_system/events/selection_event",
 							self.submitConfigurationKeys();
 						}));
 		this.configuration_list.append(li);
+		if(value_element.val() != value){
+			self.submitConfigurationKeys();
+		}
 	};
 	BaseTreeNode.prototype.submitConfigurationKeys = function(){
 		var configuration_keys = new Object();
