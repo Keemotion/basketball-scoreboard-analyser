@@ -2,18 +2,21 @@ define(["../../messaging_system/events/selection_event",
 		"../../messaging_system/event_listener",
 		"../../messaging_system/events/edit_mode_selection_event",
 		"../../messaging_system/events/submit_group_details_event",
-		"../../model/configuration_key"], 
+		"../../model/configuration_key",
+		"../../messaging_system/events/tree_node_expand_event"], 
 		function(SelectionEvent, 
 				EventListener, 
 				EditModeSelectionEvent, 
 				SubmitGroupDetailsEvent,
-				ConfigurationKey) {
+				ConfigurationKey,
+				TreeNodeExpandEvent) {
 	var BaseTreeNode = function() {
 	};
 	BaseTreeNode.prototype.init = function(parent_node, data_proxy,
 			messaging_system) {
 		this.parent_node = parent_node;
 		this.data_proxy = data_proxy;
+		this.expanded = false;
 		this.messaging_system = messaging_system;
 		this.commands = new Array();
 		this.sub_tree_nodes = new Array();
@@ -21,12 +24,42 @@ define(["../../messaging_system/events/selection_event",
 		this.setUpdateListeners(data_proxy.getUpdateEvents());
 		this.editModeSelectionSetListener = new EventListener(this, this.editModeSelectionSet);
 		this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, this.editModeSelectionSetListener);
+		this.expandListener = new EventListener(this, this.treeNodeExpandRequested);
+		this.messaging_system.addEventListener(this.messaging_system.events.ExpandTreeNode, this.expandListener);
+		this.messaging_system.addEventListener(this.messaging_system.events.CollapseTreeNode, this.expandListener);
+		//TODO: clean-up event listeners when object is destroyed
 	};
 	BaseTreeNode.prototype.addCommand = function(command) {
 		this.commands.push(command);
 	};
 	BaseTreeNode.prototype.clearCommands = function(){
 		this.commands.length = 0;
+	};
+	BaseTreeNode.prototype.treeNodeExpandRequested = function(signal, data){
+		if(!this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
+			return;
+		}
+		switch(signal){
+		case this.messaging_system.events.ExpandTreeNode:
+			this.expanded = true;
+			break;
+		case this.messaging_system.events.CollapseTreeNode:
+			this.expanded = false;
+			break;
+		default:
+			break;
+		}
+		this.applyCollapse();
+	};
+	BaseTreeNode.prototype.isExpanded = function(){
+		return this.expanded;
+	};
+	BaseTreeNode.prototype.applyCollapse = function(){
+		if(this.isExpanded()){
+			this.expand();
+		}else{
+			this.collapse();
+		}
 	};
 	BaseTreeNode.prototype.collapse = function(){
 		//this.sub_nodes_element.collapse('hide');
@@ -52,18 +85,18 @@ define(["../../messaging_system/events/selection_event",
 		if(data.getProxy() == null){
 			this.collapse();
 		}else if(this.data_proxy.isPossiblyAboutThis(data.getProxy().getIdentification())){
-			this.expand();
-			this.collapse();
+			//this.expand();
+			//this.collapse();
 			this.is_selected = true;
 			if(this.nameEditable()){
 				this.title_span.select();
 			}
 		}else{
-			if(!this.data_proxy.isAncestorOf(data.getProxy())){
+			/*if(!this.data_proxy.isAncestorOf(data.getProxy())){
 				this.collapse();
 			}else{
 				this.expand();
-			}
+			}*/
 		}
 		this.updateContent();
 		/*if(this.data_proxy.getType() != 'corner'){
@@ -112,8 +145,13 @@ define(["../../messaging_system/events/selection_event",
 				'fa fa-toggle-down');
 		this.collapse_button = $('<button>').addClass('btn btn-xs').click(
 				function() {
-					self.sub_nodes_element.collapse('toggle');
-					self.configuration_element.collapse('toggle');
+					//self.sub_nodes_element.collapse('toggle');
+					//self.configuration_element.collapse('toggle');
+					if(self.isExpanded()){
+						self.messaging_system.fire(self.messaging_system.events.CollapseTreeNode, new TreeNodeExpandEvent(self.getProxy().getIdentification()));
+					}else{
+						self.messaging_system.fire(self.messaging_system.events.ExpandTreeNode, new TreeNodeExpandEvent(self.getProxy().getIdentification()));
+					}
 					return false;
 				}).append(this.collapse_button_collapse_icon).append(
 				this.collapse_button_expand_icon);
@@ -159,6 +197,7 @@ define(["../../messaging_system/events/selection_event",
 		this.loadSubNodesContent();
 		this.loadConfigurationContent();
 		this.updateContent();
+		this.applyCollapse();
 	};
 	BaseTreeNode.prototype.updateContent = function() {
 		this.id_element.val(this.data_proxy.getId());
@@ -184,9 +223,6 @@ define(["../../messaging_system/events/selection_event",
 		this.configuration_element.empty();
 		this.configuration_list = $('<ul>');
 		var configuration_keys = this.getProxy().getConfigurationKeys();
-		if(this.getProxy().getType() == 'group'){
-			console.log("configuration keys = "+JSON.stringify(configuration_keys));
-		}
 		
 		for ( var k in configuration_keys) {
 			this.add_configuration(k, configuration_keys[k]);
@@ -198,7 +234,6 @@ define(["../../messaging_system/events/selection_event",
 		var key_element = $('<select>').attr('id', 'key').addClass('key-element').change(
 				function() {
 					self.submitConfigurationKeys();
-					//TODO: implement submit!
 				});
 		var value_element;
 		var keys = ConfigurationKey.getKeyOptions();
@@ -226,26 +261,21 @@ define(["../../messaging_system/events/selection_event",
 		}
 		value_element.attr('id', 'value').change(function() {
 			self.submitConfigurationKeys();
-			//TODO: implement submit
 		}).addClass('value-element').val(value);
 		var li = $('<li>')
-		// .text('configuration key: ')
 		.append(key_element).append(value_element).append(
 				$('<button>').addClass('btn btn-small btn-default')
 						.text('x').click(function() {
 							li.remove();
 							self.submitConfigurationKeys();
-							//TODO: implement submit
 						}));
 		this.configuration_list.append(li);
-		//console.log(this.configuration_element.html());
 	};
 	BaseTreeNode.prototype.submitConfigurationKeys = function(){
 		var configuration_keys = new Object();
 		this.configuration_list.find('li').each(function(){
 			var value = $(this).find('#value').val();
 			var key = $(this).find('#key').val();
-			//configuration_keys.push(key, "value":value});
 			configuration_keys[key] = value;
 		});
 		var data = new Object();

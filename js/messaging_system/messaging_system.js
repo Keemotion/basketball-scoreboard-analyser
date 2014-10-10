@@ -106,7 +106,10 @@ define([], function() {
 		AutoDetectDigit: 'AutoDetectDigit',
 		
 		DigitCornersListen : 'DigitCornersListen',
-		CoordinateListen: 'CoordinateListen'
+		CoordinateListen: 'CoordinateListen',
+		
+		ExpandTreeNode: 'ExpandTreeNode',
+		CollapseTreeNode: 'CollapseTreeNode'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data) {
