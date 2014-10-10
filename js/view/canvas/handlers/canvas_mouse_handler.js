@@ -14,7 +14,8 @@ define([
 	"../../../messaging_system/events/group_changed_event",
 	"../../../messaging_system/events/digit_corners_listen_event",
 	"../../../messaging_system/events/add_element_event",
-	"../../../messaging_system/events/move_mode_objects_moved_event"]
+	"../../../messaging_system/events/move_mode_objects_moved_event",
+	"../../../messaging_system/events/tree_node_expand_event"]
 	, function(
 		EventListener,
 		Coordinate,
@@ -31,7 +32,8 @@ define([
 		GroupChangedEvent,
 		DigitCornersListenEvent,
 		AddElementEvent,
-		MoveModeObjectsMovedEvent
+		MoveModeObjectsMovedEvent,
+		TreeNodeExpandEvent
 	){
 	var SelectionRectangle = function(){
 		this.start_coordinate = new Coordinate();
@@ -590,8 +592,9 @@ define([
 		//inside digit -> select
 		if(res){
 			//this.toggleSelected(res);
-			var e = new SelectionEvent(res.getProxy().getSelectionTree());
-			this.messaging_system.fire(this.messaging_system.events.SelectionSet, e);
+			//var e = new SelectionEvent(res.getProxy().getSelectionTree());
+			//this.messaging_system.fire(this.messaging_system.events.SelectionSet, e);
+			this.messaging_system.fire(this.messaging_system.events.ExpandTreeNode, new TreeNodeExpandEvent(res.getProxy().getIdentification()));
 		}else{
 		}
 		//inside dot
