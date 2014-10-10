@@ -49,7 +49,11 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 				return;
 			}
 			coordinates.push(transformation.transformRelativeImageCoordinateToCanvasCoordinate(sub_proxies[i].getCoordinate()));
+			//console.log("relative: "+sub_proxies[i].getCoordinate().getY());
+			//console.log("canvas: "+coordinates[coordinates.length-1].getY());
+			//console.log("image: "+transformation.transformRelativeImageCoordinateToAbsoluteImageCoordinate(sub_proxies[i].getCoordinate()).getY());
 		}
+		
 		var left_middle = new Coordinate((coordinates[0].getX()+coordinates[3].getX())/2.0, (coordinates[0].getY()+coordinates[3].getY())/2.0);
 		var right_middle = new Coordinate((coordinates[1].getX()+coordinates[2].getX())/2.0, (coordinates[1].getY()+coordinates[2].getY())/2.0);
 		context.lineWidth = 2;

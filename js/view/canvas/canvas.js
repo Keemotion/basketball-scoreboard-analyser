@@ -300,6 +300,7 @@ define(
 			};
 			// draws the canvas image and (if needed) the display objects
 			MyCanvas.prototype.drawCanvas = function() {
+				console.log(JSON.stringify(this.getTransformation().transformRelativeImageCoordinateToAbsoluteImageCoordinate(new Coordinate(0, 0.60905))));
 				this.context.clearRect(0, 0, this.canvas_element.width,
 						this.canvas_element.height);
 				if (this.image) {
