@@ -1,13 +1,13 @@
 define(["../../messaging_system/events/selection_event",
-        "../../messaging_system/event_listener",
-        "../../messaging_system/events/edit_mode_selection_event",
-        "../../messaging_system/events/submit_group_details_event",
-        "../../model/configuration_key"], 
-        function(SelectionEvent, 
-        		EventListener, 
-        		EditModeSelectionEvent, 
-        		SubmitGroupDetailsEvent,
-        		ConfigurationKey) {
+		"../../messaging_system/event_listener",
+		"../../messaging_system/events/edit_mode_selection_event",
+		"../../messaging_system/events/submit_group_details_event",
+		"../../model/configuration_key"], 
+		function(SelectionEvent, 
+				EventListener, 
+				EditModeSelectionEvent, 
+				SubmitGroupDetailsEvent,
+				ConfigurationKey) {
 	var BaseTreeNode = function() {
 	};
 	BaseTreeNode.prototype.init = function(parent_node, data_proxy,
@@ -184,6 +184,10 @@ define(["../../messaging_system/events/selection_event",
 		this.configuration_element.empty();
 		this.configuration_list = $('<ul>');
 		var configuration_keys = this.getProxy().getConfigurationKeys();
+		if(this.getProxy().getType() == 'group'){
+			console.log("configuration keys = "+JSON.stringify(configuration_keys));
+		}
+		
 		for ( var k in configuration_keys) {
 			this.add_configuration(k, configuration_keys[k]);
 		}
@@ -191,9 +195,9 @@ define(["../../messaging_system/events/selection_event",
 	};
 	BaseTreeNode.prototype.add_configuration = function(key, value) {
 		var self = this;
-		var key_element = $('<select>').addClass('key-element').change(
+		var key_element = $('<select>').attr('id', 'key').addClass('key-element').change(
 				function() {
-					//self.submit();
+					self.submitConfigurationKeys();
 					//TODO: implement submit!
 				});
 		var value_element;
@@ -220,8 +224,8 @@ define(["../../messaging_system/events/selection_event",
 			value = "";
 			value_element = $('<input>');
 		}
-		value_element.change(function() {
-			//self.submit();
+		value_element.attr('id', 'value').change(function() {
+			self.submitConfigurationKeys();
 			//TODO: implement submit
 		}).addClass('value-element').val(value);
 		var li = $('<li>')
@@ -230,11 +234,23 @@ define(["../../messaging_system/events/selection_event",
 				$('<button>').addClass('btn btn-small btn-default')
 						.text('x').click(function() {
 							li.remove();
-							//self.submit();
+							self.submitConfigurationKeys();
 							//TODO: implement submit
 						}));
 		this.configuration_list.append(li);
 		//console.log(this.configuration_element.html());
+	};
+	BaseTreeNode.prototype.submitConfigurationKeys = function(){
+		var configuration_keys = new Object();
+		this.configuration_list.find('li').each(function(){
+			var value = $(this).find('#value').val();
+			var key = $(this).find('#key').val();
+			//configuration_keys.push(key, "value":value});
+			configuration_keys[key] = value;
+		});
+		var data = new Object();
+		data.configuration_keys = configuration_keys;
+		this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(this.getProxy().getIdentification(), data, true));
 	};
 	BaseTreeNode.prototype.loadSubNodesContent = function() {
 		this.sub_nodes_list = $('<ul>');

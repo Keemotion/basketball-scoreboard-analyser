@@ -21,7 +21,7 @@ define(["./base_tree_node",
 			.attr('title', 'Add configuration to current group')
 			.append($('<i>').addClass('fa fa-cog'))
 			.click(function(){
-				
+				self.add_configuration(null, null);
 			});
 		this.addCommand(this.add_configuration_button);
 		

@@ -142,6 +142,9 @@ define(["./digit",
 		if(data.hasOwnProperty('name')){
 			this.name = $.trim(data.name);
 		}
+		if(data.hasOwnProperty('configuration_keys')){
+			this.setConfigurationKeys(data.configuration_keys);
+		}
 		
 		this.notifyGroupChanged();
 	};
