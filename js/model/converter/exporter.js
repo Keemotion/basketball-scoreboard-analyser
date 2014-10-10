@@ -34,7 +34,7 @@ define([], function(){
 					result += this.getExportString(obj.sub_nodes[i], concat_group_name(current_group_name, obj.name), special);
 				}
 				if(dot_group){
-					result += "\n";
+					result += ",0.023333333\n";
 				}
 				break;
 			case 'digit':
