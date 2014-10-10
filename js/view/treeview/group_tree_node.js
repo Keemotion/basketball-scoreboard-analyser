@@ -72,5 +72,8 @@ define(["./base_tree_node",
 	GroupTreeNode.prototype.nameEditable = function(){
 		return true;
 	};
+	GroupTreeNode.prototype.showConfiguration = function(){
+		return true;
+	};
 	return GroupTreeNode;
 });

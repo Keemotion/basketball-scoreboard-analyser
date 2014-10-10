@@ -141,7 +141,7 @@ define([
 		return data.event_data.preventDefault() && false;
 	};
 	CanvasMouseHandler.prototype.mouseMove = function(signal, data){
-		var canvas_coordinate = data.getCoordinate();
+		/*var canvas_coordinate = data.getCoordinate();
 		var relative_coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
 		//var rel_canvas_coordinate = this.canvas.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(relative_coordinate);
 		var absolute_coordinate = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(data.getCoordinate());
@@ -150,7 +150,7 @@ define([
 		console.log("relative:                 "+JSON.stringify(relative_coordinate));
 		//console.log("canvas based on relative: "+JSON.stringify(rel_canvas_coordinate));
 		console.log("absolute:                 "+JSON.stringify(absolute_coordinate));
-		//console.log("canvas based on absolute: "+JSON.stringify(abs_canvas_coordinate));
+		//console.log("canvas based on absolute: "+JSON.stringify(abs_canvas_coordinate));*/
 		if(this.mouse_down){
 			this.mouse_dragged = true;
 		}

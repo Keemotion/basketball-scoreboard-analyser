@@ -1,7 +1,13 @@
 define(["../../messaging_system/events/selection_event",
         "../../messaging_system/event_listener",
         "../../messaging_system/events/edit_mode_selection_event",
-        "../../messaging_system/events/submit_group_details_event"], function(SelectionEvent, EventListener, EditModeSelectionEvent, SubmitGroupDetailsEvent) {
+        "../../messaging_system/events/submit_group_details_event",
+        "../../model/configuration_key"], 
+        function(SelectionEvent, 
+        		EventListener, 
+        		EditModeSelectionEvent, 
+        		SubmitGroupDetailsEvent,
+        		ConfigurationKey) {
 	var BaseTreeNode = function() {
 	};
 	BaseTreeNode.prototype.init = function(parent_node, data_proxy,
@@ -27,6 +33,7 @@ define(["../../messaging_system/events/selection_event",
 		this.collapse_button_collapse_icon.hide();
 		this.collapse_button_expand_icon.show();
 		this.sub_nodes_element.removeClass('in');
+		this.configuration_element.removeClass('in');
 	};
 	BaseTreeNode.prototype.expand = function(){
 		if(this.parent_node){
@@ -34,6 +41,7 @@ define(["../../messaging_system/events/selection_event",
 		}
 		//this.sub_nodes_element.collapse('show');
 		this.sub_nodes_element.addClass('in');
+		this.configuration_element.addClass('in');
 		this.collapse_button_expand_icon.hide();
 		this.collapse_button_collapse_icon.show();
 	};
@@ -105,6 +113,7 @@ define(["../../messaging_system/events/selection_event",
 		this.collapse_button = $('<button>').addClass('btn btn-xs').click(
 				function() {
 					self.sub_nodes_element.collapse('toggle');
+					self.configuration_element.collapse('toggle');
 					return false;
 				}).append(this.collapse_button_collapse_icon).append(
 				this.collapse_button_expand_icon);
@@ -144,8 +153,11 @@ define(["../../messaging_system/events/selection_event",
 					self.collapse_button_collapse_icon.hide();
 					self.collapse_button_expand_icon.show();
 				});
+		this.configuration_element = $('<div>').addClass('collapse');
+		this.element.append(this.configuration_element);
 		this.element.append(this.sub_nodes_element);
 		this.loadSubNodesContent();
+		this.loadConfigurationContent();
 		this.updateContent();
 	};
 	BaseTreeNode.prototype.updateContent = function() {
@@ -166,6 +178,63 @@ define(["../../messaging_system/events/selection_event",
 		}else{
 			this.collapse_button.css('visibility', 'hidden');
 		}
+		this.loadConfigurationContent();
+	};
+	BaseTreeNode.prototype.loadConfigurationContent = function(){
+		this.configuration_element.empty();
+		this.configuration_list = $('<ul>');
+		var configuration_keys = this.getProxy().getConfigurationKeys();
+		for ( var k in configuration_keys) {
+			this.add_configuration(k, configuration_keys[k]);
+		}
+		this.configuration_element.append(this.configuration_list);
+	};
+	BaseTreeNode.prototype.add_configuration = function(key, value) {
+		var self = this;
+		var key_element = $('<select>').addClass('key-element').change(
+				function() {
+					//self.submit();
+					//TODO: implement submit!
+				});
+		var value_element;
+		var keys = ConfigurationKey.getKeyOptions();
+		for (var i = 0; i < keys.length; ++i) {
+			key_element.append($('<option>').attr('value', keys[i])
+					.text(keys[i]));
+		}
+		if (key != null) {
+			key_element.val(key);
+			var options = ConfigurationKey.getPossibleValues(key);
+			if (options instanceof Array) {
+				value_element = $('<select>');
+				for (var i = 0; i < options.length; ++i) {
+					value_element.append($('<option>').text(options[i])
+							.attr('value', options[i]));
+				}
+			} else if (options == "numeric" || options == "text") {
+				value_element = $('<input>');
+			} else {
+				value_element = $('<input>');
+			}
+		} else {
+			value = "";
+			value_element = $('<input>');
+		}
+		value_element.change(function() {
+			//self.submit();
+			//TODO: implement submit
+		}).addClass('value-element').val(value);
+		var li = $('<li>')
+		// .text('configuration key: ')
+		.append(key_element).append(value_element).append(
+				$('<button>').addClass('btn btn-small btn-default')
+						.text('x').click(function() {
+							li.remove();
+							//self.submit();
+							//TODO: implement submit
+						}));
+		this.configuration_list.append(li);
+		//console.log(this.configuration_element.html());
 	};
 	BaseTreeNode.prototype.loadSubNodesContent = function() {
 		this.sub_nodes_list = $('<ul>');
@@ -209,6 +278,9 @@ define(["../../messaging_system/events/selection_event",
 		}
 	};
 	BaseTreeNode.prototype.nameEditable = function(){
+		return false;
+	};
+	BaseTreeNode.prototype.showConfiguration = function(){
 		return false;
 	};
 	BaseTreeNode.prototype.getProxy = function(){
