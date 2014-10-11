@@ -1,4 +1,4 @@
-define(['../../messaging_system/events/load_state_event'],function(LoadStateEvent){
+define(['../../messaging_system/events/load_state_event'], function(LoadStateEvent){
 	//Provides the GUI to import data
 	var LoadStateComponent = function(view_target, messaging_system){
 		var self = this;
@@ -6,11 +6,11 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 		this.containerElement = view_target;
 		var text_area = this.textArea = $('<textarea>')
 			.attr({
-				'class':'txt_state'
+				'class' : 'txt_state'
 			});
 		var btn_div = $('<div>')
 			.attr({
-				'class':'div_state_buttons'
+				'class' : 'div_state_buttons'
 			});
 		//loading JSON from the text area
 		this.btnApply = $('<button>')
@@ -22,10 +22,14 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 		btn_div.append(this.btnApply);
 		//loading PRM from a file
 		this.file_btn = $('<input>').attr('type', 'file')
-			.change(function(){self.fileChanged();})
+			.change(function(){
+				self.fileChanged();
+			})
 			.attr('id', 'btnLoadFile');
 		this.img_btn = $('<input>').attr('type', 'file')
-			.change(function(){self.imageChanged();})
+			.change(function(){
+				self.imageChanged();
+			})
 			.attr('id', 'btnLoadImage');
 		var file_div = $('<div>').append($('<span>').html('Load file:')).append(this.file_btn).append($('<span>').html('<br>Load image: ')).append(this.img_btn);
 		this.containerElement
@@ -56,7 +60,9 @@ define(['../../messaging_system/events/load_state_event'],function(LoadStateEven
 		reader.readAsText(f);
 		var tmp = this.file_btn;
 		this.file_btn = $('<input>').attr('type', 'file')
-			.change(function(){self.fileChanged();})
+			.change(function(){
+				self.fileChanged();
+			})
 			.attr('id', 'btnLoadFile');
 		tmp.replaceWith(this.file_btn);
 	};

@@ -1,13 +1,13 @@
 define([
-		"./group",
-		"./configuration_key",
-		"./proxy/state_proxy",
-		'./data_base_class',
-		'../messaging_system/events/state_changed_event',
-		'../messaging_system/event_listener',
-		'./converter/parser',
-		'./converter/exporter'
-		], function(Group, ConfigurationKey, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser, Exporter){
+	"./group",
+	"./configuration_key",
+	"./proxy/state_proxy",
+	'./data_base_class',
+	'../messaging_system/events/state_changed_event',
+	'../messaging_system/event_listener',
+	'./converter/parser',
+	'./converter/exporter'
+], function(Group, ConfigurationKey, StateProxy, DataBaseClass, StateChangedEvent, EventListener, Parser, Exporter){
 	//represents root node in the hierarchy of objects
 	var State = function(messaging_system){
 		this.id = 0;
@@ -81,7 +81,7 @@ define([
 	State.prototype.parseJSON = function(json){
 		this.clear();
 		try{
-			console.log("json = "+json);
+			console.log("json = " + json);
 			var data = JSON.parse(json);
 			return this.parse(data);
 		}catch(err){

@@ -1,4 +1,4 @@
-define([],function(){
+define([], function(){
 	var SelectionEvent = function(selection_tree, temporary){
 		this.selection_tree = selection_tree;
 		this.temporary = temporary;

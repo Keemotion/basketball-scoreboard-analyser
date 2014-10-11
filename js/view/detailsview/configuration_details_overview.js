@@ -25,7 +25,7 @@ define([], function(){
 		//console.log("new configuration details overview!");
 		for(var k in configuration){
 			if(configuration.hasOwnProperty(k)){
-				this.list_element.append($('<li>').text(k+" = "+configuration[k]));
+				this.list_element.append($('<li>').text(k + " = " + configuration[k]));
 			}
 		}
 		this.collapse_details();

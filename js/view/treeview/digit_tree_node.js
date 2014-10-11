@@ -1,9 +1,9 @@
 define(["./base_tree_node",
-        "./corner_tree_node",
-        "../../messaging_system/events/group_changed_event",
-        "../../messaging_system/events/remove_group_event",
-        "../../messaging_system/events/auto_detect_digit_event",
-        "../../messaging_system/events/digit_corners_listen_event"], function(BaseTreeNode, CornerTreeNode, GroupChangedEvent, RemoveGroupEvent, AutoDetectDigitEvent, DigitCornersListenEvent){
+	"./corner_tree_node",
+	"../../messaging_system/events/group_changed_event",
+	"../../messaging_system/events/remove_group_event",
+	"../../messaging_system/events/auto_detect_digit_event",
+	"../../messaging_system/events/digit_corners_listen_event"], function(BaseTreeNode, CornerTreeNode, GroupChangedEvent, RemoveGroupEvent, AutoDetectDigitEvent, DigitCornersListenEvent){
 	var DigitTreeNode = function(parent_node, data_proxy, messaging_system){
 		this.init(parent_node, data_proxy, messaging_system);
 		this.reset_button = $('<button>')
@@ -14,7 +14,7 @@ define(["./base_tree_node",
 				messaging_system.fire(messaging_system.events.GroupReset, new GroupChangedEvent(data_proxy.getIdentification()));
 			});
 		this.addCommand(this.reset_button);
-		
+
 		this.auto_detect_button = $('<button>')
 			.addClass('btn btn-xs btn-default')
 			.attr('title', 'Auto-detect corners')
@@ -23,7 +23,7 @@ define(["./base_tree_node",
 				messaging_system.fire(messaging_system.events.AutoDetectDigit, new AutoDetectDigitEvent(data_proxy));
 			});
 		this.addCommand(this.auto_detect_button);
-		
+
 		this.manually_set_digit_button = $('<button>')
 			.addClass('btn btn-xs btn-default')
 			.attr('title', 'Manually set digit')
@@ -32,7 +32,7 @@ define(["./base_tree_node",
 				messaging_system.fire(messaging_system.events.DigitCornersListen, new DigitCornersListenEvent(data_proxy));
 			});
 		this.addCommand(this.manually_set_digit_button);
-		
+
 		this.remove_digit_button = $('<button>')
 			.addClass('btn btn-xs btn-default')
 			.attr('title', 'Remove digit')
@@ -41,7 +41,7 @@ define(["./base_tree_node",
 				messaging_system.fire(messaging_system.events.RemoveGroup, new RemoveGroupEvent(data_proxy.getIdentification()));
 			});
 		this.addCommand(this.remove_digit_button);
-		
+
 		this.loadSubNodes();
 	};
 	DigitTreeNode.prototype = new BaseTreeNode();

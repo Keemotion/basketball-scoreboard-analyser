@@ -1,5 +1,5 @@
 define(["./bounding_rectangle"], function(BoundingRectangle){
-	
+
 	var SelectionNode = function(proxy, selected){
 		this.children = [];
 		this.selected = selected;
@@ -51,11 +51,11 @@ define(["./bounding_rectangle"], function(BoundingRectangle){
 		return this.getProxy().getId();
 	};
 	/*SelectionNode.prototype.setType = function(type){
-		this.type = type;
-	};
-	SelectionNode.prototype.setId = function(id){
-		this.id = id;
-	};*/
+	 this.type = type;
+	 };
+	 SelectionNode.prototype.setId = function(id){
+	 this.id = id;
+	 };*/
 	SelectionNode.prototype.addSelection = function(node){
 		if(node.getSelected()){
 			this.setSelected(true);

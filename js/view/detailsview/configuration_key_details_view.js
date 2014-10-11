@@ -1,5 +1,5 @@
 define(["../../messaging_system/events/submit_group_details_event",
-	"../../messaging_system/event_listener"],function(SubmitGroupDetailsEvent, EventListener){
+	"../../messaging_system/event_listener"], function(SubmitGroupDetailsEvent, EventListener){
 	var ConfigurationKeyDetailsView = function(target_view, data_proxy, messaging_system){
 		var self = this;
 		this.messaging_system = messaging_system;
@@ -7,7 +7,9 @@ define(["../../messaging_system/events/submit_group_details_event",
 		this.data_proxy = data_proxy;
 		this.content_element = $('<div>');
 		this.target_view.append(this.content_element);
-		this.key_element = $('<select>').change(function(){self.form_element.submit();});
+		this.key_element = $('<select>').change(function(){
+			self.form_element.submit();
+		});
 		var options = this.data_proxy.getKeyOptions();
 		for(var i = 0; i < options.length; ++i){
 			this.key_element.append($('<option>').attr('value', options[i]).text(options[i]));
@@ -24,12 +26,12 @@ define(["../../messaging_system/events/submit_group_details_event",
 			.append($('<label>').text('Value: '))
 			.append(this.value_element)
 			.append($('<button>').attr('title', 'submit')
-					.addClass('btn btn-sm btn-default')
-					.append($('<i>').addClass('fa fa-save'))
-					.click(function(){
-				self.form_element.submit();
-				return false;
-			}))
+				.addClass('btn btn-sm btn-default')
+				.append($('<i>').addClass('fa fa-save'))
+				.click(function(){
+					self.form_element.submit();
+					return false;
+				}))
 			.submit(function(){
 				var data = self.collectFormData();
 				var identification = self.data_proxy.getIdentification();

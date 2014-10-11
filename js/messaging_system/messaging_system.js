@@ -1,6 +1,6 @@
-define([], function() {
+define([], function(){
 	//Manages all custom events
-	var MessagingSystem = function() {
+	var MessagingSystem = function(){
 	};
 	MessagingSystem.prototype.events = new Object({
 		//A new tree was loaded
@@ -47,7 +47,7 @@ define([], function() {
 		SubmitGroupDetails : 'SubmitGroupDetails',
 		//An object or a group of objects has been moved
 		ObjectsMoved : 'ObjectsMoved',
-		MoveModeObjectsMoved: 'MoveModeObjectsMoved',
+		MoveModeObjectsMoved : 'MoveModeObjectsMoved',
 
 		//Canvas events
 		CanvasScrolled : 'CanvasScrolled',
@@ -77,7 +77,7 @@ define([], function() {
 
 		//A new element was added in the GUI
 		AddElement : 'AddElement',
-		
+
 		DigitAdded : 'DigitAdded',
 		DotAdded : 'DotAdded',
 
@@ -99,38 +99,38 @@ define([], function() {
 		SelectionChanged : 'SelectionChanged',
 
 		MouseModeChanged : 'MouseModeChanged',
-		
-		AutoFocusSelection: 'AutoFocusSelection',
-		EditModeSelectionSet: 'EditModeSelectionSet',
-		RequestEditModeSelection: 'RequestEditModeSelection',
-		AutoDetectDigit: 'AutoDetectDigit',
-		
+
+		AutoFocusSelection : 'AutoFocusSelection',
+		EditModeSelectionSet : 'EditModeSelectionSet',
+		RequestEditModeSelection : 'RequestEditModeSelection',
+		AutoDetectDigit : 'AutoDetectDigit',
+
 		DigitCornersListen : 'DigitCornersListen',
-		CoordinateListen: 'CoordinateListen',
-		
-		ExpandTreeNode: 'ExpandTreeNode',
-		CollapseTreeNode: 'CollapseTreeNode'
+		CoordinateListen : 'CoordinateListen',
+
+		ExpandTreeNode : 'ExpandTreeNode',
+		CollapseTreeNode : 'CollapseTreeNode'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
-	MessagingSystem.prototype.fire = function(signal, data) {
-		if (!( signal in this.eventListeners)) {
+	MessagingSystem.prototype.fire = function(signal, data){
+		if(!( signal in this.eventListeners)){
 			return;
 		}
-		for (var i = 0; i < this.eventListeners[signal].length; ++i) {
+		for(var i = 0; i < this.eventListeners[signal].length; ++i){
 			this.eventListeners[signal][i].eventFired(signal, data);
 		}
 	};
-	MessagingSystem.prototype.addEventListener = function(signal, listener) {
-		if (!( signal in this.eventListeners)) {
+	MessagingSystem.prototype.addEventListener = function(signal, listener){
+		if(!( signal in this.eventListeners)){
 			this.eventListeners[signal] = new Array();
 		}
 		this.eventListeners[signal].push(listener);
 	};
-	MessagingSystem.prototype.removeEventListener = function(signal, listener) {
-		if (!( signal in this.eventListeners))
+	MessagingSystem.prototype.removeEventListener = function(signal, listener){
+		if(!( signal in this.eventListeners))
 			return;
-		for (var i = 0; i < this.eventListeners[signal].length; ++i) {
-			if (this.eventListeners[signal][i] == listener) {
+		for(var i = 0; i < this.eventListeners[signal].length; ++i){
+			if(this.eventListeners[signal][i] == listener){
 				this.eventListeners[signal][i] = this.eventListeners[signal][this.eventListeners[signal].length - 1];
 				this.eventListeners[signal].pop();
 				break;

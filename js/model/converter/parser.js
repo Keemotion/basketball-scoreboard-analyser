@@ -3,25 +3,26 @@ define([], function(){
 	var Parser = function(data){
 		this.data_string = data;
 	};
+
 	function end_matches(base_str, pattern){
-		return base_str.substring(base_str.length-pattern.length)==pattern;
+		return base_str.substring(base_str.length - pattern.length) == pattern;
 	};
 	function subtract(base_str, pattern){
-		return base_str.substring(0, base_str.length-pattern.length);
+		return base_str.substring(0, base_str.length - pattern.length);
 	};
 
 	Parser.prototype.parse = function(){
 		var lines = this.data_string.split('\n');
 
-/*		var must_be_on = false;
-		var luminance_threshold = null;
-		var luminance_differential_threshold = null;
-		var requested_stability_ms = null;
-		var read_function = null;
-		var sync_function = null;
-		var parse_function = null;
-		var dtype = null;
-	*/
+		/*		var must_be_on = false;
+		 var luminance_threshold = null;
+		 var luminance_differential_threshold = null;
+		 var requested_stability_ms = null;
+		 var read_function = null;
+		 var sync_function = null;
+		 var parse_function = null;
+		 var dtype = null;
+		 */
 		var root_groups = new Object();
 
 		var result = new Object();
@@ -29,11 +30,11 @@ define([], function(){
 
 		for(var i = 0; i < lines.length; ++i){
 			lines[i] = lines[i].trim();
-			if(lines[i].length==0)
+			if(lines[i].length == 0)
 				continue;
 			var parts = lines[i].split('=');
 			var key = parts[0];
-			var value=parts[1];
+			var value = parts[1];
 			switch(key){
 				case 'must_be_on':
 				case 'luminance_threshold':
@@ -90,13 +91,13 @@ define([], function(){
 						root_groups[key].configuration_keys = new Object();
 						root_groups[key].type = "group";
 						result.sub_nodes.push(root_groups[key]);
-/*						root_groups[key].configuration_keys.parse_function = parse_function;
-						root_groups[key].configuration_keys.read_function = read_function;
-						root_groups[key].configuration_keys.sync_function = sync_function;
-						root_groups[key].configuration_keys.first_digit_restricted = false;
-						root_groups[key].configuration_keys.must_be_on = must_be_on;
-						root_groups[key].configuration_keys.dtype = dtype;
-						root_groups[key].configuration_keys.luminance_threshold = luminance_threshold;*/
+						/*						root_groups[key].configuration_keys.parse_function = parse_function;
+						 root_groups[key].configuration_keys.read_function = read_function;
+						 root_groups[key].configuration_keys.sync_function = sync_function;
+						 root_groups[key].configuration_keys.first_digit_restricted = false;
+						 root_groups[key].configuration_keys.must_be_on = must_be_on;
+						 root_groups[key].configuration_keys.dtype = dtype;
+						 root_groups[key].configuration_keys.luminance_threshold = luminance_threshold;*/
 					}
 					switch(action){
 						case 'none':
@@ -104,9 +105,9 @@ define([], function(){
 						case 'leds':
 						case 'led':
 							root_groups[key].group_type = "dot";
-							for(var j = 0; j < Math.floor(value_parts.length/2); ++j){
-								var x = value_parts[2*j];
-								var y = value_parts[2*j+1];
+							for(var j = 0; j < Math.floor(value_parts.length / 2); ++j){
+								var x = value_parts[2 * j];
+								var y = value_parts[2 * j + 1];
 								var d = new Object();
 								d.coordinate = new Object();
 								d.coordinate.x = x;
@@ -114,8 +115,8 @@ define([], function(){
 								d.type = "dot";
 								root_groups[key].sub_nodes.push(d);
 							}
-							if(value_parts.length%2==1){
-								root_groups[key].extra_led_value = value_parts[value_parts.length-1];
+							if(value_parts.length % 2 == 1){
+								root_groups[key].extra_led_value = value_parts[value_parts.length - 1];
 							}
 							break;
 						case 'digit':
@@ -123,20 +124,20 @@ define([], function(){
 							var dig = new Object();
 							dig.corners = new Array();
 							dig.type = "digit";
-							for(var j = 0; j < Math.floor(value_parts.length/2); ++j){
+							for(var j = 0; j < Math.floor(value_parts.length / 2); ++j){
 								var d = new Object();
 								d.coordinate = new Object();
-								d.coordinate.x = value_parts[j*2];
-								d.coordinate.y = value_parts[j*2+1];
+								d.coordinate.x = value_parts[j * 2];
+								d.coordinate.y = value_parts[j * 2 + 1];
 								dig.corners.push(d);
 							}
-							if(value_parts.length%2==1){
-								dig.extra_value = value_parts[value_parts.length-1];
+							if(value_parts.length % 2 == 1){
+								dig.extra_value = value_parts[value_parts.length - 1];
 							}
 							root_groups[key].sub_nodes.push(dig);
 							break;
 						default:
-							root_groups[key].configuration_keys[action]=value_parts[0];
+							root_groups[key].configuration_keys[action] = value_parts[0];
 							break;
 					}
 			}

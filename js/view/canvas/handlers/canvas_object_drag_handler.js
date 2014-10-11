@@ -1,5 +1,5 @@
-define(["../../../messaging_system/event_listener", 
-	"../../../messaging_system/events/submit_group_details_event", 
+define(["../../../messaging_system/event_listener",
+	"../../../messaging_system/events/submit_group_details_event",
 	"../../../messaging_system/events/object_selected_event",
 	"../../../messaging_system/events/object_unselected_event"], function(EventListener, SubmitGroupDetailsEvent, ObjectSelectedEvent, ObjectUnSelectedEvent){
 	//Translate objects when they are dragged on the canvas
@@ -46,7 +46,7 @@ define(["../../../messaging_system/event_listener",
 		if(!event_data.ctrlKey && !event_data.shiftKey){
 			return;
 		}
-		
+
 		if(!event_data.shiftKey){
 			this.resetSelected();
 		}
@@ -66,7 +66,7 @@ define(["../../../messaging_system/event_listener",
 		}
 		if(data.event_data.shiftKey){
 			//add objects to selected
-			
+
 		}else if(data.event_data.ctrlKey){
 			this.updateObjectsCoordinate(this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate()));
 		}

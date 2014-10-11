@@ -54,16 +54,16 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 		}
 		if(warn_listeners){
 			this.notifyGroupChanged();
-		}	  
+		}
 	};
 	Digit.prototype.setCorners = function(corners_data, warn_listeners){
 		this.resetCorners();
 		if(corners_data){
-			this.updateCorners(corners_data, false);	
+			this.updateCorners(corners_data, false);
 		}
 		if(warn_listeners){
 			this.notifyGroupChanged();
-		}	  
+		}
 	};
 	Digit.prototype.load = function(data, warn_listeners){
 		if(warn_listeners == null)
@@ -71,7 +71,7 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 		this.setCorners(data.corners, false);
 		if(warn_listeners){
 			this.notifyGroupChanged();
-  		}	  
+		}
 	};
 	Digit.prototype.update = function(data, warn_listeners){
 		if(warn_listeners == null)

@@ -4,14 +4,7 @@ define(["./digit",
 	"./data_base_class",
 	'../messaging_system/events/group_changed_event',
 	'./dot',
-	"../messaging_system/event_listener"],function(
-		Digit,
-		GroupProxy,
-		EventListener,
-		DataBaseClass,
-		GroupChangedEvent,
-		Dot,
-		EventListener){
+	"../messaging_system/event_listener"], function(Digit, GroupProxy, EventListener, DataBaseClass, GroupChangedEvent, Dot, EventListener){
 	//represents a collection of digits/dots/groups
 	var Group = function(data, group_type, parent, messaging_system){
 		this.messaging_system = messaging_system;
@@ -30,14 +23,14 @@ define(["./digit",
 	Group.prototype = new DataBaseClass("group");
 	//the default configuration keys that are applied to a group in the configuration file
 	/*Group.default_configuration_keys = {
-		"parse_function": null,
-		"read_function": "digit_pattern_32",
-		"sync_function": "digit_pattern_32",
-		"first_digit_restricted": "false",
-		"must_be_on": false,
-		"dtype": null,
-		"luminance_threshold": "190"
-	};*/
+	 "parse_function": null,
+	 "read_function": "digit_pattern_32",
+	 "sync_function": "digit_pattern_32",
+	 "first_digit_restricted": "false",
+	 "must_be_on": false,
+	 "dtype": null,
+	 "luminance_threshold": "190"
+	 };*/
 	//load the data for this group
 	//when no data is provided, an empty group is made and the default configuration keys are applied to it
 	Group.prototype.loadData = function(data){
@@ -67,7 +60,7 @@ define(["./digit",
 			digit_data.type = "digit";
 			digit_data.corners = new Array();
 			for(var i = 0; i < data.getCorners().length; ++i){
-				digit_data.corners.push({"coordinate":(data.getCorners())[i]});
+				digit_data.corners.push({"coordinate" : (data.getCorners())[i]});
 			}
 			digit_data.extra_value = 0.0033333334;
 			this.createSubNode(digit_data);
@@ -90,11 +83,11 @@ define(["./digit",
 	//adds a subnode based on info
 	Group.prototype.createSubNode = function(info){
 		var obj = null;
-		if (info.type == "digit") {
+		if(info.type == "digit"){
 			obj = new Digit(this, info, this.messaging_system);
-		} else if(info.type == "dot"){
+		}else if(info.type == "dot"){
 			obj = new Dot(this, info, this.messaging_system);
-		} else if(info.type == "group"){
+		}else if(info.type == "group"){
 			obj = new Group(info, this, this.messaging_system);
 		}
 		if(obj){
@@ -145,7 +138,7 @@ define(["./digit",
 		if(data.hasOwnProperty('configuration_keys')){
 			this.setConfigurationKeys(data.configuration_keys);
 		}
-		
+
 		this.notifyGroupChanged();
 	};
 	return Group;

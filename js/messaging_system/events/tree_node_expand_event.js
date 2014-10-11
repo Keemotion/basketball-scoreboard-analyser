@@ -5,6 +5,6 @@ define([], function(){
 	TreeNodeExpandEvent.prototype.getTargetIdentification = function(){
 		return this.identification;
 	};
-	
+
 	return TreeNodeExpandEvent;
 });

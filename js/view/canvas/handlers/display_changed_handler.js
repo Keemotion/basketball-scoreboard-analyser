@@ -12,11 +12,13 @@ define(["../../../messaging_system/event_listener"], function(EventListener){
 	DisplayChangedHandler.prototype.checkDraw = function(){
 		var self = this;
 		var now = new Date().getTime();
-		if(now-this.last_edit > this.interval && !this.drawn){
+		if(now - this.last_edit > this.interval && !this.drawn){
 			this.drawn = true;
 			this.canvas.drawCanvas();
 		}else{
-			setTimeout(function(){self.checkDraw();}, self.interval);
+			setTimeout(function(){
+				self.checkDraw();
+			}, self.interval);
 		}
 	};
 	//warns the handler that an edit has occurred, so the time-out can be set according to the event
@@ -24,10 +26,12 @@ define(["../../../messaging_system/event_listener"], function(EventListener){
 		var self = this;
 		this.drawn = false;
 		this.last_edit = new Date().getTime();
-		setTimeout(function(){self.checkDraw();}, self.interval);
+		setTimeout(function(){
+			self.checkDraw();
+		}, self.interval);
 	};
 	DisplayChangedHandler.prototype.canBeDrawn = function(){
-		return (new Date().getTime())-this.last_edit > this.interval;
+		return (new Date().getTime()) - this.last_edit > this.interval;
 	};
 	return DisplayChangedHandler;
 });

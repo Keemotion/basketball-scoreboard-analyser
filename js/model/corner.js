@@ -1,4 +1,4 @@
-define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Coordinate, CornerProxy, DataBaseClass){
+define(['./coordinate', './proxy/corner_proxy', './data_base_class'], function(Coordinate, CornerProxy, DataBaseClass){
 	//Groups data for a digit corner
 	var Corner = function(parent_digit, coordinate, id, messaging_system){
 		this.messaging_system = messaging_system;
@@ -19,7 +19,7 @@ define(['./coordinate','./proxy/corner_proxy', './data_base_class'], function(Co
 	};
 	//generates a title used in for example the tree
 	Corner.prototype.getTitle = function(){
-		return "x: "+(this.getCoordinate().x + "").substr(0, 10)+" y: "+(this.getCoordinate().y+"").substr(0, 10);
+		return "x: " + (this.getCoordinate().x + "").substr(0, 10) + " y: " + (this.getCoordinate().y + "").substr(0, 10);
 	};
 	//sets the data for this corner
 	Corner.prototype.load = function(corner_data, warn_listeners){

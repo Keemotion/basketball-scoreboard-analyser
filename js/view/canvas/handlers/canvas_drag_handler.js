@@ -3,202 +3,199 @@ define(["../../../messaging_system/event_listener",
 		"../../../messaging_system/events/area_select_event",
 		"../../../messaging_system/events/submit_group_details_event",
 		"../../../messaging_system/events/objects_moved_event"
-		], 
-		function(EventListener,
-			Coordinate,
-			AreaSelectEvent,
-			SubmitGroupDetailsEvent,
-			ObjectsMovedEvent
-			){
-	//translates the canvas when dragging
-	var CanvasDragHandler = function(canvas, transformation, messaging_system){
-		this.canvas = canvas;
-		this.messaging_system = messaging_system;
-		this.transformation = transformation;
-		this.pause_level = 0;
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseMove, new EventListener(this, this.canvasMouseMove));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseDown, new EventListener(this, this.canvasMouseDown));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.canvasMouseUp));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.canvasFocusOut));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasKeyDown, new EventListener(this, this.canvasKeyDown));
-		this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
-		this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageDoubleClick, new EventListener(this, this.doubleClick));
-		this.current_state = CanvasDragHandler.states.NONE;
-		this.area_selection_start_coordinate = new Coordinate();
-		this.area_selection_end_coordinate = new Coordinate();
-		this.selected_objects = new Array();
-		this.selected_element_is_temporarily = false;
-	};
-	CanvasDragHandler.states = {NONE:'NONE', CANVAS_DRAGGING:'CANVAS_DRAGGING', OBJECTS_DRAGGING:'OBJECTS_DRAGGING', AREA_SELECTING:'AREA_SELECTING'};
-	CanvasDragHandler.prototype.stateChanged = function(signal, data){
-		this.resetSelected();
-	};
-	CanvasDragHandler.prototype.canvasKeyDown = function(signal, data){
-		if(data.getEventData().which == 27){//escape
+	],
+	function(EventListener, Coordinate, AreaSelectEvent, SubmitGroupDetailsEvent, ObjectsMovedEvent){
+		//translates the canvas when dragging
+		var CanvasDragHandler = function(canvas, transformation, messaging_system){
+			this.canvas = canvas;
+			this.messaging_system = messaging_system;
+			this.transformation = transformation;
+			this.pause_level = 0;
+			this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseMove, new EventListener(this, this.canvasMouseMove));
+			this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseDown, new EventListener(this, this.canvasMouseDown));
+			this.messaging_system.addEventListener(this.messaging_system.events.CanvasMouseUp, new EventListener(this, this.canvasMouseUp));
+			this.messaging_system.addEventListener(this.messaging_system.events.CanvasFocusOut, new EventListener(this, this.canvasFocusOut));
+			this.messaging_system.addEventListener(this.messaging_system.events.CanvasKeyDown, new EventListener(this, this.canvasKeyDown));
+			this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
+			this.messaging_system.addEventListener(this.messaging_system.events.CanvasImageDoubleClick, new EventListener(this, this.doubleClick));
+			this.current_state = CanvasDragHandler.states.NONE;
+			this.area_selection_start_coordinate = new Coordinate();
+			this.area_selection_end_coordinate = new Coordinate();
+			this.selected_objects = new Array();
+			this.selected_element_is_temporarily = false;
+		};
+		CanvasDragHandler.states = {NONE : 'NONE', CANVAS_DRAGGING : 'CANVAS_DRAGGING', OBJECTS_DRAGGING : 'OBJECTS_DRAGGING', AREA_SELECTING : 'AREA_SELECTING'};
+		CanvasDragHandler.prototype.stateChanged = function(signal, data){
 			this.resetSelected();
-		}
-	};
-	CanvasDragHandler.prototype.canvasMouseMove = function(signal, data){
-		switch(this.current_state){
-			case CanvasDragHandler.states.NONE:
-				return;
-				break;
-			case CanvasDragHandler.states.AREA_SELECTING:
-				this.area_selection_end_coordinate = data.getCoordinate();
-				break;
-			case CanvasDragHandler.states.OBJECTS_DRAGGING:
-				this.moveObjects(data.getCoordinate());
-				this.previous_dragging_coordinate = data.getCoordinate();
-				break;
-			case CanvasDragHandler.states.CANVAS_DRAGGING:
-				var mv = new Coordinate(
-						this.transformation.getCanvasWidth()/2 - (data.getCoordinate().getX()-this.previous_dragging_coordinate.getX()), 
-						this.transformation.getCanvasHeight()/2- (data.getCoordinate().getY()-this.previous_dragging_coordinate.getY()));
-				var transformed = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(mv);
-				this.transformation.setCanvasCenter(transformed);
-				this.previous_dragging_coordinate = data.getCoordinate();
-				this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
-				break;
-		}
-		return true;
-	};
-	CanvasDragHandler.prototype.moveObjects = function(coordinate){
-		var translation = new Coordinate(coordinate.getX()-this.previous_dragging_coordinate.getX(), coordinate.getY()-this.previous_dragging_coordinate.getY());
-		translation = this.transformation.transformCanvasTranslationToRelativeImageTranslation(translation);
-		var identifications = new Array();
-		for(var i = 0; i < this.selected_objects.length; ++i){
-			identifications.push(this.selected_objects[i].getIdentification());
-		}
-		var data = new ObjectsMovedEvent(identifications, translation);
-		this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, data);
-	};
-	CanvasDragHandler.prototype.canvasMouseDown = function(signal, data){
-		var event_data = data.getEventData();
-		if(event_data.shiftKey){
-			this.current_state = CanvasDragHandler.states.AREA_SELECTING;
-			this.area_selection_start_coordinate = data.getCoordinate();
-			this.area_selection_end_coordinate = data.getCoordinate();
-		}else if(event_data.ctrlKey){
-			this.current_state = CanvasDragHandler.states.OBJECTS_DRAGGING;
-			if(this.getSelected().length == 0){
-				this.findSingleSelectionElement(data.getCoordinate());
+		};
+		CanvasDragHandler.prototype.canvasKeyDown = function(signal, data){
+			if(data.getEventData().which == 27){//escape
+				this.resetSelected();
 			}
-			this.previous_dragging_coordinate = data.getCoordinate();
-		}else{
-			this.current_state = CanvasDragHandler.states.CANVAS_DRAGGING;
-			this.previous_dragging_coordinate = data.getCoordinate();
-		}
-	};
-	CanvasDragHandler.prototype.findSingleSelectionElement = function(coordinate){
-		//TODO: use a method from Canvas to find the element closest to the given coordinate
-		//priority to corners and dots
-		//then try to find an enclosing digit (group)
-		//if no such items found, don't do anything
-		var object = this.canvas.getObjectAtCanvasCoordinate(coordinate, 25);
-		this.addSelected(object);
-		this.selected_element_is_temporarily = true;
-	};
-	CanvasDragHandler.prototype.canvasMouseUp = function(signal, data){
-		switch(this.current_state){
-			case CanvasDragHandler.states.AREA_SELECTING:
-				if(Coordinate.getSquareDistance(this.getSelectionStartCoordinate(), this.getSelectionEndCoordinate()) == 0){
+		};
+		CanvasDragHandler.prototype.canvasMouseMove = function(signal, data){
+			switch(this.current_state){
+				case CanvasDragHandler.states.NONE:
+					return;
+					break;
+				case CanvasDragHandler.states.AREA_SELECTING:
+					this.area_selection_end_coordinate = data.getCoordinate();
+					break;
+				case CanvasDragHandler.states.OBJECTS_DRAGGING:
+					this.moveObjects(data.getCoordinate());
+					this.previous_dragging_coordinate = data.getCoordinate();
+					break;
+				case CanvasDragHandler.states.CANVAS_DRAGGING:
+					var mv = new Coordinate(
+							this.transformation.getCanvasWidth() / 2 - (data.getCoordinate().getX() - this.previous_dragging_coordinate.getX()),
+							this.transformation.getCanvasHeight() / 2 - (data.getCoordinate().getY() - this.previous_dragging_coordinate.getY()));
+					var transformed = this.transformation.transformCanvasCoordinateToRelativeImageCoordinate(mv);
+					this.transformation.setCanvasCenter(transformed);
+					this.previous_dragging_coordinate = data.getCoordinate();
+					this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+					break;
+			}
+			return true;
+		};
+		CanvasDragHandler.prototype.moveObjects = function(coordinate){
+			var translation = new Coordinate(coordinate.getX() - this.previous_dragging_coordinate.getX(), coordinate.getY() - this.previous_dragging_coordinate.getY());
+			translation = this.transformation.transformCanvasTranslationToRelativeImageTranslation(translation);
+			var identifications = new Array();
+			for(var i = 0; i < this.selected_objects.length; ++i){
+				identifications.push(this.selected_objects[i].getIdentification());
+			}
+			var data = new ObjectsMovedEvent(identifications, translation);
+			this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, data);
+		};
+		CanvasDragHandler.prototype.canvasMouseDown = function(signal, data){
+			var event_data = data.getEventData();
+			if(event_data.shiftKey){
+				this.current_state = CanvasDragHandler.states.AREA_SELECTING;
+				this.area_selection_start_coordinate = data.getCoordinate();
+				this.area_selection_end_coordinate = data.getCoordinate();
+			}else if(event_data.ctrlKey){
+				this.current_state = CanvasDragHandler.states.OBJECTS_DRAGGING;
+				if(this.getSelected().length == 0){
+					this.findSingleSelectionElement(data.getCoordinate());
+				}
+				this.previous_dragging_coordinate = data.getCoordinate();
+			}else{
+				this.current_state = CanvasDragHandler.states.CANVAS_DRAGGING;
+				this.previous_dragging_coordinate = data.getCoordinate();
+			}
+		};
+		CanvasDragHandler.prototype.findSingleSelectionElement = function(coordinate){
+			//TODO: use a method from Canvas to find the element closest to the given coordinate
+			//priority to corners and dots
+			//then try to find an enclosing digit (group)
+			//if no such items found, don't do anything
+			var object = this.canvas.getObjectAtCanvasCoordinate(coordinate, 25);
+			this.addSelected(object);
+			this.selected_element_is_temporarily = true;
+		};
+		CanvasDragHandler.prototype.canvasMouseUp = function(signal, data){
+			switch(this.current_state){
+				case CanvasDragHandler.states.AREA_SELECTING:
+					if(Coordinate.getSquareDistance(this.getSelectionStartCoordinate(), this.getSelectionEndCoordinate()) == 0){
+						break;
+					}
+					this.areaSelect();
+					break;
+				case CanvasDragHandler.states.OBJECTS_DRAGGING:
+					if(this.selected_element_is_temporarily){
+						this.resetSelected();
+						this.selected_element_is_temporarily = false;
+					}
+				case CanvasDragHandler.states.CANVAS_DRAGGING:
+				default:
+					break;
+			}
+			this.current_state = CanvasDragHandler.states.NONE;
+		};
+		CanvasDragHandler.prototype.areaSelect = function(){
+			var objects = this.canvas.getObjectsInRectangle(this.getSelectionStartCoordinate(), this.getSelectionEndCoordinate());
+			for(var i = 0; i < objects.length; ++i){
+				this.addSelected(objects[i]);
+			}
+		};
+		CanvasDragHandler.prototype.canvasFocusOut = function(signal, data){
+			this.canvasMouseUp(signal, data);
+		};
+		CanvasDragHandler.prototype.getSelected = function(){
+			return this.selected_objects;
+		};
+		CanvasDragHandler.prototype.toggleSelected = function(obj){
+			for(var i = 0; i < this.selected_objects.length; ++i){
+				if(this.selected_objects[i].getProxy().isPossiblyAboutThis(obj.getProxy().getIdentification())){
+					this.removeSelected(obj);
+					return;
+				}
+			}
+			this.addSelected(obj);
+		};
+		CanvasDragHandler.prototype.removeSelected = function(obj){
+			for(var i = 0; i < this.selected_objects.length; ++i){
+				if(this.selected_objects[i].getProxy().isPossiblyAboutThis(obj.getProxy().getIdentification())){
+					this.selected_objects.splice(i, 1);
 					break;
 				}
-				this.areaSelect();
-				break;
-			case CanvasDragHandler.states.OBJECTS_DRAGGING:
-				if(this.selected_element_is_temporarily){
-					this.resetSelected();
-					this.selected_element_is_temporarily = false;
+			}
+			obj.setSelected(false);
+			this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+		};
+		CanvasDragHandler.prototype.addSelected = function(obj){
+			if(!obj)
+				return;
+			var identifications = new Array();
+			identifications.push(obj.getProxy().getIdentification());
+			for(var i = 0; i < this.selected_objects.length; ++i){
+				var tmp_identifications = new Array();
+				tmp_identifications.push(this.selected_objects[i].getProxy().getIdentification());
+				if(obj.getProxy().isAboutThisOrAncestors(tmp_identifications)){
+					return;
 				}
-			case CanvasDragHandler.states.CANVAS_DRAGGING:
-			default:
-				break; 
-		}
-		this.current_state = CanvasDragHandler.states.NONE;
-	};
-	CanvasDragHandler.prototype.areaSelect = function(){
-		var objects = this.canvas.getObjectsInRectangle(this.getSelectionStartCoordinate(), this.getSelectionEndCoordinate());
-		for(var i = 0; i < objects.length; ++i){
-			this.addSelected(objects[i]);
-		}
-	};
-	CanvasDragHandler.prototype.canvasFocusOut = function(signal, data){
-		this.canvasMouseUp(signal, data);
-	};	CanvasDragHandler.prototype.getSelected = function(){
-		return this.selected_objects;
-	};
-	CanvasDragHandler.prototype.toggleSelected = function(obj){
-		for(var i = 0; i < this.selected_objects.length; ++i){
-			if(this.selected_objects[i].getProxy().isPossiblyAboutThis(obj.getProxy().getIdentification())){
-				this.removeSelected(obj);
-				return;
+				if(this.selected_objects[i].getProxy().isAboutThisOrAncestors(identifications)){
+					this.removeSelected(this.selected_objects[i]);
+					--i;
+				}
+				;
 			}
-		}
-		this.addSelected(obj);
-	};
-	CanvasDragHandler.prototype.removeSelected = function(obj){
-		for(var i = 0; i < this.selected_objects.length; ++i){
-			if(this.selected_objects[i].getProxy().isPossiblyAboutThis(obj.getProxy().getIdentification())){
-				this.selected_objects.splice(i,1);
-				break;
+			obj.setSelected(true);
+			this.selected_objects.push(obj);
+			this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+		};
+		CanvasDragHandler.prototype.resetSelected = function(){
+			for(var i = 0; i < this.selected_objects.length; ++i){
+				this.selected_objects[i].setSelected(false);
 			}
-		}
-		obj.setSelected(false);
-		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
-	};
-	CanvasDragHandler.prototype.addSelected = function(obj){
-		if(!obj)
-			return;
-		var identifications = new Array();
-		identifications.push(obj.getProxy().getIdentification());
-		for(var i = 0; i < this.selected_objects.length; ++i){
-			var tmp_identifications = new Array();
-			tmp_identifications.push(this.selected_objects[i].getProxy().getIdentification());
-			if(obj.getProxy().isAboutThisOrAncestors(tmp_identifications)){
-				return;
+			this.selected_objects.length = 0;
+			this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+		};
+		CanvasDragHandler.prototype.setSelected = function(objects){
+			this.resetSelected();
+			for(var i = 0; i < objects.length; ++i){
+				this.addSelected(objects[i]);
 			}
-			if(this.selected_objects[i].getProxy().isAboutThisOrAncestors(identifications)){
-				this.removeSelected(this.selected_objects[i]);
-				--i;
-			};
-		}
-		obj.setSelected(true);
-		this.selected_objects.push(obj);
-		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
-	};
-	CanvasDragHandler.prototype.resetSelected = function(){
-		for(var i = 0; i < this.selected_objects.length; ++i){
-			this.selected_objects[i].setSelected(false);
-		}
-		this.selected_objects.length = 0;
-		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
-	};
-	CanvasDragHandler.prototype.setSelected = function(objects){
-		this.resetSelected();
-		for(var i = 0; i < objects.length; ++i){
-			this.addSelected(objects[i]);
-		}
-	};
-	CanvasDragHandler.prototype.getSelectionStartCoordinate = function(){
-		return this.area_selection_start_coordinate;
-	};
-	CanvasDragHandler.prototype.getSelectionEndCoordinate = function(){
-		return this.area_selection_end_coordinate;
-	};
-	CanvasDragHandler.prototype.getAreaSelecting = function(){
-		return this.current_state == CanvasDragHandler.states.AREA_SELECTING;
-	};
-	CanvasDragHandler.prototype.doubleClick = function(signal, data){
-		if(data.getEventData().shiftKey){
-			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
-			//inside digit -> select
-			if(res){
-				this.toggleSelected(res);
-			}else{
+		};
+		CanvasDragHandler.prototype.getSelectionStartCoordinate = function(){
+			return this.area_selection_start_coordinate;
+		};
+		CanvasDragHandler.prototype.getSelectionEndCoordinate = function(){
+			return this.area_selection_end_coordinate;
+		};
+		CanvasDragHandler.prototype.getAreaSelecting = function(){
+			return this.current_state == CanvasDragHandler.states.AREA_SELECTING;
+		};
+		CanvasDragHandler.prototype.doubleClick = function(signal, data){
+			if(data.getEventData().shiftKey){
+				var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
+				//inside digit -> select
+				if(res){
+					this.toggleSelected(res);
+				}else{
+				}
+				//inside dot
 			}
-			//inside dot
-		}
-	};
-	return CanvasDragHandler;
-});
+		};
+		return CanvasDragHandler;
+	});

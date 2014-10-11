@@ -6,7 +6,7 @@ define([], function(){
 	AreaSelectEvent.prototype.getStartCoordinate = function(){
 		return this.start_coordinate;
 	};
-	AreaSelectEvent.prototype.getEndCoordinate  = function(){
+	AreaSelectEvent.prototype.getEndCoordinate = function(){
 		return this.end_coordinate;
 	};
 	return AreaSelectEvent;

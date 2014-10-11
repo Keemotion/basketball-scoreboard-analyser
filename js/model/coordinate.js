@@ -1,4 +1,4 @@
-define([],function(){
+define([], function(){
 	//A few helper methods for working with coordinates
 	var Coordinate = function(x, y){
 		this.x = x;
@@ -42,9 +42,9 @@ define([],function(){
 		return new Coordinate(total_x, total_y);
 	};
 	Coordinate.getSquareDistance = function(c1, c2){
-		var dx = c1.getX()-c2.getX();
-		var dy = c1.getY()-c2.getY();
-		return dx*dx+dy*dy;
+		var dx = c1.getX() - c2.getX();
+		var dy = c1.getY() - c2.getY();
+		return dx * dx + dy * dy;
 	};
 	//Convert floating point coordinates to integer coordinates for use on the canvas
 	Coordinate.prototype.round = function(){
@@ -60,10 +60,10 @@ define([],function(){
 		this.y = Math.floor(this.y);
 	};
 	Coordinate.prototype.add = function(c2){
-		return new Coordinate(c2.getX()+this.getX(), c2.getY()+this.getY());
+		return new Coordinate(c2.getX() + this.getX(), c2.getY() + this.getY());
 	};
 	Coordinate.prototype.scalarMultiply = function(l){
-		return new Coordinate(this.getX()*l, this.getY()*l);
+		return new Coordinate(this.getX() * l, this.getY() * l);
 	};
 	Coordinate.prototype.clone = function(){
 		return new Coordinate(this.getX(), this.getY());
