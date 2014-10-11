@@ -35,13 +35,16 @@ define(["../../messaging_system/events/selection_event",
 	BaseTreeNode.prototype.clearCommands = function(){
 		this.commands.length = 0;
 	};
-	BaseTreeNode.prototype.treeNodeExpandRequested = function(signal, data){
-		if(!this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
+	BaseTreeNode.prototype.treeNodeExpandRequested = function(signal, data, forced){
+		if(!forced && !this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
 			return;
 		}
 		switch(signal){
 		case this.messaging_system.events.ExpandTreeNode:
 			this.expanded = true;
+			if(this.parent_node){
+				this.parent_node.treeNodeExpandRequested(signal, data, true);
+			}
 			break;
 		case this.messaging_system.events.CollapseTreeNode:
 			this.expanded = false;
@@ -69,9 +72,9 @@ define(["../../messaging_system/events/selection_event",
 		this.configuration_element.removeClass('in');
 	};
 	BaseTreeNode.prototype.expand = function(){
-		if(this.parent_node){
-			this.parent_node.expand();
-		}
+		//if(this.parent_node){
+		//	this.parent_node.expand();
+		//}
 		//this.sub_nodes_element.collapse('show');
 		this.sub_nodes_element.addClass('in');
 		this.configuration_element.addClass('in');
@@ -83,7 +86,7 @@ define(["../../messaging_system/events/selection_event",
 		//if data.getProxy() is about this.data_proxy or one of its (grand..)children
 		this.is_selected = false;
 		if(data.getProxy() == null){
-			this.collapse();
+			//this.collapse();
 		}else if(this.data_proxy.isPossiblyAboutThis(data.getProxy().getIdentification())){
 			//this.expand();
 			//this.collapse();
