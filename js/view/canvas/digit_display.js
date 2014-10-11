@@ -151,5 +151,17 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		}
 		return null;
 	};
+	DigitDisplay.prototype.isInRectangle = function(rectangle){
+		var coordinates = [];
+		for(var i = 0; i < this.sub_components.length; ++i){
+			coordinates.push(this.sub_components[i].getProxy().getCoordinate());
+		}
+		var polygon = [rectangle.getTopLeft(), rectangle.getTopRight(), rectangle.getBottomRight(), rectangle.getBottomLeft()];
+		var center = Coordinate.getMiddle(coordinates);
+		return Geometry.insidePolygon(polygon, center.getX(), center.getY());
+	}
+	DigitDisplay.prototype.canBeSelected = function(){
+		return true;
+	};
 	return DigitDisplay;
 });

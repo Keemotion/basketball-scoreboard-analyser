@@ -28,8 +28,14 @@ define([
 		SelectionRectangle.prototype.getTopLeft = function(){
 			return new Coordinate(Math.min(this.start_coordinate.getX(), this.end_coordinate.getX()), Math.min(this.start_coordinate.getY(), this.end_coordinate.getY()));
 		};
+		SelectionRectangle.prototype.getTopRight = function(){
+			return new Coordinate(Math.max(this.start_coordinate.getX(), this.end_coordinate.getX()), Math.min(this.start_coordinate.getY(), this.end_coordinate.getY()));
+		};
 		SelectionRectangle.prototype.getBottomRight = function(){
 			return new Coordinate(Math.max(this.start_coordinate.getX(), this.end_coordinate.getX()), Math.max(this.start_coordinate.getY(), this.end_coordinate.getY()));
+		};
+		SelectionRectangle.prototype.getBottomLeft = function(){
+			return new Coordinate(Math.min(this.start_coordinate.getX(), this.end_coordinate.getX()), Math.max(this.start_coordinate.getY(), this.end_coordinate.getY()));
 		};
 		SelectionRectangle.prototype.getHeight = function(){
 			return Math.abs(this.start_coordinate.getY() - this.end_coordinate.getY());
@@ -70,6 +76,7 @@ define([
 
 			this.edit_mode_selected_proxy = null;
 			this.move_mode_selected_digits = new Array();
+			this.temporary_move_mode_selected_digits = new Array();
 
 			this.current_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
 			this.previous_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
@@ -181,9 +188,14 @@ define([
 					break;
 				case CanvasMouseHandler.MouseModes.MoveMode:
 					//move selected digits at once
-					if(this.mouse_down && this.moving){
-						var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
-						this.messaging_system.fire(this.messaging_system.events.MoveModeObjectsMoved, new MoveModeObjectsMovedEvent(this.getMoveModeSelectedDigitsIdentifications(), transformed));
+					if(this.mouse_down){
+						if(this.moving){
+							var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
+							this.messaging_system.fire(this.messaging_system.events.MoveModeObjectsMoved, new MoveModeObjectsMovedEvent(this.getMoveModeSelectedDigitsIdentifications(), transformed));
+						}else{
+							this.updateSelection(data);
+							this.canvas.updateCanvas(signal, data);
+						}
 					}
 					break;
 				case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
@@ -413,7 +425,12 @@ define([
 					this.selection_rectangle.stopSelection();
 					break;
 				case CanvasMouseHandler.MouseModes.MoveMode:
+					if(!this.moving){
+						this.stopSelection(data);
+					}
 					this.moving = false;
+					//this.updateSelection(data);
+					this.canvas.drawCanvas();
 					break;
 				case CanvasMouseHandler.MouseModes.Other:
 					break;
@@ -518,6 +535,9 @@ define([
 							}
 						}
 					}
+					if(!this.moving){
+						this.startSelection(data.getCoordinate());
+					}
 					break;
 			}
 		};
@@ -538,6 +558,8 @@ define([
 						if(data.getEventData().ctrlKey){
 							//add res to currently selected MoveModeDigits
 							this.addMoveModeSelectedDigit(res);
+						}else if(data.getEventData().shiftKey){
+							this.toggleMoveModeSelectedDigit(res, false);
 						}else{
 							//apply res to currently selectd MoveModeDigits
 							this.setMoveModeSelectedDigits([res]);
@@ -617,18 +639,27 @@ define([
 		};
 		CanvasMouseHandler.prototype.startSelection = function(coordinate){
 			this.selection_rectangle.startSelection(coordinate);
-		};
+		}
 		CanvasMouseHandler.prototype.stopSelection = function(data){
 			this.selection_rectangle.updateSelection(data.getCoordinate());
-			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle());
-			var selection_event = new SelectionEvent(selected_tree, false);
+			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle(), "digit");
+			var digits = selected_tree.getSelectedFlat();
+
+			if(data.getEventData().ctrlKey){
+				this.addMoveModeSelectedDigits(digits, false);
+			}else if(data.getEventData().shiftKey){
+				this.toggleMoveModeSelectedDigits(digits, false);
+			}else{
+				this.setMoveModeSelectedDigits(digits, false);
+			}
+			/*var selection_event = new SelectionEvent(selected_tree, false);
 			if(data.getEventData().ctrlKey){//toggle selection
 				this.messaging_system.fire(this.messaging_system.events.SelectionToggled, selection_event);
 			}else if(data.getEventData().shiftKey){//add selection
 				this.messaging_system.fire(this.messaging_system.events.SelectionAdded, selection_event);
 			}else{//set selection
 				this.messaging_system.fire(this.messaging_system.events.SelectionSet, selection_event);
-			}
+			}*/
 			this.selection_rectangle.stopSelection();
 		};
 		CanvasMouseHandler.prototype.updateSelection = function(data){
@@ -658,33 +689,79 @@ define([
 		CanvasMouseHandler.prototype.getMoveModeSelectedDigits = function(){
 			return this.move_mode_selected_digits;
 		};
-		CanvasMouseHandler.prototype.isMoveModeSelected = function(digit){
-			for(var i = 0; i < this.move_mode_selected_digits.length; ++i){
-				if(digit.isPossiblyAboutThis(this.move_mode_selected_digits[i].getIdentification())){
-					return true;
+		CanvasMouseHandler.prototype.isMoveModeSelected = function(digit, temporary){
+			if(temporary){
+				for(var i = 0; i < this.temporary_move_mode_selected_digits.length; ++i){
+					if(digit.isPossiblyAboutThis(this.temporary_move_mode_selected_digits[i].getIdentification())){
+						return true;
+					}
+				}
+			}else{
+				for(var i = 0; i < this.move_mode_selected_digits.length; ++i){
+					if(digit.isPossiblyAboutThis(this.move_mode_selected_digits[i].getIdentification())){
+						return true;
+					}
 				}
 			}
 			return false;
 		};
-		CanvasMouseHandler.prototype.addMoveModeSelectedDigit = function(digit){
-			if(this.isMoveModeSelected(digit)){
+		CanvasMouseHandler.prototype.addMoveModeSelectedDigit = function(digit, temporary){
+			if(this.isMoveModeSelected(digit, temporary)){
 				return;
 			}
-			this.move_mode_selected_digits.push(digit);
-			this.moveModeSelectionChanged();
-		};
-		CanvasMouseHandler.prototype.setMoveModeSelectedDigits = function(digits){
-			this.resetMoveModeSelectedDigits();
-			this.addMoveModeSelectedDigits(digits);
-		};
-		CanvasMouseHandler.prototype.resetMoveModeSelectedDigits = function(){
-			this.move_mode_selected_digits.length = 0;
-			this.moveModeSelectionChanged();
-		};
-		CanvasMouseHandler.prototype.addMoveModeSelectedDigits = function(digits){
-			for(var i = 0; i < digits.length; ++i){
-				this.addMoveModeSelectedDigit(digits[i]);
+			if(temporary){
+				this.temporary_move_mode_selected_digits.push(digit);
+			}else{
+				this.move_mode_selected_digits.push(digit);
 			}
+			this.moveModeSelectionChanged();
+		};
+		CanvasMouseHandler.prototype.setMoveModeSelectedDigits = function(digits, temporary){
+			this.resetMoveModeSelectedDigits(temporary);
+			this.addMoveModeSelectedDigits(digits, temporary);
+		};
+		CanvasMouseHandler.prototype.resetMoveModeSelectedDigits = function(temporary){
+			if(temporary){
+				this.temporary_move_mode_selected_digits.length = 0;
+			}else{
+				this.move_mode_selected_digits.length = 0;
+			}
+			this.moveModeSelectionChanged();
+		};
+		CanvasMouseHandler.prototype.addMoveModeSelectedDigits = function(digits, temporary){
+			for(var i = 0; i < digits.length; ++i){
+				this.addMoveModeSelectedDigit(digits[i], temporary);
+			}
+		};
+		CanvasMouseHandler.prototype.toggleMoveModeSelectedDigits = function(digits, temporary){
+			for(var i = 0; i < digits.length; ++i){
+				this.toggleMoveModeSelectedDigit(digits[i], temporary);
+			}
+		};
+		CanvasMouseHandler.prototype.toggleMoveModeSelectedDigit = function(digit, temporary){
+			if(this.isMoveModeSelected(digit, temporary)){
+				this.removeMoveModeSelectedDigit(digit, temporary);
+			}else{
+				this.addMoveModeSelectedDigit(digit, temporary);
+			}
+		};
+		CanvasMouseHandler.prototype.removeMoveModeSelectedDigit = function(digit, temporary){
+			if(temporary){
+				for(var i = 0; i < this.temporary_move_mode_selected_digits.length; ++i){
+					if(this.temporary_move_mode_selected_digits[i].isPossiblyAboutThis(digit.getIdentification())){
+						this.temporary_move_mode_selected_digits.splice(i, 1);
+						break;
+					}
+				}
+			}else{
+				for(var i = 0; i < this.move_mode_selected_digits.length; ++i){
+					if(this.move_mode_selected_digits[i].isPossiblyAboutThis(digit.getIdentification())){
+						this.move_mode_selected_digits.splice(i, 1);
+						break;
+					}
+				}
+			}
+			this.moveModeSelectionChanged();
 		};
 		CanvasMouseHandler.prototype.moveModeSelectionChanged = function(){
 			this.canvas.updateCanvas();

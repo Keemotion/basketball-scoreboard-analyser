@@ -158,14 +158,14 @@ define(
 		MyCanvas.prototype.displayObjectsChanged = function(signal, data){
 			this.updateCanvas();
 		};
-		MyCanvas.prototype.getSelectionTree = function(selection_rectangle){
+		MyCanvas.prototype.getSelectionTree = function(selection_rectangle, type){
 			var tree = new SelectionTree();
 			var image_coordinates_rectangle = selection_rectangle
 				.transformCanvasCoordinatesToRelativeImageCoordinates(this
 					.getTransformation());
 			return this.display_tree
-				.getSelectionTree(image_coordinates_rectangle);
-			return tree;
+				.getSelectionTree(image_coordinates_rectangle, type);
+			//return tree;
 		};
 		MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
 			var res = this.display_tree

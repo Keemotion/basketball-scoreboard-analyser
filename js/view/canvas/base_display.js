@@ -126,16 +126,16 @@ define([
 	BaseDisplay.prototype.isInRectangle = function(rectangle){
 		return false;
 	};
-	BaseDisplay.prototype.getSelectionTree = function(rectangle){
+	BaseDisplay.prototype.getSelectionTree = function(rectangle, type){
 		var selection_tree = new SelectionTree();
 		selection_tree.getRoot().setProxy(this.getProxy());
-		if(this.canBeSelected()){
+		if(this.canBeSelected() && (type == null || type == this.getProxy().getType())){
 			if(this.isInRectangle(rectangle)){
 				selection_tree.getRoot().setSelected(true);
 			}
 		}
 		for(var i = 0; i < this.sub_components.length; ++i){
-			var tmp_tree = this.sub_components[i].getSelectionTree(rectangle);
+			var tmp_tree = this.sub_components[i].getSelectionTree(rectangle, type);
 			if(tmp_tree.getRoot().getSelected() || tmp_tree.getRoot().getChildren().length > 0){
 				selection_tree.getRoot().addChild(tmp_tree.getRoot());
 				//TODO: check this!
