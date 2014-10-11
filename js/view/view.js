@@ -59,16 +59,16 @@ define([
 		this.toolbox_tree_div = $('<div>').attr({
 				id:'div_toolbox_objects_tree',
 			});
-		this.toolbox_details_div = $('<div>').attr({
+		/*this.toolbox_details_div = $('<div>').attr({
 				id:'div_toolbox_objects_details'
-			});
+			});*/
 		this.right_container_div = $('<div>').attr({
 				class:'div_vertical',
 				id:'div_toolbox'
 			})
 			.append(this.toolbox_tree_div)
-			.append($('<hr>'))
-			.append(this.toolbox_details_div);
+			//.append($('<hr>'))
+			/*.append(this.toolbox_details_div)*/;
 		this.element.append(this.left_container_div)
 			.append(this.right_container_div);
 

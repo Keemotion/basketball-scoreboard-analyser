@@ -60,6 +60,7 @@ div#div_toolbox {
 	float: left;
 	display: block;
 	width: 25%;
+	height:100%;
 
 }
 /*Export field and import field*/
@@ -93,7 +94,7 @@ div.div_state div.div_state_buttons {
 
 /*Div containing the tree of all objects to be displayed*/
 div#div_toolbox_objects_tree {
-	overflow: auto;
+	overflow: scroll;
 	height: 100%;
 }
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree {
