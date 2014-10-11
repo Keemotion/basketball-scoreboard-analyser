@@ -87,7 +87,8 @@ define(
 								self.jsonFileChanged(input);
 							});
 							input.click();
-						});
+						})
+						.mouseup(function(){$(this).blur();});
 				// load PRM
 				this.load_prm_btn = $('<button>').attr('title',
 						'Import PRM file').append(
@@ -101,6 +102,7 @@ define(
 							});
 							input.click();
 						})
+						.mouseup(function(){$(this).blur();});
 				// export JSON
 				this.download_json_btn = $('<button>').append(
 						$('<i>').addClass('fa fa-download')).append(
@@ -115,7 +117,8 @@ define(
 									link.href = 'data:application/json,'
 											+ encodeURIComponent(state_string);
 									link.click();
-								});
+								})
+								.mouseup(function(){$(this).blur();});
 				// export PRM
 				this.download_prm_btn = $('<button>')
 						.attr('title', 'Download PRM')
@@ -131,7 +134,8 @@ define(
 									link.href = 'data:text/plain,'
 											+ encodeURIComponent(exported_string);
 									link.click();
-								});
+								})
+								.mouseup(function(){$(this).blur();});
 				// load other image
 				// this.img_btn = $('<input>').attr('type', 'file')
 				// .change(function(){self.imageChanged();})
@@ -147,9 +151,10 @@ define(
 							});
 							link.click();
 						})
+						.mouseup(function(){$(this).blur();});
 				this.import_export_btns.append(this.load_json_btn).append(
 						this.load_prm_btn).append(this.download_json_btn)
-						.append(this.download_prm_btn)
+						.append(this.download_prm_btn);
 				this.target_div.append(this.import_export_btns).append(
 						$('<div>').addClass('btn-group').append(this.img_btn));
 
@@ -167,7 +172,8 @@ define(
 											.fire(
 													self.messaging_system.events.ResetCanvasView,
 													null);
-								});
+								})
+								.mouseup(function(){$(this).blur();});
 				this.reset_state_btn = $('<button>').attr('title',
 						'Reset configuration').append(
 						$('<i>').addClass('fa fa-file-o')).addClass(
@@ -176,7 +182,8 @@ define(
 							self.messaging_system.fire(
 									self.messaging_system.events.ResetState,
 									null);
-						});
+						})
+						.mouseup(function(){$(this).blur();});
 				this.clear_state_btn = $('<button>').attr('title',
 						'Clear configuration').append(
 						$('<i>').addClass('fa fa-refresh')).addClass(
@@ -185,7 +192,8 @@ define(
 							self.messaging_system.fire(
 									self.messaging_system.events.ClearState,
 									null);
-						});
+						})
+						.mouseup(function(){$(this).blur();});
 				this.reset_btns.append(this.reset_view_btn).append(
 						this.reset_state_btn).append(this.clear_state_btn);
 				this.target_div.append(this.reset_btns);
