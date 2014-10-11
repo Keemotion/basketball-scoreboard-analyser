@@ -459,7 +459,7 @@ define([
 		this.previous_mouse_coordinate = data.getCoordinate();
 		switch(this.current_mouse_mode){
 		case CanvasMouseHandler.MouseModes.EditMode:
-			var MAX_DISTANCE = 20;//px
+			var MAX_DISTANCE = 80;//px
 			
 			this.current_drag_corner_move = false;
 			this.current_drag_digit_detect = false;
