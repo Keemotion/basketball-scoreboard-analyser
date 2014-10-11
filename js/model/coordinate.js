@@ -23,7 +23,8 @@ define([],function(){
 	Coordinate.prototype.isValid = function(){
 		//TODO: find a better validation function
 		//can we use this one? http://stackoverflow.com/questions/18082/validate-numbers-in-javascript-isnumeric?page=1&tab=votes#tab-top
-		return this.x && this.y;
+		//return this.x && this.y;
+		return $.isNumeric(this.x) && $.isNumeric(this.y);
 	};
 	Coordinate.prototype.type = "coordinate";
 	//Calculates the center of the coordinates in an array (equal weights)
