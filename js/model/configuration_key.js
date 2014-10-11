@@ -68,5 +68,8 @@ define(["./data_base_class",
 		current_configuration[this.getKey()] = this.getValue();
 		return current_configuration;
 	};
+	ConfigurationKey.prototype.isComplete = function(){
+		return this.key!=null && this.value!=null;
+	};
 	return ConfigurationKey;
 });
