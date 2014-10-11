@@ -664,14 +664,16 @@ define([
 		};
 		CanvasMouseHandler.prototype.updateSelection = function(data){
 			this.selection_rectangle.updateSelection(data.getCoordinate());
-			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle());
-			var selection_event = new SelectionEvent(selected_tree, true);
-			if(data.getEventData().ctrlKey){//toggle selection
-				this.messaging_system.fire(this.messaging_system.events.SelectionToggled, selection_event);
-			}else if(data.getEventData().shiftKey){//add selection
-				this.messaging_system.fire(this.messaging_system.events.SelectionAdded, selection_event);
-			}else{//set selection
-				this.messaging_system.fire(this.messaging_system.events.SelectionSet, selection_event);
+			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle(), "digit");
+			var digits = selected_tree.getSelectedFlat();
+			//var selection_event = new SelectionEvent(selected_tree, true);
+
+			if(data.getEventData().ctrlKey){
+				this.addMoveModeSelectedDigits(digits, true);
+			}else if(data.getEventData().shiftKey){
+				this.toggleMoveModeSelectedDigits(digits, true);
+			}else{
+				this.setMoveModeSelectedDigits(digits, true);
 			}
 			this.canvas.updateCanvas();
 		};
@@ -687,7 +689,13 @@ define([
 			return identifications;
 		};
 		CanvasMouseHandler.prototype.getMoveModeSelectedDigits = function(){
-			return this.move_mode_selected_digits;
+			return this.temporary_move_mode_selected_digits;
+		};
+		CanvasMouseHandler.prototype.resetTemporaryMoveModeSelection = function(){
+			this.temporary_move_mode_selected_digits.length = 0;
+			for(var i = 0; i < this.move_mode_selected_digits.length; ++i){
+				this.temporary_move_mode_selected_digits.push(this.move_mode_selected_digits[i]);
+			}
 		};
 		CanvasMouseHandler.prototype.isMoveModeSelected = function(digit, temporary){
 			if(temporary){
@@ -709,9 +717,10 @@ define([
 			if(this.isMoveModeSelected(digit, temporary)){
 				return;
 			}
-			if(temporary){
+			//if(temporary){
 				this.temporary_move_mode_selected_digits.push(digit);
-			}else{
+			//}else{
+			if(!temporary){
 				this.move_mode_selected_digits.push(digit);
 			}
 			this.moveModeSelectionChanged();
@@ -721,9 +730,10 @@ define([
 			this.addMoveModeSelectedDigits(digits, temporary);
 		};
 		CanvasMouseHandler.prototype.resetMoveModeSelectedDigits = function(temporary){
-			if(temporary){
+			//if(temporary){
 				this.temporary_move_mode_selected_digits.length = 0;
-			}else{
+			//}else{
+			if(!temporary){
 				this.move_mode_selected_digits.length = 0;
 			}
 			this.moveModeSelectionChanged();
@@ -739,21 +749,22 @@ define([
 			}
 		};
 		CanvasMouseHandler.prototype.toggleMoveModeSelectedDigit = function(digit, temporary){
-			if(this.isMoveModeSelected(digit, temporary)){
+			if(this.isMoveModeSelected(digit, false)){
 				this.removeMoveModeSelectedDigit(digit, temporary);
 			}else{
 				this.addMoveModeSelectedDigit(digit, temporary);
 			}
 		};
 		CanvasMouseHandler.prototype.removeMoveModeSelectedDigit = function(digit, temporary){
-			if(temporary){
+			//if(temporary){
 				for(var i = 0; i < this.temporary_move_mode_selected_digits.length; ++i){
 					if(this.temporary_move_mode_selected_digits[i].isPossiblyAboutThis(digit.getIdentification())){
 						this.temporary_move_mode_selected_digits.splice(i, 1);
 						break;
 					}
 				}
-			}else{
+			//}else{
+			if(!temporary){
 				for(var i = 0; i < this.move_mode_selected_digits.length; ++i){
 					if(this.move_mode_selected_digits[i].isPossiblyAboutThis(digit.getIdentification())){
 						this.move_mode_selected_digits.splice(i, 1);
