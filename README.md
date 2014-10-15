@@ -6,29 +6,46 @@ The input file corresponding to the default image can be found at: http://fkint.
 
 <h2>User interface</h2>
 <ul>
-<li>Load a prm-file containing the current data using the "Load file" button.
-<li>Load a scoreboard image using the "Load image" button.
-<li>Add groups to the current configuration using the "Add (dots/digits) group" button.
-<li>Click on a group in the tree view to view its details at the bottom right corner of the screen.
-<li>Adding digits and dots to a group can be done with the corresponding buttons in the details view.
-<li>Toggle highlighting of a group on the canvas by clicking on the highlight button in the details view.
-<li>Use the "Click" button to set the coordinate for a corner/dot by clicking on the canvas.
-<li>Use the "Click to set digit" button to set the four corner coordinates of a digit by clicking four times on the canvas (in the order top-left, top-right, bottom-right, bottom-left).
-<li>Delete groups/digits/dots with the corresponding buttons in the details view.
-<li>Drag-and-drop groups in the tree to re-order them.
-<li>Use the arrow buttons in the tree to expand/collapse groups with children.
-<li>Scroll to zoom the canvas.
-<li>Download JSON/PRM using the corresponding buttons in the bottom left corner of the screen.
-<li>Reset the configuration using the 'reset configuration' button
-<li>Clear the configuration (remove all child nodes)
-<li>Switch between the following mouse modes:
+<li>Toolbar:
 <ul>
-<li>View edit mode: drag the canvas
-<li>Drag mode: move the selected objects
-<li>Selection mode: draw a rectangle to select all objects inside it
+<li>Mouse mode: Default (edition)
+<li>Mouse mode: Drag canvas
+<li>Mouse mode: move digits
+<li>Import JSON file
+<li>Import PRM file
+<li>Export as JSON file
+<li>Export as PRM file
+<li>Set canvas image
+<li>Reset canvas view (image centered and full-area)
+<li>Reset configuration (remove all objects)
+<li>Clear configuration (empty all nodes at the root level)
+<li>Autofocus (centers canvas around selected elements)
 </ul>
-<li>Double-click inside a digit to select it
+</li>
+<li>Mouse:
+<ul>
+<li>Default mouse mode:
+<ul>
+<li>Click inside a digit -> select digit
+<li>Click & drag near corner of selected digit/led -> move digit/led
+<li>Click & drag to select a rectangular region when a digits group is selected -> autodetect digit corners in that region
+<li>Click 4 times on the canvas when a digits group is selected -> create new digit with corners on those spots
+<li>Click on an element in the tree to select it
+<li>Double-click on an element on the canvas to expand its corresponding tree element
+<li>Press ctrl to switch to 'Drag canvas mode'
+<li>Press delete to delete the selected object
 </ul>
+</li>
+<li>Drag canvas mode: self-explanatory
+<li>Move digits mode:
+<ul>
+<li>Click on a digit to select it (shift to toggle selection, ctrl to add to selection)
+<li>Click & drag outside the selected digits to select a rectangular region -> select all digits (of which the center is) inside that region
+<li>Click & drag starting at one of the selected digits to translate the selection
+</ul>
+</li>
+</ul>
+</li>
 
 
 
