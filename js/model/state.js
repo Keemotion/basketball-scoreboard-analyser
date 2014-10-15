@@ -107,12 +107,6 @@ define([
 			this.addSubNode(s, data.getAutoSelect());
 		}
 	};
-	State.prototype.notifyGroupChanged = function(){
-		if(!this.canNotify()){
-			return;
-		}
-		this.stateChanged();
-	};
 	State.prototype.objectsMoved = function(signal, data){
 		var translation = data.getTranslation();
 		var tree = data.getTree();

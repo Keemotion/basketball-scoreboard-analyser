@@ -105,6 +105,7 @@ define([
 			this.messaging_system.fire(this.messaging_system.events.SelectionChanged, new SelectionEvent(this.getCurrentSelectionTree()));
 		};
 		View.prototype.stateChanged = function(signal, data){
+			console.log("stateChanged");
 			this.canvas.setProxy(this.controller.getModel().getState().getProxy());
 			this.toolbar_component.setProxy(this.controller.getModel().getState().getProxy());
 			this.tree_view.setProxy(this.controller.getModel().getState().getProxy());

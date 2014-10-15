@@ -56,6 +56,8 @@ define([ "../../messaging_system/event_listener",
 		this.nodes = new Array();
 		target_view.append(this.tree_element);
 		this.setProxy(state_proxy);
+
+		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 	};
 	TreeView.prototype.addNode = function(dataProxy, id){
 		var tree_node;
@@ -103,6 +105,37 @@ define([ "../../messaging_system/event_listener",
 					new ReOrderedEvent(new_order, self.state_proxy
 						.getIdentification()));
 			});
+	};
+	TreeView.prototype.groupChanged = function(signal, data){
+		//update tree
+		if(!this.state_proxy.isPossiblyAboutThis(data.getTargetIdentification())){
+			return;
+		}
+		var sub_nodes = this.state_proxy.getSubNodes();
+		for(var j = 0; j < this.nodes.length; ++j){
+			this.nodes[j].detach();
+		}
+		this.tree_element.empty();
+		for(var i = 0; i < sub_nodes.length; ++i){
+			var found = false;
+			for(var j = 0; j < this.nodes.length && !found; ++j){
+				if(sub_nodes[i].isPossiblyAboutThis(this.nodes[j].getProxy().getIdentification())){
+					this.nodes[j].appendTo(this.tree_element);
+					found = true;
+				}
+			}
+			if(!found){
+				var element = $('<li>');
+				this.addNode(sub_nodes[i]);
+				this.nodes[this.nodes.length-1].loadContent(element);
+				this.nodes[this.nodes.length-1].appendTo(this.tree_element);
+			}
+		}
+		for(var j = this.nodes.length-1; j >= 0; --j){
+			if(this.nodes[j].is_detached()){
+				this.nodes.splice(j, 1);
+			}
+		}
 	};
 	return TreeView;
 });

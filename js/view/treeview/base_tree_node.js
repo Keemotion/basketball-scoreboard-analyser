@@ -15,6 +15,7 @@ define(["../../messaging_system/events/selection_event",
 			this.commands = new Array();
 			this.sub_tree_nodes = new Array();
 			this.is_selected = false;
+			this.detached = false;
 			this.setUpdateListeners(data_proxy.getUpdateEvents());
 			this.editModeSelectionSetListener = new EventListener(this, this.editModeSelectionSet);
 			this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, this.editModeSelectionSetListener);
@@ -287,6 +288,17 @@ define(["../../messaging_system/events/selection_event",
 			return this.data_proxy;
 		};
 		BaseTreeNode.prototype.loadSubNodes = function(){
+		};
+		BaseTreeNode.prototype.detach = function(){
+			this.element.detach();
+			this.detached = true;
+		};
+		BaseTreeNode.prototype.appendTo = function(element){
+			element.append(this.element);
+			this.detached = false;
+		};
+		BaseTreeNode.prototype.is_detached = function(){
+			return this.detached;
 		};
 		return BaseTreeNode;
 	});
