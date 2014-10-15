@@ -136,7 +136,6 @@ define([
 						//check if inside a digit -> select that digit
 						//if not inside digit, but near the selected digit -> select nearest corner of that digit and drag it (only if mouse has been down for more than 0.5 s)
 						//else: try to add a new digit to the currently selected digit group (if none is selected, don't do anything)
-
 						var mouse_release_time = new Date();
 						var time_down = mouse_release_time.getTime() - this.mouse_down_time.getTime();
 						if(time_down > DOWN_TIME){

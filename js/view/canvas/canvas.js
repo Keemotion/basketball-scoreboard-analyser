@@ -288,10 +288,10 @@ define(
 			if(this.image){
 				var canvas_top_left = this.transformation
 					.transformAbsoluteImageCoordinateToCanvasCoordinate(new Coordinate(
-						0, this.transformation.getImageHeight()));
+						0, 0));
 				var canvas_bottom_right = this.transformation
 					.transformAbsoluteImageCoordinateToCanvasCoordinate(new Coordinate(
-						this.transformation.getImageWidth(), 0));
+						this.transformation.getImageWidth(), this.transformation.getImageHeight()));
 				canvas_top_left.round();
 				canvas_bottom_right.round();
 				this.context.mozImageSmoothingEnabled = false;

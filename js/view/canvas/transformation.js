@@ -88,7 +88,6 @@ define(["../../model/coordinate"], function(Coordinate){
 	};
 	// converts an absolute image coordinate to canvas coordinate
 	Transformation.prototype.transformAbsoluteImageCoordinateToCanvasCoordinate = function(coordinate){
-		//return this.transformRelativeImageCoordinateToCanvasCoordinate(this.transformAbsoluteImageCoordinateToRelativeImageCoordinate(coordinate.add(new Coordinate(-0.5, -0.5))));
 		return this.transformRelativeImageCoordinateToCanvasCoordinate(this.transformAbsoluteImageCoordinateToRelativeImageCoordinate(coordinate));
 	};
 	// converts a canvas coordinate to an absolute image coordinate
