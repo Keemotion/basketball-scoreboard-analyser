@@ -80,7 +80,7 @@ define([
 
 			this.current_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
 			this.previous_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
-			//this.current_mouse_mode = CanvasMouseHandler.MouseModes.ViewEditMode;
+			this.current_digit_corners_listen_for_new = false;
 			this.selection_rectangle = new SelectionRectangle;
 
 			this.messaging_system.addEventListener(this.messaging_system.events.CanvasScrolled, new EventListener(this, this.canvasScrolled));
@@ -216,6 +216,7 @@ define([
 		};
 		CanvasMouseHandler.prototype.digitCornersListenRequested = function(signal, data){
 			this.digit_corners_proxy = data.getProxy();
+			this.current_digit_corners_listen_for_new = data.isNew();
 			this.current_digit_corner_index = 0;
 			this.messaging_system.fire(this.messaging_system.events.GroupReset, new GroupChangedEvent(this.digit_corners_proxy.getIdentification()));
 			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.DigitCornersListenMode));
@@ -327,11 +328,10 @@ define([
 						}else{
 							//add digit or dot to currently selected group
 							if(this.getEditModeSomethingSelected()){
-
 								switch(this.getEditModeSelectedGroupType()){
 									case 'digit':
 										this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("digit", this.getEditModeSelectedGroupIdentification(), null, true));
-										var data2 = new DigitCornersListenEvent(this.getEditModeSelectedProxy());
+										var data2 = new DigitCornersListenEvent(this.getEditModeSelectedProxy(), true);
 										this.digitCornersListenRequested(signal, data2);
 										break;
 									case 'dot':
@@ -415,7 +415,6 @@ define([
 						this.current_drag_corner_move_corner = closest_sub_node;
 						if(this.current_drag_corner_move_corner == null){
 							this.current_drag_corner_move = false;
-
 						}else{
 							this.current_drag_corner_move = true;
 						}
@@ -542,7 +541,11 @@ define([
 					if(this.current_mouse_mode == CanvasMouseHandler.MouseModes.EditMode && this.mouse_down){
 						this.cancelDragging();
 					}else if(this.current_mouse_mode == CanvasMouseHandler.MouseModes.DigitCornersListenMode){
-						this.messaging_system.fire(this.messaging_system.events.GroupReset, new GroupChangedEvent(this.digit_corners_proxy.getIdentification()));
+						if(this.current_digit_corners_listen_for_new){
+							this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(this.getEditModeSelectedProxy().getIdentification()));
+						}else{
+							this.messaging_system.fire(this.messaging_system.events.GroupReset, new GroupChangedEvent(this.digit_corners_proxy.getIdentification()));
+						}
 						this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 					}else{
 						this.messaging_system.fire(this.messaging_system.events.SelectionReset, null);
