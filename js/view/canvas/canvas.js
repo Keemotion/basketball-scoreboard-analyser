@@ -1,14 +1,13 @@
 define(
 	[ "../../messaging_system/event_listener", "../../model/coordinate",
 		"./transformation", "./display_tree",
-		"../../messaging_system/events/submit_group_details_event",
 		"./handlers/display_changed_handler",
 		"../../messaging_system/events/canvas_key_event",
 		"./handlers/canvas_mouse_handler",
-		"../../model/selection_tree", "../../model/selection_node",
+		"../../model/selection_tree",
 		"../../messaging_system/events/mouse_event",
 		"../../model/bounding_rectangle"],
-	function(EventListener, Coordinate, Transformation, DisplayTree, SubmitGroupDetailsEvent, DisplayChangedHandler, CanvasKeyEvent, CanvasMouseHandler, SelectionTree, SelectionNode, MouseEvent, BoundingRectangle){
+	function(EventListener, Coordinate, Transformation, DisplayTree, DisplayChangedHandler, CanvasKeyEvent, CanvasMouseHandler, SelectionTree, MouseEvent, BoundingRectangle){
 		var MyCanvas = function(view, target_view, proxy, messaging_system){
 			var self = this;
 			this.view = view;
@@ -51,9 +50,6 @@ define(
 			this.messaging_system.addEventListener(
 				this.messaging_system.events.GroupChanged,
 				new EventListener(this, this.updateCanvas));
-			//this.messaging_system.addEventListener(
-			//		this.messaging_system.events.MouseModeChanged,
-			//		new EventListener(this, this.mouseModeChanged));
 			this.windowResized(null, null);
 			var scrollF = function(e){
 				self.fireMouseEvent(
@@ -165,7 +161,6 @@ define(
 					.getTransformation());
 			return this.display_tree
 				.getSelectionTree(image_coordinates_rectangle, type);
-			//return tree;
 		};
 		MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
 			var res = this.display_tree
@@ -259,15 +254,6 @@ define(
 					}
 				}
 			}
-			/*var selection_tree = this.view.getCurrentSelectionTree();
-			 if (!selection_tree.getRoot().getProxy()) {
-			 return;
-			 }
-			 if (this.display_tree) {
-			 this.display_tree.drawSelected(this.view
-			 .getCurrentSelectionTree().getRoot(), this.context,
-			 this.transformation);
-			 }*/
 		};
 		MyCanvas.prototype.updateCanvas = function(signal, data){
 			this.getDisplayChangedHandler().fireEdited();
@@ -298,7 +284,6 @@ define(
 		};
 		// draws the canvas image and (if needed) the display objects
 		MyCanvas.prototype.drawCanvas = function(){
-			//console.log(JSON.stringify(this.getTransformation().transformRelativeImageCoordinateToAbsoluteImageCoordinate(new Coordinate(0, 0.60905))));
 			this.context.clearRect(0, 0, this.canvas_element.width,
 				this.canvas_element.height);
 			if(this.image){
@@ -338,41 +323,10 @@ define(
 		MyCanvas.prototype.getTransformation = function(){
 			return this.transformation;
 		};
-		/*MyCanvas.prototype.mouseModeChanged = function(signal, data) {
-		 $(this.canvas_element)
-		 .parent()
-		 .removeClass(
-		 'mouse-mode-auto-detect-digit mouse-mode-selection mouse-mode-view-edit mouse-mode-drag mouse-mode-coordinate-click');
-		 switch (data.getMode()) {
-		 case CanvasMouseHandler.MouseModes.EditMode:
-		 //$(this.canvas_element).parent().addClass(
-		 //		'mouse-mode-selection');
-		 break;
-		 case CanvasMouseHandler.MouseModes.CanvasMode:
-		 $(this.canvas_element).parent().addClass(
-		 'mouse-mode-view-edit');
-		 break;
-		 case CanvasMouseHandler.MouseModes.DragMode:
-		 $(this.canvas_element).parent().addClass('mouse-mode-drag');
-		 break;
-		 case CanvasMouseHandler.MouseModes.CoordinateClickMode:
-		 $(this.canvas_element).parent().addClass(
-		 'mouse-mode-coordinate-click');
-		 break;
-		 case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
-		 $(this.canvas_element).parent().addClass(
-		 'mouse-mode-auto-detect-digit');
-		 break;
-		 default:
-		 break;
-		 }
-		 };*/
 		MyCanvas.prototype.getImage = function(){
 			return this.image;
 		};
 		MyCanvas.prototype.autoFocus = function(signal, data){
-			//var tree = this.view.getCurrentSelectionTree();
-			//var bounding_rectangle = tree.getBoundingRectangle();
 			var bounding_rectangle = new BoundingRectangle();
 			var selected_elements = this.canvas_mouse_handler.getSelectedObjects();
 			for(var i = 0; i < selected_elements.length; ++i){
