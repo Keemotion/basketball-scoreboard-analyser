@@ -24,9 +24,9 @@ define([
 				id : 'div_image'
 			});
 			this.toolbar_div = $('<div>');
-			this.state_container_div = $('<div>').attr({
+			this.toolbar_container_div = $('<div>').attr({
 				class : 'div_horizontal',
-				id : 'div_state_container'
+				id : 'div_toolbar_container'
 			})
 				.append(this.toolbar_div);
 			this.left_container_div = $('<div>').attr({
@@ -34,9 +34,9 @@ define([
 				id : 'div_main_container'
 			})
 				.append(this.canvas_container_div)
-				.append(this.state_container_div);
+				.append(this.toolbar_container_div);
 			this.toolbox_tree_div = $('<div>').attr({
-				id : 'div_toolbox_objects_tree',
+				id : 'div_toolbox_objects_tree'
 			});
 			this.right_container_div = $('<div>').attr({
 				class : 'div_vertical',

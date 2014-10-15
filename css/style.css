@@ -1,173 +1,102 @@
 html, body {
-	height: 100%;
-	margin: 0 0 0 0;
-	padding: 0 0 0 0;
+    height: 100%;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
 }
+
 /*Div containing the canvas and the import/export fields*/
 div.div_vertical#div_main_container {
-	width: 75%;
-	height: 100%;
-	float: left;
+    width: 75%;
+    height: 100%;
+    float: left;
 }
 
 div.div_horizontal {
-	overflow: hidden;
-	width: 100%;
+    overflow: hidden;
+    width: 100%;
 }
 
 /*Div containing the import/export fields*/
-div.div_horizontal#div_state_container {
-	/*height: 25%;*/
-	height:30px;
-	margin-top:-30px;
-	top:100%;
-	position:absolute;
+div.div_horizontal#div_toolbar_container {
+    height: 30px;
+    margin-top: -30px;
+    top: 100%;
+    position: absolute;
 }
 
 /*Div containing the canvas*/
 div#div_image {
-	display: block;
-	float: left;
-	/*height: 75%;*/
-	height:100%;
-	padding-bottom:30px;
-	background-color: blue;
+    display: block;
+    float: left;
+    height: 100%;
+    padding-bottom: 30px;
+    background-color: blue;
 }
-div#div_image.mouse-mode-view-edit *{
-	cursor:move;
-}
-div#div_image.mouse-mode-selection *{
-	cursor:cell;
-}
-div#div_image.mouse-mode-drag *{
-	cursor:move;
-}
-div#div_image.mouse-mode-coordinate-click *{
-	cursor:crosshair;
-}
-div#div_image.mouse-mode-auto-detect-digit *{
-	cursor:crosshair;
-}
+
 /*Canvas*/
 div#div_image canvas.canvas_image {
-	background-color: orange;
-	width: 100%;
-	height: 100%;
+    background-color: orange;
+    width: 100%;
+    height: 100%;
 }
+
 /*Toolbox, containing tree and details view*/
 div#div_toolbox {
-	background-color: red;
-	float: left;
-	display: block;
-	width: 25%;
-	height:100%;
+    background-color: red;
+    float: left;
+    display: block;
+    width: 25%;
+    height: 100%;
 
-}
-/*Export field and import field*/
-div.horizontal#div_state_container div.div_state {
-	height: 100%;
-}
-/*Export field*/
-div#div_current_state {
-	float: left;
-	width: 50%;
-	background-color: yellow;
-	height: 100%;
-}
-
-/*Import field*/
-div#div_load_state {
-	width: 50%;
-	background-color: green;
-	float: left;
-	height: 100%;
-}
-/*textarea in import field*/
-textarea.txt_state {
-	width: 80%;
-	height: 80%;
-	float: left;
-}
-div.div_state div.div_state_buttons {
-	float: left;
 }
 
 /*Div containing the tree of all objects to be displayed*/
 div#div_toolbox_objects_tree {
-	overflow: scroll;
-	height: 100%;
+    overflow: scroll;
+    height: 100%;
 }
+
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree {
-	list-style-type: none;
-	padding-left: 2px;
+    list-style-type: none;
+    padding-left: 2px;
 }
+
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree ul {
-	list-style-type: none;
+    list-style-type: none;
 }
+
 /*CSS to collapse a subtree*/
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.collapsed > ul {
-	display: none;
+    display: none;
 }
+
 /*The arrows to collapse or expand a subtree */
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li .command {
-	float: left;
+    float: left;
 }
+
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.collapsed > div.tree_controls_container > .expand_command {
-	display: inline;
+    display: inline;
 }
+
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.collapsed > div.tree_controls_container > .collapse_command {
-	display: none;
+    display: none;
 }
+
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.expanded > div.tree_controls_container > .expand_command {
-	display: none;
+    display: none;
 }
+
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li.expanded > div.tree_controls_container > .collapse_command {
-	display: inline;
+    display: inline;
 }
+
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li > span.span_li_title {
-	display: inline;
-	overflow: hidden;
+    display: inline;
+    overflow: hidden;
 }
+
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree li > span.span_li_title:hover {
-	cursor: pointer;
-}
-/*Div containing object details*/
-div#div_toolbox_objects_details {
-	overflow: auto;
-	height: 45%;
+    cursor: pointer;
 }
 
-/*digit view details*/
-
-div#div_toolbox_objects_details div#div_details ul.ul_corners {
-	list-style-type: none;
-	margin: 0px;
-}
-div#div_toolbox_objects_details div#div_details ul.ul_corners input {
-	width: 40px;
-}
-/*text inputs for coordinates*/
-div#div_toolbox_objects_details div#div_details input.input_coordinate {
-	width: 40px;
-}
-/*Title formatting for details div*/
-div#div_toolbox_objects_details div#div_details span.span_details_title {
-	font-weight: bold;
-	font-size: 20px;
-}
-/*CSS for click-to-set-corner-coordinate buttons*/
-div#div_toolbox_objects_details button.button_corner_coordinate_click.active {
-	background-color: green;
-}
-/*CSS for click-to-set-digit-coordinates buttons*/
-div#div_toolbox_objects_details button.button_digit_coordinate_click.active {
-	background-color: green;
-}
-/*CSS for click-to-set-dot-coordinate buttons*/
-div#div_toolbox_objects_details button.button_dot_coordinate_click.active {
-	background-color: green;
-}
-/*CSS for hightligt buttons*/
-div#div_toolbox_objects_details button.btn-highlight.active {
-	background-color: blue;
-}
