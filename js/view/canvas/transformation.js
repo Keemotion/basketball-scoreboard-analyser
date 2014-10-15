@@ -84,7 +84,7 @@ define(["../../model/coordinate"], function(Coordinate){
 	// converts an absolute image coordinate to a relative image coordinate
 	Transformation.prototype.transformAbsoluteImageCoordinateToRelativeImageCoordinate = function(coordinate){
 		return new Coordinate(1.0 / 3.0 * (-4.0 + (coordinate.getX()) * 8.0 / this.getImageWidth()),
-				(this.getImageHeight() - (coordinate.getY()/) * 2.0) / this.getImageHeight());
+				(this.getImageHeight() - (coordinate.getY()) * 2.0) / this.getImageHeight());
 	};
 	// converts an absolute image coordinate to canvas coordinate
 	Transformation.prototype.transformAbsoluteImageCoordinateToCanvasCoordinate = function(coordinate){
