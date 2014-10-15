@@ -50,12 +50,6 @@ define(["./bounding_rectangle"], function(BoundingRectangle){
 	SelectionNode.prototype.getId = function(){
 		return this.getProxy().getId();
 	};
-	/*SelectionNode.prototype.setType = function(type){
-	 this.type = type;
-	 };
-	 SelectionNode.prototype.setId = function(id){
-	 this.id = id;
-	 };*/
 	SelectionNode.prototype.addSelection = function(node){
 		if(node.getSelected()){
 			this.setSelected(true);

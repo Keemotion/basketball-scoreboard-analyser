@@ -213,7 +213,6 @@ define(
 		};
 		MyCanvas.prototype.resetDisplayObjects = function(){
 			this.display_tree = null;
-			//this.drawCanvas();
 		};
 		// something has changed on the canvas, warn displayChangedChandler
 		// (to prevent all display objects from being drawn every time ->

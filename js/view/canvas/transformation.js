@@ -69,7 +69,6 @@ define(["../../model/coordinate"], function(Coordinate){
 	};
 	// converts a relative image coordinate to an absolute image coordinate
 	Transformation.prototype.transformRelativeImageCoordinateToAbsoluteImageCoordinate = function(coordinate){
-		//return new Coordinate((coordinate.x+this.getHorizontalRatio())*this.getImageRatio()/2.0, (-coordinate.y+this.getVerticalRatio())*this.getImageRatio()/2.0);
 		return new Coordinate((3.0 * coordinate.getX() + 4.0) * this.getImageWidth() / 8.0 - .5, .5 * (this.getImageHeight() * (1.0 - coordinate.getY()) - 1.0));
 	};
 	// returns the display ratio (factor needed to convert relative image

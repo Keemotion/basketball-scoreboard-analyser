@@ -8,9 +8,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 	};
 	DigitDisplay.prototype = new BaseDisplay();
 	DigitDisplay.prototype.drawMyself = function(context, transformation){
-		//if(!this.getProxy().getSimulating()){
-		//	return;
-		//}
 		var sub_proxies = this.getProxy().getSubNodes();
 		if(sub_proxies.length != 4)
 			return;
@@ -37,9 +34,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.stroke();
 	};
 	DigitDisplay.prototype.drawMyselfSelected = function(context, transformation){
-		//if(!this.getProxy().getSimulating()){
-		//	return;
-		//}
 		var sub_proxies = this.getProxy().getSubNodes();
 		if(sub_proxies.length != 4)
 			return;
@@ -49,9 +43,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 				return;
 			}
 			coordinates.push(transformation.transformRelativeImageCoordinateToCanvasCoordinate(sub_proxies[i].getCoordinate()));
-			//console.log("relative: "+sub_proxies[i].getCoordinate().getY());
-			//console.log("canvas: "+coordinates[coordinates.length-1].getY());
-			//console.log("image: "+transformation.transformRelativeImageCoordinateToAbsoluteImageCoordinate(sub_proxies[i].getCoordinate()).getY());
 		}
 
 		var left_middle = new Coordinate((coordinates[0].getX() + coordinates[3].getX()) / 2.0, (coordinates[0].getY() + coordinates[3].getY()) / 2.0);

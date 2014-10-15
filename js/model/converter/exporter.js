@@ -12,8 +12,6 @@ define([], function(){
 	//generates the export string of obj (this method is called recursively)
 	Exporter.prototype.getExportString = function(obj, current_group_name, special){
 		var result = "";
-		//TODO: configuration keys
-		//currently all configuration keys are outputted every time, but they should be grouped as to reduce the file size
 		switch(obj.type){
 			case 'group':
 				var dot_group = true;

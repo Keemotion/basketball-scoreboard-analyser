@@ -65,8 +65,6 @@ define(
 			}
 			var horizontal_lines = horizontal_digit_lines(grayscale_image);
 			var vertical_lines = vertical_digit_lines(grayscale_image);
-			// console.log("horizontal: "+JSON.stringify(horizontal_lines));
-			// console.log("vertical: "+JSON.stringify(vertical_lines));
 			var topleft = intersection(horizontal_lines[0],
 				vertical_lines[0], cols, rows);
 			var topright = intersection(horizontal_lines[0],
@@ -91,9 +89,7 @@ define(
 
 		function vertical_digit_lines(grayscale_image){
 			var all_variances = vertical_variances(grayscale_image);
-			// console.log(JSON.stringify(all_variances));
 			var variance_peaks = get_peaks(all_variances);
-			// console.log(JSON.stringify(variance_peaks));
 			var vertical_lines = get_vertical_lines(grayscale_image,
 				variance_peaks);
 			return vertical_lines;

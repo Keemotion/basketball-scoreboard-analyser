@@ -75,20 +75,6 @@ define([
 		var exporter = new Exporter(data);
 		return exporter.export();
 	};
-	//parses a json object and loads it to the current state
-	//TODO: make this method!
-	//In a class (JSONParser -> generate()) -> recursive
-	State.prototype.parseJSON = function(json){
-		this.clear();
-		try{
-			console.log("json = " + json);
-			var data = JSON.parse(json);
-			return this.parse(data);
-		}catch(err){
-			alert("failed!");
-			this.stateChanged();
-		}
-	};
 	State.prototype.reset = function(){
 		this.lockNotification();
 		this.clearSubNodes();
@@ -119,7 +105,6 @@ define([
 					break;
 			}
 			this.addSubNode(s, data.getAutoSelect());
-			//this.stateChanged();
 		}
 	};
 	State.prototype.notifyGroupChanged = function(){

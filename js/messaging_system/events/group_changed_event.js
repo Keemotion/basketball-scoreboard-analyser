@@ -13,13 +13,5 @@ define([], function(){
 	GroupChangedEvent.prototype.isStructuralChange = function(){
 		return this.structural;
 	};
-	/*GroupChangedEvent.prototype.getGroupId = function(){
-	 for(var i = this.target.length-1; i >= 0; --i){
-	 if(this.target[i]['type']=='group'){
-	 return this.target[i]['id'];
-	 }
-	 }
-	 return null;
-	 };*/
 	return GroupChangedEvent;
 });

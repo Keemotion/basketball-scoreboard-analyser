@@ -30,33 +30,11 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.arc(c.x, c.y, 5, 0, 2 * Math.PI);
 		context.stroke();
 	};
-	/*//Returns whether the given coordinate is within 5 canvas pixels from the dot coordinate
-	 DotDisplay.prototype.isAtCanvasCoordinate = function(coordinate, transformation, current){
-	 var distance =Coordinate.getSquareDistance(coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate()));
-	 if(distance <= current.maximal_sq_distance){
-	 current.maximal_sq_distance = distance;
-	 return true;
-	 }
-	 return false;
-	 };*/
 	DotDisplay.prototype.drawChanging = function(context, transformation){
-		//this.getParent().drawChanging(context, transformation);
 	};
-	/*DotDisplay.prototype.isInRectangle = function(transformation, start_coordinate, end_coordinate) {
-	 var canvas_coordinate = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
-	 var margin = 5;
-	 return canvas_coordinate.getX() > start_coordinate.getX() - margin && canvas_coordinate.getX() < end_coordinate.getX() + margin && canvas_coordinate.getY() > start_coordinate.getY() - margin && canvas_coordinate.getY() < end_coordinate.getY() - margin;
-	 //		return true;
-	 };*/
 	DotDisplay.prototype.canBeSelected = function(){
 		return true;
 	};
-
-	/*DotDisplay.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
-	 if(Coordinate.getSquareDistance(coordinate, this.getProxy().getCoordinate()) <= 0.001){
-	 return this.getParent();
-	 }
-	 };*/
 	DotDisplay.prototype.isInRectangle = function(rectangle){
 		var coordinate = this.getProxy().getCoordinate();
 		return coordinate.getX() > rectangle.getTopLeft().getX()

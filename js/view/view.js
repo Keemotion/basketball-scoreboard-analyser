@@ -1,17 +1,15 @@
 define([
 		'./canvas/canvas',
 		'./treeview/treeview',
-		'./detailsview/group_detailsview',
 		'../messaging_system/event_listener',
 		'./canvas/display_tree',
 		"../model/selection_tree",
 		"../model/selection_node",
 		"../messaging_system/events/selection_event",
-//		"./detailsview/details_view",
 		"./toolbar/toolbar",
 		"../messaging_system/events/edit_mode_selection_event"
 	]
-	, function(MyCanvas, TreeView, GroupDetailsView, EventListener, DisplayTree, SelectionTree, SelectionNode, SelectionEvent, //		DetailsView,
+	, function(MyCanvas, TreeView, EventListener, DisplayTree, SelectionTree, SelectionNode, SelectionEvent,
 	           ToolBar, EditModeSelectionEvent){
 		//View represents the GUI
 		var View = function(controller, target_view, messaging_system){
@@ -25,14 +23,6 @@ define([
 				class : 'div_horizontal',
 				id : 'div_image'
 			});
-			/*this.current_state_div = $('<div>').attr({
-			 class:'div_state',
-			 id: 'div_current_state'
-			 });
-			 this.load_state_div = $('<div>').attr({
-			 class:'div_state',
-			 id:'div_load_state'
-			 });*/
 			this.toolbar_div = $('<div>');
 			this.state_container_div = $('<div>').attr({
 				class : 'div_horizontal',
@@ -48,32 +38,19 @@ define([
 			this.toolbox_tree_div = $('<div>').attr({
 				id : 'div_toolbox_objects_tree',
 			});
-			/*this.toolbox_details_div = $('<div>').attr({
-			 id:'div_toolbox_objects_details'
-			 });*/
 			this.right_container_div = $('<div>').attr({
 				class : 'div_vertical',
 				id : 'div_toolbox'
 			})
 				.append(this.toolbox_tree_div)
-				//.append($('<hr>'))
-				/*.append(this.toolbox_details_div)*/;
 			this.element.append(this.left_container_div)
 				.append(this.right_container_div);
 
 			//the canvas
 			this.canvas = new MyCanvas(this, this.canvas_container_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
-			//the export field
-			//this.current_state_component = new CurrentStateComponent(this.current_state_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
-			//the import field
-			//this.loadStateComponent = new LoadStateComponent(this.load_state_div, this.messaging_system);
 			//the tree
 			this.toolbar_component = new ToolBar(this.toolbar_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
 			this.tree_view = new TreeView(this.toolbox_tree_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
-			//details view
-			//this.details_view = new DetailsView(this, this.toolbox_details_div, this.messaging_system);
-
-			//this.messaging_system.addEventListener(this.messaging_system.events.GroupClicked, new EventListener(this,this.groupClicked));
 			this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
 
 			this.messaging_system.addEventListener(this.messaging_system.events.SelectionAdded, new EventListener(this, this.selectionAdded));
@@ -98,7 +75,6 @@ define([
 			this.notifySelectionChanged();
 		};
 		View.prototype.selectionRemoved = function(signal, data){
-			//console.log("TO BE IMPLEMENTED: selection removed: "+JSON.stringify(data));
 			this.current_selection_tree = this.official_selection_tree.clone();
 			this.current_selection_tree.removeSelection(data.getTree());
 			if(!data.getTemporary()){
@@ -128,30 +104,11 @@ define([
 		View.prototype.notifySelectionChanged = function(){
 			this.messaging_system.fire(this.messaging_system.events.SelectionChanged, new SelectionEvent(this.getCurrentSelectionTree()));
 		};
-		/*View.prototype.groupClicked = function(signal, data){
-		 if(data.data_proxy.getType() == "group"){
-		 this.loadGroupDetails(data.data_proxy);
-		 }
-		 };
-		 View.prototype.clearGroupDetails = function(){
-		 if(this.toolbox_details_content){
-		 this.toolbox_details_content.cleanUp();
-		 }
-		 this.toolbox_details_div.empty();
-		 };
-		 View.prototype.loadGroupDetails = function(data_proxy){
-		 this.clearGroupDetails();
-		 this.toolbox_details_content = new GroupDetailsView(this.toolbox_details_div,data_proxy, this.messaging_system);
-		 };*/
 		View.prototype.stateChanged = function(signal, data){
 			this.canvas.setProxy(this.controller.getModel().getState().getProxy());
-			//this.current_state_component.setProxy(this.controller.getModel().getState().getProxy());
 			this.toolbar_component.setProxy(this.controller.getModel().getState().getProxy());
 			this.tree_view.setProxy(this.controller.getModel().getState().getProxy());
 			this.selectionReset(signal, data);
-
-			//this.messaging_system.fire(this.messaging_system.events.RequestEditModeSelection, null);
-			//this.clearGroupDetails();
 		};
 		return View;
 	});

@@ -150,9 +150,6 @@ define(
 					$(this).blur();
 				});
 			// load other image
-			// this.img_btn = $('<input>').attr('type', 'file')
-			// .change(function(){self.imageChanged();})
-			// .attr('id', 'btnLoadImage');
 			this.img_btn = $('<button>')
 				.attr('title', 'Import a new image').append(
 				$('<i>').addClass('fa fa-image')).addClass(

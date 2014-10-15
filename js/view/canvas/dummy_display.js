@@ -6,6 +6,5 @@ define([
 		this.setProxy(proxy);
 	};
 	DummyDisplay.prototype = new BaseDisplay();
-	//DummyDisplay.prototype.draw = function(){};
 	return DummyDisplay;
 });

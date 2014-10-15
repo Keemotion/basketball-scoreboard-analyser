@@ -21,24 +21,12 @@ define(["./digit",
 		this.messaging_system.addEventListener(this.messaging_system.events.DotAdded, this.dotAddedListener);
 	};
 	Group.prototype = new DataBaseClass("group");
-	//the default configuration keys that are applied to a group in the configuration file
-	/*Group.default_configuration_keys = {
-	 "parse_function": null,
-	 "read_function": "digit_pattern_32",
-	 "sync_function": "digit_pattern_32",
-	 "first_digit_restricted": "false",
-	 "must_be_on": false,
-	 "dtype": null,
-	 "luminance_threshold": "190"
-	 };*/
 	//load the data for this group
 	//when no data is provided, an empty group is made and the default configuration keys are applied to it
 	Group.prototype.loadData = function(data){
 		if(data == null){
 			//default
-			//this.name = this.getGroupType() + " group";
 			this.name = "";
-			//this.setConfigurationKeys(Group.default_configuration_keys);
 			this.setConfigurationKeys(new Object());
 			this.clearSubNodes();
 		}else{

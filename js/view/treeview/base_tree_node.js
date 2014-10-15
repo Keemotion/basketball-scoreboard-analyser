@@ -59,17 +59,12 @@ define(["../../messaging_system/events/selection_event",
 			}
 		};
 		BaseTreeNode.prototype.collapse = function(){
-			//this.sub_nodes_element.collapse('hide');
 			this.collapse_button_collapse_icon.hide();
 			this.collapse_button_expand_icon.show();
 			this.sub_nodes_element.removeClass('in');
 			this.configuration_element.removeClass('in');
 		};
 		BaseTreeNode.prototype.expand = function(){
-			//if(this.parent_node){
-			//	this.parent_node.expand();
-			//}
-			//this.sub_nodes_element.collapse('show');
 			this.sub_nodes_element.addClass('in');
 			this.configuration_element.addClass('in');
 			this.collapse_button_expand_icon.hide();
@@ -80,38 +75,14 @@ define(["../../messaging_system/events/selection_event",
 			//if data.getProxy() is about this.data_proxy or one of its (grand..)children
 			this.is_selected = false;
 			if(data.getProxy() == null){
-				//this.collapse();
 			}else if(this.data_proxy.isPossiblyAboutThis(data.getProxy().getIdentification())){
-				//this.expand();
-				//this.collapse();
 				this.is_selected = true;
 				if(this.nameEditable()){
 					this.title_span.select();
 				}
 			}else{
-				/*if(!this.data_proxy.isAncestorOf(data.getProxy())){
-				 this.collapse();
-				 }else{
-				 this.expand();
-				 }*/
 			}
 			this.updateContent();
-			/*if(this.data_proxy.getType() != 'corner'){
-			 console.log("own identification = "+JSON.stringify(this.data_proxy.getIdentification()));
-			 console.log("selection's identification = "+JSON.stringify(data.getProxy().getIdentification()));
-			 }
-			 if(this.data_proxy.isAncestorOf(data.getProxy())){
-			 console.log("ancestor!");
-			 if(this.data_proxy.getType() == "digit"){
-			 console.log("hide digit!");
-			 this.sub_nodes_element.collapse('hide');
-			 }else{
-			 this.sub_nodes_element.collapse('show');
-			 }
-			 }else{
-			 console.log("no ancestor!");
-			 this.sub_nodes_element.collapse('hide');
-			 }*/
 		};
 		BaseTreeNode.prototype.loadContent = function(element){
 			var self = this;
@@ -142,8 +113,6 @@ define(["../../messaging_system/events/selection_event",
 				'fa fa-toggle-down');
 			this.collapse_button = $('<button>').addClass('btn btn-xs').click(
 				function(){
-					//self.sub_nodes_element.collapse('toggle');
-					//self.configuration_element.collapse('toggle');
 					if(self.isExpanded()){
 						self.messaging_system.fire(self.messaging_system.events.CollapseTreeNode, new TreeNodeExpandEvent(self.getProxy().getIdentification()));
 					}else{
@@ -160,23 +129,6 @@ define(["../../messaging_system/events/selection_event",
 			}).focus(function(){
 				$(this).select();
 			}).prop('readonly', !this.nameEditable());
-			/*this.title_span = $('<a>').editable({
-			 type: 'text',
-			 title: 'Name',
-			 mode:'inline',
-			 name:'name',
-			 pk:1,
-			 send:"never",
-			 url:'/index.html',
-			 success:function(response, new_value){
-			 console.log("success");
-			 var data = new Object();
-			 data.name = new_value;
-			 self.messaging_system.fire(self.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(self.data_proxy, data, true));
-			 }
-			 }).on('save', function(){
-			 console.log("saved!");
-			 });*/
 			this.title_div.append(this.title_span);
 
 			this.title_div.append(this.commands_div);

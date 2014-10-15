@@ -101,13 +101,6 @@ define([
 			this.messaging_system.addEventListener(this.messaging_system.events.DigitCornersListen, new EventListener(this, this.digitCornersListenRequested));
 			this.messaging_system.addEventListener(this.messaging_system.events.CoordinateListen, new EventListener(this, this.coordinateListenRequested));
 		};
-		/*CanvasMouseHandler.MouseModes = {
-		 SelectionMode:"SelectionMode",
-		 ViewEditMode:"ViewEditMode",
-		 DragMode:"DragMode",
-		 CoordinateClickMode:"CoordinateClickMode",
-		 AutoDetectDigitMode:"AutoDetectDigitMode"
-		 };*/
 		CanvasMouseHandler.MouseModes = {
 			EditMode : "EditMode",
 			CanvasMode : "CanvasMode",
@@ -132,16 +125,6 @@ define([
 			return data.event_data.preventDefault() && false;
 		};
 		CanvasMouseHandler.prototype.mouseMove = function(signal, data){
-			/*var canvas_coordinate = data.getCoordinate();
-			 var relative_coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
-			 //var rel_canvas_coordinate = this.canvas.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(relative_coordinate);
-			 var absolute_coordinate = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(data.getCoordinate());
-			 //var abs_canvas_coordinate = this.canvas.getTransformation().transformAbsoluteImageCoordinateToCanvasCoordinate(absolute_coordinate);
-			 console.log("canvas:                   "+JSON.stringify(canvas_coordinate));
-			 console.log("relative:                 "+JSON.stringify(relative_coordinate));
-			 //console.log("canvas based on relative: "+JSON.stringify(rel_canvas_coordinate));
-			 console.log("absolute:                 "+JSON.stringify(absolute_coordinate));
-			 //console.log("canvas based on absolute: "+JSON.stringify(abs_canvas_coordinate));*/
 			if(this.mouse_down){
 				this.mouse_dragged = true;
 			}
@@ -204,37 +187,6 @@ define([
 				case CanvasMouseHandler.MouseModes.Other:
 					//let another handler handle these events
 					break;
-				/*
-				 case CanvasMouseHandler.MouseModes.ViewEditMode:
-				 if(this.mouse_down){
-				 var mv = new Coordinate(
-				 this.canvas.getTransformation().getCanvasWidth() / 2 - (data.getCoordinate().getX() - this.previous_mouse_coordinate.getX()),
-				 this.canvas.getTransformation().getCanvasHeight() / 2 - (data.getCoordinate().getY() - this.previous_mouse_coordinate.getY())
-				 );
-				 var transformed = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(mv);
-				 this.canvas.getTransformation().setCanvasCenter(transformed);
-				 this.canvas.updateCanvas(signal, data);
-				 }
-				 break;
-				 case CanvasMouseHandler.MouseModes.SelectionMode:
-				 if(this.mouse_down){
-				 this.updateSelection(data);
-				 }
-				 break;
-				 case CanvasMouseHandler.MouseModes.DragMode:
-				 if(this.mouse_down){
-				 var mv = new Coordinate(data.getCoordinate().getX()-this.previous_mouse_coordinate.getX(), data.getCoordinate().getY()-this.previous_mouse_coordinate.getY());
-				 var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(mv);
-				 this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.canvas.view.getCurrentSelectionTree(), transformed));
-				 }
-				 break;
-				 case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
-				 if(this.mouse_down){
-				 this.selection_rectangle.updateSelection(data.getCoordinate());
-				 this.autoDetectDigit(signal, data);
-				 this.canvas.updateCanvas();
-				 }
-				 break;*/
 			}
 			this.previous_mouse_coordinate = data.getCoordinate();
 
@@ -330,10 +282,6 @@ define([
 		CanvasMouseHandler.prototype.getEditModeSelectedProxy = function(){
 			return this.edit_mode_selected_proxy;
 		};
-		/*CanvasMouseHandler.prototype.getEditModeSelectedGroupType = function(){
-		 var identification = this.getEditModeSelectedGroupIdentification();
-		 return identification[identification.length-1]['group_type'];
-		 };*/
 		CanvasMouseHandler.prototype.getEditModeSelectedGroupProxy = function(){
 			return this.edit_mode_selected_proxy.getParentOfTypeProxy("group");
 		};
@@ -352,7 +300,6 @@ define([
 		CanvasMouseHandler.prototype.sendEditModeSelection = function(){
 			if(this.edit_mode_selected_proxy == null)
 				return;
-			//this.messaging_system.fire(this.messaging_system.events.SelectionSet, new SelectionEvent(this.edit_mode_selected_proxy.getSelectionTree()));
 			this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, new EditModeSelectionEvent(this.edit_mode_selected_proxy));
 		};
 		CanvasMouseHandler.prototype.cancelDragging = function(){
@@ -361,7 +308,6 @@ define([
 				this.selection_rectangle.stopSelection();
 				this.canvas.updateCanvas(null, null);
 			}
-
 		};
 		CanvasMouseHandler.prototype.mouseUp = function(signal, data){
 			if(!this.mouse_down){
@@ -434,15 +380,6 @@ define([
 					break;
 				case CanvasMouseHandler.MouseModes.Other:
 					break;
-				/*case CanvasMouseHandler.MouseModes.SelectionMode:
-				 this.stopSelection(data);
-				 break;
-				 case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
-				 this.selection_rectangle.updateSelection(data.getCoordinate());
-				 this.autoDetectDigit(signal, data);
-				 this.selection_rectangle.stopSelection();
-				 this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
-				 break;*/
 			}
 		};
 		CanvasMouseHandler.prototype.getPreviousMouseCoordinate = function(){
@@ -595,9 +532,6 @@ define([
 			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 			//inside digit -> select
 			if(res){
-				//this.toggleSelected(res);
-				//var e = new SelectionEvent(res.getProxy().getSelectionTree());
-				//this.messaging_system.fire(this.messaging_system.events.SelectionSet, e);
 				this.messaging_system.fire(this.messaging_system.events.ExpandTreeNode, new TreeNodeExpandEvent(res.getProxy().getIdentification()));
 			}else{
 			}
@@ -652,21 +586,12 @@ define([
 			}else{
 				this.setMoveModeSelectedDigits(digits, false);
 			}
-			/*var selection_event = new SelectionEvent(selected_tree, false);
-			if(data.getEventData().ctrlKey){//toggle selection
-				this.messaging_system.fire(this.messaging_system.events.SelectionToggled, selection_event);
-			}else if(data.getEventData().shiftKey){//add selection
-				this.messaging_system.fire(this.messaging_system.events.SelectionAdded, selection_event);
-			}else{//set selection
-				this.messaging_system.fire(this.messaging_system.events.SelectionSet, selection_event);
-			}*/
 			this.selection_rectangle.stopSelection();
 		};
 		CanvasMouseHandler.prototype.updateSelection = function(data){
 			this.selection_rectangle.updateSelection(data.getCoordinate());
 			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle(), "digit");
 			var digits = selected_tree.getSelectedFlat();
-			//var selection_event = new SelectionEvent(selected_tree, true);
 
 			if(data.getEventData().ctrlKey){
 				this.addMoveModeSelectedDigits(digits, true);
@@ -717,9 +642,7 @@ define([
 			if(this.isMoveModeSelected(digit, temporary)){
 				return;
 			}
-			//if(temporary){
-				this.temporary_move_mode_selected_digits.push(digit);
-			//}else{
+			this.temporary_move_mode_selected_digits.push(digit);
 			if(!temporary){
 				this.move_mode_selected_digits.push(digit);
 			}
@@ -730,9 +653,7 @@ define([
 			this.addMoveModeSelectedDigits(digits, temporary);
 		};
 		CanvasMouseHandler.prototype.resetMoveModeSelectedDigits = function(temporary){
-			//if(temporary){
-				this.temporary_move_mode_selected_digits.length = 0;
-			//}else{
+			this.temporary_move_mode_selected_digits.length = 0;
 			if(!temporary){
 				this.move_mode_selected_digits.length = 0;
 			}
@@ -756,14 +677,12 @@ define([
 			}
 		};
 		CanvasMouseHandler.prototype.removeMoveModeSelectedDigit = function(digit, temporary){
-			//if(temporary){
-				for(var i = 0; i < this.temporary_move_mode_selected_digits.length; ++i){
-					if(this.temporary_move_mode_selected_digits[i].isPossiblyAboutThis(digit.getIdentification())){
-						this.temporary_move_mode_selected_digits.splice(i, 1);
-						break;
-					}
+			for(var i = 0; i < this.temporary_move_mode_selected_digits.length; ++i){
+				if(this.temporary_move_mode_selected_digits[i].isPossiblyAboutThis(digit.getIdentification())){
+					this.temporary_move_mode_selected_digits.splice(i, 1);
+					break;
 				}
-			//}else{
+			}
 			if(!temporary){
 				for(var i = 0; i < this.move_mode_selected_digits.length; ++i){
 					if(this.move_mode_selected_digits[i].isPossiblyAboutThis(digit.getIdentification())){
