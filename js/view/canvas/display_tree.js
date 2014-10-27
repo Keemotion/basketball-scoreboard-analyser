@@ -13,12 +13,18 @@ define([
 			this.setProxy(proxy);
 			this.loadSubComponents();
 			this.messaging_system.addEventListener(this.messaging_system.events.StateChanged, new EventListener(this, this.stateChanged));
+			this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 		};
 		DisplayTree.prototype = new BaseDisplay();
 		DisplayTree.prototype.drawMyself = function(context, transformation){
 		};
 		DisplayTree.prototype.stateChanged = function(signal, data){
 			this.loadSubComponents();
+		};
+		DisplayTree.prototype.groupChanged = function(signal, data){
+			if(this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
+				this.loadSubComponents();
+			}
 		};
 		DisplayTree.prototype.loadSubComponents = function(){
 			var sub_proxies = this.getProxy().getSubNodes();

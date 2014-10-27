@@ -125,12 +125,17 @@ define([
 			return data.event_data.preventDefault() && false;
 		};
 		CanvasMouseHandler.prototype.mouseMove = function(signal, data){
-			/*var c = data.getCoordinate();
+/*			var c = data.getCoordinate();
 			var relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(c);
 			var absolute = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(c);
-			console.log("canvas   = "+JSON.stringify(c));
-			console.log("relative = "+JSON.stringify(relative));
-			console.log("absolute = "+JSON.stringify(absolute));*/
+			console.log("canvas                   = "+JSON.stringify(c));
+			console.log("relative                 = "+JSON.stringify(relative));
+			console.log("absolute                 = "+JSON.stringify(absolute));
+			var rel_canvas = this.canvas.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(relative);
+			var abs_canvas = this.canvas.getTransformation().transformAbsoluteImageCoordinateToCanvasCoordinate(absolute);
+			console.log("canvas based on absolute = "+JSON.stringify(abs_canvas));
+			console.log("canvas based on relative = "+JSON.stringify(rel_canvas));
+*/
 			if(this.mouse_down){
 				this.mouse_dragged = true;
 			}
@@ -250,6 +255,9 @@ define([
 			context.webkitImageSmoothingEnabled = false;
 			context.drawImage(img, 0, 0);
 			var imageData = context.getImageData(0, 0, img.width, img.height);
+			/*console.log("coordinates");
+			console.log(JSON.stringify(top_left));
+			console.log(JSON.stringify(bottom_right));*/
 			for(var i = top_left.getY(); i <= bottom_right.getY(); ++i){
 				image_part.push(new Array());
 				for(var j = top_left.getX(); j <= bottom_right.getX(); ++j){

@@ -97,8 +97,15 @@ define(["../../model/coordinate"], function(Coordinate){
 	// converts a relative image coordinate to a canvas coordinate
 	Transformation.prototype.transformRelativeImageCoordinateToCanvasCoordinate = function(coordinate){
 		var canvas_center = this.getCanvasCenter();
-		return new Coordinate(((coordinate.getX() - canvas_center.getX()) * this.getScalingFactor()*this.getImageWidth()*3.0/4.0/this.getCanvasImageRatio() + this.getCanvasWidth() / 2.0),
+		return new Coordinate(((coordinate.getX() - canvas_center.getX()) * this.getScalingFactor()*this.getImageWidth()*3.0/4.0/this.getCanvasImageRatio()
+					+ this.getCanvasWidth() / 2.0),
 				((-coordinate.getY() + canvas_center.getY()) * this.getScalingFactor()*this.getImageHeight()/this.getCanvasImageRatio() + this.getCanvasHeight() / 2.0));
+	};
+	// converts a canvas coordinate to a relative image coordinate
+	Transformation.prototype.transformCanvasCoordinateToRelativeImageCoordinate = function(coordinate){
+		var canvas_center = this.getCanvasCenter();
+		return new Coordinate(((coordinate.getX() - this.getCanvasWidth() / 2.0) / this.getScalingFactor()/this.getImageWidth()*4.0/3.0*this.getCanvasImageRatio() + canvas_center.getX()),
+				-((coordinate.getY() - this.getCanvasHeight() / 2.0) / this.getScalingFactor()/this.getImageHeight()*this.getCanvasImageRatio() + canvas_center.getY()));
 	};
 	Transformation.prototype.getCanvasImageRatio = function(){
 		return Math.max(this.getImageWidth(), this.getImageHeight());
@@ -117,12 +124,6 @@ define(["../../model/coordinate"], function(Coordinate){
 	};
 	Transformation.prototype.getScalingRatioFactor = function(){
 		return Math.min(3.0 / 8.0 * this.getCanvasWidth()/(3.0/4.0*this.getImageWidth()/this.getCanvasImageRatio()), 1.0 / 2.0 * this.getCanvasHeight()/(this.getImageHeight()/this.getCanvasImageRatio()));
-	};
-	// converts a canvas coordinate to a relative image coordinate
-	Transformation.prototype.transformCanvasCoordinateToRelativeImageCoordinate = function(coordinate){
-		var canvas_center = this.getCanvasCenter();
-		return new Coordinate(((coordinate.getX() - this.getCanvasWidth() / 2.0) / this.getScalingFactor()/this.getImageWidth()*4.0/3.0*this.getCanvasImageRatio() + canvas_center.getX()),
-				-(coordinate.getY() - this.getCanvasHeight() / 2.0) / this.getScalingFactor()/this.getImageHeight()*this.getCanvasImageRatio() + canvas_center.getY());
 	};
 	Transformation.prototype.transformCanvasTranslationToRelativeImageTranslation = function(coordinate){
 		return new Coordinate(coordinate.getX() / this.getScalingFactor(), -coordinate.getY() / this.getScalingFactor());
