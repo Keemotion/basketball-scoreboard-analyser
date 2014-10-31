@@ -335,5 +335,8 @@ define(
 				.updateToContainRectangle(bounding_rectangle);
 			this.updateCanvas();
 		};
+		MyCanvas.prototype.getView = function(){
+			return this.view;
+		};
 		return MyCanvas;
 	});

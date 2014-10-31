@@ -7,11 +7,13 @@ define([
 		"../model/selection_node",
 		"../messaging_system/events/selection_event",
 		"./toolbar/toolbar",
-		"../messaging_system/events/edit_mode_selection_event"
+		"../messaging_system/events/edit_mode_selection_event",
+		//"require"
 	]
 	, function(MyCanvas, TreeView, EventListener, DisplayTree, SelectionTree, SelectionNode, SelectionEvent,
 	           ToolBar, EditModeSelectionEvent){
 		//View represents the GUI
+		//var Canvas = require('./canvas/canvas');
 		var View = function(controller, target_view, messaging_system){
 			this.messaging_system = messaging_system;
 			this.controller = controller;
@@ -63,6 +65,11 @@ define([
 				messaging_system.fire(messaging_system.events.WindowResized, null);
 			});
 		};
+		View.ApplicationStates = {
+			NO_SELECTION:"NO_SELECTION",
+			SINGLE_SELECTION:"SINGLE_SELECTION",
+			MULTI_SELECTION:"MULTI_SELECTION"
+		};
 		View.prototype.getCurrentSelectionTree = function(){
 			return this.current_selection_tree;
 		};
@@ -91,6 +98,7 @@ define([
 			this.notifySelectionChanged();
 		};
 		View.prototype.selectionSet = function(signal, data){
+			console.log("selection set");
 			this.current_selection_tree = data.getTree().clone();
 			this.official_selection_tree = data.getTree().clone();
 			this.notifySelectionChanged();
@@ -105,11 +113,23 @@ define([
 			this.messaging_system.fire(this.messaging_system.events.SelectionChanged, new SelectionEvent(this.getCurrentSelectionTree()));
 		};
 		View.prototype.stateChanged = function(signal, data){
-			console.log("stateChanged");
+			//console.log("stateChanged");
 			this.canvas.setProxy(this.controller.getModel().getState().getProxy());
 			this.toolbar_component.setProxy(this.controller.getModel().getState().getProxy());
 			this.tree_view.setProxy(this.controller.getModel().getState().getProxy());
 			this.selectionReset(signal, data);
+		};
+		View.prototype.getApplicationState = function(){
+			var selection_size = this.getCurrentSelectionTree().getSelectedFlat().length;
+			console.log(this.getCurrentSelectionTree().getSelectedFlat().length);
+			switch(selection_size){
+				case 0:
+					return View.ApplicationStates.NO_SELECTION;
+				case 1:
+					return View.ApplicationStates.SINGLE_SELECTION;
+				default:
+					return View.ApplicationStates.MULTI_SELECTION;
+			}
 		};
 		return View;
 	});

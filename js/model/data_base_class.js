@@ -413,6 +413,15 @@ define([
 			}
 			return true;
 		};
+		BaseDataClass.prototype.hasParentOfType = function(type){
+			if(this.getType() == type){
+				return true;
+			}
+			if(this.getParent()){
+				return this.getParent().hasParentOfType(type);
+			}
+			return false;
+		};
 		BaseDataClass.prototype.moveModeMoved = function(signal, data){
 			var targets = data.getTargets();
 			for(var i = 0; i < targets.length; ++i){

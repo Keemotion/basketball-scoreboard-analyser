@@ -31,5 +31,8 @@ define(["./selection_node"], function(SelectionNode){
 	SelectionTree.prototype.getBoundingRectangle = function(){
 		return this.getRoot().getBoundingRectangle();
 	};
+	SelectionTree.prototype.getSingleSelectedElementProxy = function(){
+		return this.getRoot().getSingleSelectedElementProxy();
+	};
 	return SelectionTree;
 });

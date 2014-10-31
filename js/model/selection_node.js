@@ -149,5 +149,18 @@ define(["./bounding_rectangle"], function(BoundingRectangle){
 		}
 		return rectangle;
 	};
+	SelectionNode.prototype.getSingleSelectedElementProxy = function(){
+		if(this.getSelected()){
+			return this.getProxy();
+		}
+		var children = this.getChildren();
+		for(var i = 0; i < children.length; ++i){
+			var res = children[i].getSingleSelectedElementProxy();
+			if(res == null)
+				continue;
+			return res;
+		}
+		return null;
+	}
 	return SelectionNode;
 });
