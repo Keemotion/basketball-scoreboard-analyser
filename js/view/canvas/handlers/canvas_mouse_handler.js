@@ -125,17 +125,20 @@ define([
 			return data.event_data.preventDefault() && false;
 		};
 		CanvasMouseHandler.prototype.mouseMove = function(signal, data){
-/*			var c = data.getCoordinate();
+			/*var c = data.getCoordinate();
 			var relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(c);
 			var absolute = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(c);
-			console.log("canvas                   = "+JSON.stringify(c));
-			console.log("relative                 = "+JSON.stringify(relative));
-			console.log("absolute                 = "+JSON.stringify(absolute));
+			console.log("canvas                     = "+JSON.stringify(c));
 			var rel_canvas = this.canvas.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(relative);
 			var abs_canvas = this.canvas.getTransformation().transformAbsoluteImageCoordinateToCanvasCoordinate(absolute);
-			console.log("canvas based on absolute = "+JSON.stringify(abs_canvas));
-			console.log("canvas based on relative = "+JSON.stringify(rel_canvas));
-*/
+			console.log("canvas based on absolute   = "+JSON.stringify(abs_canvas));
+			console.log("canvas based on relative   = "+JSON.stringify(rel_canvas));
+			var rel_abs = this.canvas.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(absolute);
+			var abs_rel = this.canvas.getTransformation().transformRelativeImageCoordinateToAbsoluteImageCoordinate(relative);
+			console.log("relative                   = "+JSON.stringify(relative));
+			console.log("relative based on absolute = "+JSON.stringify(rel_abs));
+			console.log("absolute                   = "+JSON.stringify(absolute));
+			console.log("absolute based on relative = "+JSON.stringify(abs_rel));*/
 			if(this.mouse_down){
 				this.mouse_dragged = true;
 			}
