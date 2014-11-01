@@ -38,6 +38,9 @@ define([], function(){
 		total_y /= arr.length;
 		return new Coordinate(total_x, total_y);
 	};
+	Coordinate.getDistance = function(c1, c2){
+		return Math.sqrt(Coordinate.getSquareDistance(c1, c2));
+	};
 	Coordinate.getSquareDistance = function(c1, c2){
 		var dx = c1.getX() - c2.getX();
 		var dy = c1.getY() - c2.getY();

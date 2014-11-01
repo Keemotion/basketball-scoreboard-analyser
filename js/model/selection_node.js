@@ -136,6 +136,19 @@ define(["./bounding_rectangle"], function(BoundingRectangle){
 		return false;
 		console.log(JSON.stringify(identification));
 	};
+	SelectionNode.prototype.hasSelectedParent = function(identification){
+		if(this.getSelected())
+			return true;
+		if(identification.length == 0)
+			return false;
+		var children = this.getChildren();
+		for(var i = 0; i < children.length; ++i){
+			if(children[i].getType() == identification[0].type && children[i].getId() == identification[0].id){
+				return children[i].hasSelectedParent(identification.slice(1));
+			}
+		}
+		return false;
+	};
 	SelectionNode.prototype.getBoundingRectangle = function(rectangle){
 		if(rectangle == null){
 			rectangle = new BoundingRectangle();

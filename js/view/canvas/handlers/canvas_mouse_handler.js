@@ -179,9 +179,10 @@ define([
 							case View.ApplicationStates.SINGLE_SELECTION:
 								if(this.mouse_down_object != null){
 									console.log("moving! transformed = "+JSON.stringify(transformed));
-									if(this.getCanvas().getView().getCurrentSelectionTree().isSelected(this.mouse_down_object.getIdentification())){
+
+									if(this.getCanvas().getView().getCurrentSelectionTree().hasSelectedParent(this.mouse_down_object.getIdentification())){
 										console.log("selected");
-										this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.getCanvas().getView().getCurrentSelectionTree(), transformed));
+										this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.mouse_down_object.getProxy().getSelectionTree(), transformed));
 									}
 								}
 								break;
@@ -430,8 +431,13 @@ define([
 			return this.getEditModeSelectedProxy() != null;
 		};
 		CanvasMouseHandler.prototype.mouseDown = function(signal, data){
-			console.log("mouse down");
-			var clicked_object = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
+			//console.log("mouse down");
+			var application_state = this.getCanvas().getView().getApplicationState();
+			var identification = null;
+			if(application_state == View.ApplicationStates.SINGLE_SELECTION){
+				identification = this.getSingleSelectedElementProxy().getIdentification();
+			}
+			var clicked_object = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate(), identification);
 			var parent_group = null;
 			if(clicked_object){
 				if(clicked_object.getProxy().hasParentOfType('digit')){
@@ -440,9 +446,8 @@ define([
 					parent_group = clicked_object.getProxy().getParentOfTypeProxy("dot");
 				}
 			}
-			var application_state = this.getCanvas().getView().getApplicationState();
 			this.mouse_down_object = clicked_object;
-			console.log("mouse_down_object = "+this.mouse_down_object);
+			console.log("mouse_down_object = "+JSON.stringify(this.mouse_down_object.getProxy().getIdentification()));
 			if(this.mouse_down_object != null){
 				console.log("type of mouse_down_object = "+this.mouse_down_object.getProxy().getType());
 			}
@@ -556,16 +561,16 @@ define([
 			this.messaging_system.fire(this.messaging_system.events.SelectionReset, new SelectionEvent(null, temporary));
 		};
 		CanvasMouseHandler.prototype.setSelection = function(selection_tree, temporary){
-			console.log("fire event!");
+			//console.log("fire event!");
 			this.messaging_system.fire(this.messaging_system.events.SelectionSet, new SelectionEvent(selection_tree, temporary));
-			console.log("event fired");
+			//console.log("event fired");
 		};
 		CanvasMouseHandler.prototype.getSingleSelectedElementProxy = function(){
-			console.log("flat = "+this.getCanvas().getView().getCurrentSelectionTree().getSelectedFlat());
+			//console.log("flat = "+this.getCanvas().getView().getCurrentSelectionTree().getSelectedFlat());
 			return this.getCanvas().getView().getCurrentSelectionTree().getSingleSelectedElementProxy();//getSelectedFlat()[0];
 		};
 		CanvasMouseHandler.prototype.click = function(signal, data){
-			console.log("click");
+			//console.log("click");
 			var clicked_object = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 			var parent_group = null;
 			if(clicked_object){

@@ -34,5 +34,8 @@ define(["./selection_node"], function(SelectionNode){
 	SelectionTree.prototype.getSingleSelectedElementProxy = function(){
 		return this.getRoot().getSingleSelectedElementProxy();
 	};
+	SelectionTree.prototype.hasSelectedParent = function(identification){
+		return this.getRoot().hasSelectedParent(identification.slice(1));
+	};
 	return SelectionTree;
 });

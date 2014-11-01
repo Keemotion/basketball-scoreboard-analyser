@@ -27,7 +27,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.beginPath();
 		context.strokeStyle = "#880000";
 		context.lineWidth = 3;
-		context.arc(c.x, c.y, 5, 0, 2 * Math.PI);
+		context.arc(c.x, c.y, this.getRadius(), 0, 2 * Math.PI);
 		context.stroke();
 	};
 	DotDisplay.prototype.drawChanging = function(context, transformation){

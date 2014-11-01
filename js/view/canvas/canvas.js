@@ -162,10 +162,9 @@ define(
 			return this.display_tree
 				.getSelectionTree(image_coordinates_rectangle, type);
 		};
-		MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate){
+		MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate, selected_object_identification){
 			var res = this.display_tree
-				.getObjectAroundCoordinate(this.transformation
-					.transformCanvasCoordinateToRelativeImageCoordinate(coordinate));
+				.getObjectAroundCoordinate(coordinate, this.getTransformation(), selected_object_identification);
 			if(res)
 				return res;
 			return null;

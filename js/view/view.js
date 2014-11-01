@@ -121,7 +121,7 @@ define([
 		};
 		View.prototype.getApplicationState = function(){
 			var selection_size = this.getCurrentSelectionTree().getSelectedFlat().length;
-			console.log(this.getCurrentSelectionTree().getSelectedFlat().length);
+			//console.log(this.getCurrentSelectionTree().getSelectedFlat().length);
 			switch(selection_size){
 				case 0:
 					return View.ApplicationStates.NO_SELECTION;

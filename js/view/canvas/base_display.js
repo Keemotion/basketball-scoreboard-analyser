@@ -51,9 +51,9 @@ define([
 	BaseDisplay.prototype.canBeSelected = function(){
 		return false;
 	};
-	BaseDisplay.prototype.getObjectAroundCoordinate = function(coordinate){
+	BaseDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification){
 		for(var i = 0; i < this.sub_components.length; ++i){
-			var res = this.sub_components[i].getObjectAroundCoordinate(coordinate);
+			var res = this.sub_components[i].getObjectAroundCoordinate(canvas_coordinate, transformation, selected_object_identification);
 			if(res)
 				return res;
 		}
