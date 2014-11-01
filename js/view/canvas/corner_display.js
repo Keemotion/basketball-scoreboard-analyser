@@ -9,14 +9,14 @@ define(["./base_display", "../../model/coordinate"], function(BaseDisplay, Coord
 	CornerDisplay.prototype = new BaseDisplay();
 	//Draws a circle around the Corner coordinate
 	CornerDisplay.prototype.drawMyself = function(context, transformation){
-		if(!this.getProxy().getCoordinate().isValid())
+		/*if(!this.getProxy().getCoordinate().isValid())
 			return;
 		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
 		context.beginPath();
 		context.strokeStyle = "#0000FF";
 		context.lineWidth = 3;
 		context.arc(c.x, c.y, this.getRadius(transformation), 0, 2 * Math.PI);
-		context.stroke();
+		context.stroke();*/
 	};
 	CornerDisplay.prototype.drawMyselfSelected = function(context, transformation){
 		if(!this.getProxy().getCoordinate().isValid())

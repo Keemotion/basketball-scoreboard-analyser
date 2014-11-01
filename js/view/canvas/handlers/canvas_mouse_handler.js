@@ -148,6 +148,7 @@ define([
 				this.mouse_dragged = true;
 			}
 			var application_state = this.getCanvas().getView().getApplicationState();
+			console.log("current state = "+application_state);
 			var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
@@ -179,11 +180,12 @@ define([
 							case View.ApplicationStates.SINGLE_SELECTION:
 								if(this.mouse_down_object != null){
 									console.log("moving! transformed = "+JSON.stringify(transformed));
-
 									if(this.getCanvas().getView().getCurrentSelectionTree().hasSelectedParent(this.mouse_down_object.getIdentification())){
 										console.log("selected");
 										this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.mouse_down_object.getProxy().getSelectionTree(), transformed));
 									}
+								}else{
+									this.selection_rectangle.updateSelection(data.getCoordinate());
 								}
 								break;
 							case View.ApplicationStates.NO_SELECTION:
@@ -264,10 +266,12 @@ define([
 			this.auto_detect_digit_proxy = data.getProxy();
 			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.AutoDetectDigitMode));
 		};
-		CanvasMouseHandler.prototype.autoDetectDigit = function(proxy){
-			if(this.getEditModeSelectedGroupType() != "digit"){
+		CanvasMouseHandler.prototype.autoDetectDigit = function(){
+			console.log("autodetect");
+			if(this.getSingleSelectedElementProxy().getType() != "digit"){
 				return;
 			}
+			console.log("starting");
 			var selection_rectangle = this.selection_rectangle.transformCanvasCoordinatesToAbsoluteCoordinates(this.canvas.getTransformation());
 			var img = this.canvas.getImage();
 			var top_left = selection_rectangle.getTopLeft();
@@ -308,7 +312,11 @@ define([
 				var coord = this.canvas.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(x, y));
 				result.push(coord);
 			}
-			if(this.current_mouse_mode == CanvasMouseHandler.MouseModes.AutoDetectDigitMode){
+			var group_identification = this.getSingleSelectedElementProxy().getParent().getIdentification();
+			this.messaging_system.fire(this.messaging_system.events.DigitAdded, new DigitAddedEvent(group_identification, result));
+			var parent_children = this.getSingleSelectedElementProxy().getParent().getSubNodes();
+			return parent_children[parent_children.length-1];
+			/*if(this.current_mouse_mode == CanvasMouseHandler.MouseModes.AutoDetectDigitMode){
 				var data = new Object();
 				data.name = proxy.getTitle();
 				for(var i = 0; i < result.length; ++i){
@@ -319,7 +327,7 @@ define([
 			}else{
 				var group_identification = this.getEditModeSelectedGroupIdentification();
 				this.messaging_system.fire(this.messaging_system.events.DigitAdded, new DigitAddedEvent(group_identification, result));
-			}
+			}*/
 		};
 		CanvasMouseHandler.prototype.getEditModeSelectedProxy = function(){
 			return this.edit_mode_selected_proxy;
@@ -359,8 +367,24 @@ define([
 			this.mouse_down = false;
 			var mouse_release_time = new Date();
 			var time_down = mouse_release_time.getTime() - this.mouse_down_time.getTime();
+			var application_state = this.getCanvas().getView().getApplicationState();
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
+					switch(application_state){
+						case View.ApplicationStates.MULTI_SELECTION:
+
+							break;
+						case View.ApplicationStates.SINGLE_SELECTION:
+							if(this.mouse_down_object == null){
+								this.selection_rectangle.updateSelection(data.getCoordinate());
+								var newly_selected = this.autoDetectDigit();
+								this.setSelection(newly_selected.getSelectionTree());
+							}
+							this.selection_rectangle.stopSelection();
+							break;
+						case View.ApplicationStates.NO_SELECTION:
+							break;
+					}
 					/*this.selection_rectangle.updateSelection(data.getCoordinate());
 					var DOWN_TIME = 100;
 					if(!this.mouse_dragged || time_down <= DOWN_TIME){
@@ -447,7 +471,7 @@ define([
 				}
 			}
 			this.mouse_down_object = clicked_object;
-			console.log("mouse_down_object = "+JSON.stringify(this.mouse_down_object.getProxy().getIdentification()));
+			//console.log("mouse_down_object = "+JSON.stringify(this.mouse_down_object.getProxy().getIdentification()));
 			if(this.mouse_down_object != null){
 				console.log("type of mouse_down_object = "+this.mouse_down_object.getProxy().getType());
 			}
@@ -468,6 +492,13 @@ define([
 							}
 							break;
 						case View.ApplicationStates.SINGLE_SELECTION:
+							if(parent_group != null && this.getCanvas().getView().getCurrentSelectionTree().isSelected(parent_group.getIdentification())){
+								//this object will be moved
+							}else{
+								//a new digit will be automatically added to this group
+								this.mouse_down_object = null;
+								this.selection_rectangle.startSelection(data.getCoordinate());
+							}
 							break;
 						case View.ApplicationStates.NO_SELECTION:
 							break;
@@ -840,7 +871,7 @@ define([
 				this.previous_mouse_mode = this.current_mouse_mode;
 				this.current_mouse_mode = data.getMode();
 			}
-			this.resetMoveModeSelectedDigits();
+			//this.resetMoveModeSelectedDigits();
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
 					this.canvas.getElement().css('cursor', 'crosshair');
