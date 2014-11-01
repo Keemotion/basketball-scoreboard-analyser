@@ -129,7 +129,9 @@ define(["../../model/coordinate"], function(Coordinate){
 		return Math.min(3.0 / 8.0 * this.getCanvasWidth()/(3.0/4.0*this.getImageWidth()/this.getCanvasImageRatio()), 1.0 / 2.0 * this.getCanvasHeight()/(this.getImageHeight()/this.getCanvasImageRatio()));
 	};
 	Transformation.prototype.transformCanvasTranslationToRelativeImageTranslation = function(coordinate){
-		return new Coordinate(coordinate.getX() / this.getScalingFactor(), -coordinate.getY() / this.getScalingFactor());
+		//return new Coordinate(coordinate.getX() / this.getScalingFactor(), -coordinate.getY() / this.getScalingFactor());
+		//return this.transformCanvasCoordinateToRelativeImageCoordinate(coordinate).add(this.transformCanvasCoordinateToRelativeImageCoordinate(new Coordinate(0,0)).scalarMultiply(-1));
+		return new Coordinate(coordinate.getX()/this.getScalingFactor()/this.getImageWidth()*4.0/3.0*this.getCanvasImageRatio(), -coordinate.getY()/this.getScalingFactor()/this.getImageHeight()*this.getCanvasImageRatio());
 	};
 	Transformation.prototype.reset = function(){
 		this.setScale(1);

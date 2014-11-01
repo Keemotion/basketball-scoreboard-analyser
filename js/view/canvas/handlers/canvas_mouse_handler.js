@@ -147,11 +147,13 @@ define([
 			if(this.mouse_down){
 				this.mouse_dragged = true;
 			}
+			var application_state = this.getCanvas().getView().getApplicationState();
+			var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
-					var DOWN_TIME = 100;
+					//var DOWN_TIME = 100;
 					if(this.mouse_down){
-						this.selection_rectangle.updateSelection(data.getCoordinate());
+						/*this.selection_rectangle.updateSelection(data.getCoordinate());
 						//check if inside a digit -> select that digit
 						//if not inside digit, but near the selected digit -> select nearest corner of that digit and drag it (only if mouse has been down for more than 0.5 s)
 						//else: try to add a new digit to the currently selected digit group (if none is selected, don't do anything)
@@ -168,7 +170,24 @@ define([
 								this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(this.current_drag_dot_move_dot.getIdentification(), dot_data));
 							}
 						}
-
+*/
+						switch(application_state){
+							case View.ApplicationStates.MULTI_SELECTION:
+								//this.messaging_system.fire(this.messaging_system.events.MoveModeObjectsMoved, new MoveModeObjectsMovedEvent(this.getMoveModeSelectedDigitsIdentifications(), transformed));
+								this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.getCanvas().getView().getCurrentSelectionTree(), transformed));
+								break;
+							case View.ApplicationStates.SINGLE_SELECTION:
+								if(this.mouse_down_object != null){
+									console.log("moving! transformed = "+JSON.stringify(transformed));
+									if(this.getCanvas().getView().getCurrentSelectionTree().isSelected(this.mouse_down_object.getIdentification())){
+										console.log("selected");
+										this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.getCanvas().getView().getCurrentSelectionTree(), transformed));
+									}
+								}
+								break;
+							case View.ApplicationStates.NO_SELECTION:
+								break;
+						}
 						this.canvas.updateCanvas(signal, data);
 					}
 					break;
@@ -332,6 +351,7 @@ define([
 			}
 		};
 		CanvasMouseHandler.prototype.mouseUp = function(signal, data){
+			console.log("mouse up");
 			if(!this.mouse_down){
 				return;
 			}
@@ -410,12 +430,43 @@ define([
 			return this.getEditModeSelectedProxy() != null;
 		};
 		CanvasMouseHandler.prototype.mouseDown = function(signal, data){
+			console.log("mouse down");
+			var clicked_object = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
+			var parent_group = null;
+			if(clicked_object){
+				if(clicked_object.getProxy().hasParentOfType('digit')){
+					parent_group = clicked_object.getProxy().getParentOfTypeProxy("digit");
+				}else if(clicked_object.getProxy().hasParentOfType('dot')){
+					parent_group = clicked_object.getProxy().getParentOfTypeProxy("dot");
+				}
+			}
+			var application_state = this.getCanvas().getView().getApplicationState();
+			this.mouse_down_object = clicked_object;
+			console.log("mouse_down_object = "+this.mouse_down_object);
+			if(this.mouse_down_object != null){
+				console.log("type of mouse_down_object = "+this.mouse_down_object.getProxy().getType());
+			}
 			this.mouse_down = true;
 			this.mouse_dragged = false;
 			this.mouse_down_time = new Date();
 			this.previous_mouse_coordinate = data.getCoordinate();
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
+					switch(application_state){
+						case View.ApplicationStates.MULTI_SELECTION:
+							//if not -> clear selection
+
+							if(parent_group != null && this.getCanvas().getView().getSelectionTree().isSelected(parent_group.getIdentification())){
+								//if parent_group selected, no worries
+							}else{
+								this.resetSelection();
+							}
+							break;
+						case View.ApplicationStates.SINGLE_SELECTION:
+							break;
+						case View.ApplicationStates.NO_SELECTION:
+							break;
+					}
 					/*var MAX_DISTANCE = 80;//px
 
 					this.current_drag_corner_move = false;
@@ -514,6 +565,7 @@ define([
 			return this.getCanvas().getView().getCurrentSelectionTree().getSingleSelectedElementProxy();//getSelectedFlat()[0];
 		};
 		CanvasMouseHandler.prototype.click = function(signal, data){
+			console.log("click");
 			var clicked_object = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 			var parent_group = null;
 			if(clicked_object){
@@ -524,38 +576,27 @@ define([
 				}
 			}
 			var application_state = this.getCanvas().getView().getApplicationState();
-			console.log("click: "+application_state);
-			console.log("no selection = "+View.ApplicationStates.NO_SELECTION);
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
-					/*if(this.mouse_dragged){
-						return;
-					}*/
 					switch(application_state){
 						case View.ApplicationStates.MULTI_SELECTION:
-							if(parent_group){
+							if(parent_group && !this.mouse_dragged){
 								this.setSelection(parent_group.getSelectionTree(true, null), false);
 							}else{
 								this.resetSelection(false);
 							}
 							break;
 						case View.ApplicationStates.SINGLE_SELECTION:
+							if(this.mouse_dragged)
+								break;
 							if(!this.digit_corners_listening){
-
 								var currently_selected_object = this.getSingleSelectedElementProxy();
-								//console.log("currently selected object: " + currently_selected_object);
-								//console.log("parent_group identification = "+parent_group.getIdentification());
-								//console.log("length = "+parent_group.getIdentification().length);
 								if(parent_group != null){
 									if(currently_selected_object.isPossiblyAboutThis(parent_group.getIdentification())){
-										console.log("do nothing");
 									}else{
 										this.setSelection(parent_group.getSelectionTree(true, null), false);
 									}
-									//do nothing
 								}else{
-									//start adding a digit to the current group
-									//console.log("start adding a digit to the current group");
 									this.startDigitCornersListening(currently_selected_object.getParentOfTypeProxy("group"));
 								}
 							}
@@ -564,10 +605,6 @@ define([
 							}
 							break;
 						case View.ApplicationStates.NO_SELECTION:
-							if(parent_group != null){
-								console.log("parent_group = "+parent_group);
-								console.log("no selection, parent_group identification = " + parent_group.getIdentification());
-							}
 							if(parent_group != null){
 								this.setSelection(parent_group.getSelectionTree(true, null), false);
 							}else{

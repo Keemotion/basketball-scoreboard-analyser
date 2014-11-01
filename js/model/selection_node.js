@@ -125,7 +125,7 @@ define(["./bounding_rectangle"], function(BoundingRectangle){
 	};
 	SelectionNode.prototype.isSelected = function(identification){
 		if(identification.length == 0){
-			return true;
+			return this.getSelected();
 		}
 		var children = this.getChildren();
 		for(var i = 0; i < children.length; ++i){
