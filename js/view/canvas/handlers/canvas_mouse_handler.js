@@ -94,7 +94,7 @@ define([
 			this.messaging_system.addEventListener(this.messaging_system.events.CanvasKeyUp, new EventListener(this, this.keyUp));
 
 			this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
-			
+
 			this.messaging_system.addEventListener(this.messaging_system.events.AutoDetectDigit, new EventListener(this, this.autoDetectDigitRequested));
 			this.messaging_system.addEventListener(this.messaging_system.events.DigitCornersListen, new EventListener(this, this.digitCornersListenRequested));
 			this.messaging_system.addEventListener(this.messaging_system.events.CoordinateListen, new EventListener(this, this.coordinateListenRequested));
@@ -493,6 +493,7 @@ define([
 			if(this.current_digit_corner_index >= this.current_listening_digit.getSubNodes().length){
 				this.digit_corners_listening = false;
 			}
+			this.canvas.updateCanvas();
 		};
 		CanvasMouseHandler.prototype.doubleClick = function(signal, data){
 			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());

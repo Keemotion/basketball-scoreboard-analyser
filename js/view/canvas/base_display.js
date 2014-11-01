@@ -36,19 +36,21 @@ define([
 	BaseDisplay.prototype.drawMyselfSelected = function(context, transformation){
 		this.drawMyself(context, transformation);
 	};
-	BaseDisplay.prototype.drawSelected = function(selection_node, context, transformation){
+	BaseDisplay.prototype.drawSelected = function(selection_node, context, transformation, parent_already_selected){
 		//if(selection_node.isSelected(this.getIdentification())){
-		if(selection_node.getSelected()){
+		if(parent_already_selected  || selection_node.getSelected()){
+			console.log("drawing selected: "+JSON.stringify(this.getIdentification()));
 			this.drawMyselfSelected(context, transformation);
+			for(var i = 0; i < this.sub_components.length; ++i){
+				this.sub_components[i].drawSelected(null, context, transformation, true);
+			}
+		}else{
+			var children = selection_node.getChildren();
+			for(var i = 0; i < children.length; ++i){
+				this.sub_components[children[i].getId()].drawSelected(children[i], context, transformation, false);
+			}
 		}
-		var children = selection_node.getChildren();
-		for(var i = 0; i < children.length; ++i){
-			this.sub_components[children[i].getId()].drawSelected(children[i], context, transformation);
-		}
-		/*for(var i = 0; i < this.sub_components.length; ++i){
-
-			this.sub_components[i].drawSelected(null, context, transformation);
-		}*/
+		/**/
 	};
 	BaseDisplay.prototype.getProxy = function(){
 		return this.proxy;
