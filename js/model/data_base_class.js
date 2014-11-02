@@ -228,14 +228,17 @@ define([
 			this.notifyGroupChanged();
 		};
 		BaseDataClass.prototype.addSubNode = function(sub_node, auto_select){
+			console.time("add sub node");
 			sub_node.setId(this.sub_nodes.length);
 			this.sub_nodes.push(sub_node);
 			sub_node.setParent(this);
 			this.notifyGroupChanged();
 			if(auto_select){
 				console.log("auto select!");
-				this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, new EditModeSelectionEvent(sub_node.getProxy()))
+				//this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, new EditModeSelectionEvent(sub_node.getProxy()))
+				this.messaging_system.fire(this.messaging_system.events.SelectionSet, new SelectionEvent(sub_node.getSelectionTree()));
 			}
+			console.timeEnd("add sub node");
 		};
 		BaseDataClass.prototype.removeSubNode = function(index){
 			this.lockNotification();

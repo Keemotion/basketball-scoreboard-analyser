@@ -39,7 +39,7 @@ define(["./base_display", "../../model/coordinate"], function(BaseDisplay, Coord
 	CornerDisplay.prototype.getRadius = function(transformation){
 		var siblings = this.getParent().getProxy().getSubNodes();
 		var best = 99999999999999;
-		for(var i = 0; i < 4; ++i){
+		for(var i = 0; i < siblings.length; ++i){
 			if(i == this.getProxy().getId())
 				continue;
 			if(!siblings[i].isComplete()){

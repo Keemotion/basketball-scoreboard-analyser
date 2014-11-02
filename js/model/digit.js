@@ -27,7 +27,9 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 	Digit.prototype.resetCorners = function(){
 		this.clearSubNodes();
 		for(var i = 0; i < 4; ++i){
+			console.time("add a new sub node");
 			this.addSubNode(new Corner(this, new Coordinate("", ""), i, this.messaging_system));
+			console.timeEnd("add a new sub node");
 		}
 	};
 	//collects all data about this digit in an Object that can be converted to JSON by the export function

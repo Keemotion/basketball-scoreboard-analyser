@@ -3,9 +3,9 @@ define(['./coordinate', './proxy/corner_proxy', './data_base_class'], function(C
 	var Corner = function(parent_digit, coordinate, id, messaging_system){
 		this.messaging_system = messaging_system;
 		this.init();
+		this.setParent(parent_digit);
 		this.id = id;
 		this.setCoordinate(coordinate);
-		this.parent_digit = parent_digit;
 		this.proxy = new CornerProxy(this);
 	};
 	//Based on the BaseData class
