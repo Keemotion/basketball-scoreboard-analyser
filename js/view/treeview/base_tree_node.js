@@ -17,8 +17,10 @@ define(["../../messaging_system/events/selection_event",
 			this.is_selected = false;
 			this.detached = false;
 			this.setUpdateListeners(data_proxy.getUpdateEvents());
-			this.editModeSelectionSetListener = new EventListener(this, this.editModeSelectionSet);
-			this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, this.editModeSelectionSetListener);
+			this.selectionChangedListener = new EventListener(this, this.selectionChanged);
+			this.messaging_system.addEventListener(this.messaging_system.events.SelectionChanged, this.selectionChangedListener);
+			//this.editModeSelectionSetListener = new EventListener(this, this.editModeSelectionSet);
+			//this.messaging_system.addEventListener(this.messaging_system.events.SelectionSet, this.editModeSelectionSetListener);
 			this.expandListener = new EventListener(this, this.treeNodeExpandRequested);
 			this.messaging_system.addEventListener(this.messaging_system.events.ExpandTreeNode, this.expandListener);
 			this.messaging_system.addEventListener(this.messaging_system.events.CollapseTreeNode, this.expandListener);
@@ -299,6 +301,18 @@ define(["../../messaging_system/events/selection_event",
 		};
 		BaseTreeNode.prototype.is_detached = function(){
 			return this.detached;
+		};
+		BaseTreeNode.prototype.selectionChanged = function(signal, data){
+			//console.log("selection changed");
+			if(data.getTree().isSelected(this.getProxy().getIdentification())){
+				this.is_selected = true;
+				if(this.nameEditable()){
+					this.title_span.select();
+				}
+			}else{
+				this.is_selected = false;
+			}
+			this.updateContent();
 		};
 		return BaseTreeNode;
 	});

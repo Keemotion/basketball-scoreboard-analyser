@@ -225,8 +225,11 @@ define([
 			//this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.AutoDetectDigitMode));
 		};
 		CanvasMouseHandler.prototype.stopAutoDetectDigit = function(){
+			//TODO: if user tried to create a new digit by using auto-detection, that digit should be removed
+			//if the user tried to modify an existing digit, that digit should be kept
 			this.setMouseMode(null);
 			this.selection_rectangle.stopSelection();
+			this.canvas.updateCanvas();
 		};
 		CanvasMouseHandler.prototype.startAutoDetectDigit = function(proxy){
 			this.setMouseMode(CanvasMouseHandler.MouseModes.AutoDetectDigitMode);
@@ -461,6 +464,7 @@ define([
 					var identification = this.getSingleSelectedElementProxy().getIdentification();
 					this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, coordinate_data));
 					this.setMouseMode(null);
+					this.canvas.updateCanvas();
 					break;
 				case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
 					this.addDigitCorner(data.getCoordinate());
@@ -487,6 +491,7 @@ define([
 			//TODO: if newly added digit -> remove
 			//TODO: if not newly added digit -> reset?
 			this.setMouseMode(null);
+			this.canvas.updateCanvas();
 		};
 		CanvasMouseHandler.prototype.addDigitCorner = function(coordinate){
 			var relative_coordinate = this.getCanvas().getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(coordinate);
@@ -518,6 +523,12 @@ define([
 					switch(this.getMouseMode()){
 						case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
 							this.stopDigitCornersListening();
+							break;
+						case CanvasMouseHandler.MouseModes.SingleCoordinateListenMode:
+							this.setMouseMode(null);
+							break;
+						case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+							this.stopAutoDetectDigit();
 							break;
 					}
 					break;
