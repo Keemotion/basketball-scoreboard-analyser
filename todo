@@ -19,3 +19,9 @@ middle high instead of maximal high
 
 configuration values (load configuration file)
 undo actions
+
+
+---
+stopDigitCornersListening -> remove/reset digit
+mouse mode stack of depth 3
+cursors

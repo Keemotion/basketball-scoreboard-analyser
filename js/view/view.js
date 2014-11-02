@@ -98,7 +98,6 @@ define([
 			this.notifySelectionChanged();
 		};
 		View.prototype.selectionSet = function(signal, data){
-			console.log("selection set");
 			this.current_selection_tree = data.getTree().clone();
 			this.official_selection_tree = data.getTree().clone();
 			this.notifySelectionChanged();
@@ -113,7 +112,6 @@ define([
 			this.messaging_system.fire(this.messaging_system.events.SelectionChanged, new SelectionEvent(this.getCurrentSelectionTree()));
 		};
 		View.prototype.stateChanged = function(signal, data){
-			//console.log("stateChanged");
 			this.canvas.setProxy(this.controller.getModel().getState().getProxy());
 			this.toolbar_component.setProxy(this.controller.getModel().getState().getProxy());
 			this.tree_view.setProxy(this.controller.getModel().getState().getProxy());
@@ -121,7 +119,6 @@ define([
 		};
 		View.prototype.getApplicationState = function(){
 			var selection_size = this.getCurrentSelectionTree().getSelectedFlat().length;
-			//console.log(this.getCurrentSelectionTree().getSelectedFlat().length);
 			switch(selection_size){
 				case 0:
 					return View.ApplicationStates.NO_SELECTION;

@@ -45,5 +45,16 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 			&& coordinate.getY() > rectangle.getTopLeft().getY()
 			&& coordinate.getY() < rectangle.getBottomRight().getY();
 	};
+	DotDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification){
+		if(!this.getProxy().isComplete()){
+			return null;
+		}
+		//console.log("checking if click inside corner radius");
+		var distance = Coordinate.getDistance(canvas_coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate()));
+		if(distance < this.getRadius(transformation)){
+			return this;
+		}
+		return null;
+	};
 	return DotDisplay;
 });
