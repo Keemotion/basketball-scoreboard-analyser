@@ -539,6 +539,11 @@ define([
 					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.SelectionMode));
 					break;
 				case 46://delete
+					if(this.getCanvas().getView().getApplicationState() == View.ApplicationStates.SINGLE_SELECTION){
+						var proxy = this.getSingleSelectedElementProxy();
+						this.resetSelection();
+						this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(proxy.getIdentification()));
+					}
 					break;
 			}
 		};
