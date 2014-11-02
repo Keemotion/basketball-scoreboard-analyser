@@ -150,6 +150,7 @@ define([
 								this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.getCanvas().getView().getCurrentSelectionTree(), transformed));
 								break;
 							case View.ApplicationStates.SINGLE_SELECTION:
+								console.log("move");
 								if(this.mouse_down_object != null){
 									if(this.getCanvas().getView().getCurrentSelectionTree().hasSelectedParent(this.mouse_down_object.getIdentification())){
 										this.messaging_system.fire(this.messaging_system.events.ObjectsMoved, new ObjectsMovedEvent(this.mouse_down_object.getProxy().getSelectionTree(), transformed));
@@ -205,7 +206,7 @@ define([
 				return null;
 			}
 			var coordinates = new Array();
-			var sub_nodes = this.digit_corners_proxy.getSubNodes();
+			var sub_nodes = this.current_listening_digit.getSubNodes();
 			for(var i = 0; i < sub_nodes.length; ++i){
 				if(sub_nodes[i].getCoordinate().isValid()){
 					coordinates.push(sub_nodes[i].getCoordinate());
@@ -214,11 +215,14 @@ define([
 			return coordinates;
 		};
 		CanvasMouseHandler.prototype.digitCornersListenRequested = function(signal, data){
-			this.digit_corners_proxy = data.getProxy();
+			//TODO: update
+			this.setSelection(data.getProxy().getSelectionTree());
+			this.startDigitCornersListening(null, true);
+			/*this.digit_corners_proxy = data.getProxy();
 			this.current_digit_corners_listen_for_new = data.isNew();
 			this.current_digit_corner_index = 0;
 			this.messaging_system.fire(this.messaging_system.events.GroupReset, new GroupChangedEvent(this.digit_corners_proxy.getIdentification()));
-			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.DigitCornersListenMode));
+			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.DigitCornersListenMode));*/
 		};
 		CanvasMouseHandler.prototype.autoDetectDigitRequested = function(signal, data){
 			this.auto_detect_digit_proxy = data.getProxy();
@@ -292,7 +296,8 @@ define([
 
 							break;
 						case View.ApplicationStates.SINGLE_SELECTION:
-							if(this.mouse_down_object == null){
+							if(this.mouse_down_object == null && this.mouse_dragged){
+								console.log("dragged");
 								this.selection_rectangle.updateSelection(data.getCoordinate());
 								var newly_selected = this.autoDetectDigit();
 								if(newly_selected != null){
@@ -426,26 +431,20 @@ define([
 						case View.ApplicationStates.SINGLE_SELECTION:
 							if(this.mouse_dragged)
 								break;
-							if(!this.digit_corners_listening){
-								var currently_selected_object = this.getSingleSelectedElementProxy();
-								if(parent_group != null){
-									if(currently_selected_object.isPossiblyAboutThis(parent_group.getIdentification())){
-									}else{
-										this.setSelection(parent_group.getSelectionTree(true, null), false);
-									}
+							var currently_selected_object = this.getSingleSelectedElementProxy();
+							if(parent_group != null){
+								if(currently_selected_object.isPossiblyAboutThis(parent_group.getIdentification())){
 								}else{
-									this.startDigitCornersListening(currently_selected_object.getParentOfTypeProxy("group"));
+									this.setSelection(parent_group.getSelectionTree(true, null), false);
 								}
-							}
-							if(this.digit_corners_listening){
+							}else{
+								this.startDigitCornersListening(currently_selected_object.getParentOfTypeProxy("group"));
 								this.addDigitCorner(data.getCoordinate());
 							}
 							break;
 						case View.ApplicationStates.NO_SELECTION:
 							if(parent_group != null){
 								this.setSelection(parent_group.getSelectionTree(true, null), false);
-							}else{
-
 							}
 							break;
 					}
@@ -463,7 +462,8 @@ define([
 					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 					break;
 				case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
-					var corner_data = new Object();
+					this.addDigitCorner(data.getCoordinate());
+					/*var corner_data = new Object();
 					var transformation = this.canvas.getTransformation();
 					corner_data.coordinate = transformation.transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
 					var identification = this.digit_corners_proxy.getSubNodes()[this.current_digit_corner_index].getIdentification();
@@ -471,19 +471,33 @@ define([
 					this.current_digit_corner_index++;
 					if(this.current_digit_corner_index >= this.digit_corners_proxy.getSubNodes().length){
 						this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
-					}
+					}*/
 					break;
 			}
 		};
-		CanvasMouseHandler.prototype.startDigitCornersListening = function(group){
-			this.digit_corners_listening = true;
+		CanvasMouseHandler.prototype.startDigitCornersListening = function(group, existing_digit){
+			if(existing_digit == true){
+				this.current_listening_digit = this.getSingleSelectedElementProxy();
+				this.messaging_system.fire(this.messaging_system.events.GroupReset, new GroupChangedEvent(this.current_listening_digit.getIdentification()));
+				if(this.current_listening_digit.getType() != "digit"){
+					console.log("current listening digit actually isn't a digit");
+				}
+			}else{
+				this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("digit", group.getIdentification(), null, false));
+				var subnodes = group.getSubNodes();
+				this.current_listening_digit = subnodes[subnodes.length-1];
+			}
 			this.current_digit_corner_index = 0;
-			this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("digit", group.getIdentification(), null, true));
-			var subnodes = group.getSubNodes();
-			this.current_listening_digit = subnodes[subnodes.length-1];
 			this.setSelection(this.current_listening_digit.getSelectionTree(), false);
+			this.setMouseMode(CanvasMouseHandler.MouseModes.DigitCornersListenMode);
+		};
+		CanvasMouseHandler.prototype.stopDigitCornersListening = function(){
+			//TODO: if newly added digit -> remove
+			//TODO: if not newly added digit -> reset?
+			this.setMouseMode(null);
 		};
 		CanvasMouseHandler.prototype.addDigitCorner = function(coordinate){
+			console.log("add corner");
 			var relative_coordinate = this.getCanvas().getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(coordinate);
 			var corner_data = new Object();
 			corner_data.coordinate = relative_coordinate;
@@ -491,11 +505,15 @@ define([
 			this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, corner_data));
 			this.current_digit_corner_index++;
 			if(this.current_digit_corner_index >= this.current_listening_digit.getSubNodes().length){
-				this.digit_corners_listening = false;
+				this.stopDigitCornersListening();
 			}
 			this.canvas.updateCanvas();
 		};
+		CanvasMouseHandler.prototype.setMouseMode = function(mouse_mode){
+			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(mouse_mode));
+		};
 		CanvasMouseHandler.prototype.doubleClick = function(signal, data){
+			//TODO: update
 			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 			//inside digit -> select
 			if(res){
@@ -507,6 +525,11 @@ define([
 		CanvasMouseHandler.prototype.keyDown = function(signal, data){
 			switch(data.getEventData().which){
 				case 27://escape
+					switch(this.getMouseMode()){
+						case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
+							this.stopDigitCornersListening();
+							break;
+					}
 					break;
 				case 17://control
 					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CanvasMode));

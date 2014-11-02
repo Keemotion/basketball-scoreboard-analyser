@@ -222,11 +222,10 @@ define(
 			}
 		};
 		MyCanvas.prototype.drawSelected = function(){
-
 			if(this.display_tree == null)
 				return;
 			this.display_tree.drawSelected(this.getView().getCurrentSelectionTree().getRoot(), this.context, this.transformation);
-			/*var temporary_coordinates = this.canvas_mouse_handler.getTemporaryDigitCoordinates();
+			var temporary_coordinates = this.canvas_mouse_handler.getTemporaryDigitCoordinates();
 			if(temporary_coordinates != null && temporary_coordinates.length > 0){
 				for(var i = 0; i < temporary_coordinates.length; ++i){
 					temporary_coordinates[i] = this.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(temporary_coordinates[i]);
@@ -240,7 +239,7 @@ define(
 				}
 				this.context.stroke();
 			}
-			if(this.canvas_mouse_handler.getMouseMode() == CanvasMouseHandler.MouseModes.EditMode && this.edit_mode_selected_proxy != null){
+			/*if(this.canvas_mouse_handler.getMouseMode() == CanvasMouseHandler.MouseModes.EditMode && this.edit_mode_selected_proxy != null){
 				var child = this.display_tree.findChild(this.edit_mode_selected_proxy.getIdentification().slice(1));
 				if(child != null){
 					child.drawSelected(null, this.context, this.transformation);
