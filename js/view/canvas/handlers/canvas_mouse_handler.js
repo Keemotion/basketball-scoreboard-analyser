@@ -535,15 +535,24 @@ define([
 				case 17://control
 					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CanvasMode));
 					break;
-				case 16:
+				case 16://shift
 					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.SelectionMode));
 					break;
 				case 46://delete
-					if(this.getCanvas().getView().getApplicationState() == View.ApplicationStates.SINGLE_SELECTION){
-						var proxy = this.getSingleSelectedElementProxy();
-						this.resetSelection();
-						this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(proxy.getIdentification()));
-					}
+					/*switch(this.getCanvas().getView().getApplicationState()){
+						case View.ApplicationStates.SINGLE_SELECTION:
+							var proxy = this.getSingleSelectedElementProxy();
+							this.resetSelection();
+							this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(proxy.getIdentification()));
+						case View.ApplicationStates.MULTI_SELECTION:*/
+							var elements = this.getCanvas().getView().getCurrentSelectionTree().getSelectedFlat();
+							//console.log("elements = "+JSON.stringify(elements));
+							this.resetSelection();
+							for(var i = 0; i < elements.length; ++i){
+								this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(elements[i].getIdentification()));
+							}
+
+					//}
 					break;
 			}
 		};
