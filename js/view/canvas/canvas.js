@@ -16,7 +16,8 @@ define(
 			this.canvas_element = $('<canvas>').attr({
 				class : 'canvas_image',
 				width : '1024',
-				height : '768'
+				height : '768',
+				tabindex:'1'
 			}).on('selectstart', function(){
 				return false;
 			});
@@ -113,7 +114,7 @@ define(
 						self.messaging_system.events.CanvasImageDoubleClick,
 						e);
 				});
-			$('html').keydown(
+			$(this.canvas_element).keydown(
 				function(e){
 					messaging_system.fire(
 						messaging_system.events.CanvasKeyDown,

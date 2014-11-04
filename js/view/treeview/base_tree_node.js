@@ -154,8 +154,12 @@ define(["../../messaging_system/events/selection_event",
 			this.applyCollapse();
 		};
 		BaseTreeNode.prototype.updateContent = function(){
-			this.id_element.val(this.data_proxy.getId());
-			this.title_span.val(this.data_proxy.getTitle());
+			if(this.data_proxy.getId() != this.id_element.val()){
+				this.id_element.val(this.data_proxy.getId());
+			}
+			if(this.title_span.val() != this.data_proxy.getTitle()){
+				this.title_span.val(this.data_proxy.getTitle());
+			}
 			if(this.data_proxy.isComplete()){
 				this.title_span.css('font-weight', 'normal');
 			}else{
