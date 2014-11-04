@@ -69,8 +69,8 @@ define(["../../model/coordinate"], function(Coordinate){
 	};*/
 	// converts a relative image coordinate to an absolute image coordinate
 	Transformation.prototype.transformRelativeImageCoordinateToAbsoluteImageCoordinate = function(coordinate){
-		return new Coordinate((3.0 * coordinate.getX() + 4.0) * this.getImageWidth() / 8.0 - .5,
-			.5 * (this.getImageHeight() * (1.0 - coordinate.getY()) - 1.0));
+		return new Coordinate((3.0 * coordinate.getX() + 4.0) * this.getImageWidth() / 8.0,
+			.5 * (this.getImageHeight() * (1.0 - coordinate.getY()) +.5));
 	};
 	// returns the display ratio (factor needed to convert relative image
 	// coordinate to canvas coordinate)
@@ -86,8 +86,8 @@ define(["../../model/coordinate"], function(Coordinate){
 	Transformation.prototype.transformAbsoluteImageCoordinateToRelativeImageCoordinate = function(coordinate){
 		//return new Coordinate(1.0 / 3.0 * (-4.0 + (coordinate.getX()) * 8.0 / this.getImageWidth()),
 		//		(this.getImageHeight() - (coordinate.getY()) * 2.0) / this.getImageHeight());
-		return new Coordinate(1.0/3.0*((coordinate.getX() +.5)*8.0/this.getImageWidth()-4),
-			-((2*coordinate.getY() + 1)/this.getImageHeight()-1.0));
+		return new Coordinate(1.0/3.0*((coordinate.getX() )*8.0/this.getImageWidth()-4),
+			-((2*coordinate.getY() + -.5)/this.getImageHeight()-1.0));
 	};
 	// converts an absolute image coordinate to canvas coordinate
 	Transformation.prototype.transformAbsoluteImageCoordinateToCanvasCoordinate = function(coordinate){
