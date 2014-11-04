@@ -25,4 +25,3 @@ undo actions
 stopDigitCornersListening -> remove/reset digit
 mouse mode stack of depth 3
 cursors
-if current selected group is a group of leds, don't start creating a new digit for that group

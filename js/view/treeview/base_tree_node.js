@@ -290,7 +290,6 @@ define(["../../messaging_system/events/selection_event",
 		BaseTreeNode.prototype.updated = function(signal, data){
 			var identification = data.getTargetIdentification();
 			if(this.data_proxy.isPossiblyAboutThis(identification)){
-				console.log("update is about this, structural = "+data.isStructuralChange());
 				if(data.isStructuralChange()){
 					this.loadSubNodes();
 					this.loadContent(this.element);
