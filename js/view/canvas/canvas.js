@@ -328,7 +328,7 @@ define(
 		};
 		MyCanvas.prototype.autoFocus = function(signal, data){
 			var bounding_rectangle = new BoundingRectangle();
-			var selected_elements = this.canvas_mouse_handler.getSelectedObjects();
+			var selected_elements = this.getView().getCurrentSelectionTree().getSelectedFlat();
 			for(var i = 0; i < selected_elements.length; ++i){
 				selected_elements[i].getBoundingRectangle(bounding_rectangle);
 			}
