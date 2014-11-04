@@ -165,7 +165,7 @@ define([
 							case View.ApplicationStates.NO_SELECTION:
 								if(this.mouse_down_object != null){
 
-								}else if(this.getCurrentGroupProxy().getGroupType() == "digit"){
+								}else if(this.getCurrentGroupProxy() != null && this.getCurrentGroupProxy().getGroupType() == "digit"){
 									this.startAutoDetectDigit(null);
 									this.selection_rectangle.startSelection(data.getCoordinate());
 								}
@@ -430,6 +430,8 @@ define([
 			return this.getCanvas().getView().getCurrentSelectionTree().getSingleSelectedElementProxy();
 		};
 		CanvasMouseHandler.prototype.getCurrentGroupProxy = function(){
+			if(this.current_selected_group_proxy == null)
+				return null;
 			if(this.current_selected_group_proxy.getDeleted()){
 				this.current_selected_group_proxy = null;
 			}
@@ -483,11 +485,13 @@ define([
 							if(parent_group != null){
 								this.setSelection(parent_group.getSelectionTree(true, null), false);
 							}else{
-								if(this.getCurrentGroupProxy().getGroupType() == "digit"){
-									this.startDigitCornersListening(this.getCurrentGroupProxy());
-									this.addDigitCorner(data.getCoordinate());
-								}else{
-									this.addDot(data.getCoordinate());
+								if(this.getCurrentGroupProxy() != null){
+									if(this.getCurrentGroupProxy().getGroupType() == "digit"){
+										this.startDigitCornersListening(this.getCurrentGroupProxy());
+										this.addDigitCorner(data.getCoordinate());
+									}else{
+										this.addDot(data.getCoordinate());
+									}
 								}
 							}
 							break;

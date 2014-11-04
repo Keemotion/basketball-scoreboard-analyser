@@ -33,6 +33,7 @@ define(["./digit",
 			this.name = data.name;
 			this.createSubNodes(data.sub_nodes);
 			this.setConfigurationKeys(data.configuration_keys);
+			console.log("configuration keys = "+JSON.stringify(this.configuration_keys));
 		}
 	};
 	//create subnodes based on subnode_info
