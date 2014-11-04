@@ -106,7 +106,7 @@ define([
 			this.current_selection_tree = new SelectionTree();
 			this.official_selection_tree = new SelectionTree();
 			this.notifySelectionChanged();
-			this.messaging_system.fire(this.messaging_system.events.EditModeSelectionSet, new EditModeSelectionEvent(null));
+			//this.messaging_system.fire(this.messaging_system.events.SelectionSet, new SelectionEvent(this.getCurrentSelectionTree()));
 		};
 		View.prototype.notifySelectionChanged = function(){
 			this.messaging_system.fire(this.messaging_system.events.SelectionChanged, new SelectionEvent(this.getCurrentSelectionTree()));

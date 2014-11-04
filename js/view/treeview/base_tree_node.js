@@ -19,13 +19,26 @@ define(["../../messaging_system/events/selection_event",
 			this.setUpdateListeners(data_proxy.getUpdateEvents());
 			this.selectionChangedListener = new EventListener(this, this.selectionChanged);
 			this.messaging_system.addEventListener(this.messaging_system.events.SelectionChanged, this.selectionChangedListener);
-			//this.editModeSelectionSetListener = new EventListener(this, this.editModeSelectionSet);
-			//this.messaging_system.addEventListener(this.messaging_system.events.SelectionSet, this.editModeSelectionSetListener);
 			this.expandListener = new EventListener(this, this.treeNodeExpandRequested);
 			this.messaging_system.addEventListener(this.messaging_system.events.ExpandTreeNode, this.expandListener);
 			this.messaging_system.addEventListener(this.messaging_system.events.CollapseTreeNode, this.expandListener);
+			this.groupChangedListener = new EventListener(this, this.updated);
+			this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
+			//this.removeGroupListener = new EventListener(this, this.groupRemoved);
+			//this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, this.removeGroupListener);
 			//TODO: clean-up event listeners when object is destroyed
 		};
+		/*BaseTreeNode.prototype.groupRemoved = function(signal, data){
+			if(!this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
+				return;
+			}
+			if(this.getProxy().isDeleted()){
+				this.deleteNode();
+			}
+		};
+		BaseTreeNode.prototype.deleteNode = function(){
+
+		};*/
 		BaseTreeNode.prototype.addCommand = function(command){
 			this.commands.push(command);
 		};
@@ -74,7 +87,7 @@ define(["../../messaging_system/events/selection_event",
 			this.collapse_button_collapse_icon.show();
 		};
 
-		BaseTreeNode.prototype.editModeSelectionSet = function(signal, data){
+		/*BaseTreeNode.prototype.editModeSelectionSet = function(signal, data){
 			//if data.getProxy() is about this.data_proxy or one of its (grand..)children
 			this.is_selected = false;
 			if(data.getProxy() == null){
@@ -86,7 +99,7 @@ define(["../../messaging_system/events/selection_event",
 			}else{
 			}
 			this.updateContent();
-		};
+		};*/
 		BaseTreeNode.prototype.loadContent = function(element){
 			var self = this;
 			this.element = element;
@@ -97,8 +110,8 @@ define(["../../messaging_system/events/selection_event",
 						.getSelectionTree());
 					self.messaging_system.fire(
 						self.messaging_system.events.SelectionSet, e);
-					var e2 = new EditModeSelectionEvent(self.data_proxy);
-					self.messaging_system.fire(self.messaging_system.events.EditModeSelectionSet, e2);
+					//var e2 = new EditModeSelectionEvent(self.data_proxy);
+					//self.messaging_system.fire(self.messaging_system.events.EditModeSelectionSet, e2);
 					return false;
 				});
 
@@ -277,6 +290,7 @@ define(["../../messaging_system/events/selection_event",
 		BaseTreeNode.prototype.updated = function(signal, data){
 			var identification = data.getTargetIdentification();
 			if(this.data_proxy.isPossiblyAboutThis(identification)){
+				console.log("update is about this, structural = "+data.isStructuralChange());
 				if(data.isStructuralChange()){
 					this.loadSubNodes();
 					this.loadContent(this.element);

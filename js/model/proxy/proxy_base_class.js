@@ -74,5 +74,8 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	BaseProxy.prototype.isAncestorOf = function(other_element){
 		return this.obj.isAncestorOf(other_element.getIdentification());
 	};
+	BaseProxy.prototype.getDeleted = function(){
+		return this.obj.getDeleted();
+	};
 	return BaseProxy;
 });

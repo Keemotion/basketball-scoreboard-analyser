@@ -119,7 +119,7 @@ define([ "../../messaging_system/event_listener",
 		for(var i = 0; i < sub_nodes.length; ++i){
 			var found = false;
 			for(var j = 0; j < this.nodes.length && !found; ++j){
-				if(sub_nodes[i].isPossiblyAboutThis(this.nodes[j].getProxy().getIdentification())){
+				if(sub_nodes[i].isPossiblyAboutThis(this.nodes[j].getProxy().getIdentification()) && !this.nodes[j].getProxy().getDeleted()){
 					this.nodes[j].appendTo(this.tree_element);
 					found = true;
 				}

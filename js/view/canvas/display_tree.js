@@ -19,12 +19,10 @@ define([
 		DisplayTree.prototype.drawMyself = function(context, transformation){
 		};
 		DisplayTree.prototype.stateChanged = function(signal, data){
-			console.log("state changed");
 			this.loadSubComponents();
 		};
 		DisplayTree.prototype.groupChanged = function(signal, data){
 			if(this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
-				console.log("display tree changed");
 				this.loadSubComponents();
 			}
 		};

@@ -11,6 +11,7 @@ define([
 			this.type = type;
 		};
 		BaseDataClass.prototype.init = function(){
+			this.deleted = false;
 			this.notification_lock = 0;
 			this.selected = false;
 			this.sub_nodes = new Array();
@@ -31,15 +32,22 @@ define([
 				this.messaging_system.addEventListener(this.messaging_system.events.AddElement, this.addElementListener);
 			}
 		};
+		BaseDataClass.prototype.delete = function(){
+			this.deleted = true;
+			if(this.getParent()){
+				this.getParent().removeSubNode(this.getId());
+			}
+			this.messaging_system.fire(this.messaging_system.events.SelectionRemoved, new SelectionEvent(this.getSelectionTree(true, null), false));
+		};
+		BaseDataClass.prototype.getDeleted = function(){
+			return this.deleted;
+		};
 		//event listener when a sub node is removed in the GUI
 		BaseDataClass.prototype.removeElement = function(signal, data){
 			if(data.getHandled())
 				return;
 			if(this.isPossiblyAboutThis(data.getTargetIdentification())){
-				if(this.getParent()){
-					this.getParent().removeSubNode(this.getId());
-				}
-				this.messaging_system.fire(this.messaging_system.events.SelectionRemoved, new SelectionEvent(this.getSelectionTree(true, null), false));
+				this.delete();
 				data.setHandled(true);
 			}
 		};
