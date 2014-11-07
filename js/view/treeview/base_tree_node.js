@@ -115,7 +115,7 @@ define(["../../messaging_system/events/selection_event",
 					return false;
 				});
 
-			this.commands_div = $('<div>').addClass('btn-group');
+			this.commands_div = $('<div>').addClass('btn-group dropdown-menu-right');
 			for(var i = 0; i < this.commands.length; ++i){
 				this.commands[i].detach();
 				this.commands_div.append(this.commands[i]);

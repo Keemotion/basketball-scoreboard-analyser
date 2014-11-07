@@ -125,8 +125,7 @@ define([
 			this.canvas.updateCanvas(signal, data);
 			return data.event_data.preventDefault() && false;
 		};
-		CanvasMouseHandler.prototype.mouseMove = function(signal, data){
-			var c = data.getCoordinate();
+		CanvasMouseHandler.prototype.coordinateDebugInfo = function(c){
 			var relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(c);
 			var absolute = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(c);
 			console.log("canvas                     = "+JSON.stringify(c));
@@ -140,12 +139,16 @@ define([
 			console.log("relative based on absolute = "+JSON.stringify(rel_abs));
 			console.log("absolute                   = "+JSON.stringify(absolute));
 			console.log("absolute based on relative = "+JSON.stringify(abs_rel));
+		};
+		CanvasMouseHandler.prototype.mouseMove = function(signal, data){
+			//this.coordinateDebugInfo(data.getCoordinate())
 			if(this.mouse_down){
 				this.mouse_dragged = true;
 			}
 			this.updateCursor();
 			var application_state = this.getCanvas().getView().getApplicationState();
 			var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
+			console.log("application state: "+application_state);
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
 					if(this.mouse_down){
@@ -176,7 +179,7 @@ define([
 					}
 					break;
 				case CanvasMouseHandler.MouseModes.CanvasMode:
-					//move canvas
+					//move canvast
 					if(this.mouse_down){
 						var old_center = this.canvas.getTransformation().getCanvasCenter();
 						var mv = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0))).scalarMultiply(-1.0);
@@ -243,11 +246,14 @@ define([
 		};
 		CanvasMouseHandler.prototype.startAutoDetectDigit = function(proxy){
 			this.setMouseMode(CanvasMouseHandler.MouseModes.AutoDetectDigitMode);
+			console.log("proxy = "+proxy);
 			if(proxy != null){
 				this.setSelection(proxy.getSelectionTree(), false);
 			}else{
 				//this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("digit", this.getSingleSelectedElementProxy().getParentOfTypeProxy('group').getIdentification(), null, true));
 				this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("digit", this.getCurrentGroupProxy().getIdentification(), null, true));
+				console.log("group subnodes.length = "+this.getCurrentGroupProxy().getSubNodes().length);
+				console.log("currently selected proxy = "+JSON.stringify(this.getSingleSelectedElementProxy().getIdentification()));
 			}
 		};
 		CanvasMouseHandler.prototype.autoDetectDigit = function(){
@@ -318,6 +324,7 @@ define([
 			var mouse_release_time = new Date();
 			var time_down = mouse_release_time.getTime() - this.mouse_down_time.getTime();
 			var application_state = this.getCanvas().getView().getApplicationState();
+			console.log("application state: "+application_state);
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
 					switch(application_state){

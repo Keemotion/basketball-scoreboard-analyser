@@ -26,14 +26,21 @@ define([], function(){
 			var key = parts[0];
 			var value = parts[1];
 			switch(key){
-				case 'must_be_on':
+				case 'global_restricted':
 				case 'luminance_threshold':
 				case 'luminance_differential_threshold':
+				case 'dtype':
+				case 'parse_function':
 				case 'requested_stability_ms':
 				case 'read_function':
 				case 'sync_function':
-				case 'parse_function':
-				case 'dtype':
+				case 'expected_value':
+				case 'must_be_on':
+				case 'no_black_ref':
+				case 'digit_type':
+				case 'pixel_function':
+				case 'shift':
+				case 'sync_range':
 					var obj = new Object();
 					obj.key = key;
 					obj.value = value;
@@ -54,21 +61,27 @@ define([], function(){
 					}else if(end_matches(key, "_parse_function")){
 						action = "parse_function";
 						key = subtract(key, "_parse_function");
-					}else if(end_matches(key, "_read_function")){
-						action = "read_function";
-						key = subtract(key, "_read_function");
-					}else if(end_matches(key, "_sync_function")){
-						action = "sync_function";
-						key = subtract(key, "_sync_function");
 					}else if(end_matches(key, "_first_digit_restricted")){
 						action = "first_digit_restricted";
 						key = subtract(key, "_first_digit_restricted");
-					}else if(end_matches(key, "_must_be_on")){
-						action = "must_be_on";
-						key = subtract(key, "_must_be_on");
+					}else if(end_matches(key, '_no_black_ref')){
+						action = 'no_black_ref';
+						key = subtract(key, '_no_black_ref');
+					}else if(end_matches(key, '_color')){
+						action = "color";
+						key = subtract(key, '_color');
+					}else if(end_matches(key, "_read_function")){
+						action = "read_function";
+						key = subtract(key, "_read_function");
+					}else if(end_matches(key, "_expected_value")){
+						action = "expected_value";
+						key = subtract(key, "_expected_value");
 					}else if(end_matches(key, "_dtype")){
 						action = "dtype";
 						key = subtract(key, "_dtype");
+					}else if(end_matches(key, "_must_be_on")){
+						action = "must_be_on";
+						key = subtract(key, "_must_be_on");
 					}else if(end_matches(key, "_luminance_threshold")){
 						action = "luminance_threshold";
 						key = subtract(key, "_luminance_threshold");
