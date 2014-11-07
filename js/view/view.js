@@ -35,12 +35,12 @@ define([
 				class : 'div_horizontal',
 				id : 'div_image'
 			}).css({
-				width:'80%'
+				width:'75%'
 			});
 			this.toolbox_tree_div = $('<div>').attr({
 				id : 'div_toolbox_objects_tree'
 			}).css({
-				width:'20%',
+				width:'25%',
 				'background-color':"grey",
 				height:'100%',
 				'overflow-y':'scroll'

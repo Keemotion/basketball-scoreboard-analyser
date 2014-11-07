@@ -24,5 +24,4 @@ undo actions
 ---
 stopDigitCornersListening -> remove/reset digit
 mouse mode stack of depth 3
-cursors
 led extra parameters

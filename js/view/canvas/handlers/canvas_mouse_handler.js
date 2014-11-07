@@ -143,6 +143,7 @@ define([
 			if(this.mouse_down){
 				this.mouse_dragged = true;
 			}
+			this.updateCursor();
 			var application_state = this.getCanvas().getView().getApplicationState();
 			var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
 			switch(this.current_mouse_mode){
@@ -313,6 +314,7 @@ define([
 				return;
 			}
 			this.mouse_down = false;
+			this.updateCursor();
 			var mouse_release_time = new Date();
 			var time_down = mouse_release_time.getTime() - this.mouse_down_time.getTime();
 			var application_state = this.getCanvas().getView().getApplicationState();
@@ -329,7 +331,7 @@ define([
 					}
 					break;
 				case CanvasMouseHandler.MouseModes.CanvasMode:
-					this.canvas.getElement().css('cursor', '-webkit-grab');
+					//this.canvas.getElement().css('cursor', '-webkit-grab');
 					break;
 				case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
 					this.autoDetectDigit();
@@ -350,6 +352,8 @@ define([
 			return this.previous_mouse_coordinate;
 		};
 		CanvasMouseHandler.prototype.mouseDown = function(signal, data){
+			this.mouse_down = true;
+			this.updateCursor();
 			var application_state = this.getCanvas().getView().getApplicationState();
 			var identification = null;
 			if(application_state == View.ApplicationStates.SINGLE_SELECTION){
@@ -365,7 +369,6 @@ define([
 				}
 			}
 			this.mouse_down_object = clicked_object;
-			this.mouse_down = true;
 			this.mouse_dragged = false;
 			this.mouse_down_time = new Date();
 			this.previous_mouse_coordinate = data.getCoordinate();
@@ -395,7 +398,7 @@ define([
 					}
 					break;
 				case CanvasMouseHandler.MouseModes.CanvasMode:
-					this.canvas.getElement().css('cursor', '-webkit-grabbing');
+					//this.canvas.getElement().css('cursor', '-webkit-grabbing');
 					break;
 				case CanvasMouseHandler.MouseModes.SelectionMode:
 					this.startSelection(data.getCoordinate());
@@ -639,18 +642,37 @@ define([
 				this.previous_mouse_mode = this.current_mouse_mode;
 				this.current_mouse_mode = data.getMode();
 			}
-			switch(this.current_mouse_mode){
+			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(this.current_mouse_mode));
+			this.updateCursor();
+		};
+		CanvasMouseHandler.prototype.updateCursor = function(){
+			switch(this.getMouseMode()){
 				case CanvasMouseHandler.MouseModes.EditMode:
-					this.canvas.getElement().css('cursor', 'crosshair');
+					this.canvas.getElement().css('cursor', 'default');
 					break;
 				case CanvasMouseHandler.MouseModes.CanvasMode:
-					this.canvas.getElement().css('cursor', '-webkit-grab');
+					if(this.mouse_down){
+						this.canvas.getElement().css('cursor', '-webkit-grabbing');
+					}else{
+						this.canvas.getElement().css('cursor', '-webkit-grab');
+					}
+					break;
+				case CanvasMouseHandler.MouseModes.SelectionMode:
+					this.canvas.getElement().css('cursor', 'copy');
+					break;
+				case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+					this.canvas.getElement().css('cursor', 'crosshair');
+					break;
+				case CanvasMouseHandler.MouseModes.SingleCoordinateListenMode:
+					this.canvas.getElement().css('cursor', 'crosshair');
+					break;
+				case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
+					this.canvas.getElement().css('cursor', 'crosshair');
 					break;
 				default:
-					this.canvas.getElement().css('cursor', 'auto');
+					this.canvas.getElement().css('cursor', 'default');
 					break;
 			}
-			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(this.current_mouse_mode));
 		};
 		CanvasMouseHandler.prototype.getMouseMode = function(){
 			return this.current_mouse_mode;

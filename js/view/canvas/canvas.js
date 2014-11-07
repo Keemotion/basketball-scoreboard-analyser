@@ -51,6 +51,7 @@ define(
 			this.messaging_system.addEventListener(
 				this.messaging_system.events.GroupChanged,
 				new EventListener(this, this.updateCanvas));
+			//this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
 			this.windowResized(null, null);
 			var scrollF = function(e){
 				self.fireMouseEvent(
@@ -133,10 +134,10 @@ define(
 			this.messaging_system.addEventListener(
 				this.messaging_system.events.AutoFocusSelection,
 				this.autoFocusListener);
-			this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, new EventListener(this, this.editModeSelectionSet));
+			//this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, new EventListener(this, this.editModeSelectionSet));
 			this.setProxy(proxy);
 			this.display_changed_handler = new DisplayChangedHandler(this);
-			this.edit_mode_selected_proxy = null;
+			//this.edit_mode_selected_proxy = null;
 		};
 		MyCanvas.prototype.fireMouseEvent = function(event_type, event_data){
 			var coordinate = new Coordinate(event_data.pageX
