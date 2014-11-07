@@ -17,14 +17,18 @@ define([
 			this.sub_nodes = new Array();
 			this.displaying = true;
 			this.simulating = true;
+
 			this.toggleDisplayObjectListener = new EventListener(this, this.toggleDisplay);
 			this.messaging_system.addEventListener(this.messaging_system.events.ToggleDisplayObject, this.toggleDisplayObjectListener);
 			//when the order of the sub nodes changed, this function is called to save changes
 			this.reOrderedListener = new EventListener(this, this.reOrdered);
 			this.messaging_system.addEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
-			this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, new EventListener(this, this.submitGroupDetails));
-			this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, new EventListener(this, this.removeElement));
-			this.messaging_system.addEventListener(this.messaging_system.events.GroupReset, new EventListener(this, this.resetGroup));
+			this.submitGroupDetailsListener = new EventListener(this, this.submitGroupDetails);
+			this.messaging_system.addEventListener(this.messaging_system.events.SubmitGroupDetails, this.submitGroupDetailsListener);
+			this.removeElementListener = new EventListener(this, this.removeElement);
+			this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, this.removeElementListener);
+			this.groupResetListener = new EventListener(this, this.resetGroup);
+			this.messaging_system.addEventListener(this.messaging_system.events.GroupReset, this.groupResetListener);
 			//this.messaging_system.addEventListener(this.messaging_system.events.MoveModeObjectsMoved, new EventListener(this, this.moveModeMoved));
 			//this.messaging_system.addEventListener(this.messaging_system.events.ObjectsMoved, new EventListener(this, this.moved));
 			if(this.addElement){
@@ -34,6 +38,7 @@ define([
 		};
 		BaseDataClass.prototype.delete = function(){
 			this.deleted = true;
+			this.cleanUp();
 			if(this.getParent()){
 				this.getParent().removeSubNode(this.getId());
 			}
@@ -259,6 +264,15 @@ define([
 		BaseDataClass.prototype.cleanUp = function(){
 			//TODO: remove event listeners
 			//TODO: specific clean handler (digit/state/group...)
+			this.messaging_system.removeEventListener(this.messaging_system.events.ToggleDisplayObject, this.toggleDisplayObjectListener);
+			//when the order of the sub nodes changed, this function is called to save changes
+			this.messaging_system.removeEventListener(this.messaging_system.events.ReOrdered, this.reOrderedListener);
+			this.messaging_system.removeEventListener(this.messaging_system.events.SubmitGroupDetails, this.submitGroupDetailsListener);
+			this.messaging_system.removeEventListener(this.messaging_system.events.RemoveGroup, this.removeElementListener);
+			this.messaging_system.removeEventListener(this.messaging_system.events.GroupReset, this.groupResetListener);
+			if(this.addElement){
+				this.messaging_system.removeEventListener(this.messaging_system.events.AddElement, this.addElementListener);
+			}
 			this.clear();
 		};
 		//returns all data about this object and its children in an Object that can be converted to JSON by the export function

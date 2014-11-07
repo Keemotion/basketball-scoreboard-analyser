@@ -127,7 +127,7 @@ define([], function(){
 		this.eventListeners[signal].push(listener);
 	};
 	MessagingSystem.prototype.removeEventListener = function(signal, listener){
-		if(!( signal in this.eventListeners))
+		if(!(signal in this.eventListeners))
 			return;
 		for(var i = 0; i < this.eventListeners[signal].length; ++i){
 			if(this.eventListeners[signal][i] == listener){
