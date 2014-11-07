@@ -245,14 +245,10 @@ define([
 		};
 		CanvasMouseHandler.prototype.startAutoDetectDigit = function(proxy){
 			this.setMouseMode(CanvasMouseHandler.MouseModes.AutoDetectDigitMode);
-			console.log("proxy = "+proxy);
 			if(proxy != null){
 				this.setSelection(proxy.getSelectionTree(), false);
 			}else{
-				//this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("digit", this.getSingleSelectedElementProxy().getParentOfTypeProxy('group').getIdentification(), null, true));
 				this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("digit", this.getCurrentGroupProxy().getIdentification(), null, true));
-				console.log("group subnodes.length = "+this.getCurrentGroupProxy().getSubNodes().length);
-				console.log("currently selected proxy = "+JSON.stringify(this.getSingleSelectedElementProxy().getIdentification()));
 			}
 		};
 		CanvasMouseHandler.prototype.autoDetectDigit = function(){

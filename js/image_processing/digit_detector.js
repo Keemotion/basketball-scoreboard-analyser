@@ -57,7 +57,6 @@ define(
 		}
 
 		DigitDetector.digit_corners = function(grayscale_image){
-			console.log("in digit corners!");
 			var cols = grayscale_image[0].length;
 			var rows = grayscale_image.length;
 			if(cols < 10 || rows < 10){

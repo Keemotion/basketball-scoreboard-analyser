@@ -11,7 +11,7 @@ define(["./base_tree_node",
 			var self = this;
 			this.clearCommands();
 			this.add_configuration_button = $('<button>')
-				.addClass('btn btn-xs btn-default')
+				.addClass('btn btn-default')
 				.attr('title', 'Add configuration to current group')
 				.append($('<i>').addClass('fa fa-cog'))
 				.click(function(){
@@ -20,7 +20,7 @@ define(["./base_tree_node",
 			this.addCommand(this.add_configuration_button);
 
 			this.add_sub_node_button = $('<button>')
-				.addClass('btn btn-xs btn-default')
+				.addClass('btn btn-default')
 				.attr('title', 'Add ' + this.data_proxy.getGroupType() + ' to this group.')
 				.append($('<i>').addClass('fa fa-plus'))
 				.click(function(){
@@ -29,7 +29,7 @@ define(["./base_tree_node",
 			this.addCommand(this.add_sub_node_button);
 
 			this.reset_button = $('<button>')
-				.addClass('btn btn-xs btn-default')
+				.addClass('btn btn-default')
 				.attr('title', 'Reset group')
 				.append($('<i>').addClass('fa fa-refresh'))
 				.click(function(){
@@ -39,7 +39,7 @@ define(["./base_tree_node",
 			this.addCommand(this.reset_button);
 
 			this.remove_button = $('<button>')
-				.addClass('btn btn-xs btn-default')
+				.addClass('btn btn-default')
 				.attr('title', 'Remove this group')
 				.append($('<i>').addClass('fa fa-times'))
 				.click(function(){

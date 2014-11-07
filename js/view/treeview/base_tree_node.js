@@ -35,17 +35,6 @@ define(["../../messaging_system/events/selection_event",
 			this.messaging_system.removeEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
 			this.messaging_system.removeEventListener(this.messaging_system.events.RemoveGroup, this.removeGroupListener);
 		};
-		/*BaseTreeNode.prototype.groupRemoved = function(signal, data){
-			if(!this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
-				return;
-			}
-			if(this.getProxy().isDeleted()){
-				this.deleteNode();
-			}
-		};
-		BaseTreeNode.prototype.deleteNode = function(){
-
-		};*/
 		BaseTreeNode.prototype.groupRemoved = function(signal, data){
 			if(this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
 				this.cleanUp();
@@ -98,48 +87,30 @@ define(["../../messaging_system/events/selection_event",
 			this.collapse_button_expand_icon.hide();
 			this.collapse_button_collapse_icon.show();
 		};
-
-		/*BaseTreeNode.prototype.editModeSelectionSet = function(signal, data){
-			//if data.getProxy() is about this.data_proxy or one of its (grand..)children
-			this.is_selected = false;
-			if(data.getProxy() == null){
-			}else if(this.data_proxy.isPossiblyAboutThis(data.getProxy().getIdentification())){
-				this.is_selected = true;
-				if(this.nameEditable()){
-					this.title_span.select();
-				}
-			}else{
-			}
-			this.updateContent();
-		};*/
 		BaseTreeNode.prototype.loadContent = function(element){
 			var self = this;
 			this.element = element;
-			this.id_element = $('<input>').attr('type', 'hidden').attr('name', 'id');
-			this.title_div = $('<div>').click(
+			this.element.empty();
+
+			this.title_div = $('<div>').addClass('input-group input-group-sm').click(
 				function(){
 					var e = new SelectionEvent(self.data_proxy
 						.getSelectionTree());
 					self.messaging_system.fire(
 						self.messaging_system.events.SelectionSet, e);
-					//var e2 = new EditModeSelectionEvent(self.data_proxy);
-					//self.messaging_system.fire(self.messaging_system.events.EditModeSelectionSet, e2);
 					return false;
 				});
 
-			this.commands_div = $('<div>').addClass('btn-group dropdown-menu-right');
-			for(var i = 0; i < this.commands.length; ++i){
-				this.commands[i].detach();
-				this.commands_div.append(this.commands[i]);
-			}
-			this.element.empty();
-			this.element.append(this.id_element);
+			//this.left_part_span = $('<span>');
+
+			this.id_element = $('<input>').attr('type', 'hidden').attr('name', 'id');
+			this.title_div.append(this.id_element);
 
 			this.collapse_button_collapse_icon = $('<i>').addClass(
 				'fa fa-toggle-up').hide();
 			this.collapse_button_expand_icon = $('<i>').addClass(
 				'fa fa-toggle-down');
-			this.collapse_button = $('<button>').addClass('btn btn-xs').click(
+			this.collapse_button = $('<button>').addClass('btn').click(
 				function(){
 					if(self.isExpanded()){
 						self.messaging_system.fire(self.messaging_system.events.CollapseTreeNode, new TreeNodeExpandEvent(self.getProxy().getIdentification()));
@@ -149,17 +120,25 @@ define(["../../messaging_system/events/selection_event",
 					return false;
 				}).append(this.collapse_button_collapse_icon).append(
 				this.collapse_button_expand_icon);
-			this.title_div.append(this.collapse_button);
-			this.title_span = $('<input>').change(function(){
+			this.title_div.append($('<span>').addClass('input-group-btn').append(this.collapse_button));
+
+			this.title_span = $('<input>').addClass('form-control input-sm').change(function(){
 				var data = new Object();
 				data.name = $(this).val();
 				self.messaging_system.fire(self.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(self.data_proxy.getIdentification(), data, true));
-			}).focus(function(){
+			}).css({}).focus(function(){
 				$(this).select();
 			}).prop('readonly', !this.nameEditable());
 			this.title_div.append(this.title_span);
+			//this.title_div.append(this.left_part_span);
 
+			this.commands_div = $('<span>').addClass('input-group-btn');
+			for(var i = 0; i < this.commands.length; ++i){
+				this.commands[i].detach();
+				this.commands_div.append(this.commands[i]);
+			}
 			this.title_div.append(this.commands_div);
+
 			this.element.append(this.title_div);
 
 			this.sub_nodes_element = $('<div>').addClass('collapse').on('show.bs.collapse',

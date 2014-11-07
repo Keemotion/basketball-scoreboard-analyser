@@ -5,7 +5,7 @@ define(["./base_tree_node", "../../messaging_system/events/coordinate_listen_eve
 		var CornerTreeNode = function(parent_node, data_proxy, messaging_system){
 			this.init(parent_node, data_proxy, messaging_system);
 			this.set_corner_button = $('<button>')
-				.addClass('btn btn-xs btn-default')
+				.addClass('btn btn-default')
 				.attr('title', 'Set corner coordinate')
 				.append($('<i>').addClass('fa fa-crosshairs'))
 				.click(function(){
@@ -14,7 +14,7 @@ define(["./base_tree_node", "../../messaging_system/events/coordinate_listen_eve
 			this.addCommand(this.set_corner_button);
 
 			this.reset_corner_button = $('<button>')
-				.addClass('btn btn-xs btn-default')
+				.addClass('btn btn-default')
 				.attr('title', 'Reset corner coordinate')
 				.append($('<i>').addClass('fa fa-refresh'))
 				.click(function(){

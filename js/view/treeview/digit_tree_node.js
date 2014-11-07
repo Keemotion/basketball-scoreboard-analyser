@@ -7,7 +7,7 @@ define(["./base_tree_node",
 	var DigitTreeNode = function(parent_node, data_proxy, messaging_system){
 		this.init(parent_node, data_proxy, messaging_system);
 		this.reset_button = $('<button>')
-			.addClass('btn btn-xs btn-default')
+			.addClass('btn btn-default')
 			.attr('title', 'Reset')
 			.append($('<i>').addClass('fa fa-refresh'))
 			.click(function(){
@@ -16,7 +16,7 @@ define(["./base_tree_node",
 		this.addCommand(this.reset_button);
 
 		this.auto_detect_button = $('<button>')
-			.addClass('btn btn-xs btn-default')
+			.addClass('btn btn-default')
 			.attr('title', 'Auto-detect corners')
 			.append($('<i>').addClass('fa fa-search'))
 			.click(function(){
@@ -25,7 +25,7 @@ define(["./base_tree_node",
 		this.addCommand(this.auto_detect_button);
 
 		this.manually_set_digit_button = $('<button>')
-			.addClass('btn btn-xs btn-default')
+			.addClass('btn btn-default')
 			.attr('title', 'Manually set digit')
 			.append($('<i>').addClass('fa fa-crosshairs'))
 			.click(function(){
@@ -34,7 +34,7 @@ define(["./base_tree_node",
 		this.addCommand(this.manually_set_digit_button);
 
 		this.remove_digit_button = $('<button>')
-			.addClass('btn btn-xs btn-default')
+			.addClass('btn btn-default')
 			.attr('title', 'Remove digit')
 			.append($('<i>').addClass('fa fa-times'))
 			.click(function(){
