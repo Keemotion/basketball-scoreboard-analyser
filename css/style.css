@@ -5,11 +5,11 @@ html, body {
 }
 
 /*Div containing the canvas and the import/export fields*/
-div.div_vertical#div_main_container {
+/*div.div_vertical#div_main_container {
     width: 75%;
     height: 100%;
     float: left;
-}
+}*/
 
 div.div_horizontal {
     overflow: hidden;
@@ -18,10 +18,11 @@ div.div_horizontal {
 
 /*Div containing the import/export fields*/
 div.div_horizontal#div_toolbar_container {
-    height: 30px;
-    margin-top: -30px;
-    top: 100%;
-    position: absolute;
+    height: 35px;
+    /*margin-top: -30px;*/
+    /*top: 100%;*/
+
+    /*position: absolute;*/
 }
 
 /*Div containing the canvas*/
@@ -29,13 +30,11 @@ div#div_image {
     display: block;
     float: left;
     height: 100%;
-    padding-bottom: 30px;
-    background-color: blue;
 }
 
 /*Canvas*/
 div#div_image canvas.canvas_image {
-    background-color: orange;
+    background-color: white;
     width: 100%;
     height: 100%;
 }
@@ -51,10 +50,7 @@ div#div_toolbox {
 }
 
 /*Div containing the tree of all objects to be displayed*/
-div#div_toolbox_objects_tree {
-    overflow: scroll;
-    height: 100%;
-}
+
 
 div#div_toolbox_objects_tree ul.list_toolbox_objects_tree {
     list-style-type: none;

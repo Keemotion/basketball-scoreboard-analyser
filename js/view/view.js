@@ -21,32 +21,42 @@ define([
 			this.current_selection_tree = new SelectionTree();
 			this.element = target_view;
 			this.element.html('');
-			this.canvas_container_div = $('<div>').attr({
-				class : 'div_horizontal',
-				id : 'div_image'
-			});
 			this.toolbar_div = $('<div>');
+
 			this.toolbar_container_div = $('<div>').attr({
 				class : 'div_horizontal',
 				id : 'div_toolbar_container'
+			}).css({
 			})
 				.append(this.toolbar_div);
-			this.left_container_div = $('<div>').attr({
-				class : 'div_vertical',
-				id : 'div_main_container'
-			})
-				.append(this.canvas_container_div)
-				.append(this.toolbar_container_div);
+
+
+			this.canvas_container_div = $('<div>').attr({
+				class : 'div_horizontal',
+				id : 'div_image'
+			}).css({
+				width:'80%'
+			});
 			this.toolbox_tree_div = $('<div>').attr({
 				id : 'div_toolbox_objects_tree'
+			}).css({
+				width:'20%',
+				'background-color':"grey",
+				height:'100%',
+				'overflow-y':'scroll'
 			});
-			this.right_container_div = $('<div>').attr({
-				class : 'div_vertical',
-				id : 'div_toolbox'
+			this.bottom_container_div = $('<div>').attr({
+
+			}).css({
+				height:'100%',
+				width:'100%',
+				'padding-bottom':'35px'
 			})
-				.append(this.toolbox_tree_div)
-			this.element.append(this.left_container_div)
-				.append(this.right_container_div);
+				.append(this.canvas_container_div)
+				.append(this.toolbox_tree_div);
+			this.element
+				.append(this.toolbar_container_div)
+				.append(this.bottom_container_div);
 
 			//the canvas
 			this.canvas = new MyCanvas(this, this.canvas_container_div, this.controller.getModel().getState().getProxy(), this.messaging_system);
