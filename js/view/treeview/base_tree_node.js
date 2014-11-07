@@ -16,7 +16,7 @@ define(["../../messaging_system/events/selection_event",
 			this.sub_tree_nodes = new Array();
 			this.is_selected = false;
 			this.detached = false;
-			this.setUpdateListeners(data_proxy.getUpdateEvents());
+			//this.setUpdateListeners(data_proxy.getUpdateEvents());
 			this.selectionChangedListener = new EventListener(this, this.selectionChanged);
 			this.messaging_system.addEventListener(this.messaging_system.events.SelectionChanged, this.selectionChangedListener);
 			this.expandListener = new EventListener(this, this.treeNodeExpandRequested);
@@ -24,9 +24,16 @@ define(["../../messaging_system/events/selection_event",
 			this.messaging_system.addEventListener(this.messaging_system.events.CollapseTreeNode, this.expandListener);
 			this.groupChangedListener = new EventListener(this, this.updated);
 			this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
-			//this.removeGroupListener = new EventListener(this, this.groupRemoved);
-			//this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, this.removeGroupListener);
+			this.removeGroupListener = new EventListener(this, this.groupRemoved);
+			this.messaging_system.addEventListener(this.messaging_system.events.RemoveGroup, this.removeGroupListener);
 			//TODO: clean-up event listeners when object is destroyed
+		};
+		BaseTreeNode.prototype.cleanUp = function(){
+			this.messaging_system.removeEventListener(this.messaging_system.events.SelectionChanged, this.selectionChangedListener);
+			this.messaging_system.removeEventListener(this.messaging_system.events.ExpandTreeNode, this.expandListener);
+			this.messaging_system.removeEventListener(this.messaging_system.events.CollapseTreeNode, this.expandListener);
+			this.messaging_system.removeEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
+			this.messaging_system.removeEventListener(this.messaging_system.events.RemoveGroup, this.removeGroupListener);
 		};
 		/*BaseTreeNode.prototype.groupRemoved = function(signal, data){
 			if(!this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
@@ -39,6 +46,11 @@ define(["../../messaging_system/events/selection_event",
 		BaseTreeNode.prototype.deleteNode = function(){
 
 		};*/
+		BaseTreeNode.prototype.groupRemoved = function(signal, data){
+			if(this.getProxy().isPossiblyAboutThis(data.getTargetIdentification())){
+				this.cleanUp();
+			}
+		};
 		BaseTreeNode.prototype.addCommand = function(command){
 			this.commands.push(command);
 		};
@@ -266,12 +278,12 @@ define(["../../messaging_system/events/selection_event",
 			this.sub_nodes_element.append(this.sub_nodes_list);
 		};
 		// sets all events that cause the current node to be updated
-		BaseTreeNode.prototype.setUpdateListeners = function(events){
+		/*BaseTreeNode.prototype.setUpdateListeners = function(events){
 			for(var i = 0; i < events.length; ++i){
 				this.messaging_system.addEventListener(events[i],
 					new EventListener(this, this.updated));
 			}
-		};
+		};*/
 		BaseTreeNode.prototype.update = function(){
 			this.updateContent();
 			for(var i = 0; i < this.sub_tree_nodes.length; ++i){

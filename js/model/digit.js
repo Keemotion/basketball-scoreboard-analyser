@@ -23,7 +23,6 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 			this.setConfigurationKeys(data.configuration_keys);
 			this.extra_value = data.extra_value;
 		}
-		console.log("newly created digit has "+this.sub_nodes.length+" corners");
 	};
 	Digit.prototype.resetCorners = function(){
 		this.clearSubNodes();
@@ -101,8 +100,6 @@ define(["./corner", "./proxy/digit_proxy", './coordinate', './data_base_class'],
 		if(warn_listeners == null)
 			warn_listeners = true;
 		var corners = this.getSubNodes();
-		console.log("corner_index = "+corner_index);
-		console.log("corners.length = "+corners.length);
 		corners[corner_index].setCoordinate(new Coordinate(x, y));
 		if(warn_listeners){
 			this.notifyGroupChanged();

@@ -148,7 +148,6 @@ define([
 			this.updateCursor();
 			var application_state = this.getCanvas().getView().getApplicationState();
 			var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
-			console.log("application state: "+application_state);
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
 					if(this.mouse_down){
@@ -324,7 +323,6 @@ define([
 			var mouse_release_time = new Date();
 			var time_down = mouse_release_time.getTime() - this.mouse_down_time.getTime();
 			var application_state = this.getCanvas().getView().getApplicationState();
-			console.log("application state: "+application_state);
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
 					switch(application_state){

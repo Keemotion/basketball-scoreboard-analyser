@@ -3,7 +3,7 @@ define(['../../messaging_system/messaging_system'], function(MessagingSystem){
 	var BaseProxy = function(){
 
 	};
-	BaseProxy.prototype.update_events = [MessagingSystem.prototype.events.GroupChanged];
+	//BaseProxy.prototype.update_events = [MessagingSystem.prototype.events.GroupChanged];
 	BaseProxy.prototype.setObj = function(o){
 		this.obj = o;
 	};

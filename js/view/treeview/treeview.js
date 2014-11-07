@@ -57,7 +57,11 @@ define([ "../../messaging_system/event_listener",
 		target_view.append(this.tree_element);
 		this.setProxy(state_proxy);
 
-		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
+		this.groupChangedListener = new EventListener(this, this.groupChanged);
+		this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
+	};
+	TreeView.prototype.cleanUp = function(){
+		this.messaging_system.removeEventListener(this.messaging_system.events.GroupChanged, this.groupChangedListener);
 	};
 	TreeView.prototype.addNode = function(dataProxy, id){
 		var tree_node;
