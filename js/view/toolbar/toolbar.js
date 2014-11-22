@@ -63,7 +63,7 @@ define(
 						.fire(
 						self.messaging_system.events.MouseModeChanged,
 						new MouseModeChangedEvent(
-							CanvasMouseHandler.MouseModes.MoveMode));
+							CanvasMouseHandler.MouseModes.SelectionMode));
 				}).button()
 				.mouseup(function(){
 					$(this).blur();
