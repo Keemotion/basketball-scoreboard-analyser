@@ -18,7 +18,27 @@ define(["./base_display",
 		}
 	};
 	GroupDisplay.prototype.drawMyself = function(context, transformation){
+		if(this.getProxy().getGroupType() == "dot"){
+			if(this.sub_components.length  <= 1){
+				return;
+			}
+			context.beginPath();
+			context.strokeStyle = "#c00000";
+			context.lineWidth = 2;
+			var previous_coordinate = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.sub_components[0].getProxy().getCoordinate());
+			context.moveTo(previous_coordinate.getX(), previous_coordinate.getY());
+			for(var i = 1; i < this.sub_components.length; ++i){
+				var current_coordinate = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.sub_components[i].getProxy().getCoordinate());
+				context.lineTo(current_coordinate.getX(), current_coordinate.getY());
+				previous_coordinate = current_coordinate;
+			}
+			context.stroke();
+		}
 	};
+	GroupDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected){
+		this.drawMyself(context, transformation);
+	};
+
 	GroupDisplay.prototype.loadSubComponents = function(){
 		var sub_proxies = this.getProxy().getSubNodes();
 		this.sub_components.length = 0;

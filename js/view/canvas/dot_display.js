@@ -27,6 +27,9 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		if(!this.getProxy().getCoordinate().isValid()){
 			return;
 		}
+		if(single_selected){
+			this.getParent().drawMyselfSelected(context, transformation, single_selected);
+		}
 		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
 		context.beginPath();
 		context.strokeStyle = "#880000";
