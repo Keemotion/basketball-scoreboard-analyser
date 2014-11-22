@@ -145,6 +145,7 @@ define([
 			if(this.mouse_down){
 				this.mouse_dragged = true;
 			}
+			this.updateMouseMode(data);
 			this.updateCursor();
 			var application_state = this.getCanvas().getView().getApplicationState();
 			var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
@@ -306,6 +307,7 @@ define([
 			}
 		};
 		CanvasMouseHandler.prototype.mouseUp = function(signal, data){
+			this.updateMouseMode(data);
 			if(!this.mouse_down){
 				return;
 			}
@@ -344,6 +346,7 @@ define([
 			return this.previous_mouse_coordinate;
 		};
 		CanvasMouseHandler.prototype.mouseDown = function(signal, data){
+			this.updateMouseMode(data);
 			this.mouse_down = true;
 			this.updateCursor();
 			var application_state = this.getCanvas().getView().getApplicationState();
@@ -563,6 +566,15 @@ define([
 			var res = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
 			if(res){
 				this.messaging_system.fire(this.messaging_system.events.ExpandTreeNode, new TreeNodeExpandEvent(res.getProxy().getIdentification()));
+			}
+		};
+		CanvasMouseHandler.prototype.updateMouseMode = function(data){
+			if(data.getEventData().shiftKey && this.current_mouse_mode != CanvasMouseHandler.MouseModes.SelectionMode){
+				this.setMouseMode(CanvasMouseHandler.MouseModes.SelectionMode);
+			}else if(data.getEventData().ctrlKey && this.current_mouse_mode != CanvasMouseHandler.MouseModes.CanvasMode){
+				this.setMouseMode(CanvasMouseHandler.MouseModes.CanvasMode);
+			}else if(!data.getEventData().ctrlKey && !data.getEventData().shiftKey){
+				this.setMouseMode(CanvasMouseHandler.MouseModes.EditMode);
 			}
 		};
 		CanvasMouseHandler.prototype.keyDown = function(signal, data){
