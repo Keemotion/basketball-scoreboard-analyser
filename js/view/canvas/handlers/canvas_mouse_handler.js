@@ -333,7 +333,7 @@ define([
 					this.stopAutoDetectDigit();
 					break;
 				case CanvasMouseHandler.MouseModes.SelectionMode:
-					this.stopSelection(data);
+					this.stopSelection(data.getCoordinate());
 					this.canvas.drawCanvas();
 					break;
 				case CanvasMouseHandler.MouseModes.Other:
@@ -600,7 +600,10 @@ define([
 				case 17://control
 					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 					break;
-				case 16:
+				case 16://shift
+					if(this.mouse_down){
+						this.stopSelection(this.previous_mouse_coordinate);
+					}
 					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 					break;
 			}
@@ -608,11 +611,12 @@ define([
 		CanvasMouseHandler.prototype.startSelection = function(coordinate){
 			this.selection_rectangle.startSelection(coordinate);
 		};
-		CanvasMouseHandler.prototype.stopSelection = function(data){
-			this.selection_rectangle.updateSelection(data.getCoordinate());
+		CanvasMouseHandler.prototype.stopSelection = function(coordinate){
+			this.selection_rectangle.updateSelection(coordinate);
 			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle(), "digit");
 			this.toggleSelection(selected_tree, false);
 			this.selection_rectangle.stopSelection();
+			this.canvas.updateCanvas();
 		};
 		CanvasMouseHandler.prototype.updateSelection = function(data){
 			this.selection_rectangle.updateSelection(data.getCoordinate());
