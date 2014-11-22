@@ -18,6 +18,10 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.lineWidth = 3;
 		context.arc(c.x, c.y, this.getRadius(), 0, 2 * Math.PI);
 		context.stroke();
+		context.beginPath();
+		context.lineWidth=1;
+		context.arc(c.x, c.y, this.getDotRadius(), 0, 2*Math.PI);
+		context.fill();
 	};
 	DotDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected){
 		if(!this.getProxy().getCoordinate().isValid()){
@@ -29,9 +33,16 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.lineWidth = 3;
 		context.arc(c.x, c.y, this.getRadius(), 0, 2 * Math.PI);
 		context.stroke();
+		context.beginPath();
+		context.lineWidth=1;
+		context.arc(c.x, c.y, this.getDotRadius(), 0, 2*Math.PI);
+		context.fill();
 	};
 	DotDisplay.prototype.getRadius = function(transformation){
-		return 5;
+		return 10;
+	};
+	DotDisplay.prototype.getDotRadius = function(){
+		return 2;
 	};
 	DotDisplay.prototype.drawChanging = function(context, transformation){
 	};
