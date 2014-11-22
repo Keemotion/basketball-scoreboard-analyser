@@ -19,7 +19,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.arc(c.x, c.y, this.getRadius(), 0, 2 * Math.PI);
 		context.stroke();
 	};
-	DotDisplay.prototype.drawMyselfSelected = function(context, transformation){
+	DotDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected){
 		if(!this.getProxy().getCoordinate().isValid()){
 			return;
 		}

@@ -1,4 +1,4 @@
-define(["./base_display", "../../model/coordinate"], function(BaseDisplay, Coordinate){
+define(["./base_display", "../../model/coordinate", "require", "../view"], function(BaseDisplay, Coordinate){
 	//Represents the properties to be displayed of a Corner object
 	var CornerDisplay = function(parent_component, proxy, messaging_system){
 		this.init();
@@ -18,8 +18,10 @@ define(["./base_display", "../../model/coordinate"], function(BaseDisplay, Coord
 		context.arc(c.x, c.y, this.getRadius(transformation), 0, 2 * Math.PI);
 		context.stroke();*/
 	};
-	CornerDisplay.prototype.drawMyselfSelected = function(context, transformation){
+	CornerDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected){
 		if(!this.getProxy().getCoordinate().isValid())
+			return;
+		if(!single_selected)
 			return;
 		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
 		context.beginPath();

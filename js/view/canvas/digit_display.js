@@ -33,7 +33,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.strokeStyle = "#00aa00";
 		context.stroke();
 	};
-	DigitDisplay.prototype.drawMyselfSelected = function(context, transformation){
+	DigitDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected){
 		var sub_proxies = this.getProxy().getSubNodes();
 		if(sub_proxies.length != 4)
 			return;

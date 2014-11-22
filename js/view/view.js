@@ -80,6 +80,7 @@ define([
 			SINGLE_SELECTION:"SINGLE_SELECTION",
 			MULTI_SELECTION:"MULTI_SELECTION"
 		};
+		View.prototype.ApplicationStates = View.ApplicationStates;
 		View.prototype.getCurrentSelectionTree = function(){
 			return this.current_selection_tree;
 		};
