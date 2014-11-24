@@ -24,6 +24,7 @@ define(["./base_tree_node",
 				.attr('title', 'Add ' + this.data_proxy.getGroupType() + ' to this group.')
 				.append($('<i>').addClass('fa fa-plus'))
 				.click(function(){
+					console.log("clicked!");
 					self.messaging_system.fire(self.messaging_system.events.AddElement, new AddElementEvent(self.data_proxy.getGroupType(), self.data_proxy.getIdentification(), null, true));
 				});
 			this.addCommand(this.add_sub_node_button);

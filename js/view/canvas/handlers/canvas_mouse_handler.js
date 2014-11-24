@@ -570,7 +570,6 @@ define([
 			this.canvas.updateCanvas();
 		};
 		CanvasMouseHandler.prototype.setMouseMode = function(mouse_mode){
-			console.log("mouse mode changed from: " + this.current_mouse_mode + " to "+mouse_mode);
 			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(mouse_mode));
 		};
 		CanvasMouseHandler.prototype.doubleClick = function(signal, data){

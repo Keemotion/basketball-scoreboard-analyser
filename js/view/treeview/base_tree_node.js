@@ -134,8 +134,10 @@ define(["../../messaging_system/events/selection_event",
 
 			this.commands_div = $('<span>').addClass('input-group-btn');
 			for(var i = 0; i < this.commands.length; ++i){
-				this.commands[i].detach();
-				this.commands_div.append(this.commands[i]);
+				//this.commands[i].detach();
+				//console.log("command "+i+" = " + this.commands[i].html());
+				//this.commands[i].click();
+				this.commands_div.append(this.commands[i].clone(true));
 			}
 			this.title_div.append(this.commands_div);
 
@@ -281,6 +283,7 @@ define(["../../messaging_system/events/selection_event",
 		BaseTreeNode.prototype.updated = function(signal, data){
 			var identification = data.getTargetIdentification();
 			if(this.data_proxy.isPossiblyAboutThis(identification)){
+				console.log("structural change: "+data.isStructuralChange());
 				if(data.isStructuralChange()){
 					this.loadSubNodes();
 					this.loadContent(this.element);
