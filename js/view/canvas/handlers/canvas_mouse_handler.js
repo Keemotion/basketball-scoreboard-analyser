@@ -232,14 +232,19 @@ define([
 		CanvasMouseHandler.prototype.autoDetectDigitRequested = function(signal, data){
 			this.startAutoDetectDigit(data.getProxy());
 		};
-		CanvasMouseHandler.prototype.stopAutoDetectDigit = function(){
-			//TODO: if user tried to create a new digit by using auto-detection, that digit should be removed
-			//if the user tried to modify an existing digit, that digit should be kept
+		CanvasMouseHandler.prototype.interruptAutoDetectDigit = function(){
 			if(this.current_corners_auto_detect_digit_exists == false){
 				var identification = this.getSingleSelectedElementProxy().getIdentification()
 				this.resetSelection();
 				this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(identification));
 			}
+			this.setMouseMode(null);
+			this.selection_rectangle.stopSelection();
+			this.canvas.updateCanvas();
+		};
+		CanvasMouseHandler.prototype.stopAutoDetectDigit = function(){
+			//TODO: if user tried to create a new digit by using auto-detection, that digit should be removed
+			//if the user tried to modify an existing digit, that digit should be kept
 			this.setMouseMode(null);
 			this.selection_rectangle.stopSelection();
 			this.canvas.updateCanvas();
@@ -529,12 +534,17 @@ define([
 			this.setSelection(this.current_listening_digit.getSelectionTree(), false);
 			this.setMouseMode(CanvasMouseHandler.MouseModes.DigitCornersListenMode);
 		};
-		CanvasMouseHandler.prototype.stopDigitCornersListening = function(){
-			//TODO: if not newly added digit -> reset?
+		CanvasMouseHandler.prototype.interruptDigitCornersListening = function(){
 			if(this.current_corners_listening_digit_exists == false){
 				this.resetSelection();
 				this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(this.current_listening_digit.getIdentification()));
 			}
+			this.setMouseMode(null);
+			this.canvas.updateCanvas();
+		}
+		CanvasMouseHandler.prototype.stopDigitCornersListening = function(){
+			//TODO: if not newly added digit -> reset?
+
 			this.setMouseMode(null);
 			this.canvas.updateCanvas();
 		};
@@ -560,6 +570,7 @@ define([
 			this.canvas.updateCanvas();
 		};
 		CanvasMouseHandler.prototype.setMouseMode = function(mouse_mode){
+			console.log("mouse mode changed from: " + this.current_mouse_mode + " to "+mouse_mode);
 			this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(mouse_mode));
 		};
 		CanvasMouseHandler.prototype.doubleClick = function(signal, data){
@@ -573,8 +584,6 @@ define([
 				this.setMouseMode(CanvasMouseHandler.MouseModes.SelectionMode);
 			}else if(data.getEventData().ctrlKey && this.current_mouse_mode != CanvasMouseHandler.MouseModes.CanvasMode){
 				this.setMouseMode(CanvasMouseHandler.MouseModes.CanvasMode);
-			}else if(!data.getEventData().ctrlKey && !data.getEventData().shiftKey){
-				this.setMouseMode(CanvasMouseHandler.MouseModes.EditMode);
 			}
 		};
 		CanvasMouseHandler.prototype.keyDown = function(signal, data){
@@ -582,13 +591,14 @@ define([
 				case 27://escape
 					switch(this.getMouseMode()){
 						case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
-							this.stopDigitCornersListening();
+							this.interruptDigitCornersListening();
+
 							break;
 						case CanvasMouseHandler.MouseModes.SingleCoordinateListenMode:
 							this.setMouseMode(null);
 							break;
 						case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
-							this.stopAutoDetectDigit();
+							this.interruptAutoDetectDigit();
 							break;
 					}
 					break;
