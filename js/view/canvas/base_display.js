@@ -64,9 +64,10 @@ define([
 	BaseDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification){
 		for(var i = 0; i < this.sub_components.length; ++i){
 			var res = this.sub_components[i].getObjectAroundCoordinate(canvas_coordinate, transformation, selected_object_identification);
-			if(res)
+			if(res != null)
 				return res;
 		}
+		return null;
 	};
 	BaseDisplay.prototype.isInRectangle = function(rectangle){
 		return false;

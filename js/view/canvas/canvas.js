@@ -167,7 +167,7 @@ define(
 		MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate, selected_object_identification){
 			var res = this.display_tree
 				.getObjectAroundCoordinate(coordinate, this.getTransformation(), selected_object_identification);
-			if(res)
+			if(res != null)
 				return res;
 			return null;
 		};

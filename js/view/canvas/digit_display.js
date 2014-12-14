@@ -134,6 +134,8 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		for(var i = 0; i < this.sub_components.length; ++i){
 			//only if this digit is selected (and only this digit)
 			if(selected_object_identification != null && this.getProxy().isPossiblyAboutThis(selected_object_identification)){
+			//console.log("identification = "+JSON.stringify(selected_object_identification));
+			//if(selected_object_identification != null && this.sub_components[i].getProxy().isPossiblyAboutThis(selected_object_identification)){
 				var res = this.sub_components[i].getObjectAroundCoordinate(canvas_coordinate, transformation, selected_object_identification);
 				if(res != null)
 					return res;

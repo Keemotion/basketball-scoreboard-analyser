@@ -128,17 +128,17 @@ define([
 		CanvasMouseHandler.prototype.coordinateDebugInfo = function(c){
 			var relative = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(c);
 			var absolute = this.canvas.getTransformation().transformCanvasCoordinateToAbsoluteImageCoordinate(c);
-			console.log("canvas                     = "+JSON.stringify(c));
+			console.log("canvas                     = " + JSON.stringify(c));
 			var rel_canvas = this.canvas.getTransformation().transformRelativeImageCoordinateToCanvasCoordinate(relative);
 			var abs_canvas = this.canvas.getTransformation().transformAbsoluteImageCoordinateToCanvasCoordinate(absolute);
-			console.log("canvas based on absolute   = "+JSON.stringify(abs_canvas));
-			console.log("canvas based on relative   = "+JSON.stringify(rel_canvas));
+			console.log("canvas based on absolute   = " + JSON.stringify(abs_canvas));
+			console.log("canvas based on relative   = " + JSON.stringify(rel_canvas));
 			var rel_abs = this.canvas.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(absolute);
 			var abs_rel = this.canvas.getTransformation().transformRelativeImageCoordinateToAbsoluteImageCoordinate(relative);
-			console.log("relative                   = "+JSON.stringify(relative));
-			console.log("relative based on absolute = "+JSON.stringify(rel_abs));
-			console.log("absolute                   = "+JSON.stringify(absolute));
-			console.log("absolute based on relative = "+JSON.stringify(abs_rel));
+			console.log("relative                   = " + JSON.stringify(relative));
+			console.log("relative based on absolute = " + JSON.stringify(rel_abs));
+			console.log("absolute                   = " + JSON.stringify(absolute));
+			console.log("absolute based on relative = " + JSON.stringify(abs_rel));
 		};
 		CanvasMouseHandler.prototype.mouseMove = function(signal, data){
 			//this.coordinateDebugInfo(data.getCoordinate())
@@ -298,7 +298,7 @@ define([
 				var x = corners[index].x + top_left.getX();
 				var y = corners[index].y + top_left.getY();
 				var coord = this.canvas.getTransformation().transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(x, y));
-				result.push({'coordinate':coord});
+				result.push({'coordinate' : coord});
 			}
 			var data = new Object();
 			data.corners = result;
@@ -385,7 +385,9 @@ define([
 							}
 							break;
 						case View.ApplicationStates.SINGLE_SELECTION:
-							if(parent_group != null && this.getCanvas().getView().getCurrentSelectionTree().isSelected(parent_group.getIdentification())){
+							//if(parent_group != null && this.getCanvas().getView().getCurrentSelectionTree().isSelected(parent_group.getIdentification())){
+							if(parent_group != null && parent_group.getParentOfTypeProxy('group').isPossiblyAboutThis(this.getSingleSelectedElementProxy().getParentOfTypeProxy('group').getIdentification())){
+								this.setSelection(parent_group.getSelectionTree(true, null), false);
 								//this object will be moved
 							}else{
 								//a new digit will be automatically added to this group (either by auto-detecting or by consecutively clicking)
@@ -439,7 +441,12 @@ define([
 			return this.current_selected_group_proxy;
 		};
 		CanvasMouseHandler.prototype.click = function(signal, data){
-			var clicked_object = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate());
+			var application_state = this.getCanvas().getView().getApplicationState();
+			var identification = null;
+			if(application_state == View.ApplicationStates.SINGLE_SELECTION){
+				identification = this.getSingleSelectedElementProxy().getIdentification();
+			}
+			var clicked_object = this.canvas.getObjectAroundCanvasCoordinate(data.getCoordinate(), identification);
 			var parent_group = null;
 			if(clicked_object){
 				if(clicked_object.getProxy().hasParentOfType('digit')){
@@ -448,7 +455,6 @@ define([
 					parent_group = clicked_object.getProxy().getParentOfTypeProxy("dot");
 				}
 			}
-			var application_state = this.getCanvas().getView().getApplicationState();
 			switch(this.current_mouse_mode){
 				case CanvasMouseHandler.MouseModes.EditMode:
 					switch(application_state){
@@ -527,9 +533,9 @@ define([
 			}else{
 				this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("digit", group.getIdentification(), null, false));
 				var subnodes = group.getSubNodes();
-				this.current_listening_digit = subnodes[subnodes.length-1];
+				this.current_listening_digit = subnodes[subnodes.length - 1];
 			}
-			this.current_corners_listening_digit_exists = existing_digit==true;
+			this.current_corners_listening_digit_exists = existing_digit == true;
 			this.current_digit_corner_index = 0;
 			this.setSelection(this.current_listening_digit.getSelectionTree(), false);
 			this.setMouseMode(CanvasMouseHandler.MouseModes.DigitCornersListenMode);
@@ -565,7 +571,7 @@ define([
 			var corner_data = new Object();
 			corner_data.coordinate = relative_coordinate;
 			this.messaging_system.fire(this.messaging_system.events.AddElement, new AddElementEvent("dot", this.getCurrentGroupProxy().getIdentification(), null, true));
-			var identification = this.getCurrentGroupProxy().getSubNodes()[this.getCurrentGroupProxy().getSubNodes().length-1].getIdentification();
+			var identification = this.getCurrentGroupProxy().getSubNodes()[this.getCurrentGroupProxy().getSubNodes().length - 1].getIdentification();
 			this.messaging_system.fire(this.messaging_system.events.SubmitGroupDetails, new SubmitGroupDetailsEvent(identification, corner_data));
 			this.canvas.updateCanvas();
 		};
