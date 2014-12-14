@@ -48,9 +48,8 @@ define([
 			this.bottom_container_div = $('<div>').attr({
 
 			}).css({
-				height:'100%',
-				width:'100%',
-				'padding-bottom':'35px'
+				height:"calc(100% - 35px)",
+				width:'100%'
 			})
 				.append(this.canvas_container_div)
 				.append(this.toolbox_tree_div);
