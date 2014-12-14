@@ -640,14 +640,14 @@ define([
 		};
 		CanvasMouseHandler.prototype.stopSelection = function(coordinate){
 			this.selection_rectangle.updateSelection(coordinate);
-			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle(), "digit");
+			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle(), ["digit", "dot"]);
 			this.toggleSelection(selected_tree, false);
 			this.selection_rectangle.stopSelection();
 			this.canvas.updateCanvas();
 		};
 		CanvasMouseHandler.prototype.updateSelection = function(data){
 			this.selection_rectangle.updateSelection(data.getCoordinate());
-			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle(), "digit");
+			var selected_tree = this.canvas.getSelectionTree(this.getSelectionRectangle(), ["digit", "dot"]);
 			this.toggleSelection(selected_tree, true);
 			this.canvas.updateCanvas();
 		};

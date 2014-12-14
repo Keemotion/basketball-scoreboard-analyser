@@ -75,7 +75,7 @@ define([
 	BaseDisplay.prototype.getSelectionTree = function(rectangle, type){
 		var selection_tree = new SelectionTree();
 		selection_tree.getRoot().setProxy(this.getProxy());
-		if(this.canBeSelected() && (type == null || type == this.getProxy().getType())){
+		if(this.canBeSelected() && (type == null || type.indexOf(this.getProxy().getType()) != -1)){
 			if(this.isInRectangle(rectangle)){
 				selection_tree.getRoot().setSelected(true);
 			}
