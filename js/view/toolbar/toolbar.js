@@ -2,8 +2,9 @@ define(
 	[ '../../messaging_system/events/load_state_event',
 		'../../messaging_system/event_listener',
 		'../canvas/handlers/canvas_mouse_handler',
-		'../../messaging_system/events/mouse_mode_changed_event' ],
-	function(LoadStateEvent, EventListener, CanvasMouseHandler, MouseModeChangedEvent){
+		'../../messaging_system/events/mouse_mode_changed_event',
+		"../../messaging_system/events/add_element_event"],
+	function(LoadStateEvent, EventListener, CanvasMouseHandler, MouseModeChangedEvent, AddElementEvent){
 		var ToolBar = function(target_div, state_proxy, messaging_system){
 			var self = this;
 			this.target_div = target_div;
@@ -83,8 +84,8 @@ define(
 			// load other image
 			this.img_btn = $('<button>')
 				.attr('title', 'Import a new image').append(
-				$('<span>').addClass('glyphicon glyphicon-upload'))
-				.append($('<span>').text('Image')).addClass('btn btn-default').click(function(){
+				$('<span>').addClass('glyphicon glyphicon-picture'))
+				.append($('<span>').text(' Image')).addClass('btn btn-default').click(function(){
 					var link = document.createElement('input');
 					link.type = "file";
 					$(link).change(function(){
@@ -101,7 +102,7 @@ define(
 			this.load_json_btn = $('<button>').attr('title',
 				'Import JSON file').append(
 				$('<span>').addClass('glyphicon glyphicon-upload')).append(
-				$('<span>').text('JSON')).addClass('btn btn-default')
+				$('<span>').text(' JSON')).addClass('btn btn-default')
 				.click(function(){
 					var input = document.createElement('input');
 					input.type = "file";
@@ -117,7 +118,7 @@ define(
 			this.load_prm_btn = $('<button>').attr('title',
 				'Import PRM file').append(
 				$('<i>').addClass('glyphicon glyphicon-upload')).append(
-				$('<span>').text('PRM')).addClass('btn btn-default')
+				$('<span>').text(' PRM')).addClass('btn btn-default')
 				.click(function(){
 					var input = document.createElement('input');
 					input.type = "file";
@@ -132,7 +133,7 @@ define(
 			// export JSON
 			this.download_json_btn = $('<button>').append(
 				$('<i>').addClass('glyphicon glyphicon-download')).append(
-				$('<span>').text('JSON'))
+				$('<span>').text(' JSON'))
 				.attr('title', 'Download JSON').addClass(
 				'btn btn-default').click(
 				function(){
@@ -151,7 +152,7 @@ define(
 			this.download_prm_btn = $('<button>')
 				.attr('title', 'Download PRM')
 				.append($('<span>').addClass('glyphicon glyphicon-download'))
-				.append($('<span>').text('PRM'))
+				.append($('<span>').text(' PRM'))
 				.addClass('btn btn-default')
 				.click(
 				function(){
@@ -231,13 +232,56 @@ define(
 			this.other_buttons.append(this.autofocus_button);
 			this.target_div.append(this.other_buttons);
 
-			this.other_fields = $('<div>');
+			this.other_fields = $('<div>').addClass('btn-group');
 			this.image_name_field = $('<span>').text('');
 			this.other_fields.append(this.image_name_field);
-			this.other_fields.append($('<span>').html('&nbsp;'));
+			this.other_fields.append($('<span>').html(' '));
 			this.prm_file_field = $('<span>').text('');
 			this.other_fields.append(this.prm_file_field);
 			this.target_div.append(this.other_fields);
+
+			//adding new elements to the tree
+			this.new_elements_btns = $('<div>').addClass('btn-group pull-right');
+			this.add_digit_element = $('<button>').attr({
+				'type' : 'button',
+				'data-toggle' : 'tooltip',
+				'title' : "Add number"
+			}).addClass('btn btn-default').click(
+				function(){
+					self.messaging_system.fire(
+						self.messaging_system.events.AddElement,
+						new AddElementEvent('group', self.state_proxy
+							.getIdentification(), 'digit', true));
+				}).append($('<span>').addClass('glyphicon glyphicon-plus'))
+				.append($('<span>').text(' Number'));
+			this.new_elements_btns.append(this.add_digit_element);
+			this.add_dot_element = $('<button>').attr({
+				'type' : 'button',
+				'data-toggle' : 'tooltip',
+				'title' : "Add leds group"
+			}).addClass('btn btn-default').click(
+				function(){
+					self.messaging_system.fire(
+						self.messaging_system.events.AddElement,
+						new AddElementEvent('group', self.state_proxy
+							.getIdentification(), 'dot', true));
+				}).append($('<span>').addClass('glyphicon glyphicon-plus'))
+				.append($('<span>').text(' Leds'));
+			this.new_elements_btns.append(this.add_dot_element);
+			this.add_configuration_key_element = $('<button>').attr({
+				'type' : 'button',
+				'data-toggle' : 'tooltip',
+				'title' : "Add configuration key"
+			}).addClass('btn btn-default').click(
+				function(){
+					self.messaging_system.fire(
+						self.messaging_system.events.AddElement,
+						new AddElementEvent('configuration_key',
+							self.state_proxy.getIdentification()));
+				}).append($('<span>').addClass('glyphicon glyphicon-plus'))
+				.append($('<span>').text(' Configuration'));
+			this.new_elements_btns.append(this.add_configuration_key_element);
+			this.target_div.append(this.new_elements_btns);
 		};
 
 		ToolBar.prototype.mouseModeChanged = function(signal, data){
