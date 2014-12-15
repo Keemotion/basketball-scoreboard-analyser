@@ -1,5 +1,5 @@
 define(
-	[ "../../messaging_system/event_listener", "../../model/coordinate",
+	["../../messaging_system/event_listener", "../../model/coordinate",
 		"./transformation", "./display_tree",
 		"./handlers/display_changed_handler",
 		"../../messaging_system/events/canvas_key_event",
@@ -17,7 +17,7 @@ define(
 				class : 'canvas_image',
 				width : '1024',
 				height : '768',
-				tabindex:'1'
+				tabindex : '1'
 			}).on('selectstart', function(){
 				return false;
 			});
@@ -141,8 +141,8 @@ define(
 		};
 		MyCanvas.prototype.fireMouseEvent = function(event_type, event_data){
 			var coordinate = new Coordinate(event_data.pageX
-				- this.canvas_element.offsetLeft, event_data.pageY
-				- this.canvas_element.offsetTop);
+			- this.canvas_element.offsetLeft, event_data.pageY
+			- this.canvas_element.offsetTop);
 			if(event_type == this.messaging_system.events.CanvasFocusOut){
 				this.messaging_system.fire(
 					this.messaging_system.events.CanvasMouseUp,
@@ -166,7 +166,7 @@ define(
 		};
 		MyCanvas.prototype.getObjectAroundCanvasCoordinate = function(coordinate, selected_object_identification){
 			var res = this.display_tree
-				.getObjectAroundCoordinate(coordinate, this.getTransformation(), selected_object_identification);
+				.getObjectAroundCoordinate(coordinate, this.getTransformation(), selected_object_identification, this.getView().getCurrentSelectionTree(), this.getView().getApplicationState());
 			if(res != null)
 				return res;
 			return null;
@@ -220,13 +220,13 @@ define(
 		// lag)
 		MyCanvas.prototype.drawTree = function(){
 			if(this.display_tree){
-				this.display_tree.draw(this.context, this.transformation);
+				this.display_tree.draw(this.context, this.transformation, this.getView().getCurrentSelectionTree(), this.getView().getApplicationState());
 			}
 		};
 		MyCanvas.prototype.drawSelected = function(){
 			if(this.display_tree == null)
 				return;
-			this.display_tree.drawSelected(this.getView().getCurrentSelectionTree().getRoot(), this.context, this.transformation, false, this.getView().getApplicationState()==this.getView().ApplicationStates.SINGLE_SELECTION);
+			this.display_tree.drawSelected(this.getView().getCurrentSelectionTree().getRoot(), this.context, this.transformation, false, this.getView().getApplicationState());
 			var temporary_coordinates = this.canvas_mouse_handler.getTemporaryDigitCoordinates();
 			if(temporary_coordinates != null && temporary_coordinates.length > 0){
 				for(var i = 0; i < temporary_coordinates.length; ++i){
@@ -271,8 +271,7 @@ define(
 		};
 		// draws the canvas image and (if needed) the display objects
 		MyCanvas.prototype.drawCanvas = function(){
-			this.context.clearRect(0, 0, this.canvas_element.width,
-				this.canvas_element.height);
+			this.context.clearRect(0, 0, this.canvas_element.width, this.canvas_element.height);
 			if(this.image){
 				var canvas_top_left = this.transformation
 					.transformAbsoluteImageCoordinateToCanvasCoordinate(new Coordinate(
@@ -288,8 +287,8 @@ define(
 					this.transformation.getImageWidth(),
 					this.transformation.getImageHeight(),
 					canvas_top_left.x, canvas_top_left.y,
-						canvas_bottom_right.x - canvas_top_left.x,
-						canvas_bottom_right.y - canvas_top_left.y);
+					canvas_bottom_right.x - canvas_top_left.x,
+					canvas_bottom_right.y - canvas_top_left.y);
 				var rect = this.canvas_mouse_handler
 					.getSelectionRectangle();
 				if(rect.getActive()){

@@ -16,7 +16,7 @@ define([
 			this.messaging_system.addEventListener(this.messaging_system.events.GroupChanged, new EventListener(this, this.groupChanged));
 		};
 		DisplayTree.prototype = new BaseDisplay();
-		DisplayTree.prototype.drawMyself = function(context, transformation){
+		DisplayTree.prototype.drawMyself = function(context, transformation, selection_tree){
 		};
 		DisplayTree.prototype.stateChanged = function(signal, data){
 			this.loadSubComponents();

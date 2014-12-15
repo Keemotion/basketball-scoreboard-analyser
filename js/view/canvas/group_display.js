@@ -17,7 +17,7 @@ define(["./base_display",
 			this.loadSubComponents();
 		}
 	};
-	GroupDisplay.prototype.drawMyself = function(context, transformation){
+	GroupDisplay.prototype.drawMyself = function(context, transformation, selection_tree, application_state){
 		if(this.getProxy().getGroupType() == "dot"){
 			if(this.sub_components.length  <= 1){
 				return;
@@ -35,7 +35,7 @@ define(["./base_display",
 			context.stroke();
 		}
 	};
-	GroupDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected){
+	GroupDisplay.prototype.drawMyselfSelected = function(context, transformation, application_state, parent_already_selected){
 		this.drawMyself(context, transformation);
 	};
 

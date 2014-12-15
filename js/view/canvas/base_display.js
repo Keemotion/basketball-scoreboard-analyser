@@ -21,26 +21,26 @@ define([
 	BaseDisplay.prototype.setParent = function(parent){
 		this.parent = parent;
 	};
-	BaseDisplay.prototype.draw = function(context, transformation){
+	BaseDisplay.prototype.draw = function(context, transformation, selection_tree, application_state){
 		for(var i = 0; i < this.sub_components.length; ++i){
-			this.sub_components[i].draw(context, transformation);
+			this.sub_components[i].draw(context, transformation, selection_tree);
 		}
 		if(this.getProxy().getDisplaying()){
-			this.drawMyself(context, transformation);
+			this.drawMyself(context, transformation, selection_tree, application_state);
 		}
 	};
 	//draws the object itself (without children)
 	//should be overridden
 	BaseDisplay.prototype.drawMyself = function(context, transformation){
 	};
-	BaseDisplay.prototype.drawMyselfSelected = function(context, transformation, application_state){
+	BaseDisplay.prototype.drawMyselfSelected = function(context, transformation, application_state, parent_already_selected){
 		this.drawMyself(context, transformation);
 	};
 	BaseDisplay.prototype.drawSelected = function(selection_node, context, transformation, parent_already_selected, application_state){
 		//if(selection_node.isSelected(this.getIdentification())){
 		if(parent_already_selected  || selection_node.getSelected()){
 			//console.log("drawing selected: "+JSON.stringify(this.getIdentification()));
-			this.drawMyselfSelected(context, transformation, application_state);
+			this.drawMyselfSelected(context, transformation, application_state, parent_already_selected);
 			for(var i = 0; i < this.sub_components.length; ++i){
 				this.sub_components[i].drawSelected(null, context, transformation, true, application_state);
 			}
@@ -61,9 +61,9 @@ define([
 	BaseDisplay.prototype.canBeSelected = function(){
 		return false;
 	};
-	BaseDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification){
+	BaseDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state){
 		for(var i = 0; i < this.sub_components.length; ++i){
-			var res = this.sub_components[i].getObjectAroundCoordinate(canvas_coordinate, transformation, selected_object_identification);
+			var res = this.sub_components[i].getObjectAroundCoordinate(canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state);
 			if(res != null)
 				return res;
 		}

@@ -8,7 +8,7 @@ define(["./base_display", "../../model/coordinate", "require", "../view"], funct
 	};
 	CornerDisplay.prototype = new BaseDisplay();
 	//Draws a circle around the Corner coordinate
-	CornerDisplay.prototype.drawMyself = function(context, transformation){
+	CornerDisplay.prototype.drawMyself = function(context, transformation, selection_tree, application_state){
 		/*if(!this.getProxy().getCoordinate().isValid())
 			return;
 		var c = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate());
@@ -18,7 +18,7 @@ define(["./base_display", "../../model/coordinate", "require", "../view"], funct
 		context.arc(c.x, c.y, this.getRadius(transformation), 0, 2 * Math.PI);
 		context.stroke();*/
 	};
-	CornerDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected){
+	CornerDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected, parent_already_selected){
 		if(!this.getProxy().getCoordinate().isValid())
 			return;
 		if(!single_selected)
@@ -41,19 +41,23 @@ define(["./base_display", "../../model/coordinate", "require", "../view"], funct
 	CornerDisplay.prototype.getRadius = function(transformation){
 		var siblings = this.getParent().getProxy().getSubNodes();
 		var best = 99999999999999;
+		var single = true;
 		for(var i = 0; i < siblings.length; ++i){
 			if(i == this.getProxy().getId())
 				continue;
 			if(!siblings[i].isComplete()){
 				continue;
 			}
+			single = false;
 			var tmp_distance = Coordinate.getDistance(transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate()),
 				transformation.transformRelativeImageCoordinateToCanvasCoordinate(siblings[i].getCoordinate()));
 			best = Math.min(best, tmp_distance);
 		}
+		if(single)
+			best = 50;
 		return best/3;
 	};
-	CornerDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification){
+	CornerDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state){
 		if(!this.getProxy().isComplete()){
 			return null;
 		}

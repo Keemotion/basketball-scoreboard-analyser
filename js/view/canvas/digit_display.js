@@ -7,7 +7,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		this.loadSubComponents();
 	};
 	DigitDisplay.prototype = new BaseDisplay();
-	DigitDisplay.prototype.drawMyself = function(context, transformation){
+	DigitDisplay.prototype.drawMyself = function(context, transformation, selection_tree){
 		var sub_proxies = this.getProxy().getSubNodes();
 		if(sub_proxies.length != 4)
 			return;
@@ -129,14 +129,14 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		}
 		return intersection_amount % 2 == 1;
 	};
-	DigitDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification){
+	DigitDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state){
 		var points = Array();
 		for(var i = 0; i < this.sub_components.length; ++i){
 			//only if this digit is selected (and only this digit)
 			if(selected_object_identification != null && this.getProxy().isPossiblyAboutThis(selected_object_identification)){
 			//console.log("identification = "+JSON.stringify(selected_object_identification));
 			//if(selected_object_identification != null && this.sub_components[i].getProxy().isPossiblyAboutThis(selected_object_identification)){
-				var res = this.sub_components[i].getObjectAroundCoordinate(canvas_coordinate, transformation, selected_object_identification);
+				var res = this.sub_components[i].getObjectAroundCoordinate(canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state);
 				if(res != null)
 					return res;
 			}
