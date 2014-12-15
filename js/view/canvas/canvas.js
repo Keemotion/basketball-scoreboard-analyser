@@ -226,7 +226,10 @@ define(
 		MyCanvas.prototype.drawSelected = function(){
 			if(this.display_tree == null)
 				return;
-			this.display_tree.drawSelected(this.getView().getCurrentSelectionTree().getRoot(), this.context, this.transformation, false, this.getView().getApplicationState());
+			this.display_tree.drawSelected(this.getView().getCurrentSelectionTree().getRoot(), this.context, this.transformation, false, this.getView().getApplicationState(), true, this.getView().getCurrentSelectionTree());
+			var moving_tree = this.canvas_mouse_handler.getMovingObjectsTree();
+			if(moving_tree != null)
+				this.display_tree.drawSelected(moving_tree.getRoot(), this.context, this.transformation, false, this.getView().getApplicationState(), false, this.getView().getCurrentSelectionTree());
 			var temporary_coordinates = this.canvas_mouse_handler.getTemporaryDigitCoordinates();
 			if(temporary_coordinates != null && temporary_coordinates.length > 0){
 				for(var i = 0; i < temporary_coordinates.length; ++i){

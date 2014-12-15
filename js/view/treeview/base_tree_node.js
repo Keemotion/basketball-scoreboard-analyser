@@ -317,9 +317,9 @@ define(["../../messaging_system/events/selection_event",
 			//console.log("selection changed");
 			if(data.getTree().isSelected(this.getProxy().getIdentification())){
 				this.is_selected = true;
-				if(this.nameEditable()){
+				/*if(this.nameEditable()){
 					this.title_span.select();
-				}
+				}*/
 			}else{
 				this.is_selected = false;
 			}

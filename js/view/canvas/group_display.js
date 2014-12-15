@@ -1,7 +1,8 @@
 define(["./base_display",
 	"./digit_display",
 	"./dot_display",
-	"../../messaging_system/event_listener"], function(BaseDisplay, DigitDisplay, DotDisplay, EventListener){
+	"../../messaging_system/event_listener",
+	"../application_states"], function(BaseDisplay, DigitDisplay, DotDisplay, EventListener, ApplicationStates){
 	//Display Equivalent of Group
 	var GroupDisplay = function(parent_component, proxy, messaging_system){
 		this.init();
@@ -52,5 +53,34 @@ define(["./base_display",
 			}
 		}
 	};
+	/*GroupDisplay.prototype.getObjectAroundCoordinate = function(canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state){
+		console.log("group display get object around coordinate");
+		if(this.getProxy().getGroupType() == "dot" && selected_object_identification != null && this.getProxy().isPossiblyAboutThis(selected_object_identification)){
+			console.log("in dot group");
+			//BaseDisplay.prototype.getObjectAroundCoordinate.call(this, canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state);
+			var points = Array();
+			var single_selected = application_state == ApplicationStates.SINGLE_SELECTION && selection_tree.isSelected(this.getProxy().getIdentification());
+			for(var i = 0; i < this.sub_components.length; ++i){
+				//only if this digit is selected (and only this digit)
+				var res = this.sub_components[i].getObjectAroundCoordinate(canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state);
+				if(res != null){
+
+					//if(selected_object_identification != null && this.getProxy().isPossiblyAboutThis(selected_object_identification)){
+					if(single_selected){
+						//console.log("identification = "+JSON.stringify(selected_object_identification));
+						//if(selected_object_identification != null && this.sub_components[i].getProxy().isPossiblyAboutThis(selected_object_identification)){
+
+				//		if(res != null)
+							return res;
+					}else{
+						return this;
+					}
+				}
+			}
+			return null;
+		}else{
+			return BaseDisplay.prototype.getObjectAroundCoordinate.call(this, canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state);
+		}
+	};*/
 	return GroupDisplay;
 });

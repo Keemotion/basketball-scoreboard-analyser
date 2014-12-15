@@ -61,7 +61,6 @@ define(["./base_display", "../../model/coordinate", "require", "../view"], funct
 		if(!this.getProxy().isComplete()){
 			return null;
 		}
-		//console.log("checking if click inside corner radius");
 		var distance = Coordinate.getDistance(canvas_coordinate, transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getProxy().getCoordinate()));
 		if(distance < this.getRadius(transformation)){
 			return this;
