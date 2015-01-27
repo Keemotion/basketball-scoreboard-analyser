@@ -101,8 +101,6 @@ define(["../../messaging_system/events/selection_event",
 					return false;
 				});
 
-			//this.left_part_span = $('<span>');
-
 			this.id_element = $('<input>').attr('type', 'hidden').attr('name', 'id');
 			this.title_div.append(this.id_element);
 
@@ -130,13 +128,9 @@ define(["../../messaging_system/events/selection_event",
 				$(this).select();
 			}).prop('readonly', !this.nameEditable());
 			this.title_div.append(this.title_span);
-			//this.title_div.append(this.left_part_span);
 
 			this.commands_div = $('<span>').addClass('input-group-btn');
 			for(var i = 0; i < this.commands.length; ++i){
-				//this.commands[i].detach();
-				//console.log("command "+i+" = " + this.commands[i].html());
-				//this.commands[i].click();
 				this.commands_div.append(this.commands[i].clone(true));
 			}
 			this.title_div.append(this.commands_div);
@@ -158,6 +152,10 @@ define(["../../messaging_system/events/selection_event",
 			this.loadConfigurationContent();
 			this.updateContent();
 			this.applyCollapse();
+			this.addedToDOM();
+		};
+		BaseTreeNode.prototype.addedToDOM = function(){
+
 		};
 		BaseTreeNode.prototype.updateContent = function(){
 			if(this.data_proxy.getId() != this.id_element.val()){
@@ -258,13 +256,6 @@ define(["../../messaging_system/events/selection_event",
 			}
 			this.sub_nodes_element.append(this.sub_nodes_list);
 		};
-		// sets all events that cause the current node to be updated
-		/*BaseTreeNode.prototype.setUpdateListeners = function(events){
-			for(var i = 0; i < events.length; ++i){
-				this.messaging_system.addEventListener(events[i],
-					new EventListener(this, this.updated));
-			}
-		};*/
 		BaseTreeNode.prototype.update = function(){
 			this.updateContent();
 			for(var i = 0; i < this.sub_tree_nodes.length; ++i){
@@ -314,7 +305,6 @@ define(["../../messaging_system/events/selection_event",
 			return this.detached;
 		};
 		BaseTreeNode.prototype.selectionChanged = function(signal, data){
-			//console.log("selection changed");
 			if(data.getTree().isSelected(this.getProxy().getIdentification())){
 				this.is_selected = true;
 				/*if(this.nameEditable()){
