@@ -33,7 +33,7 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		context.strokeStyle = "#00aa00";
 		context.stroke();
 	};
-	DigitDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected){
+	DigitDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected, parent_already_selected, draw_extensions){
 		var sub_proxies = this.getProxy().getSubNodes();
 		if(sub_proxies.length != 4)
 			return;
@@ -92,6 +92,24 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 				context.stroke();
 			}
 		}
+		if(draw_extensions){
+
+			context.beginPath();
+			var draw_line = function(point1, point2){
+				var y0 = -point2.getX() * (point1.getY() - point2.getY()) / (point1.getX() - point2.getX()) + point2.getY();
+				var x_f = transformation.getCanvasWidth();
+				var y_f = (x_f - point2.getX()) * (point1.getY() - point2.getY()) / (point1.getX() - point2.getX()) + point2.getY();
+
+				context.moveTo(0, y0);
+				context.lineTo(x_f, y_f);
+
+			}
+			draw_line(coordinates[0], coordinates[1]);
+			draw_line(coordinates[2], coordinates[3]);
+			context.lineWidth = 1;
+			context.strokeStyle = "#FFFF66";
+			context.stroke();
+		}
 		for(var i = 0; i < this.sub_components.length; ++i){
 			this.sub_components[i].drawMyselfSelected(context, transformation);
 		}
@@ -134,8 +152,6 @@ define(['./base_display', './corner_display', '../../model/coordinate'], functio
 		for(var i = 0; i < this.sub_components.length; ++i){
 			//only if this digit is selected (and only this digit)
 			if(selected_object_identification != null && this.getProxy().isPossiblyAboutThis(selected_object_identification)){
-			//console.log("identification = "+JSON.stringify(selected_object_identification));
-			//if(selected_object_identification != null && this.sub_components[i].getProxy().isPossiblyAboutThis(selected_object_identification)){
 				var res = this.sub_components[i].getObjectAroundCoordinate(canvas_coordinate, transformation, selected_object_identification, selection_tree, application_state);
 				if(res != null)
 					return res;

@@ -6,8 +6,9 @@ define(
 		"./handlers/canvas_mouse_handler",
 		"../../model/selection_tree",
 		"../../messaging_system/events/mouse_event",
-		"../../model/bounding_rectangle"],
-	function(EventListener, Coordinate, Transformation, DisplayTree, DisplayChangedHandler, CanvasKeyEvent, CanvasMouseHandler, SelectionTree, MouseEvent, BoundingRectangle){
+		"../../model/bounding_rectangle",
+	   "../../messaging_system/events/line_extensions_set_event"],
+	function(EventListener, Coordinate, Transformation, DisplayTree, DisplayChangedHandler, CanvasKeyEvent, CanvasMouseHandler, SelectionTree, MouseEvent, BoundingRectangle, LineExtensionsSetEvent){
 		var MyCanvas = function(view, target_view, proxy, messaging_system){
 			var self = this;
 			this.view = view;
@@ -51,6 +52,10 @@ define(
 			this.messaging_system.addEventListener(
 				this.messaging_system.events.GroupChanged,
 				new EventListener(this, this.updateCanvas));
+			this.messaging_system.addEventListener(
+				this.messaging_system.events.ToggleLineExtensions,
+				new EventListener(this, this.toggleLineExtension)
+			);
 			//this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, new EventListener(this, this.mouseModeChanged));
 			this.windowResized(null, null);
 			var scrollF = function(e){
@@ -134,10 +139,9 @@ define(
 			this.messaging_system.addEventListener(
 				this.messaging_system.events.AutoFocusSelection,
 				this.autoFocusListener);
-			//this.messaging_system.addEventListener(this.messaging_system.events.EditModeSelectionSet, new EventListener(this, this.editModeSelectionSet));
 			this.setProxy(proxy);
 			this.display_changed_handler = new DisplayChangedHandler(this);
-			//this.edit_mode_selected_proxy = null;
+			this.line_extension = false;
 		};
 		MyCanvas.prototype.fireMouseEvent = function(event_type, event_data){
 			var coordinate = new Coordinate(event_data.pageX
@@ -223,10 +227,21 @@ define(
 				this.display_tree.draw(this.context, this.transformation, this.getView().getCurrentSelectionTree(), this.getView().getApplicationState());
 			}
 		};
+		MyCanvas.prototype.toggleLineExtension = function(){
+			this.setLineExtension(!this.getLineExtension());
+		};
+		MyCanvas.prototype.setLineExtension = function(on){
+			this.line_extension = on;
+			this.messaging_system.fire(this.messaging_system.events.LineExtensionsSet, new LineExtensionsSetEvent(on));
+			this.updateCanvas();
+		};
+		MyCanvas.prototype.getLineExtension = function(){
+			return this.line_extension;
+		};
 		MyCanvas.prototype.drawSelected = function(){
 			if(this.display_tree == null)
 				return;
-			this.display_tree.drawSelected(this.getView().getCurrentSelectionTree().getRoot(), this.context, this.transformation, false, this.getView().getApplicationState(), true, this.getView().getCurrentSelectionTree());
+			this.display_tree.drawSelected(this.getView().getCurrentSelectionTree().getRoot(), this.context, this.transformation, false, this.getView().getApplicationState(), true, this.getView().getCurrentSelectionTree(), this.getLineExtension());
 			var moving_tree = this.canvas_mouse_handler.getMovingObjectsTree();
 			if(moving_tree != null)
 				this.display_tree.drawSelected(moving_tree.getRoot(), this.context, this.transformation, false, this.getView().getApplicationState(), false, this.getView().getCurrentSelectionTree());

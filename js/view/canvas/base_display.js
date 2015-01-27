@@ -36,25 +36,22 @@ define([
 	BaseDisplay.prototype.drawMyselfSelected = function(context, transformation, application_state, parent_already_selected){
 		this.drawMyself(context, transformation);
 	};
-	BaseDisplay.prototype.drawSelected = function(selection_node, context, transformation, parent_already_selected, application_state, selected_specific_drawing, selection_tree){
-		//if(selection_node.isSelected(this.getIdentification())){
+	BaseDisplay.prototype.drawSelected = function(selection_node, context, transformation, parent_already_selected, application_state, selected_specific_drawing, selection_tree, draw_extensions){
 		if(parent_already_selected  || selection_node.getSelected()){
-			//console.log("drawing selected: "+JSON.stringify(this.getIdentification()));
 			if(selected_specific_drawing){
-				this.drawMyselfSelected(context, transformation, application_state, parent_already_selected);
+				this.drawMyselfSelected(context, transformation, application_state, parent_already_selected, draw_extensions);
 			}else{
 				this.drawMyself(context, transformation, selection_tree, application_state);
 			}
 			for(var i = 0; i < this.sub_components.length; ++i){
-				this.sub_components[i].drawSelected(null, context, transformation, true, application_state, selected_specific_drawing, selection_tree);
+				this.sub_components[i].drawSelected(null, context, transformation, true, application_state, selected_specific_drawing, selection_tree, draw_extensions);
 			}
 		}else{
 			var children = selection_node.getChildren();
 			for(var i = 0; i < children.length; ++i){
-				this.sub_components[children[i].getId()].drawSelected(children[i], context, transformation, false, application_state, selected_specific_drawing, selection_tree);
+				this.sub_components[children[i].getId()].drawSelected(children[i], context, transformation, false, application_state, selected_specific_drawing, selection_tree, draw_extensions);
 			}
 		}
-		/**/
 	};
 	BaseDisplay.prototype.getProxy = function(){
 		return this.proxy;

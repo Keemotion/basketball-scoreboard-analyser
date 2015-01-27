@@ -77,6 +77,10 @@ define(
 			self.messaging_system.addEventListener(
 				self.messaging_system.events.MouseModeChanged,
 				new EventListener(this, this.mouseModeChanged));
+			self.messaging_system.addEventListener(
+				self.messaging_system.events.LineExtensionsSet,
+				new EventListener(this, this.lineExtensionsSet)
+			);
 			this.edit_tool_btn.click();
 			this.target_div.append(this.mouse_mode_btns);
 
@@ -174,52 +178,6 @@ define(
 				.append($('<div>').addClass('btn-group').append(this.img_btn))
 				.append(this.import_export_btns);
 
-			/*// reset canvas view
-			// clear configuration
-			// reset configuration
-			this.reset_btns = $('<div>').addClass('btn-group');
-			this.reset_view_btn = $('<button>')
-				.attr('title', 'Reset Canvas View')
-				.append($('<i>').addClass('fa fa-eye'))
-				.addClass('btn btn-default')
-				.click(
-				function(){
-					self.messaging_system
-						.fire(
-						self.messaging_system.events.ResetCanvasView,
-						null);
-				})
-				.mouseup(function(){
-					$(this).blur();
-				});
-			this.reset_state_btn = $('<button>').attr('title',
-				'Reset configuration').append(
-				$('<i>').addClass('fa fa-file-o')).addClass(
-				'btn btn-default').click(
-				function(){
-					self.messaging_system.fire(
-						self.messaging_system.events.ResetState,
-						null);
-				})
-				.mouseup(function(){
-					$(this).blur();
-				});
-			this.clear_state_btn = $('<button>').attr('title',
-				'Clear configuration').append(
-				$('<i>').addClass('fa fa-refresh')).addClass(
-				'btn btn-default').click(
-				function(){
-					self.messaging_system.fire(
-						self.messaging_system.events.ClearState,
-						null);
-				})
-				.mouseup(function(){
-					$(this).blur();
-				});
-			this.reset_btns.append(this.reset_view_btn).append(
-				this.reset_state_btn).append(this.clear_state_btn);
-			this.target_div.append(this.reset_btns);
-*/
 			this.other_buttons = $('<div>').addClass('btn-group');
 			// Autofocus
 			this.autofocus_button = $('<button>').addClass(
@@ -230,6 +188,17 @@ define(
 					self.messaging_system.fire(self.messaging_system.events.AutoFocusSelection, null);
 				});
 			this.other_buttons.append(this.autofocus_button);
+			this.line_extensions_button = $('<button>')
+				.addClass('btn btn-default')
+				.append($('<i>').addClass('fa fa-minus'))
+				.attr('title', 'Extend horizontal digit lines')
+				.click(function(){
+					self.messaging_system.fire(self.messaging_system.events.ToggleLineExtensions, null);
+				})
+				.mouseup(function(){
+					$(this).blur();
+				});
+			this.other_buttons.append(this.line_extensions_button);
 			this.target_div.append(this.other_buttons);
 
 			this.other_fields = $('<div>').addClass('btn-group');
@@ -300,6 +269,13 @@ define(
 					break;
 				default:
 					break;
+			}
+		};
+		ToolBar.prototype.lineExtensionsSet = function(signal, data){
+			if(data.getValue()){
+				this.line_extensions_button.addClass('active');
+			}else{
+				this.line_extensions_button.removeClass('active');
 			}
 		};
 		ToolBar.prototype.extractFileName = function(path){

@@ -640,6 +640,9 @@ define([
 						this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(elements[i].getIdentification()));
 					}
 					break;
+				case 76://L
+					this.messaging_system.fire(this.messaging_system.events.ToggleLineExtensions, null);
+					break;
 			}
 		};
 		CanvasMouseHandler.prototype.keyUp = function(signal, data){

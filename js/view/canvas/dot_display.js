@@ -27,7 +27,7 @@ define(['./base_display', './corner_display', '../../model/coordinate', '../appl
 		context.arc(c.x, c.y, this.getDotRadius(), 0, 2*Math.PI);
 		context.fill();
 	};
-	DotDisplay.prototype.drawMyselfSelected = function(context, transformation, application_state, parent_already_selected){
+	DotDisplay.prototype.drawMyselfSelected = function(context, transformation, application_state, parent_already_selected, draw_extensions){
 		if(!this.getProxy().getCoordinate().isValid()){
 			return;
 		}

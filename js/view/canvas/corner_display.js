@@ -18,7 +18,7 @@ define(["./base_display", "../../model/coordinate", "require", "../view"], funct
 		context.arc(c.x, c.y, this.getRadius(transformation), 0, 2 * Math.PI);
 		context.stroke();*/
 	};
-	CornerDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected, parent_already_selected){
+	CornerDisplay.prototype.drawMyselfSelected = function(context, transformation, single_selected, parent_already_selected, draw_extensions){
 		if(!this.getProxy().getCoordinate().isValid())
 			return;
 		if(!single_selected)

@@ -109,7 +109,10 @@ define([], function(){
 		CoordinateListen : 'CoordinateListen',
 
 		ExpandTreeNode : 'ExpandTreeNode',
-		CollapseTreeNode : 'CollapseTreeNode'
+		CollapseTreeNode : 'CollapseTreeNode',
+
+		ToggleLineExtensions: 'ToggleLineExtensions',
+		LineExtensionsSet: 'LineExtensionsSet'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

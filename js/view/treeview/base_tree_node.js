@@ -16,6 +16,7 @@ define(["../../messaging_system/events/selection_event",
 			this.sub_tree_nodes = new Array();
 			this.is_selected = false;
 			this.detached = false;
+			this.first_time_added = true;
 			//this.setUpdateListeners(data_proxy.getUpdateEvents());
 			this.selectionChangedListener = new EventListener(this, this.selectionChanged);
 			this.messaging_system.addEventListener(this.messaging_system.events.SelectionChanged, this.selectionChangedListener);
@@ -153,6 +154,7 @@ define(["../../messaging_system/events/selection_event",
 			this.updateContent();
 			this.applyCollapse();
 			this.addedToDOM();
+			this.first_time_added = false;
 		};
 		BaseTreeNode.prototype.addedToDOM = function(){
 

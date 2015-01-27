@@ -53,7 +53,9 @@ define(["./base_tree_node",
 		GroupTreeNode.prototype = new BaseTreeNode();
 		GroupTreeNode.prototype.addedToDOM = function(){
 			var self = this;
-			setTimeout(function(){self.title_span.focus();});
+			if(this.first_time_added){
+				setTimeout(function(){self.title_span.focus();});
+			}
 		};
 		GroupTreeNode.prototype.loadSubNodes = function(){
 			var sub_nodes = this.data_proxy.getSubNodes();
