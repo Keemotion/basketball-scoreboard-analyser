@@ -343,5 +343,8 @@ define(
 		MyCanvas.prototype.getView = function(){
 			return this.view;
 		};
+		MyCanvas.prototype.getCompleteSelectionTree = function(){
+			return this.getDisplayTree().getCompleteSelectionTree();
+		}
 		return MyCanvas;
 	});

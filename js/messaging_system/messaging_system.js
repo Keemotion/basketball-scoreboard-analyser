@@ -95,6 +95,7 @@ define([], function(){
 		SelectionToggled : 'SelectionToggled',
 		SelectionSet : 'SelectionSet',
 		SelectionReset : 'SelectionReset',
+		SelectAll : "SelectAll",
 
 		SelectionChanged : 'SelectionChanged',
 

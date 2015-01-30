@@ -78,9 +78,19 @@ define([
 					case 8:
 						var t = e.target;
 						if(t && (($(t).is(":input") || $(t).is("textarea") ) && !$(t).is("[readonly]"))){
-							return
+							return;
 						}
 						e.preventDefault();
+						break;
+					case 65:
+						if(e.ctrlKey){
+							var t = e.target;
+							if(t && (($(t).is(":input") || $(t).is("textarea") ) && !$(t).is("[readonly]"))){
+								return;
+							}
+							e.preventDefault();
+							messaging_system.fire(messaging_system.events.SelectAll, null);
+						}
 						break;
 				}
 			});
@@ -127,7 +137,6 @@ define([
 			this.current_selection_tree = new SelectionTree();
 			this.official_selection_tree = new SelectionTree();
 			this.notifySelectionChanged();
-			//this.messaging_system.fire(this.messaging_system.events.SelectionSet, new SelectionEvent(this.getCurrentSelectionTree()));
 		};
 		View.prototype.notifySelectionChanged = function(){
 			this.messaging_system.fire(this.messaging_system.events.SelectionChanged, new SelectionEvent(this.getCurrentSelectionTree()));

@@ -102,6 +102,8 @@ define([
 			this.messaging_system.addEventListener(this.messaging_system.events.CoordinateListen, new EventListener(this, this.coordinateListenRequested));
 
 			this.messaging_system.addEventListener(this.messaging_system.events.SelectionChanged, new EventListener(this, this.selectionChanged));
+			this.messaging_system.addEventListener(this.messaging_system.events.SelectAll, new EventListener(this, this.selectAll));
+
 		};
 		CanvasMouseHandler.MouseModes = {
 			EditMode : "EditMode",
@@ -657,6 +659,10 @@ define([
 					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(null));
 					break;
 			}
+		};
+		CanvasMouseHandler.prototype.selectAll = function(signal, data){
+			var complete_selection_tree = this.getCanvas().getCompleteSelectionTree();
+			this.setSelection(complete_selection_tree, false);
 		};
 		CanvasMouseHandler.prototype.startSelection = function(coordinate){
 			this.selection_rectangle.startSelection(coordinate);

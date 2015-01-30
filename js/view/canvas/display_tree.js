@@ -2,9 +2,10 @@ define([
 		'./base_display',
 		'./group_display',
 		'../../messaging_system/event_listener',
-		"./dummy_display"
+		"./dummy_display",
+		"../../model/selection_tree"
 	],
-	function(BaseDisplay, GroupDisplay, EventListener, DummyDisplay){
+	function(BaseDisplay, GroupDisplay, EventListener, DummyDisplay, SelectionTree){
 		//represents the root node of all display objects
 		var DisplayTree = function(proxy, messaging_system){
 			this.init();
@@ -36,6 +37,13 @@ define([
 				}
 				this.sub_components.push(new GroupDisplay(this, sub_proxies[i], this.messaging_system));
 			}
+		};
+		DisplayTree.prototype.getCompleteSelectionTree = function(){
+			var tree = new SelectionTree();
+			for(var i = 0; i < this.sub_components.length; ++i){
+				tree.addSelection(this.sub_components[i].getProxy().getSelectionTree(true, null));
+			}
+			return tree;
 		};
 		return DisplayTree;
 	});
