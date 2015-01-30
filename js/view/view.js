@@ -73,6 +73,17 @@ define([
 			window.addEventListener('resize', function(){
 				messaging_system.fire(messaging_system.events.WindowResized, null);
 			});
+			$("body").keydown(function(e){
+				switch(e.which){
+					case 8:
+						var t = e.target;
+						if(t && (($(t).is(":input") || $(t).is("textarea") ) && !$(t).is("[readonly]"))){
+							return
+						}
+						e.preventDefault();
+						break;
+				}
+			});
 		};
 		View.ApplicationStates = {
 			NO_SELECTION:"NO_SELECTION",
