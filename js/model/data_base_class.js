@@ -340,6 +340,7 @@ define([
 			return tree;
 		};
 		BaseDataClass.prototype.moveSelection = function(node, translation){
+			this.lockNotification();
 			if(node.getSelected()){
 				this.move(translation);
 				return;
@@ -348,6 +349,7 @@ define([
 			for(var i = 0; i < children.length; ++i){
 				this.sub_nodes[children[i].getId()].moveSelection(children[i], translation);
 			}
+			this.unlockNotification();
 		};
 		BaseDataClass.prototype.move = function(translation){
 			for(var i = 0; i < this.sub_nodes.length; ++i){

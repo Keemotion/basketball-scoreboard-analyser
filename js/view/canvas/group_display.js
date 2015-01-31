@@ -18,6 +18,9 @@ define(["./base_display",
 			this.loadSubComponents();
 		}
 	};
+	GroupDisplay.prototype.canBeSelected = function(){
+		return true;
+	};
 	GroupDisplay.prototype.drawMyself = function(context, transformation, selection_tree, application_state){
 		if(this.getProxy().getGroupType() == "dot"){
 			if(this.sub_components.length  <= 1){
@@ -36,7 +39,7 @@ define(["./base_display",
 			context.stroke();
 		}
 	};
-	GroupDisplay.prototype.drawMyselfSelected = function(context, transformation, application_state, parent_already_selected, draw_extensions){
+	GroupDisplay.prototype.drawMyselfSelected = function(context, transformation, application_state, parent_already_selected, draw_extensions, complete_draw){
 		this.drawMyself(context, transformation);
 	};
 	GroupDisplay.prototype.loadSubComponents = function(){

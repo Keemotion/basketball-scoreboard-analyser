@@ -49,7 +49,9 @@ define([
 		}else{
 			var children = selection_node.getChildren();
 			for(var i = 0; i < children.length; ++i){
-				this.sub_components[children[i].getId()].drawSelected(children[i], context, transformation, false, application_state, selected_specific_drawing, selection_tree, draw_extensions);
+				if(children[i].getId() in this.sub_components){
+					this.sub_components[children[i].getId()].drawSelected(children[i], context, transformation, false, application_state, selected_specific_drawing, selection_tree, draw_extensions);
+				}
 			}
 		}
 	};

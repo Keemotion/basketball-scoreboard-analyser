@@ -3,9 +3,10 @@ define([
 		'./group_display',
 		'../../messaging_system/event_listener',
 		"./dummy_display",
-		"../../model/selection_tree"
+		"../../model/selection_tree",
+		"../../model/selection_node"
 	],
-	function(BaseDisplay, GroupDisplay, EventListener, DummyDisplay, SelectionTree){
+	function(BaseDisplay, GroupDisplay, EventListener, DummyDisplay, SelectionTree, SelectionNode){
 		//represents the root node of all display objects
 		var DisplayTree = function(proxy, messaging_system){
 			this.init();
@@ -40,8 +41,17 @@ define([
 		};
 		DisplayTree.prototype.getCompleteSelectionTree = function(){
 			var tree = new SelectionTree();
+			tree.getRoot().setProxy(this.getProxy());
 			for(var i = 0; i < this.sub_components.length; ++i){
-				tree.addSelection(this.sub_components[i].getProxy().getSelectionTree(true, null));
+				if(!this.sub_components[i].canBeSelected()){
+					continue;
+				}
+				var tmp_node = new SelectionNode(this.sub_components[i].getProxy(), true);
+				var children = this.sub_components[i].getSubComponents();
+				for(var j = 0; j < children.length; ++j){
+					tmp_node.addChild(new SelectionNode(children[j].getProxy(), true));
+				}
+				tree.getRoot().addChild(tmp_node);
 			}
 			return tree;
 		};
