@@ -21,6 +21,7 @@ define([], function(){
 
 		//A new image was loaded
 		LoadImage : 'LoadImage',
+		LoadCombinedImages: 'LoadCombinedImages',
 
 		//The browser window was resized
 		WindowResized : 'WindowResized',

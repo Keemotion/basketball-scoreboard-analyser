@@ -3,8 +3,9 @@ define(
 		'../../messaging_system/event_listener',
 		'../canvas/handlers/canvas_mouse_handler',
 		'../../messaging_system/events/mouse_mode_changed_event',
-		"../../messaging_system/events/add_element_event"],
-	function(LoadStateEvent, EventListener, CanvasMouseHandler, MouseModeChangedEvent, AddElementEvent){
+		"../../messaging_system/events/add_element_event",
+		"../../messaging_system/events/load_combined_images_event"],
+	function(LoadStateEvent, EventListener, CanvasMouseHandler, MouseModeChangedEvent, AddElementEvent, LoadCombinedImagesEvent){
 		var ToolBar = function(target_div, state_proxy, messaging_system){
 			var self = this;
 			this.target_div = target_div;
@@ -87,11 +88,12 @@ define(
 
 			// load other image
 			this.img_btn = $('<button>')
-				.attr('title', 'Import a new image').append(
-				$('<span>').addClass('glyphicon glyphicon-picture'))
+				.attr('title', 'Import a new image')
+				.append($('<span>').addClass('glyphicon glyphicon-picture'))
 				.append($('<span>').text(' Image')).addClass('btn btn-default').click(function(){
 					var link = document.createElement('input');
 					link.type = "file";
+					$(link).attr('multiple', '');
 					$(link).change(function(){
 						self.imageChanged(link);
 					});
@@ -284,16 +286,30 @@ define(
 		ToolBar.prototype.imageChanged = function(component){
 			var self = this;
 			var files = component.files;
-
-			var f = files[0];
-			var reader = new FileReader();
-			reader.onload = function(e){
-				self.messaging_system.fire(
-					self.messaging_system.events.LoadImage,
-					reader.result);
-				self.image_name_field.text("Image: "+self.extractFileName(component.value));
-			};
-			reader.readAsDataURL(f);
+			if(files.length == 1){
+				var f = files[0];
+				var reader = new FileReader();
+				reader.onload = function(e){
+					self.messaging_system.fire(
+						self.messaging_system.events.LoadImage,
+						reader.result);
+					self.image_name_field.text("Image: " + self.extractFileName(component.value));
+				};
+				reader.readAsDataURL(f);
+			}else if(files.length > 1){
+				var all_files = new Array();
+				for(var i = 0; i < files.length; ++i){
+					var reader = new FileReader();
+					reader.onload = function(e){
+						all_files.push(reader.result);
+						if(all_files.length == files.length){
+							self.messaging_system.fire(self.messaging_system.events.LoadCombinedImages, new LoadCombinedImagesEvent(all_files));
+						}
+					}
+					reader.readAsDataURL(files[i]);
+				}
+				self.image_name_field.text("Image: combined");
+			}
 		};
 		ToolBar.prototype.prmFileChanged = function(component){
 			var self = this;

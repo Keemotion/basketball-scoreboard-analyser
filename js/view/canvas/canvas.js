@@ -7,7 +7,7 @@ define(
 		"../../model/selection_tree",
 		"../../messaging_system/events/mouse_event",
 		"../../model/bounding_rectangle",
-	   "../../messaging_system/events/line_extensions_set_event"],
+		"../../messaging_system/events/line_extensions_set_event"],
 	function(EventListener, Coordinate, Transformation, DisplayTree, DisplayChangedHandler, CanvasKeyEvent, CanvasMouseHandler, SelectionTree, MouseEvent, BoundingRectangle, LineExtensionsSetEvent){
 		var MyCanvas = function(view, target_view, proxy, messaging_system){
 			var self = this;
@@ -37,6 +37,7 @@ define(
 			this.messaging_system.addEventListener(
 				this.messaging_system.events.LoadImage,
 				new EventListener(this, this.loadImage));
+			this.messaging_system.addEventListener(this.messaging_system.events.LoadCombinedImages, new EventListener(this, this.loadCombinedImages));
 			this.messaging_system.addEventListener(
 				this.messaging_system.events.WindowResized,
 				new EventListener(this, this.windowResized));
@@ -276,6 +277,72 @@ define(
 			};
 			this.image.src = data;
 		};
+		MyCanvas.prototype.loadCombinedImages = function(signal, data){
+			var files = data.getFiles();
+			var self = this;
+			var images = new Array();
+
+			function calculate_luminance(imageData, index){
+				var r = imageData.data[index];
+				var g = imageData.data[index + 1];
+				var b = imageData.data[index + 2];
+				var luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+				return luminance;
+			}
+
+			function generate_image(){
+				var result_width = images[0].width;
+				var result_height = images[0].height;
+				var result_image_data = null;
+				for(var i = 0; i < images.length; ++i){
+					console.dir(images[i]);
+					if(images[i].width != result_width || images[i].height != result_height){
+						alert("Incorrect dimensions");
+						return;
+					}
+					var curr_canvas = $('<canvas>')[0];
+					curr_canvas.width = result_width;
+					curr_canvas.height = result_height;
+					var context = curr_canvas.getContext("2d");
+					context.drawImage(images[i], 0, 0);
+					var imageData = context.getImageData(0, 0, result_width, result_height);
+					if(i == 0){
+						result_image_data = imageData;
+					}else{
+						for(var i = 0; i < result_height; ++i){
+							for(var j = 0; j < result_width; ++j){
+								var index = (i * 4) * imageData.width + (j * 4);
+								var curr_luminance = calculate_luminance(imageData, index);
+								var prev_luminance = calculate_luminance(result_image_data, index);
+								if(curr_luminance > prev_luminance){
+									for(var i = 0; i < 4; ++i){
+										result_image_data[index + i] = imageData[index + i];
+									}
+								}
+							}
+						}
+					}
+					var img = new Image();
+					var curr_canvas = $('<canvas>')[0];
+					curr_canvas.width = result_width;
+					curr_canvas.height = result_height;
+					var context = curr_canvas.getContext("2d");
+					context.putImageData(result_image_data, 0, 0);
+					img.src = curr_canvas.toDataURL();
+					self.messaging_system.fire(self.messaging_system.events.LoadImage, img.src);
+				}
+			};
+			for(var i = 0; i < files.length; ++i){
+				var img = new Image();
+				img.onload = function(){
+					images.push(img);
+					if(images.length == files.length){
+						generate_image();
+					}
+				}
+				img.src = files[i];
+			}
+		};
 		// return whether all display objects have to be drawn
 		MyCanvas.prototype.getDrawComplete = function(){
 			return this.getDisplayChangedHandler().canBeDrawn();
@@ -345,6 +412,6 @@ define(
 		};
 		MyCanvas.prototype.getCompleteSelectionTree = function(){
 			return this.getDisplayTree().getCompleteSelectionTree();
-		}
+		};
 		return MyCanvas;
 	});
