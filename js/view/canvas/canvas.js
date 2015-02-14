@@ -280,22 +280,21 @@ define(
 		MyCanvas.prototype.loadCombinedImages = function(signal, data){
 			var files = data.getFiles();
 			var self = this;
-			var images = new Array();
+			var curr_images = new Array();
 
-			function calculate_luminance(imageData, index){
-				var r = imageData.data[index];
-				var g = imageData.data[index + 1];
-				var b = imageData.data[index + 2];
+			function calculate_luminance(data, index){
+				var r = data.data[index];
+				var g = data.data[index + 1];
+				var b = data.data[index + 2];
 				var luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
 				return luminance;
 			}
 
-			function generate_image(){
+			function generate_image(images){
 				var result_width = images[0].width;
 				var result_height = images[0].height;
 				var result_image_data = null;
 				for(var i = 0; i < images.length; ++i){
-					console.dir(images[i]);
 					if(images[i].width != result_width || images[i].height != result_height){
 						alert("Incorrect dimensions");
 						return;
@@ -309,38 +308,41 @@ define(
 					if(i == 0){
 						result_image_data = imageData;
 					}else{
-						for(var i = 0; i < result_height; ++i){
-							for(var j = 0; j < result_width; ++j){
-								var index = (i * 4) * imageData.width + (j * 4);
+						for(var r = 0; r < result_height; ++r){
+							for(var c = 0; c < result_width; ++c){
+								var index = (r * 4) * result_width + (c * 4);
 								var curr_luminance = calculate_luminance(imageData, index);
 								var prev_luminance = calculate_luminance(result_image_data, index);
 								if(curr_luminance > prev_luminance){
-									for(var i = 0; i < 4; ++i){
-										result_image_data[index + i] = imageData[index + i];
+									for(var x = 0; x < 4; ++x){
+										result_image_data.data[index + x] = imageData.data[index + x];
 									}
 								}
 							}
 						}
 					}
-					var img = new Image();
-					var curr_canvas = $('<canvas>')[0];
-					curr_canvas.width = result_width;
-					curr_canvas.height = result_height;
-					var context = curr_canvas.getContext("2d");
-					context.putImageData(result_image_data, 0, 0);
-					img.src = curr_canvas.toDataURL();
-					self.messaging_system.fire(self.messaging_system.events.LoadImage, img.src);
 				}
+				var img = new Image();
+				var curr_canvas = $('<canvas>')[0];
+				curr_canvas.width = result_width;
+				curr_canvas.height = result_height;
+				var context = curr_canvas.getContext("2d");
+				context.putImageData(result_image_data, 0, 0);
+				img.src = curr_canvas.toDataURL();
+				self.messaging_system.fire(self.messaging_system.events.LoadImage, img.src);
 			};
+			var imgs = [];
 			for(var i = 0; i < files.length; ++i){
+				console.log("i = "+i);
 				var img = new Image();
 				img.onload = function(){
-					images.push(img);
-					if(images.length == files.length){
-						generate_image();
+					curr_images.push(this);
+					if(curr_images.length == files.length){
+						generate_image(curr_images);
 					}
-				}
+				};
 				img.src = files[i];
+				imgs.push(img);
 			}
 		};
 		// return whether all display objects have to be drawn

@@ -301,11 +301,12 @@ define(
 				for(var i = 0; i < files.length; ++i){
 					var reader = new FileReader();
 					reader.onload = function(e){
-						all_files.push(reader.result);
+						all_files.push(this.result);
 						if(all_files.length == files.length){
 							self.messaging_system.fire(self.messaging_system.events.LoadCombinedImages, new LoadCombinedImagesEvent(all_files));
+							console.log("all_files ready");
 						}
-					}
+					};
 					reader.readAsDataURL(files[i]);
 				}
 				self.image_name_field.text("Image: combined");
