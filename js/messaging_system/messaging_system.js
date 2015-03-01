@@ -121,7 +121,8 @@ define([], function(){
 		ToggleGrid : 'ToggleGrid',
 		GridEnabled: 'GridEnabled',
 		GridDisabled : 'GridDisabled',
-		ClearGrid: 'ClearGrid'
+		ClearGrid: 'ClearGrid',
+		EqualSpacingGridLines : 'EqualSpacingGridLines'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

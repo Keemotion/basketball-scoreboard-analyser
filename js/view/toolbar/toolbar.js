@@ -364,11 +364,19 @@ define(
 				.click(function(){
 					self.messaging_system.fire(self.messaging_system.events.ClearGrid, null);
 				});
+			this.equal_spacing_grid_button = $('<button>')
+				.addClass('btn btn-default')
+				.append($('<i>').addClass('glyphicon glyphicon-menu-hamburger'))
+				.attr('title', 'Equal spacing between grid lines')
+				.click(function(){
+					self.messaging_system.fire(self.messaging_system.events.EqualSpacingGridLines, null);
+				});
 			this.grid_buttons_div
 				.append(this.move_grid_button)
 				.append(this.add_horizontal_line_button)
 				.append(this.add_vertical_line_button)
-				.append(this.clear_grid_button);
+				.append(this.clear_grid_button)
+				.append(this.equal_spacing_grid_button);
 			this.target_div.append(this.grid_buttons_div);
 		};
 		ToolBar.prototype.lineExtensionsSet = function(signal, data){

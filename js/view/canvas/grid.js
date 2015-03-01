@@ -12,6 +12,19 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		this.messaging_system.addEventListener(this.messaging_system.events.ToggleGrid, this.toggle_grid_event_listener);
 		this.show_corner_area = false;
 		this.corner_click_margin = 10;
+		this.equal_spacing_listener = new EventListener(this, this.applyEqualSpacing);
+		this.messaging_system.addEventListener(this.messaging_system.events.EqualSpacingGridLines, this.equal_spacing_listener);
+	};
+	Grid.prototype.applyEqualSpacing = function(signal, data){
+		function apply(arr){
+			var am = arr.length;
+			for(var i = 0; i < am; ++i){
+				arr[i] = (i+1)/(am+1);
+			}
+		};
+		apply(this.horizontal_lines);
+		apply(this.vertical_lines);
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	};
 	Grid.prototype.toggleGrid = function(){
 		this.enabled = !this.enabled;
