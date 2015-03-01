@@ -160,9 +160,8 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 	};
 	//returns whether coordinate is outside the grid box
 	Grid.prototype.isOutsideBox = function(coordinate){
-		//TODO: implement
-		//use Geometry.isInsidePolygon()
-		return false;
+		var points = [this.getTopLeft(), this.getTopRight(), this.getBottomRight(), this.getBottomLeft()];
+		return !Geometry.insidePolygon(points, coordinate.getX(), coordinate.getY());
 	};
 	Grid.prototype.getClosestLineArray = function(direction, transformation, coordinate, lines, line1_point1, line1_point2, line2_point1, line2_point2){
 		var none = Grid.LineDirections.None;
