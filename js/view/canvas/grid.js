@@ -143,7 +143,11 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		var left = 0.0;
 		var right = 1.0;
 		var EPS = .00001;
+		var steps = 1000;
 		while(left + EPS < right){
+			steps -= 1;
+			if(steps <= 0)
+				return .5;
 			var middle = (left + right) / 2;
 			//var line1_middle = line1_point1.add(line1_point2.subtract(line1_point1).scalarMultiply(middle));
 			//var line2_middle = line2_point1.add(line2_point2.subtract(line2_point1).scalarMultiply(middle));
