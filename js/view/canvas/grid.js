@@ -15,13 +15,23 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		this.equal_spacing_listener = new EventListener(this, this.applyEqualSpacing);
 		this.messaging_system.addEventListener(this.messaging_system.events.EqualSpacingGridLines, this.equal_spacing_listener);
 		this.selected_line = null;
+		this.nearby_line = null;
 		this.selectLine(Grid.LineDirections.None, 0);
+		this.setNearbyLine(Grid.LineDirections.None, 0);
 		this.highlight_selected_line = false;
+		this.highlight_nearby_line = false;
 	};
 	Grid.LineDirections = {Horizontal : "Horizontal", Vertical : "Vertical", None : "None"};
 	Grid.prototype.selectLine = function(direction, index){
 		this.selected_line = {direction : direction, index : index};
 		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+	};
+	Grid.prototype.setNearbyLine = function(direction, index){
+		this.nearby_line = {direction : direction, index : index};
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+	};
+	Grid.prototype.setNearbyLineHighlighting = function(enable){
+		this.highlight_nearby_line = enable;
 	};
 	Grid.prototype.deleteSelectedLine = function(){
 		var index = this.selected_line.index;
@@ -101,6 +111,22 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 				this.drawLine(context, transformation, this.horizontal_lines[this.selected_line.index], this.getTopLeft(), this.getBottomLeft(), this.getTopRight(), this.getBottomRight());
 			}else if(this.selected_line.direction == Grid.LineDirections.Vertical){
 				this.drawLine(context, transformation, this.vertical_lines[this.selected_line.index], this.getTopRight(), this.getTopLeft(), this.getBottomRight(), this.getBottomLeft());
+			}
+			context.stroke();
+			context.strokeStyle = tmp_style;
+			context.lineWidth = tmp_width;
+		}
+		if(this.highlight_nearby_line && this.nearby_line.direction != Grid.LineDirections.None
+			&& (this.nearby_line.direction != this.selected_line.direction || this.nearby_line.index != this.selected_line.index)){
+			var tmp_style = context.strokeStyle;
+			var tmp_width = context.lineWidth;
+			context.beginPath();
+			context.strokeStyle = "yellow";
+			context.lineWidth = 2;
+			if(this.nearby_line.direction == Grid.LineDirections.Horizontal){
+				this.drawLine(context, transformation, this.horizontal_lines[this.nearby_line.index], this.getTopLeft(), this.getBottomLeft(), this.getTopRight(), this.getBottomRight());
+			}else if(this.nearby_line.direction == Grid.LineDirections.Vertical){
+				this.drawLine(context, transformation, this.vertical_lines[this.nearby_line.index], this.getTopRight(), this.getTopLeft(), this.getBottomRight(), this.getBottomLeft());
 			}
 			context.stroke();
 			context.strokeStyle = tmp_style;

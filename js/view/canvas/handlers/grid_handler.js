@@ -24,12 +24,14 @@ define(["../../../model/coordinate",
 		this.mode = data.getGridMode();
 		switch(this.mode){
 			case GridHandler.Modes.Default:
-				this.grid.setCornerArea(true);
-				this.grid.setSelectedLineHighlighting(true);
+				this.getGrid().setCornerArea(true);
+				this.getGrid().setSelectedLineHighlighting(true);
+				this.getGrid().setNearbyLineHighlighting(true);
 				break;
 			default:
-				this.grid.setCornerArea(false);
-				this.grid.setSelectedLineHighlighting(false);
+				this.getGrid().setCornerArea(false);
+				this.getGrid().setSelectedLineHighlighting(false);
+				this.getGrid().setNearbyLineHighlighting(false);
 				break;
 		}
 		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
@@ -55,8 +57,8 @@ define(["../../../model/coordinate",
 		switch(this.mode){
 			case GridHandler.Modes.Default:
 				if(this.mouse_down_coordinate == null){
-					//TODO: highlight currently selected line
-
+					var line = this.getGrid().getClosestLine(transformation, event_data.getCoordinate());
+					this.getGrid().setNearbyLine(line.direction, line.index);
 				}else{
 					var transformed_coordinate = transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate());
 					this.mouse_down_coordinate.setX(transformed_coordinate.getX());
@@ -79,14 +81,11 @@ define(["../../../model/coordinate",
 				break;
 		}
 	};
-	GridHandler.prototype.selectLine = function(line){
-		this.getGrid().selectLine(line.direction, line.index);
-	};
 	GridHandler.prototype.click = function(event_data, transformation){
 		switch(this.mode){
 			case GridHandler.Modes.Default:
 				var closest_line = this.getGrid().getClosestLine(transformation, event_data.getCoordinate());
-				this.selectLine(closest_line);
+				this.getGrid().selectLine(closest_line.direction, closest_line.index);
 				break;
 			case GridHandler.Modes.AddHorizontalGridLine:
 				this.getGrid().addHorizontalLine(transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate()));
