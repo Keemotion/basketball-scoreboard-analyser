@@ -204,6 +204,7 @@ define(
 		MyCanvas.prototype.resetCanvasView = function(){
 			this.updateTransformation();
 			this.transformation.reset();
+			this.grid.reset(this.transformation);
 			this.updateCanvas();
 		};
 		MyCanvas.prototype.getElement = function(){

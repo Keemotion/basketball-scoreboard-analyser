@@ -11,13 +11,23 @@ define(["../../../model/coordinate",
 		this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, this.mouse_mode_changed_listener);
 		this.grid_mode_changed_listener = new EventListener(this, this.gridModeChanged);
 		this.messaging_system.addEventListener(this.messaging_system.events.GridModeChanged, this.grid_mode_changed_listener);
+		this.CORNER_CLICK_MARGIN = 30;
+		this.grid.setCornerClickMargin(this.CORNER_CLICK_MARGIN);
 	};
 	GridHandler.Modes = {Default: "Default", AddHorizontalGridLine: "AddHorizontalGridLine", AddVerticalGridLine : "AddVerticalGridLine"};
 	GridHandler.prototype.gridModeChanged = function(signal, data){
 		this.mode = data.getGridMode();
+		switch(this.mode){
+			case GridHandler.Modes.Default:
+				this.grid.setCornerArea(true);
+				break;
+			default:
+				this.grid.setCornerArea(false);
+				break;
+		}
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	};
 	GridHandler.prototype.mouseModeChanged = function(signal, data){
-		console.log("mouse mode changed : "+signal);
 		if(data.getMode() == MouseModes.GridMode){
 			this.mouse_down_coordinate = null;
 			this.messaging_system.fire(this.messaging_system.events.GridModeChanged, new GridModeChangedEvent(GridHandler.Modes.Default));
@@ -28,8 +38,7 @@ define(["../../../model/coordinate",
 		switch(this.mode){
 			case GridHandler.Modes.Default:
 				var closest_coordinate = this.getClosestCoordinate(transformation, event_data.getCoordinate());
-				var MARGIN = 30;
-				if(Coordinate.getDistance(event_data.getCoordinate(), transformation.transformRelativeImageCoordinateToCanvasCoordinate(closest_coordinate)) < MARGIN){
+				if(Coordinate.getDistance(event_data.getCoordinate(), transformation.transformRelativeImageCoordinateToCanvasCoordinate(closest_coordinate)) < this.CORNER_CLICK_MARGIN){
 					this.mouse_down_coordinate = closest_coordinate;
 				}
 				break;

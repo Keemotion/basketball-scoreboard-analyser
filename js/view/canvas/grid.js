@@ -10,6 +10,8 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		this.enabled = true;
 		this.toggle_grid_event_listener = new EventListener(this, this.toggleGrid);
 		this.messaging_system.addEventListener(this.messaging_system.events.ToggleGrid, this.toggle_grid_event_listener);
+		this.show_corner_area = false;
+		this.corner_click_margin = 10;
 	};
 	Grid.prototype.toggleGrid = function(){
 		this.enabled = !this.enabled;
@@ -19,6 +21,12 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 			this.messaging_system.fire(this.messaging_system.events.GridDisabled, null);
 		}
 		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+	};
+	Grid.prototype.reset = function(transformation){
+		this.setBottomRight(transformation.transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(transformation.getImageWidth(), transformation.getImageHeight())));
+		this.setTopRight(transformation.transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(transformation.getImageWidth(), 0)));
+		this.setBottomLeft(transformation.transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(0, transformation.getImageHeight())));
+		this.setTopLeft(transformation.transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(0, 0)));
 	};
 	Grid.prototype.draw = function(context, transformation){
 		if(!this.enabled)
@@ -37,6 +45,21 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		context.stroke();
 		this.drawLines(context, transformation, this.horizontal_lines, this.getTopLeft(), this.getBottomLeft(), this.getTopRight(), this.getBottomRight());
 		this.drawLines(context, transformation, this.vertical_lines, this.getTopRight(), this.getTopLeft(), this.getBottomRight(), this.getBottomLeft());
+
+		if(this.show_corner_area){
+			context.beginPath();
+			context.arc(topright.getX(), topright.getY(), this.corner_click_margin, 0, 2*Math.PI);
+			context.stroke();
+			context.beginPath();
+			context.arc(topleft.getX(), topleft.getY(), this.corner_click_margin, 0, 2*Math.PI);
+			context.stroke();
+			context.beginPath();
+			context.arc(bottomright.getX(), bottomright.getY(), this.corner_click_margin, 0, 2*Math.PI);
+			context.stroke();
+			context.beginPath();
+			context.arc(bottomleft.getX(), bottomleft.getY(), this.corner_click_margin, 0, 2*Math.PI);
+			context.stroke();
+		}
 	};
 	Grid.prototype.drawLines = function(context, transformation, lines, line1_point1, line1_point2, line2_point1, line2_point2){
 		for(var i = 0; i < lines.length; ++i){
@@ -84,7 +107,13 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 			return;
 		this.vertical_lines.push(this.getInterpolationFactor(coordinate, this.getTopRight(), this.getTopLeft(), this.getBottomRight(), this.getBottomLeft()));
 		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
-	}
+	};
+	Grid.prototype.setCornerArea = function(draw){
+		this.show_corner_area = draw;
+	};
+	Grid.prototype.setCornerClickMargin = function(margin){
+		this.corner_click_margin = margin;
+	};
 	Grid.prototype.setTopRight = function(coordinate){
 		this.top_right = coordinate;
 	};
