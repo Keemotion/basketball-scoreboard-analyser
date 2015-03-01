@@ -357,10 +357,18 @@ define(
 				.click(function(){
 					self.messaging_system.fire(self.messaging_system.events.GridModeChanged, new GridModeChangedEvent(GridHandler.Modes.AddHorizontalGridLine));
 				});
+			this.clear_grid_button = $('<button>')
+				.addClass('btn btn-default')
+				.append($('<i>').addClass('glyphicon glyphicon-refresh'))
+				.attr('title', 'Clear grid lines')
+				.click(function(){
+					self.messaging_system.fire(self.messaging_system.events.ClearGrid, null);
+				});
 			this.grid_buttons_div
 				.append(this.move_grid_button)
 				.append(this.add_horizontal_line_button)
-				.append(this.add_vertical_line_button);
+				.append(this.add_vertical_line_button)
+				.append(this.clear_grid_button);
 			this.target_div.append(this.grid_buttons_div);
 		};
 		ToolBar.prototype.lineExtensionsSet = function(signal, data){

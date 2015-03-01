@@ -120,7 +120,8 @@ define([], function(){
 
 		ToggleGrid : 'ToggleGrid',
 		GridEnabled: 'GridEnabled',
-		GridDisabled : 'GridDisabled'
+		GridDisabled : 'GridDisabled',
+		ClearGrid: 'ClearGrid'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

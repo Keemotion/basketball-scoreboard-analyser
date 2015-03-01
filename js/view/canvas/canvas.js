@@ -145,6 +145,12 @@ define(
 			this.setProxy(proxy);
 			this.display_changed_handler = new DisplayChangedHandler(this);
 			this.line_extension = false;
+
+			this.clear_grid_listener = new EventListener(this, this.clearGrid);
+			this.messaging_system.addEventListener(this.messaging_system.events.ClearGrid, this.clear_grid_listener);
+		};
+		MyCanvas.prototype.clearGrid = function(signal, data){
+			this.grid.clear(this.getTransformation());
 		};
 		MyCanvas.prototype.fireMouseEvent = function(event_type, event_data){
 			var coordinate = new Coordinate(event_data.pageX

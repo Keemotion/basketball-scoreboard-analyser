@@ -27,6 +27,12 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		this.setTopRight(transformation.transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(transformation.getImageWidth(), 0)));
 		this.setBottomLeft(transformation.transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(0, transformation.getImageHeight())));
 		this.setTopLeft(transformation.transformAbsoluteImageCoordinateToRelativeImageCoordinate(new Coordinate(0, 0)));
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+	};
+	Grid.prototype.clear = function(transformation){
+		this.horizontal_lines = [];
+		this.vertical_lines = [];
+		this.reset(transformation);
 	};
 	Grid.prototype.draw = function(context, transformation){
 		if(!this.enabled)
