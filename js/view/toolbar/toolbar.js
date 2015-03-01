@@ -217,6 +217,16 @@ define(
 					$(this).blur();
 				});
 			this.other_buttons.append(this.line_extensions_button);
+			this.toggle_grid_button = $('<button>')
+				.addClass('btn btn-default')
+				.append($('<i>').addClass('glyphicon glyphicon-th'))
+				.attr('title', 'Toggle grid')
+				.click(function(){
+					self.messaging_system.fire(self.messaging_system.events.ToggleGrid, null);
+				}).mouseup(function(){
+					$(this).blur();
+				});
+			this.other_buttons.append(this.toggle_grid_button);
 			this.target_div.append(this.other_buttons);
 			this.addGridButtons();
 
@@ -271,6 +281,13 @@ define(
 			this.new_elements_btns.append(this.add_configuration_key_element);
 			this.target_div.append(this.new_elements_btns);
 			this.edit_tool_btn.click();
+
+			this.messaging_system.addEventListener(this.messaging_system.events.GridEnabled, new EventListener(this, function(){
+				this.toggle_grid_button.addClass('active');
+			}));
+			this.messaging_system.addEventListener(this.messaging_system.events.GridDisabled, new EventListener(this, function(){
+				this.toggle_grid_button.removeClass('active');
+			}));
 		};
 
 		ToolBar.prototype.mouseModeChanged = function(signal, data){

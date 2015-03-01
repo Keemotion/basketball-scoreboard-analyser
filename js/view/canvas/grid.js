@@ -1,4 +1,4 @@
-define(["../../model/coordinate", "../../helpers/geometry"], function(Coordinate, Geometry){
+define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_system/event_listener"], function(Coordinate, Geometry, EventListener){
 	var Grid = function(messaging_system){
 		this.messaging_system = messaging_system;
 		this.setTopRight(new Coordinate(1.0, 1.0));
@@ -7,8 +7,22 @@ define(["../../model/coordinate", "../../helpers/geometry"], function(Coordinate
 		this.setTopLeft(new Coordinate(-1.0, 1.));
 		this.horizontal_lines = [];
 		this.vertical_lines = [];
+		this.enabled = true;
+		this.toggle_grid_event_listener = new EventListener(this, this.toggleGrid);
+		this.messaging_system.addEventListener(this.messaging_system.events.ToggleGrid, this.toggle_grid_event_listener);
+	};
+	Grid.prototype.toggleGrid = function(){
+		this.enabled = !this.enabled;
+		if(this.enabled){
+			this.messaging_system.fire(this.messaging_system.events.GridEnabled, null);
+		}else{
+			this.messaging_system.fire(this.messaging_system.events.GridDisabled, null);
+		}
+		this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
 	};
 	Grid.prototype.draw = function(context, transformation){
+		if(!this.enabled)
+			return;
 		var topright = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getTopRight());
 		var bottomright = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getBottomRight());
 		var bottomleft = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getBottomLeft());
@@ -37,12 +51,6 @@ define(["../../model/coordinate", "../../helpers/geometry"], function(Coordinate
 		}
 	};
 	Grid.prototype.getInterpolationFactor = function(coordinate, line1_point1, line1_point2, line2_point1, line2_point2){
-		console.log("interpolation factor: ");
-		console.log(JSON.stringify(line1_point1));
-		console.log(JSON.stringify(line2_point1));
-		console.log(JSON.stringify(line1_point2));
-		console.log(JSON.stringify(line2_point2));
-
 		var left = 0.0;
 		var right = 1.0;
 		var EPS = .00001;
@@ -50,18 +58,13 @@ define(["../../model/coordinate", "../../helpers/geometry"], function(Coordinate
 			var middle = (left+right)/2;
 			var line1_middle = line1_point1.add(line1_point2.subtract(line1_point1).scalarMultiply(middle));
 			var line2_middle = line2_point1.add(line2_point2.subtract(line2_point1).scalarMultiply(middle));
-			console.log("line1_middle = "+JSON.stringify(line1_middle));
-			console.log("line2_middle = "+JSON.stringify(line2_middle));
-			console.log(JSON.stringify(coordinate.subtract(line1_middle))+ " x " + JSON.stringify(line2_middle.subtract(line1_middle)));
 			var cp = Geometry.crossProduct(coordinate.subtract(line1_middle), line2_middle.subtract(line1_middle));
-			console.log("cp = "+cp);
 			if(cp > 0){
 				left = middle;
 			}else{
 				right = middle;
 			}
 		}
-		console.log("interpolation factor = "+(left+right)/2.0);
 		return (left+right)/2.0;
 	};
 	//returns whether coordinate is outside the grid box

@@ -117,7 +117,10 @@ define([], function(){
 		LineExtensionsSet: 'LineExtensionsSet',
 
 		AddVerticalGridLine:'AddVerticalGridLine',
-		AddHorizontalGridLine:'AddHorizontalGridLine'
+		AddHorizontalGridLine:'AddHorizontalGridLine',
+		ToggleGrid : 'ToggleGrid',
+		GridEnabled: 'GridEnabled',
+		GridDisabled : 'GridDisabled'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){
