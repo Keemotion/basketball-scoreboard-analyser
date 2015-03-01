@@ -1,20 +1,27 @@
-define(["../../../model/coordinate", "../../../messaging_system/event_listener"], function(Coordinate, EventListener){
+define(["../../../model/coordinate",
+	"../../../messaging_system/event_listener",
+	"../../../messaging_system/events/grid_mode_changed_event",
+	"./mouse_modes"], function(Coordinate, EventListener, GridModeChangedEvent, MouseModes){
 	var GridHandler = function(messaging_system, grid){
 		this.messaging_system = messaging_system;
 		this.grid = grid;
 		this.mouse_down_coordinate = null;
-		this.add_horizontal_grid_line_listener = new EventListener(this, this.startHorizontalGridLine);
-		this.messaging_system.addEventListener(this.messaging_system.events.AddHorizontalGridLine, this.add_horizontal_grid_line_listener);
-		this.add_vertical_grid_line_listener = new EventListener(this, this.startVerticalGridLine);
-		this.messaging_system.addEventListener(this.messaging_system.events.AddVerticalGridLine, this.add_vertical_grid_line_listener);
 		this.mode = GridHandler.Modes.Default;
+		this.mouse_mode_changed_listener = new EventListener(this, this.mouseModeChanged);
+		this.messaging_system.addEventListener(this.messaging_system.events.MouseModeChanged, this.mouse_mode_changed_listener);
+		this.grid_mode_changed_listener = new EventListener(this, this.gridModeChanged);
+		this.messaging_system.addEventListener(this.messaging_system.events.GridModeChanged, this.grid_mode_changed_listener);
 	};
 	GridHandler.Modes = {Default: "Default", AddHorizontalGridLine: "AddHorizontalGridLine", AddVerticalGridLine : "AddVerticalGridLine"};
-	GridHandler.prototype.startHorizontalGridLine = function(){
-		this.mode = GridHandler.Modes.AddHorizontalGridLine;
+	GridHandler.prototype.gridModeChanged = function(signal, data){
+		this.mode = data.getGridMode();
 	};
-	GridHandler.prototype.startVerticalGridLine = function(){
-		this.mode = GridHandler.Modes.AddVerticalGridLine;
+	GridHandler.prototype.mouseModeChanged = function(signal, data){
+		console.log("mouse mode changed : "+signal);
+		if(data.getMode() == MouseModes.GridMode){
+			this.mouse_down_coordinate = null;
+			this.messaging_system.fire(this.messaging_system.events.GridModeChanged, new GridModeChangedEvent(GridHandler.Modes.Default));
+		}
 	};
 	GridHandler.prototype.mouseDown = function(event_data, transformation){
 		this.mouse_down_coordinate = null;
@@ -57,11 +64,9 @@ define(["../../../model/coordinate", "../../../messaging_system/event_listener"]
 		switch(this.mode){
 			case GridHandler.Modes.AddHorizontalGridLine:
 				this.getGrid().addHorizontalLine(transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate()));
-				this.mode = GridHandler.Modes.Default;
 				break;
 			case GridHandler.Modes.AddVerticalGridLine:
 				this.getGrid().addVerticalLine(transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate()));
-				this.mode = GridHandler.Modes.Default;
 				break;
 			default:
 				break;

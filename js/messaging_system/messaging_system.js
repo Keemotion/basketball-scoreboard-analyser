@@ -116,8 +116,8 @@ define([], function(){
 		ToggleLineExtensions: 'ToggleLineExtensions',
 		LineExtensionsSet: 'LineExtensionsSet',
 
-		AddVerticalGridLine:'AddVerticalGridLine',
-		AddHorizontalGridLine:'AddHorizontalGridLine',
+		GridModeChanged : 'GridModeChanged',
+
 		ToggleGrid : 'ToggleGrid',
 		GridEnabled: 'GridEnabled',
 		GridDisabled : 'GridDisabled'

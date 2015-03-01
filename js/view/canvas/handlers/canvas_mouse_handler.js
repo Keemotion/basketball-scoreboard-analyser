@@ -19,8 +19,9 @@ define([
 		"require",
 		"../../view",
 		"../../application_states",
-		"./grid_handler"]
-	, function(EventListener, Coordinate, SelectionEvent, ObjectsMovedEvent, MouseModeChangedEvent, AutoDetectDigitAreaSelectedEvent, DigitDetector, DigitAddedEvent, EditModeSelectionEvent, SubmitGroupDetailsEvent, RemoveGroupEvent, DotAddedEvent, GroupChangedEvent, DigitCornersListenEvent, AddElementEvent, MoveModeObjectsMovedEvent, TreeNodeExpandEvent, require, View, ApplicationStates, GridHandler){
+		"./grid_handler",
+		"./mouse_modes"]
+	, function(EventListener, Coordinate, SelectionEvent, ObjectsMovedEvent, MouseModeChangedEvent, AutoDetectDigitAreaSelectedEvent, DigitDetector, DigitAddedEvent, EditModeSelectionEvent, SubmitGroupDetailsEvent, RemoveGroupEvent, DotAddedEvent, GroupChangedEvent, DigitCornersListenEvent, AddElementEvent, MoveModeObjectsMovedEvent, TreeNodeExpandEvent, require, View, ApplicationStates, GridHandler, MouseModes){
 		var SelectionRectangle = function(){
 			this.start_coordinate = new Coordinate();
 			this.end_coordinate = new Coordinate();
@@ -81,8 +82,8 @@ define([
 			this.mouse_down_time = 0;
 			this.mouse_down = false;
 
-			this.current_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
-			this.previous_mouse_mode = CanvasMouseHandler.MouseModes.EditMode;
+			this.current_mouse_mode = MouseModes.EditMode;
+			this.previous_mouse_mode = MouseModes.EditMode;
 			this.selection_rectangle = new SelectionRectangle;
 			this.current_selected_group_proxy = null;
 
@@ -108,16 +109,7 @@ define([
 			this.grid_handler = new GridHandler(this.messaging_system, this.getCanvas().getGrid());
 
 		};
-		CanvasMouseHandler.MouseModes = {
-			EditMode : "EditMode",
-			CanvasMode : "CanvasMode",
-			SelectionMode : "SelectionMode",
-			AutoDetectDigitMode : "AutoDetectDigitMode",
-			SingleCoordinateListenMode : "SingleCoordinateListenMode",
-			DigitCornersListenMode : "DigitCornersListenMode",
-			GridMode : "GridMode",
-			Other : "Other"
-		};
+
 		CanvasMouseHandler.prototype.canvasScrolled = function(signal, data){
 			var evt = data.event_data;
 			var delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
@@ -157,7 +149,7 @@ define([
 			var application_state = this.getCanvas().getView().getApplicationState();
 			var transformed = this.canvas.getTransformation().transformCanvasTranslationToRelativeImageTranslation(data.getCoordinate().add(this.previous_mouse_coordinate.scalarMultiply(-1.0)));
 			switch(this.current_mouse_mode){
-				case CanvasMouseHandler.MouseModes.EditMode:
+				case MouseModes.EditMode:
 					if(this.mouse_down){
 						switch(application_state){
 							case View.ApplicationStates.MULTI_SELECTION:
@@ -186,7 +178,7 @@ define([
 						this.canvas.updateCanvas(signal, data);
 					}
 					break;
-				case CanvasMouseHandler.MouseModes.CanvasMode:
+				case MouseModes.CanvasMode:
 					//move canvast
 					if(this.mouse_down){
 						var old_center = this.canvas.getTransformation().getCanvasCenter();
@@ -195,25 +187,25 @@ define([
 						this.canvas.updateCanvas(signal, data);
 					}
 					break;
-				case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+				case MouseModes.AutoDetectDigitMode:
 					if(this.mouse_down){
 						this.selection_rectangle.updateSelection(data.getCoordinate());
 						this.canvas.updateCanvas(signal, data);
 					}
 					break;
-				case CanvasMouseHandler.MouseModes.SelectionMode:
+				case MouseModes.SelectionMode:
 					//move selected digits at once
 					if(this.mouse_down){
 						this.updateSelection(data);
 					}
 					break;
-				case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
+				case MouseModes.DigitCornersListenMode:
 					this.canvas.updateCanvas(signal, data);
 					break;
-				case CanvasMouseHandler.MouseModes.GridMode:
+				case MouseModes.GridMode:
 					this.grid_handler.mouseMove(data, this.getCanvas().getTransformation());
 					break;
-				case CanvasMouseHandler.MouseModes.Other:
+				case MouseModes.Other:
 					//let another handler handle these events
 					break;
 			}
@@ -221,7 +213,7 @@ define([
 		};
 		CanvasMouseHandler.prototype.coordinateListenRequested = function(signal, data){
 			this.setSelection(data.getProxy().getSelectionTree(), false);
-			this.setMouseMode(CanvasMouseHandler.MouseModes.SingleCoordinateListenMode);
+			this.setMouseMode(MouseModes.SingleCoordinateListenMode);
 		};
 		CanvasMouseHandler.prototype.getMovingObjectsTree = function(){
 			if(this.getCanvas().getView().getApplicationState() == ApplicationStates.NO_SELECTION && this.mouse_down_object_proxy != null){
@@ -230,7 +222,7 @@ define([
 			return null;
 		};
 		CanvasMouseHandler.prototype.getTemporaryDigitCoordinates = function(){
-			if(this.current_mouse_mode != CanvasMouseHandler.MouseModes.DigitCornersListenMode){
+			if(this.current_mouse_mode != MouseModes.DigitCornersListenMode){
 				return null;
 			}
 			var coordinates = new Array();
@@ -267,7 +259,7 @@ define([
 			this.canvas.updateCanvas();
 		};
 		CanvasMouseHandler.prototype.startAutoDetectDigit = function(proxy){
-			this.setMouseMode(CanvasMouseHandler.MouseModes.AutoDetectDigitMode);
+			this.setMouseMode(MouseModes.AutoDetectDigitMode);
 			if(proxy != null){
 				this.setSelection(proxy.getSelectionTree(), false);
 				this.current_corners_auto_detect_digit_exists = true;
@@ -339,7 +331,7 @@ define([
 			var time_down = mouse_release_time.getTime() - this.mouse_down_time.getTime();
 			var application_state = this.getCanvas().getView().getApplicationState();
 			switch(this.current_mouse_mode){
-				case CanvasMouseHandler.MouseModes.EditMode:
+				case MouseModes.EditMode:
 					switch(application_state){
 						case View.ApplicationStates.MULTI_SELECTION:
 
@@ -350,19 +342,19 @@ define([
 							break;
 					}
 					break;
-				case CanvasMouseHandler.MouseModes.CanvasMode:
+				case MouseModes.CanvasMode:
 					break;
-				case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+				case MouseModes.AutoDetectDigitMode:
 					this.autoDetectDigit();
 					this.stopAutoDetectDigit();
 					break;
-				case CanvasMouseHandler.MouseModes.SelectionMode:
+				case MouseModes.SelectionMode:
 					this.stopSelection(data.getCoordinate());
 					this.canvas.drawCanvas();
 					break;
-				case CanvasMouseHandler.MouseModes.Other:
+				case MouseModes.Other:
 					break;
-				case CanvasMouseHandler.MouseModes.GridMode:
+				case MouseModes.GridMode:
 					this.getGridHandler().mouseUp(data, this.getCanvas().getTransformation());
 					break;
 			}
@@ -393,7 +385,7 @@ define([
 			this.mouse_down_time = new Date();
 			this.previous_mouse_coordinate = data.getCoordinate();
 			switch(this.current_mouse_mode){
-				case CanvasMouseHandler.MouseModes.EditMode:
+				case MouseModes.EditMode:
 					switch(application_state){
 						case View.ApplicationStates.MULTI_SELECTION:
 							//if not -> clear selection
@@ -431,15 +423,15 @@ define([
 							break;
 					}
 					break;
-				case CanvasMouseHandler.MouseModes.CanvasMode:
+				case MouseModes.CanvasMode:
 					break;
-				case CanvasMouseHandler.MouseModes.SelectionMode:
+				case MouseModes.SelectionMode:
 					this.startSelection(data.getCoordinate());
 					break;
-				case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+				case MouseModes.AutoDetectDigitMode:
 					this.selection_rectangle.startSelection(data.getCoordinate());
 					break;
-				case CanvasMouseHandler.MouseModes.GridMode:
+				case MouseModes.GridMode:
 					//console.log("mouse down in grid mode");
 					this.getGridHandler().mouseDown(data, this.getCanvas().getTransformation());
 					//TODO: check if a coordinate of the grid is near the cursor, if this is the case, store the corner so we can move it
@@ -497,7 +489,7 @@ define([
 				}
 			}
 			switch(this.current_mouse_mode){
-				case CanvasMouseHandler.MouseModes.EditMode:
+				case MouseModes.EditMode:
 					switch(application_state){
 						case View.ApplicationStates.MULTI_SELECTION:
 							if(this.mouse_dragged){
@@ -544,14 +536,14 @@ define([
 							break;
 					}
 					break;
-				case CanvasMouseHandler.MouseModes.SelectionMode:
+				case MouseModes.SelectionMode:
 					if(!this.mouse_dragged){
 						if(parent_group != null){
 							this.toggleSelection(parent_group.getSelectionTree(true, null), false);
 						}
 					}
 					break;
-				case CanvasMouseHandler.MouseModes.SingleCoordinateListenMode:
+				case MouseModes.SingleCoordinateListenMode:
 					var coordinate_data = new Object();
 					coordinate_data.coordinate = this.canvas.getTransformation().transformCanvasCoordinateToRelativeImageCoordinate(data.getCoordinate());
 					var identification = this.getSingleSelectedElementProxy().getIdentification();
@@ -559,10 +551,10 @@ define([
 					this.setMouseMode(null);
 					this.canvas.updateCanvas();
 					break;
-				case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
+				case MouseModes.DigitCornersListenMode:
 					this.addDigitCorner(data.getCoordinate());
 					break;
-				case CanvasMouseHandler.MouseModes.GridMode:
+				case MouseModes.GridMode:
 					this.grid_handler.click(data, this.getCanvas().getTransformation());
 					break;
 			}
@@ -581,7 +573,7 @@ define([
 			this.current_corners_listening_digit_exists = existing_digit == true;
 			this.current_digit_corner_index = 0;
 			this.setSelection(this.current_listening_digit.getSelectionTree(), false);
-			this.setMouseMode(CanvasMouseHandler.MouseModes.DigitCornersListenMode);
+			this.setMouseMode(MouseModes.DigitCornersListenMode);
 		};
 		CanvasMouseHandler.prototype.interruptDigitCornersListening = function(){
 			if(this.current_corners_listening_digit_exists == false){
@@ -628,33 +620,33 @@ define([
 			}
 		};
 		CanvasMouseHandler.prototype.updateMouseMode = function(data){
-			if(data.getEventData().shiftKey && this.current_mouse_mode != CanvasMouseHandler.MouseModes.SelectionMode){
-				this.setMouseMode(CanvasMouseHandler.MouseModes.SelectionMode);
-			}else if(data.getEventData().ctrlKey && this.current_mouse_mode != CanvasMouseHandler.MouseModes.CanvasMode){
-				this.setMouseMode(CanvasMouseHandler.MouseModes.CanvasMode);
+			if(data.getEventData().shiftKey && this.current_mouse_mode != MouseModes.SelectionMode){
+				this.setMouseMode(MouseModes.SelectionMode);
+			}else if(data.getEventData().ctrlKey && this.current_mouse_mode != MouseModes.CanvasMode){
+				this.setMouseMode(MouseModes.CanvasMode);
 			}
 		};
 		CanvasMouseHandler.prototype.keyDown = function(signal, data){
 			switch(data.getEventData().which){
 				case 27://escape
 					switch(this.getMouseMode()){
-						case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
+						case MouseModes.DigitCornersListenMode:
 							this.interruptDigitCornersListening();
 
 							break;
-						case CanvasMouseHandler.MouseModes.SingleCoordinateListenMode:
+						case MouseModes.SingleCoordinateListenMode:
 							this.setMouseMode(null);
 							break;
-						case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+						case MouseModes.AutoDetectDigitMode:
 							this.interruptAutoDetectDigit();
 							break;
 					}
 					break;
 				case 17://control
-					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.CanvasMode));
+					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(MouseModes.CanvasMode));
 					break;
 				case 16://shift
-					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.SelectionMode));
+					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(MouseModes.SelectionMode));
 					break;
 				case 46://delete
 					var elements = this.getCanvas().getView().getCurrentSelectionTree().getSelectedFlat();
@@ -721,26 +713,26 @@ define([
 		};
 		CanvasMouseHandler.prototype.updateCursor = function(){
 			switch(this.getMouseMode()){
-				case CanvasMouseHandler.MouseModes.EditMode:
+				case MouseModes.EditMode:
 					this.canvas.getElement().css('cursor', 'default');
 					break;
-				case CanvasMouseHandler.MouseModes.CanvasMode:
+				case MouseModes.CanvasMode:
 					if(this.mouse_down){
 						this.canvas.getElement().css('cursor', '-webkit-grabbing');
 					}else{
 						this.canvas.getElement().css('cursor', '-webkit-grab');
 					}
 					break;
-				case CanvasMouseHandler.MouseModes.SelectionMode:
+				case MouseModes.SelectionMode:
 					this.canvas.getElement().css('cursor', 'copy');
 					break;
-				case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
+				case MouseModes.AutoDetectDigitMode:
 					this.canvas.getElement().css('cursor', 'crosshair');
 					break;
-				case CanvasMouseHandler.MouseModes.SingleCoordinateListenMode:
+				case MouseModes.SingleCoordinateListenMode:
 					this.canvas.getElement().css('cursor', 'crosshair');
 					break;
-				case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
+				case MouseModes.DigitCornersListenMode:
 					this.canvas.getElement().css('cursor', 'crosshair');
 					break;
 				default:

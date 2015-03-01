@@ -1,11 +1,13 @@
 define(
 	[ '../../messaging_system/events/load_state_event',
 		'../../messaging_system/event_listener',
-		'../canvas/handlers/canvas_mouse_handler',
 		'../../messaging_system/events/mouse_mode_changed_event',
 		"../../messaging_system/events/add_element_event",
-		"../../messaging_system/events/load_combined_images_event"],
-	function(LoadStateEvent, EventListener, CanvasMouseHandler, MouseModeChangedEvent, AddElementEvent, LoadCombinedImagesEvent){
+		"../../messaging_system/events/load_combined_images_event",
+		"../../messaging_system/events/grid_mode_changed_event",
+		"../canvas/handlers/grid_handler",
+		"../canvas/handlers/mouse_modes"],
+	function(LoadStateEvent, EventListener, MouseModeChangedEvent, AddElementEvent, LoadCombinedImagesEvent, GridModeChangedEvent, GridHandler, MouseModes){
 		var ToolBar = function(target_div, state_proxy, messaging_system){
 			var self = this;
 			this.target_div = target_div;
@@ -30,7 +32,7 @@ define(
 						.fire(
 						self.messaging_system.events.MouseModeChanged,
 						new MouseModeChangedEvent(
-							CanvasMouseHandler.MouseModes.EditMode));
+							MouseModes.EditMode));
 				}).button()
 				.mouseup(function(){
 					$(this).blur();
@@ -48,7 +50,7 @@ define(
 						.fire(
 						self.messaging_system.events.MouseModeChanged,
 						new MouseModeChangedEvent(
-							CanvasMouseHandler.MouseModes.CanvasMode));
+							MouseModes.CanvasMode));
 				}).button()
 				.mouseup(function(){
 					$(this).blur();
@@ -66,7 +68,7 @@ define(
 						.fire(
 						self.messaging_system.events.MouseModeChanged,
 						new MouseModeChangedEvent(
-							CanvasMouseHandler.MouseModes.SelectionMode));
+							MouseModes.SelectionMode));
 				}).button()
 				.mouseup(function(){
 					$(this).blur();
@@ -80,7 +82,7 @@ define(
 				.addClass('btn btn-default btn-view-mode')
 				.click(function(){
 					self.messaging_system.fire(self.messaging_system.events.MouseModeChanged,
-					new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.GridMode));
+					new MouseModeChangedEvent(MouseModes.GridMode));
 				}).button()
 				.mouseup(function(){
 					$(this).blur();
@@ -288,8 +290,25 @@ define(
 			this.messaging_system.addEventListener(this.messaging_system.events.GridDisabled, new EventListener(this, function(){
 				this.toggle_grid_button.removeClass('active');
 			}));
+			this.grid_mode_changed_listener = new EventListener(this, this.gridModeChanged);
+			this.messaging_system.addEventListener(this.messaging_system.events.GridModeChanged, this.grid_mode_changed_listener);
 		};
-
+		ToolBar.prototype.gridModeChanged = function(signal, data){
+			this.move_grid_button.removeClass('active');
+			this.add_vertical_line_button.removeClass('active');
+			this.add_horizontal_line_button.removeClass('active');
+			switch(data.getGridMode()){
+				case GridHandler.Modes.Default:
+					this.move_grid_button.addClass('active');
+					break;
+				case GridHandler.Modes.AddHorizontalGridLine:
+					this.add_horizontal_line_button.addClass('active');
+					break;
+				case GridHandler.Modes.AddVerticalGridLine:
+					this.add_vertical_line_button.addClass('active');
+					break
+			}
+		};
 		ToolBar.prototype.mouseModeChanged = function(signal, data){
 			this.edit_tool_btn.removeClass('active');
 			this.canvas_tool_btn.removeClass('active');
@@ -297,16 +316,16 @@ define(
 			this.grid_tool_btn.removeClass('active');
 			this.grid_buttons_div.hide();
 			switch(data.getMode()){
-				case CanvasMouseHandler.MouseModes.EditMode:
+				case MouseModes.EditMode:
 					this.edit_tool_btn.addClass('active');
 					break;
-				case CanvasMouseHandler.MouseModes.CanvasMode:
+				case MouseModes.CanvasMode:
 					this.canvas_tool_btn.addClass('active');
 					break;
-				case CanvasMouseHandler.MouseModes.SelectionMode:
+				case MouseModes.SelectionMode:
 					this.selection_tool_btn.addClass('active');
 					break;
-				case CanvasMouseHandler.MouseModes.GridMode:
+				case MouseModes.GridMode:
 					this.grid_tool_btn.addClass('active');
 					this.grid_buttons_div.show();
 					break;
@@ -317,21 +336,29 @@ define(
 		ToolBar.prototype.addGridButtons = function(){
 			var self = this;
 			this.grid_buttons_div = $('<div>').addClass('btn-group');
+			this.move_grid_button = $('<button>')
+				.addClass('btn btn-default')
+				.append($('<i>').addClass('glyphicon glyphicon-move'))
+				.attr('title', 'Drag grid corners')
+				.click(function(){
+					self.messaging_system.fire(self.messaging_system.events.GridModeChanged, new GridModeChangedEvent(GridHandler.Modes.Default));
+				});
 			this.add_vertical_line_button = $('<button>')
 				.addClass('btn btn-default')
 				.append($('<i>').addClass('glyphicon glyphicon-option-vertical'))
 				.attr('title', 'Add vertical grid line')
 				.click(function(){
-					self.messaging_system.fire(self.messaging_system.events.AddVerticalGridLine, null);
+					self.messaging_system.fire(self.messaging_system.events.GridModeChanged, new GridModeChangedEvent(GridHandler.Modes.AddVerticalGridLine));
 				});
 			this.add_horizontal_line_button = $('<button>')
 				.addClass('btn btn-default')
 				.append($('<i>').addClass('glyphicon glyphicon-option-horizontal'))
 				.attr('title', 'Add horizontal grid line')
 				.click(function(){
-					self.messaging_system.fire(self.messaging_system.events.AddHorizontalGridLine, null);
+					self.messaging_system.fire(self.messaging_system.events.GridModeChanged, new GridModeChangedEvent(GridHandler.Modes.AddHorizontalGridLine));
 				});
 			this.grid_buttons_div
+				.append(this.move_grid_button)
 				.append(this.add_horizontal_line_button)
 				.append(this.add_vertical_line_button);
 			this.target_div.append(this.grid_buttons_div);

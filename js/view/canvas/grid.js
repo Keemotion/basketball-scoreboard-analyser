@@ -18,7 +18,7 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		}else{
 			this.messaging_system.fire(this.messaging_system.events.GridDisabled, null);
 		}
-		this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	};
 	Grid.prototype.draw = function(context, transformation){
 		if(!this.enabled)
@@ -77,13 +77,13 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		if(this.isOutsideBox(coordinate))
 			return;
 		this.horizontal_lines.push(this.getInterpolationFactor(coordinate, this.getTopLeft(), this.getBottomLeft(), this.getTopRight(), this.getBottomRight()));
-		this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	};
 	Grid.prototype.addVerticalLine = function(coordinate){
 		if(this.isOutsideBox(coordinate))
 			return;
 		this.vertical_lines.push(this.getInterpolationFactor(coordinate, this.getTopRight(), this.getTopLeft(), this.getBottomRight(), this.getBottomLeft()));
-		this.messaging_system.fire(this.messaging_system.events.DisplayObjectsChanged, null);
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	}
 	Grid.prototype.setTopRight = function(coordinate){
 		this.top_right = coordinate;
