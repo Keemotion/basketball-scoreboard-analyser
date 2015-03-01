@@ -188,7 +188,7 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		if(closest_vertical_line.direction == Grid.LineDirections.None){
 			return closest_horizontal_line;
 		}
-		if(closest_horizontal_line.distance < closest_vertical_line){
+		if(closest_horizontal_line.distance < closest_vertical_line.distance){
 			return closest_horizontal_line;
 		}else{
 			return closest_vertical_line;
