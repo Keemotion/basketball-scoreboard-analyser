@@ -15,6 +15,7 @@ define(
 			// Mouse Mode: edition mode
 			// Mouse Mode: canvas drag mode
 			// Mouse Mode: selection mode
+			// Mouse mode: grid mode
 			this.target_div.addClass('btn-toolbar');
 			this.edit_tool_btn = $('<button>')
 				.attr({
@@ -70,11 +71,27 @@ define(
 				.mouseup(function(){
 					$(this).blur();
 				});
-			this.mouse_mode_btns = $('<div>').addClass('btn-group').attr(
-				'data-toggle', 'buttons').append(
-				this.edit_tool_btn)
-				.append(this.canvas_tool_btn).append(
-				this.selection_tool_btn);
+			this.grid_tool_btn = $('<button>')
+				.append($('<span>').addClass('glyphicon glyphicon-th'))
+				.attr({
+					'title' : 'Edit grid',
+					'data-toggle' : 'button'
+				})
+				.addClass('btn btn-default btn-view-mode')
+				.click(function(){
+					self.messaging_system.fire(self.messaging_system.events.MouseModeChanged,
+					new MouseModeChangedEvent(CanvasMouseHandler.MouseModes.GridMode));
+				}).button()
+				.mouseup(function(){
+					$(this).blur();
+				});
+			this.mouse_mode_btns = $('<div>')
+				.addClass('btn-group')
+				.attr('data-toggle', 'buttons')
+				.append(this.edit_tool_btn)
+				.append(this.canvas_tool_btn)
+				.append(this.selection_tool_btn)
+				.append(this.grid_tool_btn);
 			self.messaging_system.addEventListener(
 				self.messaging_system.events.MouseModeChanged,
 				new EventListener(this, this.mouseModeChanged));
@@ -259,6 +276,7 @@ define(
 			this.edit_tool_btn.removeClass('active');
 			this.canvas_tool_btn.removeClass('active');
 			this.selection_tool_btn.removeClass('active');
+			this.grid_tool_btn.removeClass('active');
 			switch(data.getMode()){
 				case CanvasMouseHandler.MouseModes.EditMode:
 					this.edit_tool_btn.addClass('active');
@@ -268,6 +286,9 @@ define(
 					break;
 				case CanvasMouseHandler.MouseModes.SelectionMode:
 					this.selection_tool_btn.addClass('active');
+					break;
+				case CanvasMouseHandler.MouseModes.GridMode:
+					this.grid_tool_btn.addClass('active');
 					break;
 				default:
 					break;

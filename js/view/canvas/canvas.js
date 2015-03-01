@@ -7,8 +7,9 @@ define(
 		"../../model/selection_tree",
 		"../../messaging_system/events/mouse_event",
 		"../../model/bounding_rectangle",
-		"../../messaging_system/events/line_extensions_set_event"],
-	function(EventListener, Coordinate, Transformation, DisplayTree, DisplayChangedHandler, CanvasKeyEvent, CanvasMouseHandler, SelectionTree, MouseEvent, BoundingRectangle, LineExtensionsSetEvent){
+		"../../messaging_system/events/line_extensions_set_event",
+		"./grid"],
+	function(EventListener, Coordinate, Transformation, DisplayTree, DisplayChangedHandler, CanvasKeyEvent, CanvasMouseHandler, SelectionTree, MouseEvent, BoundingRectangle, LineExtensionsSetEvent, Grid){
 		var MyCanvas = function(view, target_view, proxy, messaging_system){
 			var self = this;
 			this.view = view;
@@ -27,6 +28,7 @@ define(
 			this.container_element = target_view;
 			this.transformation = new Transformation(new Coordinate(0, 0),
 				1, 1, 1, 1, 1);
+			this.grid = new Grid();
 			this.canvas_mouse_handler = new CanvasMouseHandler(this,
 				this.messaging_system);
 			this.display_tree = null;
@@ -333,7 +335,7 @@ define(
 			};
 			var imgs = [];
 			for(var i = 0; i < files.length; ++i){
-				console.log("i = "+i);
+				console.log("i = " + i);
 				var img = new Image();
 				img.onload = function(){
 					curr_images.push(this);
@@ -391,7 +393,11 @@ define(
 					this.drawTree();
 				}
 				this.drawSelected();
+				this.drawGrid();
 			}
+		};
+		MyCanvas.prototype.drawGrid = function(){
+			this.grid.draw(this.context, this.getTransformation());
 		};
 		MyCanvas.prototype.getTransformation = function(){
 			return this.transformation;
@@ -414,6 +420,9 @@ define(
 		};
 		MyCanvas.prototype.getCompleteSelectionTree = function(){
 			return this.getDisplayTree().getCompleteSelectionTree();
+		};
+		MyCanvas.prototype.getGrid = function(){
+			return this.grid;
 		};
 		return MyCanvas;
 	});

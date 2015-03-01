@@ -18,8 +18,9 @@ define([
 		"../../../messaging_system/events/tree_node_expand_event",
 		"require",
 		"../../view",
-		"../../application_states"]
-	, function(EventListener, Coordinate, SelectionEvent, ObjectsMovedEvent, MouseModeChangedEvent, AutoDetectDigitAreaSelectedEvent, DigitDetector, DigitAddedEvent, EditModeSelectionEvent, SubmitGroupDetailsEvent, RemoveGroupEvent, DotAddedEvent, GroupChangedEvent, DigitCornersListenEvent, AddElementEvent, MoveModeObjectsMovedEvent, TreeNodeExpandEvent, require, View, ApplicationStates){
+		"../../application_states",
+		"./grid_handler"]
+	, function(EventListener, Coordinate, SelectionEvent, ObjectsMovedEvent, MouseModeChangedEvent, AutoDetectDigitAreaSelectedEvent, DigitDetector, DigitAddedEvent, EditModeSelectionEvent, SubmitGroupDetailsEvent, RemoveGroupEvent, DotAddedEvent, GroupChangedEvent, DigitCornersListenEvent, AddElementEvent, MoveModeObjectsMovedEvent, TreeNodeExpandEvent, require, View, ApplicationStates, GridHandler){
 		var SelectionRectangle = function(){
 			this.start_coordinate = new Coordinate();
 			this.end_coordinate = new Coordinate();
@@ -104,6 +105,8 @@ define([
 			this.messaging_system.addEventListener(this.messaging_system.events.SelectionChanged, new EventListener(this, this.selectionChanged));
 			this.messaging_system.addEventListener(this.messaging_system.events.SelectAll, new EventListener(this, this.selectAll));
 
+			this.grid_handler = new GridHandler(this.messaging_system, this.getCanvas().getGrid());
+
 		};
 		CanvasMouseHandler.MouseModes = {
 			EditMode : "EditMode",
@@ -112,6 +115,7 @@ define([
 			AutoDetectDigitMode : "AutoDetectDigitMode",
 			SingleCoordinateListenMode : "SingleCoordinateListenMode",
 			DigitCornersListenMode : "DigitCornersListenMode",
+			GridMode : "GridMode",
 			Other : "Other"
 		};
 		CanvasMouseHandler.prototype.canvasScrolled = function(signal, data){
@@ -205,6 +209,9 @@ define([
 					break;
 				case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
 					this.canvas.updateCanvas(signal, data);
+					break;
+				case CanvasMouseHandler.MouseModes.GridMode:
+					this.grid_handler.mouseMove(data, this.getCanvas().getTransformation());
 					break;
 				case CanvasMouseHandler.MouseModes.Other:
 					//let another handler handle these events
@@ -355,6 +362,9 @@ define([
 					break;
 				case CanvasMouseHandler.MouseModes.Other:
 					break;
+				case CanvasMouseHandler.MouseModes.GridMode:
+					this.getGridHandler().mouseUp(data, this.getCanvas().getTransformation());
+					break;
 			}
 		};
 		CanvasMouseHandler.prototype.getPreviousMouseCoordinate = function(){
@@ -429,7 +439,15 @@ define([
 				case CanvasMouseHandler.MouseModes.AutoDetectDigitMode:
 					this.selection_rectangle.startSelection(data.getCoordinate());
 					break;
+				case CanvasMouseHandler.MouseModes.GridMode:
+					//console.log("mouse down in grid mode");
+					this.getGridHandler().mouseDown(data, this.getCanvas().getTransformation());
+					//TODO: check if a coordinate of the grid is near the cursor, if this is the case, store the corner so we can move it
+					break;
 			}
+		};
+		CanvasMouseHandler.prototype.getGridHandler = function(){
+			return this.grid_handler;
 		};
 		CanvasMouseHandler.prototype.focusOut = function(signal, data){
 			this.mouse_down = false;

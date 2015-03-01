@@ -10,6 +10,12 @@ define([], function(){
 			this.y = parseFloat(parseFloat(y).toPrecision(8));
 		}
 	};
+	Coordinate.prototype.setX = function(x){
+		this.x = parseFloat(parseFloat(x).toPrecision(8));
+	};
+	Coordinate.prototype.setY = function(y){
+		this.y = parseFloat(parseFloat(y).toPrecision(8));
+	};
 	Coordinate.prototype.getX = function(){
 		if(this.x)
 			return parseFloat(this.x);
