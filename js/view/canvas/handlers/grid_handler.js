@@ -1,7 +1,8 @@
 define(["../../../model/coordinate",
 	"../../../messaging_system/event_listener",
 	"../../../messaging_system/events/grid_mode_changed_event",
-	"./mouse_modes"], function(Coordinate, EventListener, GridModeChangedEvent, MouseModes){
+	"./mouse_modes",
+	"../grid"], function(Coordinate, EventListener, GridModeChangedEvent, MouseModes, Grid){
 	var GridHandler = function(messaging_system, grid){
 		this.messaging_system = messaging_system;
 		this.grid = grid;
@@ -27,11 +28,15 @@ define(["../../../model/coordinate",
 				this.getGrid().setCornerArea(true);
 				this.getGrid().setSelectedLineHighlighting(true);
 				this.getGrid().setNearbyLineHighlighting(true);
+				this.getGrid().selectLine(Grid.LineDirections.None, 0);
+				this.getGrid().setNearbyLine(Grid.LineDirections.None, 0);
 				break;
 			default:
 				this.getGrid().setCornerArea(false);
 				this.getGrid().setSelectedLineHighlighting(false);
 				this.getGrid().setNearbyLineHighlighting(false);
+				this.getGrid().selectLine(Grid.LineDirections.None, 0);
+				this.getGrid().setNearbyLine(Grid.LineDirections.None, 0);
 				break;
 		}
 		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
@@ -49,6 +54,11 @@ define(["../../../model/coordinate",
 				var closest_coordinate = this.getClosestCoordinate(transformation, event_data.getCoordinate());
 				if(Coordinate.getDistance(event_data.getCoordinate(), transformation.transformRelativeImageCoordinateToCanvasCoordinate(closest_coordinate)) < this.CORNER_CLICK_MARGIN){
 					this.mouse_down_coordinate = closest_coordinate;
+				}else{
+					var closest_line = this.getGrid().getClosestLine(transformation, event_data.getCoordinate());
+					if(this.getGrid().isLineSelected(closest_line)){
+						this.mouse_down_line = closest_line;
+					}
 				}
 				break;
 		}
@@ -57,8 +67,13 @@ define(["../../../model/coordinate",
 		switch(this.mode){
 			case GridHandler.Modes.Default:
 				if(this.mouse_down_coordinate == null){
-					var line = this.getGrid().getClosestLine(transformation, event_data.getCoordinate());
-					this.getGrid().setNearbyLine(line.direction, line.index);
+					this.getGrid().setNearbyLine(Grid.LineDirections.None, 0);
+					if(this.mouse_down_line != null){
+						this.getGrid().updateLine(this.mouse_down_line, transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate()));
+					}else{
+						var line = this.getGrid().getClosestLine(transformation, event_data.getCoordinate());
+						this.getGrid().setNearbyLine(line.direction, line.index);
+					}
 				}else{
 					var transformed_coordinate = transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate());
 					this.mouse_down_coordinate.setX(transformed_coordinate.getX());
@@ -72,14 +87,15 @@ define(["../../../model/coordinate",
 		switch(this.mode){
 			case GridHandler.Modes.Default:
 				if(this.mouse_down_coordinate == null)
-					return;
+					break;
 				var transformed_coordinate = transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate());
 				this.mouse_down_coordinate.setX(transformed_coordinate.getX());
 				this.mouse_down_coordinate.setY(transformed_coordinate.getY());
 				this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
-				this.mouse_down_coordinate = null;
 				break;
 		}
+		this.mouse_down_coordinate = null;
+		this.mouse_down_line = null;
 	};
 	GridHandler.prototype.click = function(event_data, transformation){
 		switch(this.mode){

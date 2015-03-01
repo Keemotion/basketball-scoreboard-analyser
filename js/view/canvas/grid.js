@@ -26,6 +26,9 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		this.selected_line = {direction : direction, index : index};
 		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	};
+	Grid.prototype.isLineSelected = function(line){
+		return line.direction != Grid.LineDirections.None && line.direction == this.selected_line.direction && line.index == this.selected_line.index;
+	};
 	Grid.prototype.setNearbyLine = function(direction, index){
 		this.nearby_line = {direction : direction, index : index};
 		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
@@ -220,6 +223,16 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		}else{
 			return closest_vertical_line;
 		}
+	};
+	Grid.prototype.updateLine = function(line, coordinate){
+		if(this.isOutsideBox(coordinate))
+			return;
+		if(line.direction == Grid.LineDirections.Horizontal){
+			this.horizontal_lines[line.index] = this.getInterpolationFactor(coordinate, this.getTopLeft(), this.getBottomLeft(), this.getTopRight(), this.getBottomRight());
+		}else if(line.direction == Grid.LineDirections.Vertical){
+			this.vertical_lines[line.index] = this.getInterpolationFactor(coordinate, this.getTopRight(), this.getTopLeft(), this.getBottomRight(), this.getBottomLeft());
+		}
+		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	};
 	Grid.prototype.addHorizontalLine = function(coordinate){
 		if(this.isOutsideBox(coordinate))
