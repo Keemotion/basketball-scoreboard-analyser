@@ -110,5 +110,13 @@ define(["../../../model/coordinate",
 	GridHandler.prototype.getGrid = function(){
 		return this.grid;
 	};
+	GridHandler.prototype.deleteDown = function(){
+		switch(this.mode){
+			case GridHandler.Modes.Default:
+				this.getGrid().deleteSelectedLine();
+				break;
+		}
+
+	};
 	return GridHandler;
 });

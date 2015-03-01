@@ -23,6 +23,24 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		this.selected_line = {direction : direction, index : index};
 		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 	};
+	Grid.prototype.deleteSelectedLine = function(){
+		var index = this.selected_line.index;
+		switch(this.selected_line.direction){
+			case Grid.LineDirections.Horizontal:
+				if(index < this.horizontal_lines.length){
+					this.horizontal_lines[index] = this.horizontal_lines[this.horizontal_lines.length-1];
+					this.horizontal_lines.length--;
+				}
+				break;
+			case Grid.LineDirections.Vertical:
+				if(index < this.vertical_lines.length){
+					this.vertical_lines[index] = this.vertical_lines[this.vertical_lines.length-1];
+					this.vertical_lines.length --;
+				}
+				break;
+		}
+		this.selectLine(Grid.LineDirections.None, 0);
+	};
 	Grid.prototype.applyEqualSpacing = function(signal, data){
 		function apply(arr){
 			var am = arr.length;
@@ -108,7 +126,6 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		var point2 = line2_point1.add(line2_point2.subtract(line2_point1).scalarMultiply(parameter));
 		var transformed_point1 = transformation.transformRelativeImageCoordinateToCanvasCoordinate(point1);
 		var transformed_point2 = transformation.transformRelativeImageCoordinateToCanvasCoordinate(point2);
-		console.log("draw line from "+JSON.stringify(transformed_point1) + " to "+JSON.stringify(transformed_point2));
 		context.moveTo(transformed_point1.getX(), transformed_point1.getY());
 		context.lineTo(transformed_point2.getX(), transformed_point2.getY());
 	};

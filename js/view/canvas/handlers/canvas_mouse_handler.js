@@ -649,10 +649,17 @@ define([
 					this.messaging_system.fire(this.messaging_system.events.MouseModeChanged, new MouseModeChangedEvent(MouseModes.SelectionMode));
 					break;
 				case 46://delete
-					var elements = this.getCanvas().getView().getCurrentSelectionTree().getSelectedFlat();
-					this.resetSelection();
-					for(var i = 0; i < elements.length; ++i){
-						this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(elements[i].getIdentification()));
+					switch(this.getMouseMode()){
+						case MouseModes.EditMode:
+							var elements = this.getCanvas().getView().getCurrentSelectionTree().getSelectedFlat();
+							this.resetSelection();
+							for(var i = 0; i < elements.length; ++i){
+								this.messaging_system.fire(this.messaging_system.events.RemoveGroup, new RemoveGroupEvent(elements[i].getIdentification()));
+							}
+							break;
+						case MouseModes.GridMode:
+							this.getGridHandler().deleteDown();
+							break;
 					}
 					break;
 				case 76://L
