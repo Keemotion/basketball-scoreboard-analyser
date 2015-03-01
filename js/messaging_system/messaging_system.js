@@ -122,7 +122,8 @@ define([], function(){
 		GridEnabled: 'GridEnabled',
 		GridDisabled : 'GridDisabled',
 		ClearGrid: 'ClearGrid',
-		EqualSpacingGridLines : 'EqualSpacingGridLines'
+		EqualSpacingGridLines : 'EqualSpacingGridLines',
+		SelectGridLine: 'SelectGridLine'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

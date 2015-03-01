@@ -13,6 +13,7 @@ define(["../../../model/coordinate",
 		this.messaging_system.addEventListener(this.messaging_system.events.GridModeChanged, this.grid_mode_changed_listener);
 		this.CORNER_CLICK_MARGIN = 30;
 		this.grid.setCornerClickMargin(this.CORNER_CLICK_MARGIN);
+		this.selected_line = null;
 	};
 	GridHandler.Modes = {Default: "Default", AddHorizontalGridLine: "AddHorizontalGridLine", AddVerticalGridLine : "AddVerticalGridLine"};
 	GridHandler.prototype.gridModeChanged = function(signal, data){
@@ -20,9 +21,11 @@ define(["../../../model/coordinate",
 		switch(this.mode){
 			case GridHandler.Modes.Default:
 				this.grid.setCornerArea(true);
+				this.grid.setSelectedLineHighlighting(true);
 				break;
 			default:
 				this.grid.setCornerArea(false);
+				this.grid.setSelectedLineHighlighting(false);
 				break;
 		}
 		this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
@@ -47,13 +50,16 @@ define(["../../../model/coordinate",
 	GridHandler.prototype.mouseMove = function(event_data, transformation){
 		switch(this.mode){
 			case GridHandler.Modes.Default:
-				if(this.mouse_down_coordinate == null)
-					return;
-				var transformed_coordinate = transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate());
-				this.mouse_down_coordinate.setX(transformed_coordinate.getX());
-				this.mouse_down_coordinate.setY(transformed_coordinate.getY());
-				this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
-				break;
+				if(this.mouse_down_coordinate == null){
+					//TODO: highlight currently selected line
+
+				}else{
+					var transformed_coordinate = transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate());
+					this.mouse_down_coordinate.setX(transformed_coordinate.getX());
+					this.mouse_down_coordinate.setY(transformed_coordinate.getY());
+					this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
+					break;
+				}
 		}
 	};
 	GridHandler.prototype.mouseUp = function(event_data, transformation){
@@ -69,8 +75,15 @@ define(["../../../model/coordinate",
 				break;
 		}
 	};
+	GridHandler.prototype.selectLine = function(line){
+		this.getGrid().selectLine(line.direction, line.index);
+	}
 	GridHandler.prototype.click = function(event_data, transformation){
 		switch(this.mode){
+			case GridHandler.Modes.Default:
+				var closest_line = this.getGrid().getClosestLine(transformation, event_data.getCoordinate());
+				this.selectLine(closest_line);
+				break;
 			case GridHandler.Modes.AddHorizontalGridLine:
 				this.getGrid().addHorizontalLine(transformation.transformCanvasCoordinateToRelativeImageCoordinate(event_data.getCoordinate()));
 				break;

@@ -25,6 +25,17 @@ define([], function(){
 		}
 		return intersection_amount % 2 == 1;
 	};
+	Geometry.distanceToLine = function(coordinate, line_point1, line_point2){
+		return Math.abs(Geometry.crossProduct(coordinate.subtract(line_point1), line_point2.subtract(line_point1)))/Geometry.distance(line_point2, line_point1);
+	};
+	Geometry.distance = function(c1, c2){
+		return Math.sqrt(Geometry.squareDistance(c1, c2));
+	}
+	Geometry.squareDistance = function(c1, c2){
+		var dx = c1.getX() - c2.getX();
+		var dy = c1.getY() - c2.getY();
+		return dx * dx + dy * dy;
+	}
 	Geometry.crossProduct = function(c1, c2){
 		return c1.getX()*c2.getY()-c1.getY()*c2.getX();
 	};
