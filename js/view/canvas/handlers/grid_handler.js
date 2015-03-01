@@ -15,7 +15,11 @@ define(["../../../model/coordinate",
 		this.grid.setCornerClickMargin(this.CORNER_CLICK_MARGIN);
 		this.selected_line = null;
 	};
-	GridHandler.Modes = {Default: "Default", AddHorizontalGridLine: "AddHorizontalGridLine", AddVerticalGridLine : "AddVerticalGridLine"};
+	GridHandler.Modes = {
+		Default : "Default",
+		AddHorizontalGridLine : "AddHorizontalGridLine",
+		AddVerticalGridLine : "AddVerticalGridLine"
+	};
 	GridHandler.prototype.gridModeChanged = function(signal, data){
 		this.mode = data.getGridMode();
 		switch(this.mode){
@@ -77,7 +81,7 @@ define(["../../../model/coordinate",
 	};
 	GridHandler.prototype.selectLine = function(line){
 		this.getGrid().selectLine(line.direction, line.index);
-	}
+	};
 	GridHandler.prototype.click = function(event_data, transformation){
 		switch(this.mode){
 			case GridHandler.Modes.Default:

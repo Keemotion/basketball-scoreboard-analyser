@@ -28,14 +28,14 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		switch(this.selected_line.direction){
 			case Grid.LineDirections.Horizontal:
 				if(index < this.horizontal_lines.length){
-					this.horizontal_lines[index] = this.horizontal_lines[this.horizontal_lines.length-1];
+					this.horizontal_lines[index] = this.horizontal_lines[this.horizontal_lines.length - 1];
 					this.horizontal_lines.length--;
 				}
 				break;
 			case Grid.LineDirections.Vertical:
 				if(index < this.vertical_lines.length){
-					this.vertical_lines[index] = this.vertical_lines[this.vertical_lines.length-1];
-					this.vertical_lines.length --;
+					this.vertical_lines[index] = this.vertical_lines[this.vertical_lines.length - 1];
+					this.vertical_lines.length--;
 				}
 				break;
 		}
@@ -149,8 +149,6 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 			if(steps <= 0)
 				return .5;
 			var middle = (left + right) / 2;
-			//var line1_middle = line1_point1.add(line1_point2.subtract(line1_point1).scalarMultiply(middle));
-			//var line2_middle = line2_point1.add(line2_point2.subtract(line2_point1).scalarMultiply(middle));
 			var line1_middle = Grid.getLineIntersection(line1_point1, line1_point2, middle);
 			var line2_middle = Grid.getLineIntersection(line2_point1, line2_point2, middle);
 			var cp = Geometry.crossProduct(coordinate.subtract(line1_middle), line2_middle.subtract(line1_middle));
@@ -169,7 +167,7 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 	};
 	Grid.prototype.getClosestLineArray = function(direction, transformation, coordinate, lines, line1_point1, line1_point2, line2_point1, line2_point2){
 		var none = Grid.LineDirections.None;
-		var closest_line = {direction:none, index:0, distance:0};
+		var closest_line = {direction : none, index : 0, distance : 0};
 		for(var i = 0; i < lines.length; ++i){
 			var line1_middle = Grid.getLineIntersection(line1_point1, line1_point2, lines[i]);
 			var line2_middle = Grid.getLineIntersection(line2_point1, line2_point2, lines[i]);
@@ -196,7 +194,7 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		}else{
 			return closest_vertical_line;
 		}
-	}
+	};
 	Grid.prototype.addHorizontalLine = function(coordinate){
 		if(this.isOutsideBox(coordinate))
 			return;
