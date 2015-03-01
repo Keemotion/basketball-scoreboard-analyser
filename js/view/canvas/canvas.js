@@ -28,7 +28,7 @@ define(
 			this.container_element = target_view;
 			this.transformation = new Transformation(new Coordinate(0, 0),
 				1, 1, 1, 1, 1);
-			this.grid = new Grid();
+			this.grid = new Grid(this.messaging_system);
 			this.canvas_mouse_handler = new CanvasMouseHandler(this,
 				this.messaging_system);
 			this.display_tree = null;

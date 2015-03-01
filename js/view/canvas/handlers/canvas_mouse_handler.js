@@ -562,6 +562,9 @@ define([
 				case CanvasMouseHandler.MouseModes.DigitCornersListenMode:
 					this.addDigitCorner(data.getCoordinate());
 					break;
+				case CanvasMouseHandler.MouseModes.GridMode:
+					this.grid_handler.click(data, this.getCanvas().getTransformation());
+					break;
 			}
 		};
 		CanvasMouseHandler.prototype.startDigitCornersListening = function(group, existing_digit){

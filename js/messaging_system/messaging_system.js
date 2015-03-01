@@ -114,7 +114,10 @@ define([], function(){
 		CollapseTreeNode : 'CollapseTreeNode',
 
 		ToggleLineExtensions: 'ToggleLineExtensions',
-		LineExtensionsSet: 'LineExtensionsSet'
+		LineExtensionsSet: 'LineExtensionsSet',
+
+		AddVerticalGridLine:'AddVerticalGridLine',
+		AddHorizontalGridLine:'AddHorizontalGridLine'
 	});
 	MessagingSystem.prototype.eventListeners = new Object();
 	MessagingSystem.prototype.fire = function(signal, data){

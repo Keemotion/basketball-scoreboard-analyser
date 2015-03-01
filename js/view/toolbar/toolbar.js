@@ -99,7 +99,6 @@ define(
 				self.messaging_system.events.LineExtensionsSet,
 				new EventListener(this, this.lineExtensionsSet)
 			);
-			this.edit_tool_btn.click();
 			this.target_div.append(this.mouse_mode_btns);
 
 
@@ -219,6 +218,7 @@ define(
 				});
 			this.other_buttons.append(this.line_extensions_button);
 			this.target_div.append(this.other_buttons);
+			this.addGridButtons();
 
 			this.other_fields = $('<div>').addClass('btn-group');
 			this.image_name_field = $('<span>').text('');
@@ -270,6 +270,7 @@ define(
 				.append($('<span>').text(' Configuration'));
 			this.new_elements_btns.append(this.add_configuration_key_element);
 			this.target_div.append(this.new_elements_btns);
+			this.edit_tool_btn.click();
 		};
 
 		ToolBar.prototype.mouseModeChanged = function(signal, data){
@@ -277,6 +278,7 @@ define(
 			this.canvas_tool_btn.removeClass('active');
 			this.selection_tool_btn.removeClass('active');
 			this.grid_tool_btn.removeClass('active');
+			this.grid_buttons_div.hide();
 			switch(data.getMode()){
 				case CanvasMouseHandler.MouseModes.EditMode:
 					this.edit_tool_btn.addClass('active');
@@ -289,10 +291,33 @@ define(
 					break;
 				case CanvasMouseHandler.MouseModes.GridMode:
 					this.grid_tool_btn.addClass('active');
+					this.grid_buttons_div.show();
 					break;
 				default:
 					break;
 			}
+		};
+		ToolBar.prototype.addGridButtons = function(){
+			var self = this;
+			this.grid_buttons_div = $('<div>').addClass('btn-group');
+			this.add_vertical_line_button = $('<button>')
+				.addClass('btn btn-default')
+				.append($('<i>').addClass('glyphicon glyphicon-option-vertical'))
+				.attr('title', 'Add vertical grid line')
+				.click(function(){
+					self.messaging_system.fire(self.messaging_system.events.AddVerticalGridLine, null);
+				});
+			this.add_horizontal_line_button = $('<button>')
+				.addClass('btn btn-default')
+				.append($('<i>').addClass('glyphicon glyphicon-option-horizontal'))
+				.attr('title', 'Add horizontal grid line')
+				.click(function(){
+					self.messaging_system.fire(self.messaging_system.events.AddHorizontalGridLine, null);
+				});
+			this.grid_buttons_div
+				.append(this.add_horizontal_line_button)
+				.append(this.add_vertical_line_button);
+			this.target_div.append(this.grid_buttons_div);
 		};
 		ToolBar.prototype.lineExtensionsSet = function(signal, data){
 			if(data.getValue()){
