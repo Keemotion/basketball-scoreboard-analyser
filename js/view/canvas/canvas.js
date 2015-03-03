@@ -8,8 +8,9 @@ define(
 		"../../messaging_system/events/mouse_event",
 		"../../model/bounding_rectangle",
 		"../../messaging_system/events/line_extensions_set_event",
-		"./grid"],
-	function(EventListener, Coordinate, Transformation, DisplayTree, DisplayChangedHandler, CanvasKeyEvent, CanvasMouseHandler, SelectionTree, MouseEvent, BoundingRectangle, LineExtensionsSetEvent, Grid){
+		"./grid",
+		"./handlers/mouse_modes"],
+	function(EventListener, Coordinate, Transformation, DisplayTree, DisplayChangedHandler, CanvasKeyEvent, CanvasMouseHandler, SelectionTree, MouseEvent, BoundingRectangle, LineExtensionsSetEvent, Grid, MouseModes){
 		var MyCanvas = function(view, target_view, proxy, messaging_system){
 			var self = this;
 			this.view = view;
@@ -399,7 +400,9 @@ define(
 				if(this.getDrawComplete()){
 					this.drawTree();
 				}
-				this.drawSelected();
+				if(this.canvas_mouse_handler.getMouseMode() != MouseModes.GridMode){
+					this.drawSelected();
+				}
 				this.drawGrid();
 			}
 		};
