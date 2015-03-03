@@ -86,7 +86,7 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		this.vertical_lines = [];
 		this.reset(transformation);
 	};
-	Grid.prototype.draw = function(context, transformation){
+	Grid.prototype.draw = function(context, transformation, mode){
 		if(!this.enabled)
 			return;
 		var topright = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getTopRight());
@@ -94,6 +94,8 @@ define(["../../model/coordinate", "../../helpers/geometry", "../../messaging_sys
 		var bottomleft = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getBottomLeft());
 		var topleft = transformation.transformRelativeImageCoordinateToCanvasCoordinate(this.getTopLeft());
 
+		context.strokeStyle = "brown";
+		context.lineWidth = 1;
 		context.beginPath();
 		context.moveTo(topright.getX(), topright.getY());
 		context.lineTo(bottomright.getX(), bottomright.getY());

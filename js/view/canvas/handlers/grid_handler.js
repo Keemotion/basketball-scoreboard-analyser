@@ -45,6 +45,11 @@ define(["../../../model/coordinate",
 		if(data.getMode() == MouseModes.GridMode){
 			this.mouse_down_coordinate = null;
 			this.messaging_system.fire(this.messaging_system.events.GridModeChanged, new GridModeChangedEvent(GridHandler.Modes.Default));
+		}else{
+			this.getGrid().setCornerArea(false);
+			this.getGrid().setSelectedLineHighlighting(false);
+			this.getGrid().setNearbyLineHighlighting(false);
+			this.messaging_system.fire(this.messaging_system.events.ImageDisplayChanged, null);
 		}
 	};
 	GridHandler.prototype.mouseDown = function(event_data, transformation){

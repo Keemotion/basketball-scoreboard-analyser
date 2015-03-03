@@ -404,7 +404,7 @@ define(
 			}
 		};
 		MyCanvas.prototype.drawGrid = function(){
-			this.grid.draw(this.context, this.getTransformation());
+			this.grid.draw(this.context, this.getTransformation(), this.canvas_mouse_handler.getMouseMode());
 		};
 		MyCanvas.prototype.getTransformation = function(){
 			return this.transformation;
